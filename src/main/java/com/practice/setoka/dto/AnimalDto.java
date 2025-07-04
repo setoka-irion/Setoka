@@ -3,13 +3,13 @@ package com.practice.setoka.dto;
 import java.time.LocalDateTime;
 
 public class AnimalDto {
-	private int userNum;
-	private String animalName;
-	private String species;
-	private int age;
-	private int status;
-	private String gender;
-	private LocalDateTime togetherDate;
+	private int userNum;				//고유번호
+	private String animalName;			//유저번호
+	private String species;				//종
+	private int age;					//나이
+	private int status;					//상태
+	private String gender;				//성별
+	private LocalDateTime togetherDate;	//입양일
 	
 	public int getUserNum() {
 		return userNum;
