@@ -8,7 +8,7 @@ public class Board {
 	private String title;
 	private String content;
 	private int type;
-	private int like;
+	private int likes;
 	private int views;
 	private int price;
 	private String area;
@@ -44,11 +44,11 @@ public class Board {
 	public void setType(int type) {
 		this.type = type;
 	}
-	public int getLike() {
-		return like;
+	public int getLikes() {
+		return likes;
 	}
-	public void setLike(int like) {
-		this.like = like;
+	public void setLikes(int likes) {
+		this.likes = likes;
 	}
 	public int getViews() {
 		return views;
