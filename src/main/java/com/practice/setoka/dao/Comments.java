@@ -7,7 +7,7 @@ public class Comments {
 	private int userNum;
 	private int boardNum;
 	private String content;
-	private int like;
+	private int likes;
 	private LocalDateTime registerDate;
 	
 	public int getNum() {
@@ -34,11 +34,11 @@ public class Comments {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public int getLike() {
-		return like;
+	public int getLikes() {
+		return likes;
 	}
-	public void setLike(int like) {
-		this.like = like;
+	public void setLikes(int likes) {
+		this.likes = likes;
 	}
 	public LocalDateTime getRegisterDate() {
 		return registerDate;
