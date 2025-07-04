@@ -1,37 +1,49 @@
-HELP.md
-.gradle
+# Gradle 빌드 폴더
+.gradle/
 build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+# Maven 빌드 폴더
+target/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# IntelliJ IDEA
+.idea/
 *.iml
 *.ipr
+*.iws
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# Eclipse
+.metadata/
+*.classpath
+*.project
+*.settings/
 
-### VS Code ###
+# VS Code
 .vscode/
+
+# Mac OS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# 로그 파일
+*.log
+
+# 자바 컴파일된 클래스 파일
+*.class
+
+# 패키지 파일
+*.jar
+*.war
+*.ear
+
+# 기타
+logs/
+tmp/
+*.tmp
+
+# 환경 변수 파일 (개인 정보)
+.env
