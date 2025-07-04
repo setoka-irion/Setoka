@@ -1,5 +1,5 @@
 package com.practice.setoka.mapper;
 
-public interface userMapper {
+public interface UserMapper {
 
 }
