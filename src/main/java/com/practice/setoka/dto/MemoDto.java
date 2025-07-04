@@ -3,11 +3,11 @@ package com.practice.setoka.dto;
 import java.time.LocalDateTime;
 
 public class MemoDto {
-	private int userNum;
-	private int animalNum;
-	private String title;
-	private String content;
-	private LocalDateTime scheduleDate;
+	private int userNum;					//유저번호
+	private int animalNum;					//동물번호
+	private String title;					//제목
+	private String content;					//내용
+	private LocalDateTime scheduleDate;		//스케줄날짜
 
 	public int getUserNum() {
 		return userNum;
