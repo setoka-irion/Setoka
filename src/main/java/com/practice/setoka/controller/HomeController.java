@@ -45,4 +45,9 @@ public class HomeController
 		return "Attendance";
 	}
 	
+		@GetMapping(value = "pet")
+		public String petPlaces()
+		{
+			return "petPlaces";
+		}
 }
