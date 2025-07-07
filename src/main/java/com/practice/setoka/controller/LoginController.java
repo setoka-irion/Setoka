@@ -39,15 +39,16 @@ public class LoginController {
 		{
 			// 로그인 성공
 			// 세션처리
-			session.setAttribute("LoginSession", user);
+			session.setAttribute(Redirect.loginSession, user);
 		}
 					
 		return Redirect.home;
 	}
 
 	@GetMapping(value = "Logout")
-	public String logout() {
+	public String logout(HttpSession session) {
 		// 세션 없애기
+		session.removeAttribute(Redirect.loginSession);
 		return "";
 	}
 
@@ -72,8 +73,8 @@ public class LoginController {
 		if (userService.InsertUserNomal(dto)) {
 			// 로그인 성공
 			// 세션처리
-			Users user = userService.SelectByID(dto.getId());
-			session.setAttribute("LoginSession", user);
+//			Users user = userService.SelectByID(dto.getId());
+//			session.setAttribute("LoginSession", user);
 		}
 
 		return Redirect.home;
