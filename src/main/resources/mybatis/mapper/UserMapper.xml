@@ -4,9 +4,25 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.practice.setoka.mapper.UserMapper">
-	
-	<select id="selectUserById" resultType="com.practice.setoka.dao.Users" parameterType="int">
+
+	<select id="selectUserByNum" resultType="com.practice.setoka.dao.Users" parameterType="int">
     	SELECT * FROM users WHERE num = #{num}
   	</select>
+  	
+	<select id="selectUserByID" resultType="com.practice.setoka.dao.Users" parameterType="String">
+    	SELECT * FROM users WHERE id = #{id}
+  	</select>
+  	
+	<select id="selectUserByIDPassword" resultType="com.practice.setoka.dao.Users" parameterType="String">
+    	SELECT * FROM users WHERE id = #{num} AND password = #{password}
+  	</select>
+	
+	<select id="selectAllUsers" resultType="com.practice.setoka.dao.Users">
+    	SELECT * FROM users
+  	</select>
+  	
+  	<insert id="insertUserToDto" parameterType="com.practice.setoka.dto.UsersDto">
+  		INSERT INTO users (id, password, nickname, realname, phoneNumber) VALUES(#{id}, #{password}, #{nickName}, #{realName}, #{phoneNumber})
+  	</insert>
 	
 </mapper>
