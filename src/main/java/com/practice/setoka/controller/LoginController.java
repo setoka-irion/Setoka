@@ -1,9 +1,10 @@
-package com.practice.setoka;
+package com.practice.setoka.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.practice.setoka.Redirect;
 import com.practice.setoka.dto.UsersDto;
 
 import jakarta.servlet.http.HttpSession;
