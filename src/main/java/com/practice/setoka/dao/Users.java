@@ -9,7 +9,7 @@ public class Users {
 	private String nickName;
 	private String realName;
 	private String phoneNumber;
-	private int status;
+	private String status;
 	private int point;
 	private String grade;
 	private LocalDateTime registerDate;
@@ -50,10 +50,10 @@ public class Users {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public int getStatus() {
+	public String getStatus() {
 		return status;
 	}
-	public void setStatus(int status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 	public int getPoint() {
@@ -73,6 +73,6 @@ public class Users {
 	
 	public boolean isAdmin()
 	{
-		return status == 1;
+		return status.equals("admin");
 	}
 }
