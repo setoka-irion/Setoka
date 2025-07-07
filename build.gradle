@@ -22,6 +22,7 @@ dependencies {
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'  // MyBatis starter 추가
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'   // MariaDB JDBC 드라이버
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.security:spring-security-crypto:6.3.0' //암호화
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

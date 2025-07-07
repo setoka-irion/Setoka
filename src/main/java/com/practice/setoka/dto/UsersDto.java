@@ -6,6 +6,9 @@ public class UsersDto {
 	private String nickName;
 	private String realName;
 	private String phoneNumber;
+	private String status;
+	private int point;
+	private String grade;
 	
 	public String getId() {
 		return id;
@@ -36,5 +39,23 @@ public class UsersDto {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public int getPoint() {
+		return point;
+	}
+	public void setPoint(int point) {
+		this.point = point;
+	}
+	public String getGrade() {
+		return grade;
+	}
+	public void setGrade(String grade) {
+		this.grade = grade;
 	}
 }
