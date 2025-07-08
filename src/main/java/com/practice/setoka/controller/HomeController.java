@@ -1,4 +1,4 @@
-package com.practice.setoka;
+package com.practice.setoka.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class HomeController 
 {
@@ -15,12 +17,11 @@ public class HomeController
 	private UserService userService;
 	//홈화면
 	@GetMapping(value = "/")
-	public String home(Model model)
+	public String home(HttpSession session, Model model)
 	{
-		System.out.println("home 요청");
-		Users user = userService.SelectUser(1);
-		System.out.println(user.getNickName());
-		model.addAttribute("now", user.getNickName());
+		Users loginData = (Users)session.getAttribute("LoginSession");
+		if(loginData != null)
+			model.addAttribute("login", loginData.getNickName());
 		return "home";
 	}
 	

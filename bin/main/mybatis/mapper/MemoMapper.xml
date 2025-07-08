@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.setoka.mapper.MemoMapper">
+	
+	<resultMap id="memoResultMap" type="com.practice.setoka.dao.Memo">
+        <id property="num" column="num"/>
+        <result property="userNum" column="user_num"/>
+        <result property="animalNum" column="animal_num"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="scheduleDate" column="schedule_date"/>
+        <result property="registerDate" column="register_date"/>
+    </resultMap>
+
+    <select id="memoSelectAll" resultMap="memoResultMap">
+        SELECT * FROM memo ORDER BY schedule_date
+    </select>
+
+    <select id="memoSelectByNum" resultMap="memoResultMap" parameterType="int">
+        SELECT * FROM memo WHERE num = #{num}
+    </select>
+
+    <select id="memoSelectByUserNum" resultMap="memoResultMap" parameterType="int">
+        SELECT * FROM memo WHERE user_num = #{userNum} ORDER BY schedule_date
+    </select>
+
+    <select id="memoSelectByAnimalNum" resultMap="memoResultMap" parameterType="int">
+        SELECT * FROM memo WHERE animal_num = #{animalNum} ORDER BY schedule_date
+    </select>
+
+    <insert id="insertMemo" parameterType="com.practice.setoka.dto.MemoDto" useGeneratedKeys="true" keyProperty="num">
+        INSERT INTO memo (user_num, animal_num, title, content, schedule_date, register_date)
+        VALUES (#{userNum}, #{animalNum}, #{title}, #{content}, #{scheduleDate}, #{registerDate})
+    </insert>
+
+    <update id="updateMemo" parameterType="map">
+       UPDATE memo SET title = #{memoDto.title}, content = #{memoDto.content}, schedule_date = #{memoDto.scheduleDate}, register_date = NOW() WHERE num = #{num}
+    </update>
+
+    <delete id="deleteMemo" parameterType="int">
+        DELETE FROM memo WHERE num = #{num}
+    </delete>
+	
+	
+</mapper>
