@@ -14,6 +14,7 @@ public interface MemoMapper {
 	Memo memoSelectByNum(@Param("num") int num);
     List<Memo> memoSelectByUserNum(@Param("userNum") int userNum);
     List<Memo> memoSelectByAnimalNum(@Param("animalNum") int animalNum);
+    List<Memo> memoSelectByMonth(@Param("year") int year, @Param("month") int month);
     int insertMemo(MemoDto memoDto);
     int updateMemo(@Param("num") int num, MemoDto memoDto);
     int deleteMemo(@Param("num") int num);

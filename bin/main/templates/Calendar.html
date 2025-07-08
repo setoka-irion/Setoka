@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>달력 메모</title>
+<style>
+  table { width: 350px; margin: 20px auto; border-collapse: collapse; }
+  th, td { border: 1px solid #ccc; width: 14.28%; height: 80px; vertical-align: top; padding: 5px; cursor: pointer; }
+  th { background: #eee; }
+  .memo-title { font-size: 0.75em; color: #007bff; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav-buttons { text-align: center; margin: 10px 0; }
+  button { margin: 0 10px; padding: 5px 15px; }
+  /* 모달 */
+  #memoModal { display: none; position: fixed; z-index: 100; left:0; top:0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);}
+  #memoModalContent { background: white; margin: 10% auto; padding: 20px; width: 350px; border-radius: 5px; position: relative;}
+  #memoModalContent label { display: block; margin-top: 10px; }
+  #memoModalContent input[type="text"], #memoModalContent textarea { width: 100%; padding: 5px; margin-top: 5px; }
+  #memoModalClose { position: absolute; right: 10px; top: 10px; cursor: pointer; font-weight: bold; font-size: 18px; }
+</style>
+</head>
+<body>
+
+<div class="nav-buttons">
+  <form th:action="@{/calendar}" method="get" style="display:inline;">
+    <input type="hidden" name="year" th:value="${month == 1} ? ${year - 1} : ${year}" />
+    <input type="hidden" name="month" th:value="${month == 1} ? 12 : ${month - 1}" />
+    <button type="submit">◀ 이전달</button>
+  </form>
+
+  <span th:text="${year} + '년 ' + ${month} + '월'"></span>
+
+  <form th:action="@{/calendar}" method="get" style="display:inline;">
+    <input type="hidden" name="year" th:value="${month == 12} ? ${year + 1} : ${year}" />
+    <input type="hidden" name="month" th:value="${month == 12} ? 1 : ${month + 1}" />
+    <button type="submit">다음달 ▶</button>
+  </form>
+</div>
+
+<table id="calendar">
+  <thead>
+    <tr>
+      <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <tr th:each="weekRow : ${#numbers.sequence(0, weekCount - 1)}">
+      <td th:each="dayIdx : ${#numbers.sequence(0,6)}"
+          th:classappend="${((weekRow * 7) + dayIdx + 1 - startBlank <= 0 
+                           or (weekRow * 7) + dayIdx + 1 - startBlank > lengthOfMonth) ? 'blank' : ''}">
+        
+        <span th:if="${(weekRow * 7) + dayIdx + 1 - startBlank > 0 
+                     and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth}"
+              th:text="${(weekRow * 7) + dayIdx + 1 - startBlank}">
+        </span>
+
+      </td>
+    </tr>
+  </tbody>
+  
+<!-- 메모 모달 -->
+<div id="memoModal">
+  <div id="memoModalContent">
+    <span id="memoModalClose">&times;</span>
+    <h2 id="modalTitle">메모 작성</h2>
+
+    <form id="memoForm" method="post" th:action="@{/memo/add}">
+      <input type="hidden" name="num" id="memoNum" />
+      <input type="hidden" name="userNum" value="1" /> <!-- 유저 번호 하드코딩 예시 -->
+      <input type="hidden" name="animalNum" value="1" /> <!-- 동물 번호 하드코딩 예시 -->
+
+      <label for="scheduleDate">날짜</label>
+      <input type="text" id="scheduleDate" name="scheduleDate" readonly />
+
+      <label for="title">제목</label>
+      <input type="text" id="title" name="title" required />
+
+      <label for="content">내용</label>
+      <textarea id="content" name="content" rows="5" required></textarea>
+
+      <div style="margin-top: 15px;">
+        <button type="submit" id="saveBtn">저장</button>
+        <button type="button" id="deleteBtn" style="display:none; margin-left:10px; background-color:#f44336; color:#fff;">삭제</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // 달력 날짜 클릭 시 모달 열기
+  const modal = document.getElementById('memoModal');
+  const modalClose = document.getElementById('memoModalClose');
+  const scheduleDateInput = document.getElementById('scheduleDate');
+  const titleInput = document.getElementById('title');
+  const contentInput = document.getElementById('content');
+  const memoNumInput = document.getElementById('memoNum');
+  const memoForm = document.getElementById('memoForm');
+  const deleteBtn = document.getElementById('deleteBtn');
+  const modalTitle = document.getElementById('modalTitle');
+  const saveBtn = document.getElementById('saveBtn');
+
+  // 메모 리스트 from server (초기 렌더링 시 Thymeleaf에서 배열 형태로 받아도 좋음)
+  // 여기서는 서버 렌더링시 달력 td 안에 memoList 정보 활용
+  // 필요시 Ajax로 메모 조회/등록/수정/삭제 구현 가능
+
+  // 달력 td 클릭 이벤트
+  document.querySelectorAll('#calendar td').forEach(td => {
+    td.addEventListener('click', () => {
+      const day = td.textContent.trim();
+      if (!day) return;
+
+      const year = /*[[${year}]]*/ 2025;
+      const month = /*[[${month}]]*/ 7;
+      const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+
+      scheduleDateInput.value = dateStr;
+      memoNumInput.value = '';
+      titleInput.value = '';
+      contentInput.value = '';
+
+      // 메모 있을 경우 모달 수정 모드
+      const memoTitleEl = td.querySelector('.memo-title');
+      if(memoTitleEl) {
+        modalTitle.textContent = "메모 수정";
+        saveBtn.textContent = "수정";
+        deleteBtn.style.display = "inline-block";
+        // 메모 번호는 서버에서 받아와야 함 (여기선 임시로 1)
+        memoNumInput.value = '1';
+        titleInput.value = memoTitleEl.textContent;
+        contentInput.value = '내용은 서버에서 받아와야 함'; 
+      } else {
+        modalTitle.textContent = "메모 작성";
+        saveBtn.textContent = "저장";
+        deleteBtn.style.display = "none";
+      }
+
+      modal.style.display = "block";
+    });
+  });
+
+  modalClose.onclick = () => {
+    modal.style.display = "none";
+  };
+
+  window.onclick = e => {
+    if(e.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  // 삭제 버튼 클릭 시 폼 action 변경 후 제출
+  deleteBtn.onclick = () => {
+    if(confirm("정말 삭제하시겠습니까?")) {
+      memoForm.action = '/memo/delete';
+      memoForm.submit();
+    }
+  };
+
+  // 저장/수정 시 기본 action은 /memo/add
+  memoForm.onsubmit = () => {
+    memoForm.action = memoNumInput.value ? '/memo/update' : '/memo/add';
+  }
+</script>
+
+</body>
+</html>

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.practice.setoka.dao.Memo;
 import com.practice.setoka.dto.MemoDto;
 import com.practice.setoka.mapper.MemoMapper;
@@ -31,6 +30,10 @@ public class MemoService {
 		return memoMapper.memoSelectByAnimalNum(animalNum);
 	}
 	
+	 public List<Memo> memoSelectByMonth(int year, int month) {
+		return memoMapper.memoSelectByMonth(year, month);
+	}
+	 
 	public int insertMemo(MemoDto memoDto) {
 		return memoMapper.insertMemo(memoDto);
 	}

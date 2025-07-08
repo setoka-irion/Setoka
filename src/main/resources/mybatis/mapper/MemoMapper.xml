@@ -26,6 +26,12 @@
     <select id="memoSelectByUserNum" resultMap="memoResultMap" parameterType="int">
         SELECT * FROM memo WHERE user_num = #{userNum} ORDER BY schedule_date
     </select>
+    
+    <select id="memoSelectByMonth" resultMap="memoResultMap" parameterType="map">
+    	SELECT * FROM memo
+    	WHERE YEAR(scheduleDate) = #{year}
+    	AND MONTH(scheduleDate) = #{month}
+	</select>
 
     <select id="memoSelectByAnimalNum" resultMap="memoResultMap" parameterType="int">
         SELECT * FROM memo WHERE animal_num = #{animalNum} ORDER BY schedule_date
