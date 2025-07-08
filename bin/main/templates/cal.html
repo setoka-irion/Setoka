@@ -45,6 +45,7 @@
   </table>
 
   <script>
+	//화면에 보여줄 달력의 정보
     let currentDate = new Date();
     let currentYear = currentDate.getFullYear();
     let currentMonth = currentDate.getMonth(); // 0 = 1월
@@ -53,13 +54,16 @@
       "1월", "2월", "3월", "4월", "5월", "6월",
       "7월", "8월", "9월", "10월", "11월", "12월"
     ];
-
+	
+	//달력 만들기
     function generateCalendar(year, month) {
+	//오늘날
 	  const today = new Date();
 	  const todayDate = today.getDate();
 	  const todayMonth = today.getMonth(); 
 	  const todayYear = today.getFullYear();
 	  
+	  //
       const monthYear = document.getElementById("month-year");
       const calendarBody = document.getElementById("calendar-body");
       const firstDay = new Date(year, month, 1).getDay();
@@ -74,17 +78,19 @@
         row.appendChild(document.createElement("td"));
       }
 
+	  //셀 하나하나 만들고 이벤트 등록
       for (let day = 1; day <= lastDate; day++) {
         const cell = document.createElement("td");
         cell.textContent = day;
 		
 		cell.addEventListener("click", function ()
 		{
+			//셀을 클릭했을때 동작할 로직
 			const selectedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 			    alert("선택한 날짜: " + selectedDate);
 		});
 		
-		
+		//오늘인지 체크 
 		if(year == todayYear && month == todayMonth && day == todayDate)
 		{
 			cell.classList.add("today");
@@ -99,6 +105,7 @@
       }
     }
 
+	//이전달로
     function prevMonth() {
       currentMonth--;
       if (currentMonth < 0) {
@@ -108,6 +115,7 @@
       generateCalendar(currentYear, currentMonth);
     }
 
+	//다음달로
     function nextMonth() {
       currentMonth++;
       if (currentMonth > 11) {
