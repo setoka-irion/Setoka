@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      text-align: center;
+      height: 100px;
+      width: 100px;
+	  font-size: 18px;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+	.today {
+	  background-color: #c1e1c1;  /* 연한 초록 */
+	  border: 2px solid #4caf50;  /* 초록 테두리 */
+	  font-weight: bold;
+	  color: #2e7d32;
+	}
+
+  </style>
+</head>
+<body>
+	
+	<div class="calendar-header">
+	    <button onclick="prevMonth()">&lt;</button>
+	    <h2 id="month-year"></h2>
+	    <button onclick="nextMonth()">&gt;</button>
+	  </div>
+	  
+  <h2 id="month-year"></h2>
+  <table id="calendar">
+    <thead>
+      <tr>
+        <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
+      </tr>
+    </thead>
+    <tbody id="calendar-body">
+      <!-- 날짜 들어가는 곳 -->
+    </tbody>
+  </table>
+
+  <script>
+	//화면에 보여줄 달력의 정보
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth(); // 0 = 1월
+
+    const monthNames = [
+      "1월", "2월", "3월", "4월", "5월", "6월",
+      "7월", "8월", "9월", "10월", "11월", "12월"
+    ];
+	
+	//달력 만들기
+    function generateCalendar(year, month) {
+	//오늘날
+	  const today = new Date();
+	  const todayDate = today.getDate();
+	  const todayMonth = today.getMonth(); 
+	  const todayYear = today.getFullYear();
+	  
+	  //
+      const monthYear = document.getElementById("month-year");
+      const calendarBody = document.getElementById("calendar-body");
+      const firstDay = new Date(year, month, 1).getDay();
+      const lastDate = new Date(year, month + 1, 0).getDate();
+
+      monthYear.textContent = `${year}년 ${monthNames[month]}`;
+
+      calendarBody.innerHTML = "";
+      let row = document.createElement("tr");
+
+      for (let i = 0; i < firstDay; i++) {
+        row.appendChild(document.createElement("td"));
+      }
+
+	  //셀 하나하나 만들고 이벤트 등록
+      for (let day = 1; day <= lastDate; day++) {
+        const cell = document.createElement("td");
+        cell.textContent = day;
+		
+		cell.addEventListener("click", function ()
+		{
+			//셀을 클릭했을때 동작할 로직
+			const selectedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+			    alert("선택한 날짜: " + selectedDate);
+		});
+		
+		//오늘인지 체크 
+		if(year == todayYear && month == todayMonth && day == todayDate)
+		{
+			cell.classList.add("today");
+		}
+		
+        row.appendChild(cell);
+
+        if ((firstDay + day) % 7 === 0 || day === lastDate) {
+          calendarBody.appendChild(row);
+          row = document.createElement("tr");
+        }
+      }
+    }
+
+	//이전달로
+    function prevMonth() {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      generateCalendar(currentYear, currentMonth);
+    }
+
+	//다음달로
+    function nextMonth() {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      generateCalendar(currentYear, currentMonth);
+    }
+
+    generateCalendar(currentYear, currentMonth);
+  </script>
+</body>
+</html>
