@@ -16,6 +16,7 @@
   #memoModalContent label { display: block; margin-top: 10px; }
   #memoModalContent input[type="text"], #memoModalContent textarea { width: 100%; padding: 5px; margin-top: 5px; }
   #memoModalClose { position: absolute; right: 10px; top: 10px; cursor: pointer; font-weight: bold; font-size: 18px; }
+  .blank { background: #f9f9f9; cursor: default; }
 </style>
 </head>
 <body>
@@ -47,17 +48,19 @@
     <tr th:each="weekRow : ${#numbers.sequence(0, weekCount - 1)}">
       <td th:each="dayIdx : ${#numbers.sequence(0,6)}"
           th:classappend="${((weekRow * 7) + dayIdx + 1 - startBlank <= 0 
-                           or (weekRow * 7) + dayIdx + 1 - startBlank > lengthOfMonth) ? 'blank' : ''}">
+                           or (weekRow * 7) + dayIdx + 1 - startBlank > lengthOfMonth) ? 'blank' : ''}"
+          th:attr="data-date=${(weekRow * 7) + dayIdx + 1 - startBlank > 0 and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth} ?
+                       ${year + '-' + (month < 10 ? '0' + month : month) + '-' + (((weekRow * 7) + dayIdx + 1 - startBlank) < 10 ? '0' + ((weekRow * 7) + dayIdx + 1 - startBlank) : ((weekRow * 7) + dayIdx + 1 - startBlank))} : ''">
         
         <span th:if="${(weekRow * 7) + dayIdx + 1 - startBlank > 0 
                      and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth}"
-              th:text="${(weekRow * 7) + dayIdx + 1 - startBlank}">
-        </span>
+              th:text="${(weekRow * 7) + dayIdx + 1 - startBlank}"></span>
 
       </td>
     </tr>
   </tbody>
-  
+</table>
+
 <!-- 메모 모달 -->
 <div id="memoModal">
   <div id="memoModalContent">
@@ -87,7 +90,6 @@
 </div>
 
 <script>
-  // 달력 날짜 클릭 시 모달 열기
   const modal = document.getElementById('memoModal');
   const modalClose = document.getElementById('memoModalClose');
   const scheduleDateInput = document.getElementById('scheduleDate');
@@ -99,35 +101,25 @@
   const modalTitle = document.getElementById('modalTitle');
   const saveBtn = document.getElementById('saveBtn');
 
-  // 메모 리스트 from server (초기 렌더링 시 Thymeleaf에서 배열 형태로 받아도 좋음)
-  // 여기서는 서버 렌더링시 달력 td 안에 memoList 정보 활용
-  // 필요시 Ajax로 메모 조회/등록/수정/삭제 구현 가능
-
-  // 달력 td 클릭 이벤트
   document.querySelectorAll('#calendar td').forEach(td => {
     td.addEventListener('click', () => {
-      const day = td.textContent.trim();
-      if (!day) return;
-
-      const year = /*[[${year}]]*/ 2025;
-      const month = /*[[${month}]]*/ 7;
-      const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const dateStr = td.getAttribute('data-date');
+      if (!dateStr) return;
 
       scheduleDateInput.value = dateStr;
       memoNumInput.value = '';
       titleInput.value = '';
       contentInput.value = '';
 
-      // 메모 있을 경우 모달 수정 모드
       const memoTitleEl = td.querySelector('.memo-title');
       if(memoTitleEl) {
         modalTitle.textContent = "메모 수정";
         saveBtn.textContent = "수정";
         deleteBtn.style.display = "inline-block";
-        // 메모 번호는 서버에서 받아와야 함 (여기선 임시로 1)
+        // 실제 메모번호는 서버에서 받아와야 합니다.
         memoNumInput.value = '1';
         titleInput.value = memoTitleEl.textContent;
-        contentInput.value = '내용은 서버에서 받아와야 함'; 
+        contentInput.value = '내용은 서버에서 받아와야 함';
       } else {
         modalTitle.textContent = "메모 작성";
         saveBtn.textContent = "저장";
@@ -148,7 +140,6 @@
     }
   };
 
-  // 삭제 버튼 클릭 시 폼 action 변경 후 제출
   deleteBtn.onclick = () => {
     if(confirm("정말 삭제하시겠습니까?")) {
       memoForm.action = '/memo/delete';
@@ -156,7 +147,6 @@
     }
   };
 
-  // 저장/수정 시 기본 action은 /memo/add
   memoForm.onsubmit = () => {
     memoForm.action = memoNumInput.value ? '/memo/update' : '/memo/add';
   }
