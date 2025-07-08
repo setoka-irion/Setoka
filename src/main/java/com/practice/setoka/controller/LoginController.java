@@ -99,4 +99,12 @@ public class LoginController {
 		// 회원가입 성공
 		return Redirect.home;
 	}
+	
+	@GetMapping(value = "Cal")
+	public String Test()
+	{
+		
+		
+		return "cal";
+	}
 }
