@@ -22,7 +22,7 @@ public interface UserMapper
 	//유저 넣기
 	boolean insertUserToDto(UsersDto dto);
 	//유저 수정
-	void updateUser(UsersDto dto);
+	boolean updateUser(UsersDto dto);
 	//유저 삭제
 	void deleteUser(@Param("num") int num);
 	

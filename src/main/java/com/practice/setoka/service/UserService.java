@@ -58,4 +58,9 @@ public class UserService
 		dto.setGrade("관리자");
 		return userMapper.insertUserToDto(dto);
 	}
+	
+	public boolean UpdateUserDto(UsersDto dto)
+	{
+		return userMapper.updateUser(dto);
+	}
 }

@@ -24,5 +24,9 @@
   	<insert id="insertUserToDto" parameterType="com.practice.setoka.dto.UsersDto">
   		INSERT INTO users (id, password, nickname, realname, phoneNumber) VALUES(#{id}, #{password}, #{nickName}, #{realName}, #{phoneNumber})
   	</insert>
+  	
+  	<update id="updateUser" parameterType="com.practice.setoka.dto.UsersDto">
+  		UPDATE users SET password = #{password}, nickname = #{nickName}, realname = #{realName}, phoneNumber = #{phoneNumber} WHERE id = #{id}
+  	</update>
 	
 </mapper>
