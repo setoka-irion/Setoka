@@ -33,22 +33,23 @@ public class LoginController {
 	public String loginSubmit(HttpSession session, UsersDto dto) {
 		// 중복처리
 
-		// 복호화
 		Users user = userService.SelectByID(dto.getId());
+		// 복호화
 		if(Encryption.Decoder(user.getPassword(), dto.getPassword()))
 		{
 			// 로그인 성공
 			// 세션처리
-			session.setAttribute("LoginSession", user);
+			session.setAttribute(Redirect.loginSession, user);
 		}
 					
 		return Redirect.home;
 	}
 
 	@GetMapping(value = "Logout")
-	public String logout() {
+	public String logout(HttpSession session) {
 		// 세션 없애기
-		return "";
+		session.removeAttribute(Redirect.loginSession);
+		return Redirect.home;
 	}
 
 	// 회원가입 페이지로
@@ -56,26 +57,54 @@ public class LoginController {
 	public String Signup(Model model) {
 		UsersDto user = new UsersDto();
 		model.addAttribute("Users", user);
-
-		return "SignUp";
+		return Redirect.SignUp;
 	}
 
 	// 회원가입 완료
-	@PostMapping(value = "SingUpSubmit")
-	public String SingupSubmit(HttpSession session, UsersDto dto) {
-		// 중복처리
+	@PostMapping(value = "SignUp")
+	public String SingupSubmit(HttpSession session, Model model, UsersDto dto) {
+		//비밀번호 검증
+		if(!userService.PasswordInvalid(dto.getPassword()))
+		{
+			//회원가입 실패
+			//입력값 다시 채워줘야 함
+			model.addAttribute("errorMessage", "비밀번호 규칙 불만족");
+			model.addAttribute("Users", dto);
+			return Redirect.SignUp;
+		}
+		
+
+		//아이디 중복 검사
+		if(userService.ExistsByName(dto.getId()))
+		{
+			//회원가입 실패
+			//입력값 다시 채워줘야 함
+			model.addAttribute("errorMessage", "중복 아이디");
+			model.addAttribute("Users", dto);
+			return Redirect.SignUp;
+		}
 		
 		// 암호화
 		dto.setPassword(Encryption.Encoder(dto.getPassword()));
-
-		// insert
-		if (userService.InsertUserNomal(dto)) {
-			// 로그인 성공
-			// 세션처리
-			Users user = userService.SelectByID(dto.getId());
-			session.setAttribute("LoginSession", user);
+		
+		// insert 사실상 항상 true 아닌가
+		if (!userService.InsertUserNomal(dto)) 
+		{
+			//회원가입 실패
+			model.addAttribute("errorMessage", "알수없는 오류");
+			System.out.println("회원가입 실패");
+			return Redirect.SignUp;
 		}
 
+		// 회원가입 성공
 		return Redirect.home;
+	}
+	
+	@GetMapping(value = "Cal")
+	public String Test()
+	{
+		
+		
+		return "cal";
 	}
 }

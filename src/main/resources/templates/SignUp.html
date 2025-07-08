@@ -7,7 +7,9 @@
 <body>
 	<h1>홈</h1>
 
-	<form th:action="@{/SingUpSubmit}" th:object="${Users}" method="post">
+	<form th:action="@{/SignUp}" th:object="${Users}" method="post">
+			<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+		
 	        <label for="id">ID:</label>
 	        <input type="text" th:field="*{id}" required/><br/>
 
@@ -24,6 +26,6 @@
 			<input type="text" th:field="*{phoneNumber}" required/><br/>
 			
 	        <button type="submit">회원가입</button>
-	    </form>
+		</form>
 </body>
 </html>
