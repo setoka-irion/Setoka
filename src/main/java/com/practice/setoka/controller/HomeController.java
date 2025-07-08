@@ -46,9 +46,10 @@ public class HomeController
 		return "Attendance";
 	}
 	
-		@GetMapping(value = "pet")
-		public String petPlaces()
-		{
-			return "petPlaces";
-		}
+	@GetMapping(value = "PetPlaces")
+	public String petPlaces()
+	{
+		System.out.println("test");
+		return "PetPlaces2";
+	}
 }
