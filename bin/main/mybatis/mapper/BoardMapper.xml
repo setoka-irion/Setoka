@@ -80,6 +80,13 @@
 		JOIN user u ON b.user_id = u.user_id
 		WHERE u.id = #{id}
 	</select>
-
+	
+	<!-- 팀장님이 만들어준거-->
+<select id="findBoardsByUserIdString" resultMap="BoardWithUserMap">
+ SELECT u.num, u.id, u.nickname, u.realname, u.grade, b.num, b.title, b.content, b.type, b.likes, b.views, b.price, b.area, b.registerDate 
+	 FROM users u
+	 JOIN board b
+	 ON u.num = b.userNum;
+</select>
 
 </mapper>
