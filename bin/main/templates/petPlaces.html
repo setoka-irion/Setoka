@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+
+<head>
+	<title>반려동물 동반 시설</title>
+</head>
+
+<body>
+	<h1>반려동물 동반 시설 목록</h1>
+	<ul id="place_list"></ul>
+	<script>
+		const API_KEY = "XHC41TNS500y6frF0TuMqYySvFKQL6hse4IAH4hvUiCQKZwN3CAtfQcSzmNIOOcPpDJRG%2B6egChnmBDuJt1mIw%3D%3D";
+		const API_URL = `https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=1&perPage=10&serviceKey=${API_KEY}`;
+
+		fetch(API_URL)
+			.then(response => response.json())//json으로 변환
+			.then(data => {
+				console.log(data); 
+				const listEl = document.getElementById("place_list");
+				data.data.forEach(item => {
+					const li = document.createElement("li");
+					li.textContent = `${item['시설명']} - ${item['시도 명칭']} ${item['시군구 명칭']}${item['도로명주소']}`; //이름과 위치를 li에 텍스트로
+					listEl.appendChild(li);//li 웹페이지에 추가
+				});
+			});
+
+	</script>
+
+
+</body>
+
+</html>
