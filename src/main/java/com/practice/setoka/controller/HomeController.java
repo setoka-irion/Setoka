@@ -13,8 +13,6 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class HomeController 
 {
-	@Autowired
-	private UserService userService;
 	//홈화면
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model)
