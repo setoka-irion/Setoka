@@ -1,9 +1,12 @@
 package com.practice.setoka.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.practice.setoka.dao.Memo;
 import com.practice.setoka.dto.MemoDto;
 import com.practice.setoka.mapper.MemoMapper;
@@ -13,6 +16,14 @@ public class MemoService {
 
 	@Autowired
 	private MemoMapper memoMapper;
+	
+	public List<Memo> memoSelectByUserNumAndMonth(int userNum, int year, int month) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("userNum", userNum);
+	    params.put("year", year);
+	    params.put("month", month);
+	    return memoMapper.memoSelectByUserNumAndMonth(params);
+	}
 	
 	public List<Memo> memoSelectAll() {
 		return memoMapper.memoSelectAll();

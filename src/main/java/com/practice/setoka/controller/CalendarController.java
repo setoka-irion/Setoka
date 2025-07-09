@@ -1,7 +1,9 @@
 package com.practice.setoka.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +12,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Memo;
+import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.MemoDto;
 import com.practice.setoka.service.MemoService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class CalendarController {
@@ -24,8 +31,16 @@ public class CalendarController {
     @GetMapping("/calendar")
     public String calendar(Model model,
             @RequestParam(name = "year", required = false) Integer year,
-            @RequestParam(name = "month", required = false) Integer month) {
+            @RequestParam(name = "month", required = false) Integer month,
+            HttpSession session) {
 
+    	Users user = (Users) session.getAttribute(Redirect.loginSession);
+    	if (user == null) {
+    	    return "redirect:/Login";
+    	}
+    	int userNum = user.getNum();
+    	model.addAttribute("userNum", userNum);
+    	
         LocalDate now = LocalDate.now();
         if (year == null || month == null) {
             year = now.getYear();
@@ -50,33 +65,52 @@ public class CalendarController {
         model.addAttribute("startBlank", startBlank);
         model.addAttribute("weekCount", weekCount);
 
-        // 해당 월에 있는 메모 리스트 (date 기준)
-        List<Memo> memoList = memoService.memoSelectByMonth(year, month);
-        model.addAttribute("memoList", memoList);
-
         return "calendar";
     }
 
-	@PostMapping("/memo/add")
-	public String addMemo(MemoDto memoDto) {
-		memoService.insertMemo(memoDto);
-		LocalDate date = memoDto.getScheduleDate().toLocalDate();
+    @PostMapping("/memo/add")
+    public String addMemo(MemoDto memoDto) {
+        LocalDateTime dt = LocalDate.parse(memoDto.getScheduleDateStr()).atStartOfDay();
+        memoDto.setScheduleDate(dt);
 
-		return "redirect:/calendar?year=" + date.getYear() + "&month=" + date.getMonthValue();
-	}
+        memoService.insertMemo(memoDto);
+        LocalDate date = dt.toLocalDate();
 
-	@PostMapping("/memo/update")
-	public String updateMemo(@RequestParam(name="num") int num, MemoDto memoDto) {
-		memoService.updateMemo(num, memoDto);
-		LocalDate date = memoDto.getScheduleDate().toLocalDate();
+        return "redirect:/calendar?year=" + date.getYear() + "&month=" + date.getMonthValue();
+    }
 
-		return "redirect:/calendar?year=" + date.getYear() + "&month=" + date.getMonthValue();
-	}
+    @PostMapping("/memo/update")
+    public String updateMemo(@RequestParam(name="num") int num, MemoDto memoDto) {
+        LocalDateTime dt = LocalDate.parse(memoDto.getScheduleDateStr()).atStartOfDay();
+        memoDto.setScheduleDate(dt);
+
+        memoService.updateMemo(num, memoDto);
+        LocalDate date = dt.toLocalDate();
+
+        return "redirect:/calendar?year=" + date.getYear() + "&month=" + date.getMonthValue();
+    }
 
 	@PostMapping("/memo/delete")
 	public String deletMemo(@RequestParam(name="num") int num, @RequestParam(name="year") int year, @RequestParam(name="month") int month) {
 		memoService.deleteMemo(num);
 
 		return "redirect:/calendar?year=" + year + "&month=" + month;
+	}
+	
+	@GetMapping("/memos")
+	@ResponseBody
+	public List<Memo> getMemos(@RequestParam(name="year") int year, @RequestParam(name="month") int month, HttpSession session) {
+	    Users user = (Users) session.getAttribute(Redirect.loginSession);
+	    if (user == null) {
+	    return Collections.emptyList(); // 혹은 예외 처리
+	    }
+	    int userNum = user.getNum();
+	    return memoService.memoSelectByUserNumAndMonth(userNum, year, month);
+	}
+	
+	@GetMapping("/memo/detail")
+	@ResponseBody
+	public Memo getMemoDetail(@RequestParam("memoNum") int memoNum) {
+	    return memoService.memoSelectByNum(memoNum);
 	}
 }  
