@@ -3,6 +3,7 @@ package com.practice.setoka.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,10 +65,6 @@ public class CalendarController {
         model.addAttribute("startBlank", startBlank);
         model.addAttribute("weekCount", weekCount);
 
-        // 해당 월에 있는 메모 리스트 (date 기준)
-        List<Memo> memoList = memoService.memoSelectByUserNumAndMonth(userNum, year, month);
-        model.addAttribute("memoList", memoList);
-
         return "calendar";
     }
 
@@ -102,8 +99,13 @@ public class CalendarController {
 	
 	@GetMapping("/memos")
 	@ResponseBody
-	public List<Memo> getMemos(@RequestParam(name="year") int year, @RequestParam(name="month") int month) {
-	    return memoService.memoSelectByMonth(year, month);
+	public List<Memo> getMemos(@RequestParam(name="year") int year, @RequestParam(name="month") int month, HttpSession session) {
+	    Users user = (Users) session.getAttribute(Redirect.loginSession);
+	    if (user == null) {
+	    return Collections.emptyList(); // 혹은 예외 처리
+	    }
+	    int userNum = user.getNum();
+	    return memoService.memoSelectByUserNumAndMonth(userNum, year, month);
 	}
 	
 	@GetMapping("/memo/detail")
