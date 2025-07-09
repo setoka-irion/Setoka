@@ -1,6 +1,7 @@
 package com.practice.setoka.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.practice.setoka.dao.Memo;
 import com.practice.setoka.dto.MemoDto;
@@ -57,26 +59,44 @@ public class CalendarController {
         return "calendar";
     }
 
-	@PostMapping("/memo/add")
-	public String addMemo(MemoDto memoDto) {
-		memoService.insertMemo(memoDto);
-		LocalDate date = memoDto.getScheduleDate().toLocalDate();
+    @PostMapping("/memo/add")
+    public String addMemo(MemoDto memoDto) {
+        LocalDateTime dt = LocalDate.parse(memoDto.getScheduleDateStr()).atStartOfDay();
+        memoDto.setScheduleDate(dt);
 
-		return "redirect:/calendar?year=" + date.getYear() + "&month=" + date.getMonthValue();
-	}
+        memoService.insertMemo(memoDto);
+        LocalDate date = dt.toLocalDate();
 
-	@PostMapping("/memo/update")
-	public String updateMemo(@RequestParam(name="num") int num, MemoDto memoDto) {
-		memoService.updateMemo(num, memoDto);
-		LocalDate date = memoDto.getScheduleDate().toLocalDate();
+        return "redirect:/calendar?year=" + date.getYear() + "&month=" + date.getMonthValue();
+    }
 
-		return "redirect:/calendar?year=" + date.getYear() + "&month=" + date.getMonthValue();
-	}
+    @PostMapping("/memo/update")
+    public String updateMemo(@RequestParam(name="num") int num, MemoDto memoDto) {
+        LocalDateTime dt = LocalDate.parse(memoDto.getScheduleDateStr()).atStartOfDay();
+        memoDto.setScheduleDate(dt);
+
+        memoService.updateMemo(num, memoDto);
+        LocalDate date = dt.toLocalDate();
+
+        return "redirect:/calendar?year=" + date.getYear() + "&month=" + date.getMonthValue();
+    }
 
 	@PostMapping("/memo/delete")
 	public String deletMemo(@RequestParam(name="num") int num, @RequestParam(name="year") int year, @RequestParam(name="month") int month) {
 		memoService.deleteMemo(num);
 
 		return "redirect:/calendar?year=" + year + "&month=" + month;
+	}
+	
+	@GetMapping("/memos")
+	@ResponseBody
+	public List<Memo> getMemos(@RequestParam(name="year") int year, @RequestParam(name="month") int month) {
+	    return memoService.memoSelectByMonth(year, month);
+	}
+	
+	@GetMapping("/memo/detail")
+	@ResponseBody
+	public Memo getMemoDetail(@RequestParam("memoNum") int memoNum) {
+	    return memoService.memoSelectByNum(memoNum);
 	}
 }  

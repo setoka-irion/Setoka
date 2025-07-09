@@ -1,6 +1,9 @@
 package com.practice.setoka.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MemoDto {
 	private int userNum;					//유저번호
@@ -8,7 +11,8 @@ public class MemoDto {
 	private String title;					//제목
 	private String content;					//내용
 	private LocalDateTime scheduleDate;		//스케줄날짜
-
+	private String scheduleDateStr;
+	
 	public int getUserNum() {
 		return userNum;
 	}
@@ -48,5 +52,19 @@ public class MemoDto {
 	public void setScheduleDate(LocalDateTime scheduleDate) {
 		this.scheduleDate = scheduleDate;
 	}
+	
+	public String getScheduleDateStr() {
+	    return scheduleDateStr;
+	}
 
+	public void setScheduleDateStr(String scheduleDateStr) {
+	    this.scheduleDateStr = scheduleDateStr;
+	}
+
+	@JsonProperty("scheduleDate")
+	public String getScheduleDateFormatted() {
+		if (scheduleDate == null) return null;
+		return scheduleDate.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+	}
+	
 }
