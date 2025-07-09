@@ -40,10 +40,18 @@ public class MyPageController
 
 	// 개인정보수정
 	@GetMapping(value = "ModifyUser")
-	public String modifyUser(Model model) 
+	public String modifyUser(HttpSession session, Model model) 
 	{
-		//html을 꾸며줄 클래스 넣기
+		Users user = (Users)session.getAttribute(Redirect.loginSession);
+		if(user == null)
+		{
+			return Redirect.home;
+		}
 		UsersDto dto = new UsersDto();
+		dto.setNickName(user.getNickName());
+		dto.setRealName(user.getRealName());
+		dto.setPhoneNumber(user.getPhoneNumber());
+		//html을 꾸며줄 클래스 넣기
 		model.addAttribute("UsersDto", dto);
 		//수정 페이지로 이동
 		return "ModifyUser";
