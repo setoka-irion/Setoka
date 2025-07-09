@@ -13,9 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Memo;
+import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.MemoDto;
 import com.practice.setoka.service.MemoService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class CalendarController {
@@ -26,8 +30,16 @@ public class CalendarController {
     @GetMapping("/calendar")
     public String calendar(Model model,
             @RequestParam(name = "year", required = false) Integer year,
-            @RequestParam(name = "month", required = false) Integer month) {
+            @RequestParam(name = "month", required = false) Integer month,
+            HttpSession session) {
 
+    	Users user = (Users) session.getAttribute(Redirect.loginSession);
+    	if (user == null) {
+    	    return "redirect:/Login";
+    	}
+    	int userNum = user.getNum();
+    	model.addAttribute("userNum", userNum);
+    	
         LocalDate now = LocalDate.now();
         if (year == null || month == null) {
             year = now.getYear();
@@ -53,7 +65,7 @@ public class CalendarController {
         model.addAttribute("weekCount", weekCount);
 
         // 해당 월에 있는 메모 리스트 (date 기준)
-        List<Memo> memoList = memoService.memoSelectByMonth(year, month);
+        List<Memo> memoList = memoService.memoSelectByUserNumAndMonth(userNum, year, month);
         model.addAttribute("memoList", memoList);
 
         return "calendar";

@@ -1,54 +1,64 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.practice.setoka.mapper.MemoMapper">
-	
+
 	<resultMap id="memoResultMap" type="com.practice.setoka.dao.Memo">
-        <id property="num" column="num"/>
-        <result property="userNum" column="userNum"/>
-        <result property="animalNum" column="animalNum"/>
-        <result property="title" column="title"/>
-        <result property="content" column="content"/>
-        <result property="scheduleDate" column="scheduleDate"/>
-        <result property="registerDate" column="registerDate"/>
-    </resultMap>
+		<id property="num" column="num" />
+		<result property="userNum" column="userNum" />
+		<result property="animalNum" column="animalNum" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="scheduleDate" column="scheduleDate" />
+		<result property="registerDate" column="registerDate" />
+	</resultMap>
 
-    <select id="memoSelectAll" resultMap="memoResultMap">
-        SELECT * FROM memo ORDER BY scheduleDate
-    </select>
-
-    <select id="memoSelectByNum" resultMap="memoResultMap" parameterType="int">
-        SELECT * FROM memo WHERE num = #{num}
-    </select>
-
-    <select id="memoSelectByUserNum" resultMap="memoResultMap" parameterType="int">
-        SELECT * FROM memo WHERE userNum = #{userNum} ORDER BY scheduleDate
-    </select>
-    
-    <select id="memoSelectByMonth" resultMap="memoResultMap" parameterType="map">
-    	SELECT * FROM memo
-    	WHERE YEAR(scheduleDate) = #{year}
-    	AND MONTH(scheduleDate) = #{month}
+	<select id="memoSelectByUserNumAndMonth" resultMap="memoResultMap" parameterType="map">
+		SELECT * FROM memo
+		WHERE userNum = #{userNum}
+		AND YEAR(scheduleDate) = #{year}
+		AND MONTH(scheduleDate) = #{month}
+		ORDER BY scheduleDate
 	</select>
 
-    <select id="memoSelectByAnimalNum" resultMap="memoResultMap" parameterType="int">
-        SELECT * FROM memo WHERE animalNum = #{animalNum} ORDER BY scheduleDate
-    </select>
+	<select id="memoSelectAll" resultMap="memoResultMap">
+		SELECT * FROM memo ORDER BY scheduleDate
+	</select>
 
-    <insert id="insertMemo" parameterType="com.practice.setoka.dto.MemoDto">
-        INSERT INTO memo (userNum, animalNum, title, content, scheduleDate)
-        VALUES (#{userNum}, #{animalNum}, #{title}, #{content}, #{scheduleDate})
-    </insert>
+	<select id="memoSelectByNum" resultMap="memoResultMap" parameterType="int">
+		SELECT * FROM memo WHERE num = #{num}
+	</select>
 
-    <update id="updateMemo" parameterType="map">
-       UPDATE memo SET title = #{memoDto.title}, content = #{memoDto.content}, scheduleDate = #{memoDto.scheduleDate}, registerDate = NOW() WHERE num = #{num}
-    </update>
+	<select id="memoSelectByUserNum" resultMap="memoResultMap"
+		parameterType="int">
+		SELECT * FROM memo WHERE userNum = #{userNum} ORDER BY scheduleDate
+	</select>
 
-    <delete id="deleteMemo" parameterType="int">
-        DELETE FROM memo WHERE num = #{num}
-    </delete>
-	
-	
+	<select id="memoSelectByMonth" resultMap="memoResultMap" parameterType="map">
+		SELECT * FROM memo
+		WHERE YEAR(scheduleDate) = #{year}
+		AND MONTH(scheduleDate) = #{month}
+	</select>
+
+	<select id="memoSelectByAnimalNum" resultMap="memoResultMap"
+		parameterType="int">
+		SELECT * FROM memo WHERE animalNum = #{animalNum} ORDER BY scheduleDate
+	</select>
+
+	<insert id="insertMemo" parameterType="com.practice.setoka.dto.MemoDto">
+		INSERT INTO memo (userNum, animalNum, title, content, scheduleDate)
+		VALUES (#{userNum}, #{animalNum}, #{title}, #{content}, #{scheduleDate})
+	</insert>
+
+	<update id="updateMemo" parameterType="map">
+		UPDATE memo SET title = #{memoDto.title}, content = #{memoDto.content},
+		scheduleDate = #{memoDto.scheduleDate}, registerDate = NOW() WHERE num =
+		#{num}
+	</update>
+
+	<delete id="deleteMemo" parameterType="int">
+		DELETE FROM memo WHERE num = #{num}
+	</delete>
+
+
 </mapper>

@@ -70,7 +70,7 @@
 
     <form id="memoForm" method="post" th:action="@{/memo/add}">
       
-      <input type="hidden" name="userNum" value="1" />
+      <input type="hidden" name="userNum" th:value="${userNum}" />
       <input type="hidden" name="animalNum" value="1" />
       
       <input type="hidden" id="memoNum" name="num" value="" />
@@ -131,9 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const yearMonthSpan = document.getElementById('yearMonth');
   const year = yearMonthSpan.dataset.year;
   const month = yearMonthSpan.dataset.month;
-
-  // 현재 상세보기 중인 메모 번호 저장용
-  let currentDetailMemoNum = null;
 
   // 달력에 메모 제목 출력용 fetch
   fetch(`/memos?year=${year}&month=${month < 10 ? '0' + month : month}`)
