@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.practice.setoka.dao.Users;
+import com.practice.setoka.service.EmailService;
 import com.practice.setoka.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -15,6 +16,8 @@ public class HomeController
 {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private EmailService emailService;
 	//홈화면
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model)
