@@ -11,6 +11,7 @@ public class SessionUrlHandler {
 	public static void save(HttpSession session, String url)
 	{
 		session.setAttribute(Session_Key, "redirect:/"+url);
+		session.setMaxInactiveInterval(60*3);
 	}
 	
 	public static String load(HttpSession session)
