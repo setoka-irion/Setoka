@@ -49,7 +49,6 @@ public class HomeController
 	@GetMapping(value = "PetPlaces")
 	public String petPlaces()
 	{
-		System.out.println("test");
-		return "PetPlaces2";
+		return "PetPlaces";
 	}
 }
