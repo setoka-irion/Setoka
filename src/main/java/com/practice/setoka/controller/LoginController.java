@@ -18,6 +18,8 @@ import jakarta.servlet.http.HttpSession;
 public class LoginController {
 	@Autowired
 	private UserService userService;
+	
+	private LoginVeriFyHandler loginVeriFyHandler;
 
 	// 로그인 페이지로
 	@GetMapping(value = "Login")
@@ -34,6 +36,11 @@ public class LoginController {
 		// 중복처리
 
 		Users user = userService.selectByID(dto.getId());
+		if(user == null)
+		{
+			return Redirect.LoginForm;
+		}
+		
 		// 복호화
 		if(Encryption.Decoder(user.getPassword(), dto.getPassword()))
 		{
@@ -41,8 +48,7 @@ public class LoginController {
 			// 세션처리
 			session.setAttribute(Redirect.loginSession, user);
 		}
-					
-		return Redirect.home;
+		return loginVeriFyHandler.load(session);
 	}
 
 	@GetMapping(value = "Logout")
