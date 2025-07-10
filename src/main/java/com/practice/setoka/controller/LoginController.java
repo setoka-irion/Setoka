@@ -1,15 +1,20 @@
 package com.practice.setoka.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.UsersDto;
+import com.practice.setoka.service.EmailService;
 import com.practice.setoka.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -18,6 +23,9 @@ import jakarta.servlet.http.HttpSession;
 public class LoginController {
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	private LoginVeriFyHandler loginVeriFyHandler;
 
@@ -112,5 +120,16 @@ public class LoginController {
 		
 		
 		return "cal";
+	}
+	
+	
+	@PostMapping("/sendCode")
+	public ResponseEntity<String> sendCode(@RequestBody Map<String, String> request)
+	{
+		String email = request.get("email");
+		
+		emailService.SendSimpleMessage(email, "인증번호");
+		
+		return ResponseEntity.ok("인증번호 전송");
 	}
 }
