@@ -126,8 +126,15 @@ public class LoginController {
 	{
 		String email = request.get("email");
 		
+		//db 저장
 		emailService.SendSimpleMessage(email, "인증번호");
 		
+		return ResponseEntity.ok("인증번호 전송");
+	}
+	
+	@PostMapping("/verifyCode")
+	public ResponseEntity<String> verifyCode(@RequestBody Map<String, String> request)
+	{
 		return ResponseEntity.ok("인증번호 전송");
 	}
 }
