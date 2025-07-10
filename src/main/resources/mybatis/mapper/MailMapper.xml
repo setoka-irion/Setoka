@@ -9,4 +9,11 @@
     	SELECT * FROM VerifyCode WHERE num = #{num}
   	</select>
   	
+  	<select id="selectVerifyCodeByID" resultType="com.practice.setoka.dao.VerifyCode" parameterType="String">
+    	SELECT v.num, v.email, v.verifyCode FROM verifycode v JOIN users u ON v.email = u.id WHERE u.id = 'bit393298@gmail.com' ORDER BY v.num DESC LIMIT 1
+  	</select>
+  	
+  	<insert id="insertCode">
+  		INSERT INTO verifycode (email, verifycode) values (#{email}, #{code})
+  	</insert>
 </mapper>
