@@ -24,10 +24,17 @@ public class MyPageController {
 	public String myPage(HttpSession session) {
 		Users user = (Users) session.getAttribute(Redirect.loginSession);
 		if (user == null) {
-			LoginVeriFyHandler.save(session, "MyPage");
+			SessionUrlHandler.save(session, "MyPage");
 			return Redirect.LoginForm;
 		}
 		return "MyPage";
+	}
+	
+	
+	//비밀번호 재확인
+	@GetMapping(value = "PasswordConfirm")
+	public String passwordConfirm() {
+		return "PasswordConfirm";
 	}
 
 	// 개인정보수정
@@ -59,7 +66,7 @@ public class MyPageController {
 		}
 		System.out.println(userDto.getRealName());
 		System.out.println(userDto.getId());
-		//수정될 정보
+		// 수정될 정보
 		if (userService.updateUserDto(userDto)) {
 			// 정보 수정 성공
 			session.removeAttribute(Redirect.loginSession);
@@ -74,8 +81,12 @@ public class MyPageController {
 
 	// 비밀번호 변경
 	@GetMapping(value = "ChangePassword")
-	public String changePassword(Model model, UsersDto userDto) {
-		userService.updateUserDto(userDto);
+	public String changePassword(HttpSession session, Model model, UsersDto userDto) {
+		Users user = (Users) session.getAttribute(Redirect.loginSession);
+		if (user == null) {
+			SessionUrlHandler.save(session, "ChangePassword");
+			return Redirect.LoginForm;
+		}
 		return "ChangePassword";
 	}
 

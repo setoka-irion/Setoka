@@ -23,6 +23,7 @@ dependencies {
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'   // MariaDB JDBC 드라이버
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.security:spring-security-crypto:6.3.0' //암호화
+    implementation 'org.springframework.boot:spring-boot-starter-mail'		//로그인 메일
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

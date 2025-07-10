@@ -13,7 +13,8 @@
 		<result property="registerDate" column="registerDate" />
 	</resultMap>
 
-	<select id="memoSelectByUserNumAndMonth" resultMap="memoResultMap" parameterType="map">
+	<select id="memoSelectByUserNumAndMonth" resultMap="memoResultMap"
+		parameterType="map">
 		SELECT * FROM memo
 		WHERE userNum = #{userNum}
 		AND YEAR(scheduleDate) = #{year}
