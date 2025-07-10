@@ -3,17 +3,20 @@ package com.practice.setoka.dto;
 import java.time.LocalDateTime;
 
 public class BoardWithUserDto {
-
-	private int num;
-	private int usernum;
+	
+	//게시글 
+	private int boardNum;
+	//유저 정보
+	private int userNum;
 	private String id;
 	private String nickname;
-	private String realname;
+	private String realName;
 	private String grade;
+	//게시글 정보
 	private String title;
 	private String content;
 	private byte type;
-	private int likes;
+	private int likes;  
 	private int views;
 	private int price;
 	private String area;
@@ -21,16 +24,16 @@ public class BoardWithUserDto {
 	
 	
 	public int getNum() {
-		return num;
+		return boardNum;
 	}
-	public void setNum(int num) {
-		this.num = num;
+	public void setNum(int boardNum) {
+		this.boardNum = boardNum;
 	}
-	public int getUsernum() {
-		return usernum;
+	public int getUserNum() {
+		return userNum;
 	}
-	public void setUsernum(int usernum) {
-		this.usernum = usernum;
+	public void setUserNum(int userNum) {
+		this.userNum = userNum;
 	}
 	public String getId() {
 		return id;
@@ -44,11 +47,11 @@ public class BoardWithUserDto {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	public String getRealname() {
-		return realname;
+	public String getRealName() {
+		return realName;
 	}
-	public void setRealname(String realname) {
-		this.realname = realname;
+	public void setRealName(String realName) {
+		this.realName = realName;
 	}
 	public String getGrade() {
 		return grade;
@@ -103,6 +106,8 @@ public class BoardWithUserDto {
 	}
 	public void setRegisterDate(LocalDateTime registerDate) {
 		this.registerDate = registerDate;
-	}
+	}	
+	
+	
 
 }
