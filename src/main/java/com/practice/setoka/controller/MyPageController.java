@@ -32,6 +32,7 @@ public class MyPageController
 			return Redirect.home;
 		}
 		
+		
 		return "MyPage";
 	}
 
@@ -45,6 +46,8 @@ public class MyPageController
 			return Redirect.home;
 		}
 		UsersDto dto = new UsersDto();
+		dto.setId(user.getId());
+		dto.setPassword(user.getPassword());
 		dto.setNickName(user.getNickName());
 		dto.setRealName(user.getRealName());
 		dto.setPhoneNumber(user.getPhoneNumber());
@@ -59,18 +62,20 @@ public class MyPageController
 	{
 		//로그인 되어 있는 사람의 정보
 		Users user = (Users)session.getAttribute(Redirect.loginSession);
-//		//로그인 세션이 없는 상태
-//		if(user == null)
-//		{
-//			return Redirect.home;
-//		}
-		System.out.println(user.getRealName());
-//		userDto.setId(user.getId());
-//		userDto.setPassword(user.getPassword());
+		//로그인 세션이 없는 상태
+		if(user == null)
+		{
+			return Redirect.home;
+		}
+		System.out.println(userDto.getRealName());
+		System.out.println(userDto.getId());
 //		//수정될 정보
-		if(userService.UpdateUserDto(userDto))
+		if(userService.updateUserDto(userDto))
 		{
 			//정보 수정 성공
+			session.removeAttribute(Redirect.loginSession);
+			user = userService.selectByID(userDto.getId());
+			session.setAttribute(Redirect.loginSession, user);
 		}
 		else
 		{
@@ -84,7 +89,7 @@ public class MyPageController
 	@GetMapping(value = "ChangePassword")
 	public String changePassword(Model model, UsersDto userDto) 
 	{
-		userService.UpdateUserDto(userDto);
+		userService.updateUserDto(userDto);
 		return "ChangePassword";
 	}
 
