@@ -4,7 +4,7 @@ import com.practice.setoka.Redirect;
 
 import jakarta.servlet.http.HttpSession;
 
-public class LoginVeriFyHandler {
+public class SessionUrlHandler {
 	
 	private static final String Session_Key = "url";
 	
@@ -22,14 +22,4 @@ public class LoginVeriFyHandler {
 		session.removeAttribute(Session_Key);
 		return str;
 	}
-	
-//	public String loginVerify(HttpSession session) {
-//		Users user = (Users)session.getAttribute(Redirect.loginSession);
-//		if(user == null) {
-//			return Redirect.LoginForm;
-//		}
-//		String url = (String)session.getAttribute(Redirect.urlSession);
-//		session.removeAttribute(Redirect.urlSession);
-//		return url;
-//	}
 }
