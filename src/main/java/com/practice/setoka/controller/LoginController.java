@@ -26,8 +26,6 @@ public class LoginController {
 	
 	@Autowired
 	private EmailService emailService;
-	
-	private LoginVeriFyHandler loginVeriFyHandler;
 
 	// 로그인 페이지로
 	@GetMapping(value = "Login")
@@ -56,7 +54,7 @@ public class LoginController {
 			// 세션처리
 			session.setAttribute(Redirect.loginSession, user);
 		}
-		return loginVeriFyHandler.load(session);
+		return SessionUrlHandler.load(session);
 	}
 
 	@GetMapping(value = "Logout")
