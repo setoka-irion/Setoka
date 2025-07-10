@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.practice.setoka.Redirect;
+import com.practice.setoka.dao.Animal;
 import com.practice.setoka.dao.Memo;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.MemoDto;
+import com.practice.setoka.service.AnimalService;
 import com.practice.setoka.service.MemoService;
 
 import jakarta.servlet.http.HttpSession;
@@ -27,6 +31,8 @@ public class CalendarController {
 
     @Autowired
     private MemoService memoService;
+    @Autowired
+    private AnimalService animalService;
 
     @GetMapping("/calendar")
     public String calendar(Model model,
@@ -64,7 +70,10 @@ public class CalendarController {
         model.addAttribute("lengthOfMonth", lengthOfMonth);
         model.addAttribute("startBlank", startBlank);
         model.addAttribute("weekCount", weekCount);
-
+        
+        List<Animal> animals = animalService.getAnimalsByUserNum(userNum);
+        model.addAttribute("animals", animals);
+        
         return "calendar";
     }
 
@@ -110,7 +119,23 @@ public class CalendarController {
 	
 	@GetMapping("/memo/detail")
 	@ResponseBody
-	public Memo getMemoDetail(@RequestParam("memoNum") int memoNum) {
-	    return memoService.memoSelectByNum(memoNum);
+	public Map<String, Object> getMemoDetail(@RequestParam("memoNum") int memoNum) {
+	    Memo memo = memoService.memoSelectByNum(memoNum);
+	    Map<String, Object> result = new HashMap<>();
+	    if (memo != null) {
+	        result.put("num", memo.getNum());
+	        result.put("title", memo.getTitle());
+	        result.put("content", memo.getContent());
+	    if (memo.getScheduleDate() != null) {
+	        result.put("scheduleDate", memo.getScheduleDate().toLocalDate().toString());
+	    } else {
+	        result.put("scheduleDate", "");
+	    }
+	        result.put("animalNum", memo.getAnimalNum());
+	        
+	        Animal animal = animalService.getAnimalByNum(memo.getAnimalNum());
+	        result.put("animalName", animal != null ? animal.getAnimalName() : "알 수 없음");
+	    }
+	    return result;
 	}
 }  
