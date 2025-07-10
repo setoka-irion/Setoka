@@ -16,10 +16,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class MyPageController 
 {
-	// SELECT u.num, u.id, u.nickname, u.realname, u.grade, b.num, b.title, b.content, b.type, b.likes, b.views, b.price, b.area, b.registerDate 
-	// FROM users u
-	// JOIN board b
-	// ON u.num = b.userNum;
+	
 	@Autowired
 	private UserService userService;
 	
@@ -35,6 +32,7 @@ public class MyPageController
 			return Redirect.home;
 		}
 		
+		
 		return "MyPage";
 	}
 
@@ -48,6 +46,8 @@ public class MyPageController
 			return Redirect.home;
 		}
 		UsersDto dto = new UsersDto();
+		dto.setId(user.getId());
+		dto.setPassword(user.getPassword());
 		dto.setNickName(user.getNickName());
 		dto.setRealName(user.getRealName());
 		dto.setPhoneNumber(user.getPhoneNumber());
@@ -67,12 +67,15 @@ public class MyPageController
 		{
 			return Redirect.home;
 		}
-		userDto.setId(user.getId());
-		userDto.setPassword(user.getPassword());
-		//수정될 정보
-		if(userService.UpdateUserDto(userDto))
+		System.out.println(userDto.getRealName());
+		System.out.println(userDto.getId());
+//		//수정될 정보
+		if(userService.updateUserDto(userDto))
 		{
 			//정보 수정 성공
+			session.removeAttribute(Redirect.loginSession);
+			user = userService.selectByID(userDto.getId());
+			session.setAttribute(Redirect.loginSession, user);
 		}
 		else
 		{
@@ -86,7 +89,7 @@ public class MyPageController
 	@GetMapping(value = "ChangePassword")
 	public String changePassword(Model model, UsersDto userDto) 
 	{
-		userService.UpdateUserDto(userDto);
+		userService.updateUserDto(userDto);
 		return "ChangePassword";
 	}
 
