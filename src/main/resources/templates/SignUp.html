@@ -11,7 +11,14 @@
 			<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
 		
 	        <label for="id">ID:</label>
-	        <input type="text" th:field="*{id}" required/><br/>
+	        <input type="email" id="email" th:field="*{id}" required/>
+			<button onclick="sendCode">인증번호 보내기</button>
+			<br/>
+			
+			<div id="codeBox" style="display:none;">
+			    <input type="text" id="verifyCode" placeholder="인증번호 입력">
+			    <button onclick="verifyCode()">인증 확인</button>
+			</div>
 
 	        <label for="password">Password:</label>
 	        <input type="password" th:field="*{password}" required /><br/>
@@ -29,3 +36,36 @@
 		</form>
 </body>
 </html>
+
+
+<script>
+	
+	function sendCode()
+	{
+		const email = document.getElementById('email').value;
+		    if (!email.includes('@')) {
+		        alert('유효한 이메일을 입력하세요.');
+		        return;
+		    }
+
+		    fetch('/send-verification-code', {
+		        method: 'POST',
+		        headers: { 'Content-Type': 'application/json' },
+		        body: JSON.stringify({ email: email })
+		    })
+		    .then(response => {
+		        if (response.ok) {
+		            alert('인증번호가 이메일로 전송되었습니다.');
+		            document.getElementById('codeBox').style.display = 'block';
+		        } else {
+		            alert('인증번호 전송 실패');
+		        }
+		    });
+	}
+	
+	function verifyCode()
+	{
+		
+	}
+	
+</script>

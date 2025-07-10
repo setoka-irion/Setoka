@@ -16,8 +16,6 @@ public class HomeController
 {
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private EmailService emailService;
 	//홈화면
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model)
