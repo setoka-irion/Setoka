@@ -12,7 +12,8 @@ public interface BoardMapper {
 	int countAll();
 	
 	//	특정 게시판 전체리스트
-	 List<BoardWithUserDto> searchBoards(Map<String, Object> params);
+	List<BoardWithUserDto> findBoardsByType(int type);
+	 
 	//	등록
 	void regist(Board board);
 	

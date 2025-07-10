@@ -7,9 +7,6 @@
 	<select id="countAll" resultType="int">
 		SELECT COUNT(*) FROM board
 	</select>
-
-	<!-- 특정 게시판 전체리스트 -->
-	<!--sql겹쳐서 지움-->
 	
 	
 	
@@ -73,12 +70,25 @@
 	
 	
 	
+
+	<!-- 특정 게시판 전체리스트 -->
+	<select id="findBoardsByType" resultMap="boardWithUserMap" parameterType="int">
+    	SELECT 
+    	u.id, u.num AS userNum, b.num, b.userNum, b.title, b.content,
+    	b.type, b.likes, b.views, b.price, b.area, b.registerDate
+    	FROM board b JOIN users u 
+    	ON b.userNum = u.num
+    	WHERE b.type = #{type}
+    	ORDER BY b.registerDate DESC
+	</select>
+	
 	<!-- 통합 검색 -->
 	<select id="searchAll" resultMap="boardWithUserMap">
 		SELECT 
 		u.id, u.num AS userNum, b.num, b.userNum, b.title, b.content, 
 		b.type, b.likes, b.views, b.price, b.area, b.registerDate
-		FROM board b JOIN users u ON b.userNum = u.num
+		FROM board b JOIN users u 
+		ON b.userNum = u.num
 		<where>
 			b.type != '0'
 			<if test="searchType == 'Title'">
@@ -99,17 +109,18 @@
 		SELECT u.num AS userNum, u.id, u.nickname, u.realname, u.grade, 
 		b.num, b.title,	b.content, b.type, b.likes, b.views, 
 		b.price, b.area, b.registerDate
-		FROM users u JOIN board b ON u.num = b.userNum
+		FROM users u JOIN board b 
+		ON u.num = b.userNum
 	</select>
 
-	<!-- 위에 두 쿼리 결과 매핑 -->
+	<!-- 위에 세 쿼리 결과 매핑 -->
 	<resultMap id="boardWithUserMap" type="com.practice.setoka.dto.BoardWithUserDto">
 		<id property="boardNum" column="num" />
 		<!--user-->
 		<result property="userNum" column="userNum" />
 		<result property="userId" column="id" />
-		<result property="nickname" column="nickname"/>
-		<result property="realname" column="realname"/>
+		<result property="nickName" column="nickname"/>
+		<result property="realName" column="realname"/>
 		<result property="grade" column="grade"/>
 		<!--board-->
 		<result property="title" column="title" />

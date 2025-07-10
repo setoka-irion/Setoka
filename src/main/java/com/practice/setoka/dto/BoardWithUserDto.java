@@ -8,8 +8,8 @@ public class BoardWithUserDto {
 	private int boardNum;
 	//유저 정보
 	private int userNum;
-	private String id;
-	private String nickname;
+	private String userId;
+	private String nickName;
 	private String realName;
 	private String grade;
 	//게시글 정보
@@ -35,17 +35,17 @@ public class BoardWithUserDto {
 	public void setUserNum(int userNum) {
 		this.userNum = userNum;
 	}
-	public String getId() {
-		return id;
+	public String getUserId() {
+		return userId;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
-	public String getNickname() {
-		return nickname;
+	public String getNickName() {
+		return nickName;
 	}
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 	public String getRealName() {
 		return realName;
