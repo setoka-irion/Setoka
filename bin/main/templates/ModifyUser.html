@@ -8,6 +8,8 @@
 	<h1>ModifyUser</h1>
 	<form th:action="@{/ModifyUser}" th:object="${UsersDto}" method="post">
 				<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{password}">
 
 		        <label for="nickname">Nickname:</label>
 		        <input type="text" th:field="*{nickName}" required/><br/>
