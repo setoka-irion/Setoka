@@ -27,8 +27,8 @@
 
 		//지도 생성
 		function makeMap() {
-			var mapContainer = document.getElementById('map');
-			var mapOption = {
+			const mapContainer = document.getElementById('map');
+			const mapOption = {
 				center: new kakao.maps.LatLng(37.5665, 126.9780),//중심 위도 경도
 				level: 3
 			};
@@ -86,7 +86,8 @@
 				markers.forEach(marker => marker.setMap(null));
 				markers = [];
 			}
-
+			window.onload= function() {
+			makeMap();
 			fetch(API_URL)
 				.then(response => {
 					if (!response.ok) {
@@ -96,7 +97,7 @@
 				})
 				.then(data => {
 					allItems = data.data || [];
-					filter("");
+					
 				})
 				.catch(error => console.error("데이터 불러오기 오류:", error));
 			
@@ -105,7 +106,8 @@
 				filter(keyword);
 			});
 			
-			makeMap();
+			};
+			
 	</script>
 
 </body>

@@ -16,50 +16,50 @@ public class UserService
 	private UserMapper userMapper;
 	
 	//num 으로 유저 리턴
-	public Users SelectUser(int num)
+	public Users selectUser(int num)
 	{
 		return userMapper.selectUserByNum(num);
 	}
 	
 	//id로 유저 리턴
-	public Users SelectByID(String id)
+	public Users selectByID(String id)
 	{
 		return userMapper.selectUserByID(id);
 	}
 	
 	//id password로 유저 리턴
-	public Users SelectByIdPassword(String id, String password)
+	public Users selectByIdPassword(String id, String password)
 	{
 		return userMapper.selectUserByIDPassword(id, password);
 	}
 	
 	//이름 중복검사 (이미 있는 이름이면 reutrn true;)
-	public boolean ExistsByName(String id)
+	public boolean existsByName(String id)
 	{
-		Users user = SelectByID(id);
+		Users user = selectByID(id);
 		return user != null;
 	}
 	
 	//비밀번호 조건 검사 (조건을 만족하면 return true)
-	public boolean PasswordInvalid(String password)
+	public boolean passwordInvalid(String password)
 	{
 		return password != null && password.matches(Redirect.passwordInvalidPattern);
 	}
 	
 	//유저 넣기
-	public boolean InsertUserNomal(UsersDto dto)
+	public boolean insertUserNomal(UsersDto dto)
 	{
 		return userMapper.insertUserToDto(dto);
 	}
 	
 	//어드민 넣기
-	public boolean InsertUserAdmin(UsersDto dto)
+	public boolean insertUserAdmin(UsersDto dto)
 	{
 		dto.setGrade("관리자");
 		return userMapper.insertUserToDto(dto);
 	}
 	
-	public boolean UpdateUserDto(UsersDto dto)
+	public boolean updateUserDto(UsersDto dto)
 	{
 		return userMapper.updateUser(dto);
 	}

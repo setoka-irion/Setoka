@@ -18,6 +18,8 @@ import jakarta.servlet.http.HttpSession;
 public class LoginController {
 	@Autowired
 	private UserService userService;
+	
+	private LoginVeriFyHandler loginVeriFyHandler;
 
 	// 로그인 페이지로
 	@GetMapping(value = "Login")
@@ -33,7 +35,12 @@ public class LoginController {
 	public String loginSubmit(HttpSession session, UsersDto dto) {
 		// 중복처리
 
-		Users user = userService.SelectByID(dto.getId());
+		Users user = userService.selectByID(dto.getId());
+		if(user == null)
+		{
+			return Redirect.LoginForm;
+		}
+		
 		// 복호화
 		if(Encryption.Decoder(user.getPassword(), dto.getPassword()))
 		{
@@ -41,8 +48,7 @@ public class LoginController {
 			// 세션처리
 			session.setAttribute(Redirect.loginSession, user);
 		}
-					
-		return Redirect.home;
+		return loginVeriFyHandler.load(session);
 	}
 
 	@GetMapping(value = "Logout")
@@ -64,7 +70,7 @@ public class LoginController {
 	@PostMapping(value = "SignUp")
 	public String SingupSubmit(HttpSession session, Model model, UsersDto dto) {
 		//비밀번호 검증
-		if(!userService.PasswordInvalid(dto.getPassword()))
+		if(!userService.passwordInvalid(dto.getPassword()))
 		{
 			//회원가입 실패
 			//입력값 다시 채워줘야 함
@@ -75,7 +81,7 @@ public class LoginController {
 		
 
 		//아이디 중복 검사
-		if(userService.ExistsByName(dto.getId()))
+		if(userService.existsByName(dto.getId()))
 		{
 			//회원가입 실패
 			//입력값 다시 채워줘야 함
@@ -88,7 +94,7 @@ public class LoginController {
 		dto.setPassword(Encryption.Encoder(dto.getPassword()));
 		
 		// insert 사실상 항상 true 아닌가
-		if (!userService.InsertUserNomal(dto)) 
+		if (!userService.insertUserNomal(dto)) 
 		{
 			//회원가입 실패
 			model.addAttribute("errorMessage", "알수없는 오류");
