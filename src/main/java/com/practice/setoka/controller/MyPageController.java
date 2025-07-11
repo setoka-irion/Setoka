@@ -5,7 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.UsersDto;
@@ -33,10 +35,26 @@ public class MyPageController {
 	
 	//비밀번호 재확인
 	@GetMapping(value = "PasswordConfirm")
-	public String passwordConfirm() {
+	public String passwordConfirmForm(HttpSession session) {
+		Users user = (Users) session.getAttribute(Redirect.loginSession);
+		if (user == null) {
+			SessionUrlHandler.save(session, "MyPage");
+			return Redirect.LoginForm;
+		}
 		return "PasswordConfirm";
 	}
-
+	
+	@PostMapping(value = "PasswordConfirm")
+	public String passwordConfirmSubmit(@RequestParam("password")String password, HttpSession session) {
+		Users user = (Users) session.getAttribute(Redirect.loginSession);
+		if(Encryption.Decoder(user.getPassword(), password))
+		{
+			session.setAttribute(Redirect.loginSession, user);
+		}
+		return "PasswordConfirm";
+	}
+	
+	
 	// 개인정보수정
 	@GetMapping(value = "ModifyUser")
 	public String modifyUser(HttpSession session, Model model) {
@@ -55,7 +73,7 @@ public class MyPageController {
 		// 수정 페이지로 이동
 		return "ModifyUser";
 	}
-
+	
 	@PostMapping(value = "ModifyUser")
 	public String modifyUserPost(HttpSession session, Model model, UsersDto userDto) {
 		// 로그인 되어 있는 사람의 정보
@@ -78,7 +96,8 @@ public class MyPageController {
 		// 정보 수정
 		return "MyPage";
 	}
-
+	
+	
 	// 비밀번호 변경
 	@GetMapping(value = "ChangePassword")
 	public String changePassword(HttpSession session, Model model, UsersDto userDto) {

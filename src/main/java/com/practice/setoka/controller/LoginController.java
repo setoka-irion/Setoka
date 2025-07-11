@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Users;
+import com.practice.setoka.dao.VerifyCode;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.EmailService;
 import com.practice.setoka.service.UserService;
@@ -48,12 +49,13 @@ public class LoginController {
 		}
 		
 		// 복호화
-		if(Encryption.Decoder(user.getPassword(), dto.getPassword()))
+		if(!Encryption.Decoder(user.getPassword(), dto.getPassword()))
 		{
-			// 로그인 성공
-			// 세션처리
-			session.setAttribute(Redirect.loginSession, user);
+			return Redirect.LoginForm;
 		}
+		// 로그인 성공
+		// 세션처리
+		session.setAttribute(Redirect.loginSession, user);
 		return SessionUrlHandler.load(session);
 	}
 
@@ -127,14 +129,32 @@ public class LoginController {
 		String email = request.get("email");
 		
 		//db 저장
-		emailService.SendSimpleMessage(email, "인증번호");
-		
-		return ResponseEntity.ok("인증번호 전송");
+		int code = emailService.GetCode();
+		System.out.println(code);
+		if(emailService.insertCode(code, email))
+		{
+			emailService.SendSimpleMessage(email, "인증번호", code + "");
+			
+			return ResponseEntity.ok("인증번호 전송");
+		}
+		return ResponseEntity.badRequest().body("인증번호 전송 실패");
 	}
 	
 	@PostMapping("/verifyCode")
 	public ResponseEntity<String> verifyCode(@RequestBody Map<String, String> request)
 	{
-		return ResponseEntity.ok("인증번호 전송");
+		String email = request.get("email");
+		int verifyCode = Integer.parseInt(request.get("code"));
+		VerifyCode v = emailService.selectByEmail(email);
+		if(v != null)
+		{
+			int code = v.getVerifyCode();
+			if(code == verifyCode)
+			{
+				return ResponseEntity.ok("인증 성공");
+			}
+		}
+		
+		return ResponseEntity.badRequest().body("인증 실패");
 	}
 }
