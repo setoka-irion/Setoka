@@ -10,10 +10,47 @@
   	</select>
   	
   	<select id="selectVerifyCodeByID" resultType="com.practice.setoka.dao.VerifyCode" parameterType="String">
-    	SELECT v.num, v.email, v.verifyCode FROM verifycode v JOIN users u ON v.email = u.id WHERE u.id = 'bit393298@gmail.com' ORDER BY v.num DESC LIMIT 1
+    	SELECT v.num, v.email, v.verifyCode 
+    	FROM verifycode v 
+    	JOIN users u 
+    	ON v.email = u.id 
+    	WHERE u.id = #{email}
+    	ORDER BY v.num DESC LIMIT 1
+  	</select>
+  	
+  	<select id="selectVerifyCodeByIDLimit" resultType="com.practice.setoka.dao.VerifyCode" parameterType="String">
+    	SELECT v.num, v.email, v.verifyCode 
+    	FROM verifycode v 
+    	JOIN users u 
+    	ON v.email = u.id 
+    	WHERE u.id = #{email} 
+    	AND v.registDate >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) 
+    	ORDER BY v.num DESC LIMIT 1
   	</select>
   	
   	<insert id="insertCode">
   		INSERT INTO verifycode (email, verifycode) values (#{email}, #{code})
   	</insert>
+  	
+  	<update id="updateVerifyCode">
+  		UPDATE verifyCode SET verifycode = #{code}, registDate = NOW() WHERE email = #{email}
+  	</update>
+  	
+  	
+  	
+  	<insert id="insertPasswordReset">
+  		INSERT INTO passwordreset (email) values (#{email})
+  	</insert>
+  	
+  	<update id="updatePasswordReset">
+  		UPDATE password SET registDate = NOW() WHERE email = #{emali}
+  	</update>
+  	
+  	<select id="selectPasswordReset" resultType="com.practice.setoka.dao.PasswordReset">
+  		SELECT * FROM passwordreset WHERE email = #{email}
+  	</select>
+  	
+  	<select id="selectPasswordResetLimit" resultType="com.practice.setoka.dao.PasswordReset">
+  		SELECT * FROM passwordreset WHERE email = #{email} AND registDate >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+  	</select>
 </mapper>
