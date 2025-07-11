@@ -50,11 +50,11 @@
 <div th:if="${!#lists.isEmpty(animalList)}" style="width: 800px; margin: auto;">
   <table>
     <thead>
-      <tr><th>번호</th><th>이름</th><th>종</th><th>나이</th><th>성별</th><th>수정</th><th>삭제</th></tr>
+      <tr><th>이름</th><th>종</th><th>나이</th><th>성별</th><th>수정</th><th>삭제</th></tr>
     </thead>
     <tbody>
       <tr th:each="animal : ${animalList}">
-        <td th:text="${animal.num}">1</td>
+        
         <td th:text="${animal.animalName}">멍멍이</td>
         <td th:text="${animal.species}">진돗개</td>
         <td th:text="${animal.age}">3</td>
@@ -88,7 +88,7 @@
 		<select name="gender" required>
 		  <option value="">선택</option>
 		  <option value="1">수컷</option>
-		  <option value="0">암컷</option>
+		  <option value="2">암컷</option>
 		</select>
     </label><br/><br/>
     <label>상태:
@@ -115,7 +115,7 @@
 		<select name="gender" id="editGender" required>
 		  <option value="">선택</option>
 		  <option value="1">수컷</option>
-		  <option value="0">암컷</option>
+		  <option value="2">암컷</option>
 		</select>
     </label><br/><br/>
     <label>상태:
@@ -124,7 +124,7 @@
         <option value="0">비활성</option>
       </select>
     </label><br/><br/>
-    <label>입양일: <input type="date" name="togetherDate" id="editTogetherDate" required /></label><br/><br/>
+    <label>입양일: <input type="date" name="togetherDateStr" id="editTogetherDate" required /></label><br/><br/>
     <button type="button" onclick="submitEdit()">수정하기</button>
     <button type="button" onclick="closeModal()">취소</button>
   </form>

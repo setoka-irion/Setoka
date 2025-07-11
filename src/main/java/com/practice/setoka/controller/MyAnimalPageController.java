@@ -52,7 +52,7 @@ public class MyAnimalPageController {
         AnimalDto animalDto,
         @RequestParam("togetherDateStr") String togetherDateStr,
         HttpSession session) {
-
+    	System.out.println("gender 값 확인: " + animalDto.getGender());
         Users user = (Users) session.getAttribute(Redirect.loginSession);
         if (user == null) {
             return "redirect:/Login";
@@ -82,7 +82,7 @@ public class MyAnimalPageController {
         AnimalDto animalDto,
         @RequestParam("togetherDateStr") String togetherDateStr,
         HttpSession session) {
-
+    	
         Users user = (Users) session.getAttribute(Redirect.loginSession);
         if (user == null) {
             return "redirect:/Login";
