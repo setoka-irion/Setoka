@@ -3,8 +3,8 @@ package com.practice.setoka.dto;
 import java.time.LocalDateTime;
 
 public class AnimalDto {
-	private int userNum;				//고유번호
-	private String animalName;			//유저번호
+	private int userNum;				//유저번호
+	private String animalName;			//동물이름
 	private String species;				//종
 	private int age;					//나이
 	private int status;					//상태
