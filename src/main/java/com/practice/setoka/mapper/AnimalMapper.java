@@ -24,5 +24,6 @@ public interface AnimalMapper {
 
     // 동물 삭제
     int deleteAnimal(@Param("num") int num);
+    
 }
 

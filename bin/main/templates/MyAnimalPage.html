@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+	<html xmlns:th="http://www.thymeleaf.org" lang="ko" th:inline="javascript">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Animal Page</title>
+  <style>
+    table { border-collapse: collapse; width: 90%; margin: 20px auto; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    button { cursor: pointer; }
+    .modal { display: none; position: fixed; top: 50%; left: 50%; 
+             transform: translate(-50%, -50%); background: white; padding: 20px; 
+             border: 1px solid #aaa; box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 1000;}
+    .modal.active { display: block; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                     background: rgba(0,0,0,0.5); z-index: 999; }
+    .modal-overlay.active { display: block; }
+  </style>
+</head>
+<body>
+
+<h1 style="text-align:center;">내 애견 목록</h1>
+
+<!-- 애견이 없으면 추가 폼만 보여줌 -->
+<div th:if="${#lists.isEmpty(animalList)}" style="width: 400px; margin: auto;">
+  <h3>등록된 애견이 없습니다. 애견을 추가하세요.</h3>
+  <form th:action="@{/myanimal/add}" method="post">
+    <label>이름: <input type="text" name="animalName" required /></label><br/><br/>
+    <label>종: <input type="text" name="species" required /></label><br/><br/>
+    <label>나이: <input type="number" name="age" min="0" required /></label><br/><br/>
+    <label>성별:
+      <select name="gender" required>
+        <option value="">선택</option>
+        <option value="남">남</option>
+        <option value="여">여</option>
+      </select>
+    </label><br/><br/>
+    <label>상태:
+      <select name="status" required>
+        <option value="1">활성</option>
+        <option value="0">비활성</option>
+      </select>
+    </label><br/><br/>
+    <label>입양일: <input type="date" name="togetherDateStr" required /></label><br/><br/>
+    <button type="submit">추가하기</button>
+  </form>
+</div>
+
+<!-- 애견이 있으면 리스트 + 추가 버튼 + 수정/삭제 UI -->
+<div th:if="${!#lists.isEmpty(animalList)}" style="width: 800px; margin: auto;">
+  <table>
+    <thead>
+      <tr><th>이름</th><th>종</th><th>나이</th><th>성별</th><th>수정</th><th>삭제</th></tr>
+    </thead>
+    <tbody>
+      <tr th:each="animal : ${animalList}">
+        
+        <td th:text="${animal.animalName}">멍멍이</td>
+        <td th:text="${animal.species}">진돗개</td>
+        <td th:text="${animal.age}">3</td>
+        <td th:text="${animal.gender}">남</td>
+        <td> <button type="button" th:onclick="'openEditModal(' + ${animal.num} + ')'" >수정</button></td>
+        <td>
+          <form th:action="@{/myanimal/delete}" method="post" onsubmit="return confirm('삭제하시겠습니까?');">
+            <input type="hidden" name="animalNum" th:value="${animal.num}" />
+            <button type="submit">삭제</button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="text-align:center; margin-top: 15px;">
+    <button type="button" onclick="openAddModal()">애견 추가</button>
+  </div>
+</div>
+
+<!-- 모달 오버레이 -->
+<div id="modalOverlay" class="modal-overlay" onclick="closeModal()"></div>
+
+<!-- 추가 모달 -->
+<div id="addModal" class="modal">
+  <h2>애견 추가</h2>
+  <form id="addForm" th:action="@{/myanimal/add}" method="post">
+    <label>이름: <input type="text" name="animalName" required /></label><br/><br/>
+    <label>종: <input type="text" name="species" required /></label><br/><br/>
+    <label>나이: <input type="number" name="age" min="0" required /></label><br/><br/>
+    <label>성별:
+		<select name="gender" required>
+		  <option value="">선택</option>
+		  <option value="1">수컷</option>
+		  <option value="2">암컷</option>
+		</select>
+    </label><br/><br/>
+    <label>상태:
+      <select name="status" required>
+        <option value="1">활성</option>
+        <option value="0">비활성</option>
+      </select>
+    </label><br/><br/>
+    <label>입양일: <input type="date" name="togetherDateStr" required /></label><br/><br/>
+    <button type="submit">추가하기</button>
+    <button type="button" onclick="closeModal()">취소</button>
+  </form>
+</div>
+
+<!-- 수정 모달 -->
+<div id="editModal" class="modal">
+  <h2>애견 수정</h2>
+  <form id="editForm">
+    <input type="hidden" name="animalNum" id="editAnimalNum" />
+    <label>이름: <input type="text" name="animalName" id="editAnimalName" required /></label><br/><br/>
+    <label>종: <input type="text" name="species" id="editSpecies" required /></label><br/><br/>
+    <label>나이: <input type="number" name="age" id="editAge" min="0" required /></label><br/><br/>
+    <label>성별:
+		<select name="gender" id="editGender" required>
+		  <option value="">선택</option>
+		  <option value="1">수컷</option>
+		  <option value="2">암컷</option>
+		</select>
+    </label><br/><br/>
+    <label>상태:
+      <select name="status" id="editStatus" required>
+        <option value="1">활성</option>
+        <option value="0">비활성</option>
+      </select>
+    </label><br/><br/>
+    <label>입양일: <input type="date" name="togetherDateStr" id="editTogetherDate" required /></label><br/><br/>
+    <button type="button" onclick="submitEdit()">수정하기</button>
+    <button type="button" onclick="closeModal()">취소</button>
+  </form>
+</div>
+
+<script>
+  const modalOverlay = document.getElementById('modalOverlay');
+  const addModal = document.getElementById('addModal');
+  const editModal = document.getElementById('editModal');
+
+  function openAddModal() {
+    addModal.classList.add('active');
+    modalOverlay.classList.add('active');
+  }
+
+  function openEditModal(animalNum) {
+    fetch(`/myanimal/edit?animalNum=${animalNum}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('editAnimalNum').value = data.num;
+        document.getElementById('editAnimalName').value = data.animalName;
+        document.getElementById('editSpecies').value = data.species;
+        document.getElementById('editAge').value = data.age;
+        document.getElementById('editGender').value = data.gender;
+        document.getElementById('editStatus').value = data.status;
+        document.getElementById('editTogetherDate').value = data.togetherDate ? data.togetherDate.substr(0,10) : '';
+        editModal.classList.add('active');
+        modalOverlay.classList.add('active');
+      })
+      .catch(() => alert('데이터를 불러오는 중 오류가 발생했습니다.'));
+  }
+
+  function closeModal() {
+    addModal.classList.remove('active');
+    editModal.classList.remove('active');
+    modalOverlay.classList.remove('active');
+  }
+
+  function submitEdit() {
+    const form = document.getElementById('editForm');
+    const formData = new FormData(form);
+    const animalNum = formData.get('animalNum');
+
+    fetch(`/myanimal/edit?animalNum=${animalNum}`, {
+      method: 'POST',
+      body: new URLSearchParams(formData),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+    .then(res => res.text())
+    .then(text => {
+      if(text === 'success') {
+        alert('수정이 완료되었습니다.');
+        location.reload();
+      } else {
+        alert('수정 실패');
+      }
+    })
+    .catch(() => alert('서버 오류'));
+  }
+</script>
+
+</body>
+</html>
