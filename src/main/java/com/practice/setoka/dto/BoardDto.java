@@ -1,6 +1,7 @@
 package com.practice.setoka.dto;
 
 public class BoardDto {
+	
 	private int userNum;
 	private String title;
 	private String content;

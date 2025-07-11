@@ -24,22 +24,22 @@ public interface BoardMapper {
 	void delete(int num);
 	
 	//	조회수 증가 
-	void addviews (int num);
+	void addViews(int num);
 	
 	//	좋아요
-	void addlikes (int num); 
+	void addLikes(int num); 
 	
 	//	싫어요
-	void minlikes (int num);
+	void minLikes(int num);
 	
 	//	유저 아이디로 검색
-	List<BoardWithUserDto> listbyId(String id);
+	List<BoardWithUserDto> listById(String id);
 	
 	//	제목으로 검색
-	List<BoardWithUserDto> listbytitle(String title);
+	List<BoardWithUserDto> listByTitle(String title);
 	
 	//	내용으로 검색
-	List<BoardWithUserDto> listbycontent(String content);
+	List<BoardWithUserDto> listByContent(String content);
 	
 	//	통합 검색
 	List<BoardWithUserDto> searchAll(Map<String, Object> params);

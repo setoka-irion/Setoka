@@ -42,32 +42,32 @@ public class BoardService {
 	
 	//조회수 증가
 	public void addviews (int num) {
-		boardMapper.addviews(num);
+		boardMapper.addViews(num);
 	}
 	
 	//좋아요
 	public void addlikes (int num) {
-		boardMapper.addlikes(num);
+		boardMapper.addLikes(num);
 	}
 	
 	//싫어요
 	public void minlikes(int num) {
-		boardMapper.minlikes(num);
+		boardMapper.minLikes(num);
 	}
 	
 	//유저 아이디로 검색
 	public List<BoardWithUserDto> listbyId(String id){
-		return boardMapper.listbyId(id);
+		return boardMapper.listById(id);
 	}
 	
 	//제목으로 검색
 	public List<BoardWithUserDto> listbytitle(String title){
-		return boardMapper.listbytitle(title);
+		return boardMapper.listByTitle(title);
 	}
 	
 	//내용으로 검색
 	public List<BoardWithUserDto> listbycontent(String content){
-		return boardMapper.listbycontent(content);
+		return boardMapper.listByContent(content);
 	}
 	
 	//통합검색
