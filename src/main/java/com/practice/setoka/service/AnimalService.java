@@ -14,7 +14,7 @@ public class AnimalService {
 
     @Autowired
     private AnimalMapper animalMapper;
-
+    
     // 유저 번호로 해당 유저가 가진 모든 애견 목록 조회
     public List<Animal> getAnimalsByUserNum(int userNum) {
         return animalMapper.selectByUserNum(userNum);
@@ -57,6 +57,16 @@ public class AnimalService {
     // 단일 애견 조회
     public Animal getAnimalByNum(int num) {
         return animalMapper.selectByNum(num);
+    }
+    
+	// 유저의 애견 목록 가져오기
+    public List<Animal> getPetsByUser(int userNum) {
+        return animalMapper.selectByUserNum(userNum);
+    }
+
+    // 애견 등록
+    public void insertAnimal(Animal animal) {
+        animalMapper.insertAnimal(animal);
     }
 }
 
