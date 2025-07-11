@@ -48,7 +48,7 @@
 		        return;
 		    }
 
-		    fetch('/sendCode', {
+		    fetch('/sendSingUpCode', {
 		        method: 'POST',
 		        headers: { 'Content-Type': 'application/json' },
 		        body: JSON.stringify({ email: email })
@@ -73,7 +73,7 @@
 		}
 		const code = document.getElementById('code').value;
 		
-		fetch('/verifyCode', {
+		fetch('/verifySingUpCode', {
 			method: 'POST',
 			headers: {'Content-Type' : 'application/json' },
 			body: JSON.stringify({ email: email, code: code })

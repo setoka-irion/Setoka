@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,7 +83,7 @@ public class LoginController {
 		{
 			//회원가입 실패
 			//입력값 다시 채워줘야 함
-			model.addAttribute("errorMessage", "비밀번호 규칙 불만족");
+			model.addAttribute("errorMessage", "대소문자 특수문자 포함 8자 이상");
 			model.addAttribute("Users", dto);
 			return Redirect.SignUp;
 		}
@@ -123,38 +124,42 @@ public class LoginController {
 	}
 	
 	
-	@PostMapping("/sendCode")
-	public ResponseEntity<String> sendCode(@RequestBody Map<String, String> request)
+	@PostMapping("/sendSingUpCode")
+	public ResponseEntity<String> sendSingUpCode(@RequestBody Map<String, String> request)
 	{
 		String email = request.get("email");
 		
 		//db 저장
 		int code = emailService.GetCode();
-		System.out.println(code);
-		if(emailService.insertCode(code, email))
+
+		if(emailService.SendMessageVerifyCode(code, email))
 		{
-			emailService.SendSimpleMessage(email, "인증번호", code + "");
+			//emailService.SendSimpleMessage(email, "인증번호", code + "");
 			
 			return ResponseEntity.ok("인증번호 전송");
 		}
 		return ResponseEntity.badRequest().body("인증번호 전송 실패");
 	}
 	
-	@PostMapping("/verifyCode")
-	public ResponseEntity<String> verifyCode(@RequestBody Map<String, String> request)
+	@PostMapping("/verifySingUpCode")
+	public ResponseEntity<String> verifySingUpCode(@RequestBody Map<String, String> request)
 	{
 		String email = request.get("email");
 		int verifyCode = Integer.parseInt(request.get("code"));
-		VerifyCode v = emailService.selectByEmail(email);
-		if(v != null)
+		if(emailService.VerifyCodeEqule(email, verifyCode))
 		{
-			int code = v.getVerifyCode();
-			if(code == verifyCode)
-			{
-				return ResponseEntity.ok("인증 성공");
-			}
+			return ResponseEntity.ok("인증 성공");
 		}
-		
+
 		return ResponseEntity.badRequest().body("인증 실패");
+	}
+	
+	public ResponseEntity<String> sendPasswordFind(@RequestBody Map<String, String> request)
+	{
+		String email = request.get("email");
+		
+		emailService.SendPasswordResetMessage(email);
+		
+		return ResponseEntity.ok("메일 전송 성공");
 	}
 }
