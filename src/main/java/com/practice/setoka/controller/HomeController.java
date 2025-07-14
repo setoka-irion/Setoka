@@ -21,6 +21,7 @@ public class HomeController
 	public String home(HttpSession session, Model model)
 	{
 		Users loginData = (Users)session.getAttribute("LoginSession");
+		SessionUrlHandler.save(session, "");
 		if(loginData != null)
 			model.addAttribute("login", loginData.getNickName());
 		return "home";
