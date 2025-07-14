@@ -2,6 +2,7 @@ package com.practice.setoka.controller;
 
 import java.util.Map;
 
+import org.eclipse.angus.mail.imap.protocol.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -100,6 +101,7 @@ public class LoginController {
 		
 		// 암호화
 		dto.setPassword(Encryption.Encoder(dto.getPassword()));
+		dto.setStatus("정상");
 		
 		// insert 사실상 항상 true 아닌가
 		if (!userService.insertUserNomal(dto)) 
