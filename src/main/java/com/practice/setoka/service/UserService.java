@@ -49,7 +49,10 @@ public class UserService
 	//유저 넣기
 	public boolean insertUserNomal(UsersDto dto)
 	{
-		return userMapper.insertUserToDto(dto);
+		if(selectByID(dto.getId()) == null)
+			return userMapper.insertUserToDto(dto);
+		else
+			return userMapper.updateUser(dto);
 	}
 	
 	//어드민 넣기

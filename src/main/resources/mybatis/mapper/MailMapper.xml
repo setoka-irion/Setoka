@@ -43,7 +43,7 @@
   	</insert>
   	
   	<update id="updatePasswordReset">
-  		UPDATE password SET registDate = NOW() WHERE email = #{emali}
+  		UPDATE password SET registDate = NOW() WHERE email = #{email}
   	</update>
   	
   	<select id="selectPasswordReset" resultType="com.practice.setoka.dao.PasswordReset">
