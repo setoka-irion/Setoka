@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
+import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.UserService;
@@ -51,7 +52,7 @@ public class MyPageController {
 			session.setAttribute("PasswordConfirmed", "PasswordConfirmed");
 			return url;
 		}
-		return "PasswordConfirm";
+		return Redirect.passwordConfirm;
 	}
 
 	// 개인정보수정
@@ -59,14 +60,13 @@ public class MyPageController {
 	public String modifyUser(HttpSession session, Model model) {
 		Users user = (Users) session.getAttribute(Redirect.loginSession);
 		if (user == null) {
-			SessionUrlHandler.save(session, "MyPage");
-			return Redirect.LoginForm;
+			return Redirect.home;
 		}
 
 		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
 		if (passwordConfirm == null) {
 			SessionUrlHandler.save(session, "ModifyUser");
-			return "PasswordConfirm";
+			return Redirect.passwordConfirm;
 		}
 		session.removeAttribute("PasswordConfirmed");
 
@@ -81,10 +81,6 @@ public class MyPageController {
 	public String modifyUserPost(HttpSession session, Model model, UsersDto userDto) {
 		// 로그인 되어 있는 사람의 정보
 		Users user = (Users) session.getAttribute(Redirect.loginSession);
-		// 로그인 세션이 없는 상태
-		if (user == null) {
-			return Redirect.home;
-		}
 		// 수정될 정보
 		if (userService.updateUserDto(userDto)) {
 			// 정보 수정 성공
@@ -100,17 +96,16 @@ public class MyPageController {
 
 	// 비밀번호 변경
 	@GetMapping(value = "ChangePassword")
-	public String changePassword(HttpSession session, Model model, UsersDto userDto) {
+	public String changePassword(HttpSession session) {
 		Users user = (Users) session.getAttribute(Redirect.loginSession);
 		if (user == null) {
-			SessionUrlHandler.save(session, "ChangePassword");
-			return Redirect.LoginForm;
+			return Redirect.home;
 		}
 		
 		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
 		if (passwordConfirm == null) {
 			SessionUrlHandler.save(session, "ChangePassword");
-			return "PasswordConfirm";
+			return Redirect.passwordConfirm;
 		}
 		session.removeAttribute("PasswordConfirmed");
 		
@@ -118,18 +113,17 @@ public class MyPageController {
 	}
 	
 	@PostMapping(value = "ChangePassword")
-	public String changePasswordsubmit(@RequestParam("password")String password, @RequestParam("passwordCon")String passwordCon, HttpSession session) {
-		if (password.equals(passwordCon)) {
-			Users user = (Users) session.getAttribute(Redirect.loginSession);
+	public String changePasswordsubmit(@RequestParam("password") String password, @RequestParam("passwordCon") String passwordCon, HttpSession session) {
+		Users user = (Users) session.getAttribute(Redirect.loginSession);
+		String encordPassowrd = Encryption.Encoder(password);
+		if (Encryption.Decoder(encordPassowrd, passwordCon) && !Encryption.Decoder(user.getPassword(), passwordCon)) {
 			UsersDto dto = new UsersDto(user);
-			String encordPassowrd = Encryption.Encoder(password);
 			dto.setPassword(encordPassowrd);
 			userService.updateUserDto(dto);
-			user.setPassword(encordPassowrd);
-			session.setAttribute(Redirect.loginSession, user);
-			return "MyPage";
+			session.removeAttribute(Redirect.loginSession);
+			return Redirect.home;
 		}
-		return "/";
+		return Redirect.changePassword;
 	}
 	
 	// 동물프로필
@@ -152,7 +146,24 @@ public class MyPageController {
 
 	// 탈퇴
 	@GetMapping(value = "Withdrawal")
-	public String withdrawal() {
+	public String withdrawal(HttpSession session) {
+		Users user = (Users) session.getAttribute(Redirect.loginSession);
+		if (user == null) {
+			return Redirect.home;
+		}
 		return "Withdrawal";
+	}
+	
+	@PostMapping(value = "Withdrawal")
+	public String withdrawalSubmit(@RequestParam("password") String password, HttpSession session) {
+		Users user = (Users) session.getAttribute(Redirect.loginSession);
+		if(Encryption.Decoder(user.getPassword(), password)) {
+			UsersDto dto = new UsersDto(user);
+			dto.setStatus(Status.삭제);
+			userService.updateUserDto(dto);
+			session.removeAttribute(Redirect.loginSession);
+			return Redirect.home;
+		}
+		return Redirect.withdrawal;
 	}
 }

@@ -1,5 +1,6 @@
 package com.practice.setoka.dto;
 
+import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
 
 public class UsersDto {
@@ -8,7 +9,7 @@ public class UsersDto {
 	private String nickName;
 	private String realName;
 	private String phoneNumber;
-	private String status;
+	private Status status;
 	private int point;
 	private String grade;
 	
@@ -54,10 +55,10 @@ public class UsersDto {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 	public int getPoint() {
