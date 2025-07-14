@@ -25,15 +25,7 @@
 			background: #eee;
 		}
 
-		.memo-title {
-			font-size: 0.75em;
-			color: #007bff;
-			margin-top: 5px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			display: block;
-		}
+
 
 		.nav-buttons {
 			text-align: center;
@@ -43,47 +35,6 @@
 		button {
 			margin: 0 10px;
 			padding: 5px 15px;
-		}
-
-		#memoModal {
-			display: none;
-			position: fixed;
-			z-index: 100;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.4);
-		}
-
-		#memoModalContent {
-			background: white;
-			margin: 10% auto;
-			padding: 20px;
-			width: 350px;
-			border-radius: 5px;
-			position: relative;
-		}
-
-		#memoModalContent label {
-			display: block;
-			margin-top: 10px;
-		}
-
-		#memoModalContent input[type="text"],
-		#memoModalContent textarea {
-			width: 100%;
-			padding: 5px;
-			margin-top: 5px;
-		}
-
-		#memoModalClose {
-			position: absolute;
-			right: 10px;
-			top: 10px;
-			cursor: pointer;
-			font-weight: bold;
-			font-size: 18px;
 		}
 
 		.blank {
@@ -96,18 +47,18 @@
 <body>
 
 	<div class="nav-buttons">
-		<form th:action="@{/attendCheck}" method="get" style="display:inline;">
-			<input type="hidden" name="year" th:value="${month == 1} ? (year - 1) : year" />
-			<input type="hidden" name="month" th:value="${month == 1} ? 12 : (month - 1)" />
+		<form th:action="@{/attendcheck}" method="get" style="display:inline;">
+			<input type="hidden" name="year" th:value="${month == 1} ? ${year - 1} : ${year}" />
+			<input type="hidden" name="month" th:value="${(month == 1) ? 12 : (month - 1)}" />
 			<button type="submit">◀ 이전달</button>
 		</form>
 
 		<span id="yearMonth" th:attr="data-year=${year}, data-month=${month}"
 			th:text="${year} + '년 ' + ${month} + '월'"></span>
 
-		<form th:action="@{/attendCheck}" method="get" style="display:inline;">
-			<input type="hidden" name="year" th:value="${month == 12} ? (year + 1) : year" />
-			<input type="hidden" name="month" th:value="${month == 12} ? 1 : (month + 1)" />
+		<form th:action="@{/attendcheck}" method="get" style="display:inline;">
+			<input type="hidden" name="year" th:value="${month == 12} ? ${year + 1} : ${year}" />
+			<input type="hidden" name="month" th:value="${(month == 12) ? 1 : (month + 1)}" />
 			<button type="submit">다음달 ▶</button>
 		</form>
 	</div>
@@ -115,60 +66,29 @@
 	<table id="calendar">
 		<thead>
 			<tr>
-				<th>일</th>
-				<th>월</th>
-				<th>화</th>
-				<th>수</th>
-				<th>목</th>
-				<th>금</th>
-				<th>토</th>
+				<th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
 			</tr>
 		</thead>
 
 		<tbody>
 			<tr th:each="weekRow : ${#numbers.sequence(0, weekCount - 1)}">
-				<td th:each="dayIdx : ${#numbers.sequence(0,6)}" th:classappend="${((weekRow * 7) + dayIdx + 1 - startBlank <= 0 
-                           or (weekRow * 7) + dayIdx + 1 - startBlank > lengthOfMonth) ? 'blank' : ''}"
-					th:attr="data-date=((weekRow * 7) + dayIdx + 1 - startBlank > 0 and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth) ?
-						            (year + '-' + (month < 10 ? '0' + month : month) + '-' + 
-						            (((weekRow * 7) + dayIdx + 1 - startBlank) < 10 ? '0' + ((weekRow * 7) + dayIdx + 1 - startBlank) : ((weekRow * 7) + dayIdx + 1 - startBlank))) : ''" <span th:if="${(weekRow * 7) + dayIdx + 1 - startBlank > 0 
-                     and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth}"
-					th:text="${(weekRow * 7) + dayIdx + 1 - startBlank}"></span>
+				<td th:each="dayIdx : ${#numbers.sequence(0,6)}"
+				    th:classappend="${((weekRow * 7) + dayIdx + 1 - startBlank <= 0 
+				                   or (weekRow * 7) + dayIdx + 1 - startBlank > lengthOfMonth) ? 'blank' : ''}"
+				    th:attr="data-date=${((weekRow * 7) + dayIdx + 1 - startBlank > 0) and ((weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth) ? 
+				                      year + '-' + (month < 10 ? '0' + month : month) + '-' + 
+				                      (((weekRow * 7) + dayIdx + 1 - startBlank < 10) ? '0' + ((weekRow * 7) + dayIdx + 1 - startBlank) : ((weekRow * 7) + dayIdx + 1 - startBlank)) : ''}">
+				  
+				  <span th:if="${(weekRow * 7) + dayIdx + 1 - startBlank > 0 
+				               and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth}"
+				        th:text="${(weekRow * 7) + dayIdx + 1 - startBlank}">
+				  </span>
 
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<!-- 메모 모달 (수정 모달) -->
-	<div id="memoModal">
-		<div id="memoModalContent">
-			<span id="memoModalClose">&times;</span>
-			<h2 id="modalTitle">메모 작성</h2>
-
-			<form id="memoForm" method="post" th:action="@{/memo/attend}">
-
-				<input type="hidden" name="userNum" th:value="${userNum}" />
-				<input type="hidden" name="animalNum" value="1" />
-
-				<input type="hidden" id="memoNum" name="num" value="" />
-
-				<label for="scheduleDate">날짜</label>
-				<input type="text" id="scheduleDate" name="scheduleDateStr" readonly />
-
-				<label for="title">제목</label>
-				<input type="text" id="title" name="title" required />
-
-				<label for="content">내용</label>
-				<textarea id="content" name="content" rows="5" required></textarea>
-
-				<div style="margin-top: 15px;">
-					<button type="submit" id="saveBtn">저장</button>
-					<!-- 삭제 버튼 제거 -->
-				</div>
-			</form>
-		</div>
-	</div>
 </body>
 
 </html>

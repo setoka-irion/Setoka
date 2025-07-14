@@ -54,9 +54,4 @@ public class HomeController
 		return "PetPlaces";
 	}
 	
-	@GetMapping(value = "AttendCheck")
-	public String AttendCheck()
-	{
-		return "AttendCheck";
-	}
 }
