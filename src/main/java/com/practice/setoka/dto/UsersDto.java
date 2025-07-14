@@ -1,5 +1,7 @@
 package com.practice.setoka.dto;
 
+import com.practice.setoka.dao.Users;
+
 public class UsersDto {
 	private String id;
 	private String password;
@@ -9,6 +11,18 @@ public class UsersDto {
 	private String status;
 	private int point;
 	private String grade;
+	
+	public UsersDto() {}
+	public UsersDto(Users user) {
+		id = user.getId();
+		password = user.getPassword();
+		nickName = user.getNickName();
+		realName = user.getRealName();
+		phoneNumber = user.getPhoneNumber();
+		status = user.getStatus();
+		point = user.getPoint();
+		grade = user.getGrade();
+	}
 	
 	public String getId() {
 		return id;

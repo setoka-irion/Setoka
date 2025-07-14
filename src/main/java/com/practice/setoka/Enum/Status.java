@@ -1,4 +1,4 @@
-package com.practice.setoka;
+package com.practice.setoka.Enum;
 
 public enum Status {
 	기본,

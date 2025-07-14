@@ -31,9 +31,8 @@ public class MyPageController {
 		}
 		return "MyPage";
 	}
-	
-	
-	//비밀번호 재확인
+
+	// 비밀번호 재확인
 	@GetMapping(value = "PasswordConfirm")
 	public String passwordConfirmForm(HttpSession session) {
 		Users user = (Users) session.getAttribute(Redirect.loginSession);
@@ -43,37 +42,41 @@ public class MyPageController {
 		}
 		return "PasswordConfirm";
 	}
-	
+
 	@PostMapping(value = "PasswordConfirm")
-	public String passwordConfirmSubmit(@RequestParam("password")String password, HttpSession session) {
+	public String passwordConfirmSubmit(@RequestParam("password") String password, HttpSession session) {
 		Users user = (Users) session.getAttribute(Redirect.loginSession);
-		if(Encryption.Decoder(user.getPassword(), password))
-		{
-			session.setAttribute(Redirect.loginSession, user);
+		if (Encryption.Decoder(user.getPassword(), password)) {
+			String url = SessionUrlHandler.load(session);
+			session.setAttribute("PasswordConfirmed", "PasswordConfirmed");
+			return url;
 		}
 		return "PasswordConfirm";
 	}
-	
-	
+
 	// 개인정보수정
 	@GetMapping(value = "ModifyUser")
 	public String modifyUser(HttpSession session, Model model) {
 		Users user = (Users) session.getAttribute(Redirect.loginSession);
 		if (user == null) {
+			SessionUrlHandler.save(session, "MyPage");
 			return Redirect.LoginForm;
 		}
-		UsersDto dto = new UsersDto();
-		dto.setId(user.getId());
-		dto.setPassword(user.getPassword());
-		dto.setNickName(user.getNickName());
-		dto.setRealName(user.getRealName());
-		dto.setPhoneNumber(user.getPhoneNumber());
+
+		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
+		if (passwordConfirm == null) {
+			SessionUrlHandler.save(session, "ModifyUser");
+			return "PasswordConfirm";
+		}
+		session.removeAttribute("PasswordConfirmed");
+
+		UsersDto dto = new UsersDto(user);
 		// html을 꾸며줄 클래스 넣기
 		model.addAttribute("UsersDto", dto);
 		// 수정 페이지로 이동
 		return "ModifyUser";
 	}
-	
+
 	@PostMapping(value = "ModifyUser")
 	public String modifyUserPost(HttpSession session, Model model, UsersDto userDto) {
 		// 로그인 되어 있는 사람의 정보
@@ -82,8 +85,6 @@ public class MyPageController {
 		if (user == null) {
 			return Redirect.home;
 		}
-		System.out.println(userDto.getRealName());
-		System.out.println(userDto.getId());
 		// 수정될 정보
 		if (userService.updateUserDto(userDto)) {
 			// 정보 수정 성공
@@ -96,8 +97,7 @@ public class MyPageController {
 		// 정보 수정
 		return "MyPage";
 	}
-	
-	
+
 	// 비밀번호 변경
 	@GetMapping(value = "ChangePassword")
 	public String changePassword(HttpSession session, Model model, UsersDto userDto) {
@@ -106,9 +106,32 @@ public class MyPageController {
 			SessionUrlHandler.save(session, "ChangePassword");
 			return Redirect.LoginForm;
 		}
+		
+		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
+		if (passwordConfirm == null) {
+			SessionUrlHandler.save(session, "ChangePassword");
+			return "PasswordConfirm";
+		}
+		session.removeAttribute("PasswordConfirmed");
+		
 		return "ChangePassword";
 	}
-
+	
+	@PostMapping(value = "ChangePassword")
+	public String changePasswordsubmit(@RequestParam("password")String password, @RequestParam("passwordCon")String passwordCon, HttpSession session) {
+		if (password.equals(passwordCon)) {
+			Users user = (Users) session.getAttribute(Redirect.loginSession);
+			UsersDto dto = new UsersDto(user);
+			String encordPassowrd = Encryption.Encoder(password);
+			dto.setPassword(encordPassowrd);
+			userService.updateUserDto(dto);
+			user.setPassword(encordPassowrd);
+			session.setAttribute(Redirect.loginSession, user);
+			return "MyPage";
+		}
+		return "/";
+	}
+	
 	// 동물프로필
 	@GetMapping(value = "AnimalProfile")
 	public String animalProfile() {
