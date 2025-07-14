@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.practice.setoka.dao.Animal;
 import com.practice.setoka.service.AnimalService;
 
+// 달력 애견이름 변환 API 컨트롤러
 @RestController
 public class AnimalController {
 
@@ -21,5 +22,7 @@ public class AnimalController {
     public List<Animal> getAnimalsByUserNum(@RequestParam(name = "userNum") int userNum) {
         return animalService.getAnimalsByUserNum(userNum);
     }
+    
+    
 }
 

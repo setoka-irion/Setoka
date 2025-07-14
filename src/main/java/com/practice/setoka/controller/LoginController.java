@@ -9,9 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
+import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.EmailService;
@@ -48,12 +50,13 @@ public class LoginController {
 		}
 		
 		// 복호화
-		if(Encryption.Decoder(user.getPassword(), dto.getPassword()))
+		if(!Encryption.Decoder(user.getPassword(), dto.getPassword()))
 		{
-			// 로그인 성공
-			// 세션처리
-			session.setAttribute(Redirect.loginSession, user);
+			return Redirect.LoginForm;
 		}
+		// 로그인 성공
+		// 세션처리
+		session.setAttribute(Redirect.loginSession, user);
 		return SessionUrlHandler.load(session);
 	}
 
@@ -80,7 +83,7 @@ public class LoginController {
 		{
 			//회원가입 실패
 			//입력값 다시 채워줘야 함
-			model.addAttribute("errorMessage", "비밀번호 규칙 불만족");
+			model.addAttribute("errorMessage", "대소문자 특수문자 포함 8자 이상");
 			model.addAttribute("Users", dto);
 			return Redirect.SignUp;
 		}
@@ -98,6 +101,7 @@ public class LoginController {
 		
 		// 암호화
 		dto.setPassword(Encryption.Encoder(dto.getPassword()));
+		dto.setStatus(Status.정상);
 		
 		// insert 사실상 항상 true 아닌가
 		if (!userService.insertUserNomal(dto)) 
@@ -112,29 +116,77 @@ public class LoginController {
 		return Redirect.home;
 	}
 	
-	@GetMapping(value = "Cal")
-	public String Test()
+	@GetMapping(value = "/passwordFind")
+	public String passwordFindForm(Model model)
 	{
+		return "passwordFind";
+	}
+
+	@PostMapping(value = "/sendPasswordFind")
+	public String sendPasswordFind(@RequestParam("email") String email, HttpSession session, Model model)
+	{
+		System.out.println(email);
+		if(userService.selectByID(email) == null)
+		{
+			//없는 메일인 경우
+			model.addAttribute("sendMessage", "없는 메일");
+		}
+		else
+		{
+			//메일 보내기
+			if(emailService.SendPasswordResetMessage(email))
+				//메세지를 보냈다는 메세지
+				model.addAttribute("sendMessage", "메일로 링크를 보냄");
+			else
+				model.addAttribute("sendMessage", "알수없는 오류");
+		}
 		
-		
-		return "cal";
+		model.addAttribute("email", email);
+		//다시 폼으로 보내기
+		return "passwordFind";
 	}
 	
 	
-	@PostMapping("/sendCode")
-	public ResponseEntity<String> sendCode(@RequestBody Map<String, String> request)
+	@PostMapping("/sendSingUpCode")
+	public ResponseEntity<String> sendSingUpCode(@RequestBody Map<String, String> request)
 	{
 		String email = request.get("email");
 		
-		//db 저장
-		emailService.SendSimpleMessage(email, "인증번호");
+		//아이디 중복 검사
+		if(userService.existsByName(email))
+		{
+			return ResponseEntity.badRequest().body("중복된 이메일");
+		}
 		
-		return ResponseEntity.ok("인증번호 전송");
+		//db 저장
+		int code = emailService.GetCode();
+
+		if(emailService.SendMessageVerifyCode(code, email))
+		{
+			return ResponseEntity.ok("인증번호 전송");
+		}
+		return ResponseEntity.badRequest().body("인증번호 전송 실패");
 	}
 	
-	@PostMapping("/verifyCode")
-	public ResponseEntity<String> verifyCode(@RequestBody Map<String, String> request)
+	@PostMapping("/verifySingUpCode")
+	public ResponseEntity<String> verifySingUpCode(@RequestBody Map<String, String> request)
 	{
-		return ResponseEntity.ok("인증번호 전송");
+		String email = request.get("email");
+		int verifyCode = Integer.parseInt(request.get("code"));
+		if(emailService.VerifyCodeEqule(email, verifyCode))
+		{
+			return ResponseEntity.ok("인증 성공");
+		}
+
+		return ResponseEntity.badRequest().body("인증 실패");
+	}
+	
+	public ResponseEntity<String> sendPasswordFind(@RequestBody Map<String, String> request)
+	{
+		String email = request.get("email");
+		
+		emailService.SendPasswordResetMessage(email);
+		
+		return ResponseEntity.ok("메일 전송 성공");
 	}
 }
