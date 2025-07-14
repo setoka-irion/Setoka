@@ -53,14 +53,14 @@
 		        headers: { 'Content-Type': 'application/json' },
 		        body: JSON.stringify({ email: email })
 		    })
-		    .then(response => {
+		    .then(response => response.text().then(text => {
 		        if (response.ok) {
 		            alert('인증번호가 이메일로 전송되었습니다.');
 		            document.getElementById('codeBox').style.display = 'block';
 		        } else {
-		            alert('인증번호 전송 실패');
+		            alert(text);
 		        }
-		    });
+		    }));
 	}
 	
 	function verifyCode()

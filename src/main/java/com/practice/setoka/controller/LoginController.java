@@ -4,17 +4,16 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Users;
-import com.practice.setoka.dao.VerifyCode;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.EmailService;
 import com.practice.setoka.service.UserService;
@@ -115,12 +114,34 @@ public class LoginController {
 		return Redirect.home;
 	}
 	
-	@GetMapping(value = "Cal")
-	public String Test()
+	@GetMapping(value = "/passwordFind")
+	public String passwordFindForm(Model model)
 	{
+		return "passwordFind";
+	}
+
+	@PostMapping(value = "/sendPasswordFind")
+	public String sendPasswordFind(@RequestParam("email") String email, HttpSession session, Model model)
+	{
+		System.out.println(email);
+		if(userService.selectByID(email) == null)
+		{
+			//없는 메일인 경우
+			model.addAttribute("sendMessage", "없는 메일");
+		}
+		else
+		{
+			//메일 보내기
+			if(emailService.SendPasswordResetMessage(email))
+				//메세지를 보냈다는 메세지
+				model.addAttribute("sendMessage", "메일로 링크를 보냄");
+			else
+				model.addAttribute("sendMessage", "알수없는 오류");
+		}
 		
-		
-		return "cal";
+		model.addAttribute("email", email);
+		//다시 폼으로 보내기
+		return "passwordFind";
 	}
 	
 	
@@ -129,13 +150,17 @@ public class LoginController {
 	{
 		String email = request.get("email");
 		
+		//아이디 중복 검사
+		if(userService.existsByName(email))
+		{
+			return ResponseEntity.badRequest().body("중복된 이메일");
+		}
+		
 		//db 저장
 		int code = emailService.GetCode();
 
 		if(emailService.SendMessageVerifyCode(code, email))
 		{
-			//emailService.SendSimpleMessage(email, "인증번호", code + "");
-			
 			return ResponseEntity.ok("인증번호 전송");
 		}
 		return ResponseEntity.badRequest().body("인증번호 전송 실패");
