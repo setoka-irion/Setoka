@@ -119,7 +119,7 @@ public class EmailService
 				return false;
 				
 		// 메일을 보내고
-		SendSimpleMessage(email, "제목", "주소");
+		SendSimpleMessage(email, "비밀번호 재설정", "주소");
 		
 		return true;
 	}
