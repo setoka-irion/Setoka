@@ -21,57 +21,62 @@ public class BoardService {
 	}
 
 	//총 게시글 수
-	public int countAll() {
-		return boardMapper.countAll();
+	public int countBoards() {
+		return boardMapper.countBoards();
 	}
 	
-	//등록
-	public void regist(Board board) {
-		 boardMapper.regist(board);
+	//특정 게시판 전체 리스트
+	public List<BoardWithUserDto> findBoardsByType(int type){
+		return boardMapper.findBoardsByType(type);
 	}
 	
-	//수정
-	public void update(Board board) {
-		boardMapper.update(board);
+	// 등록
+	public void insertBoard(Board board) {
+	    boardMapper.insertBoard(board);
 	}
-	
-	//삭제
-	public void delete (int num) {
-		boardMapper.delete(num);
+
+	// 수정
+	public void updateBoard(Board board) {
+	    boardMapper.updateBoard(board);
 	}
-	
-	//조회수 증가
-	public void addviews (int num) {
-		boardMapper.addViews(num);
+
+	// 삭제
+	public void deleteBoard(int num) {
+	    boardMapper.deleteBoard(num);
 	}
-	
-	//좋아요
-	public void addlikes (int num) {
-		boardMapper.addLikes(num);
+
+	// 조회수 증가
+	public void increaseViewsBoard(int num) {
+	    boardMapper.increaseViewsBoard(num);
 	}
-	
-	//싫어요
-	public void minlikes(int num) {
-		boardMapper.minLikes(num);
+
+	// 좋아요 증가
+	public void increaseLikesBoard(int num) {
+	    boardMapper.increaseLikesBoard(num);
 	}
-	
-	//유저 아이디로 검색
-	public List<BoardWithUserDto> listbyId(String id){
-		return boardMapper.listById(id);
+
+	// 좋아요 감소
+	public void decreaseLikesBoard(int num) {
+	    boardMapper.decreaseLikesBoard(num);
 	}
-	
-	//제목으로 검색
-	public List<BoardWithUserDto> listbytitle(String title){
-		return boardMapper.listByTitle(title);
+
+	// 유저 ID로 검색
+	public List<BoardWithUserDto> findBoardsByUserId(String id) {
+	    return boardMapper.findBoardsByUserId(id);
 	}
-	
-	//내용으로 검색
-	public List<BoardWithUserDto> listbycontent(String content){
-		return boardMapper.listByContent(content);
+
+	// 제목으로 검색
+	public List<BoardWithUserDto> findBoardsByTitle(String title) {
+	    return boardMapper.findBoardsByTitle(title);
 	}
-	
-	//통합검색
-	public List<BoardWithUserDto> searchAll(Map<String, Object> params){
-		return boardMapper.searchAll(params);
+
+	// 내용으로 검색
+	public List<BoardWithUserDto> findBoardsByContent(String content) {
+	    return boardMapper.findBoardsByContent(content);
+	}
+
+	// 통합 검색
+	public List<BoardWithUserDto> searchBoards(Map<String, Object> params) {
+	    return boardMapper.searchBoards(params);
 	}
 }

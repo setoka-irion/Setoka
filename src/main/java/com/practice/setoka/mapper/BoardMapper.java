@@ -9,38 +9,38 @@ import com.practice.setoka.dto.BoardWithUserDto;
 public interface BoardMapper {
 
 	//	총 게시글 수 
-	int countAll();
+	int countBoards();
 	
 	//	특정 게시판 전체리스트
 	List<BoardWithUserDto> findBoardsByType(int type);
 	 
 	//	등록
-	void regist(Board board);
+	void insertBoard(Board board);
 	
 	//	수정 
-	void update(Board board);
+	void updateBoard(Board board);
 	
 	//	삭제
-	void delete(int num);
+	void deleteBoard(int num);
 	
 	//	조회수 증가 
-	void addViews(int num);
+	void increaseViewsBoard(int num);
 	
 	//	좋아요
-	void addLikes(int num); 
+	void increaseLikesBoard(int num); 
 	
 	//	싫어요
-	void minLikes(int num);
+	void decreaseLikesBoard(int num);
 	
 	//	유저 아이디로 검색
-	List<BoardWithUserDto> listById(String id);
+	List<BoardWithUserDto> findBoardsByUserId(String id);
 	
 	//	제목으로 검색
-	List<BoardWithUserDto> listByTitle(String title);
+	List<BoardWithUserDto> findBoardsByTitle(String title);
 	
 	//	내용으로 검색
-	List<BoardWithUserDto> listByContent(String content);
+	List<BoardWithUserDto> findBoardsByContent(String content);
 	
 	//	통합 검색
-	List<BoardWithUserDto> searchAll(Map<String, Object> params);
+	List<BoardWithUserDto> searchBoards(Map<String, Object> params);
 }

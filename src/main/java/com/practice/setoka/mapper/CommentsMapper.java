@@ -8,17 +8,17 @@ import com.practice.setoka.dto.CommentsInfoDto;
 public interface CommentsMapper {
 	
 	//등록
-	void regist(Comments comments);
+	void insertComment(Comments comments);
 	
 	//수정
-	void update(Comments comments);
+	void updateComment(Comments comments);
 	
 	//삭제
-	void delete(Comments comments);
+	void deleteComment(int num);
 	
 	//좋아용
-	void addLike(int num);
+	void increaseCommentLikes(int num);
 	
 	//해당 게시글 댓글 보기
-	List<CommentsInfoDto> findByBoardNum(int boardNum);
+	List<CommentsInfoDto> findCommentsByBoardNum(int boardNum);
 }
