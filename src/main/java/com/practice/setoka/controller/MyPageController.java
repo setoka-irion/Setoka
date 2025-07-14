@@ -160,8 +160,8 @@ public class MyPageController {
 		if(Encryption.Decoder(user.getPassword(), password)) {
 			UsersDto dto = new UsersDto(user);
 			dto.setStatus(Status.삭제);
-			System.out.println(dto.getStatus());
 			userService.updateUserDto(dto);
+			session.removeAttribute(Redirect.loginSession);
 			return Redirect.home;
 		}
 		return Redirect.withdrawal;
