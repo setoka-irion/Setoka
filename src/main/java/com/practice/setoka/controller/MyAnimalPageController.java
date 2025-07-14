@@ -2,6 +2,7 @@ package com.practice.setoka.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Animal;
+import com.practice.setoka.dao.Memo;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.AnimalDto;
 import com.practice.setoka.service.AnimalService;
+import com.practice.setoka.service.MemoService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -25,6 +28,8 @@ public class MyAnimalPageController {
 
     @Autowired
     private AnimalService animalService;
+    @Autowired
+    private MemoService memoService;
 
     @GetMapping("/myanimal")
     public String showMyAnimalPage(Model model, HttpSession session) {
@@ -96,31 +101,51 @@ public class MyAnimalPageController {
     }
     
     @GetMapping("/animal/detail")
-    public String showAnimalDetail(
-        @RequestParam("animalNum") int animalNum,
-        @RequestParam(value="year", required=false) Integer year,
-        @RequestParam(value="month", required=false) Integer month,
-        Model model,
-        HttpSession session) {
-        
+    public String animalDetail(Model model,
+            @RequestParam(name = "animalNum") int animalNum,
+            @RequestParam(name = "year", required = false) Integer year,
+            @RequestParam(name = "month", required = false) Integer month,
+            HttpSession session) {
+
         Users user = (Users) session.getAttribute(Redirect.loginSession);
         if (user == null) {
             return "redirect:/Login";
         }
+        int userNum = user.getNum();
+        model.addAttribute("userNum", userNum);
+        model.addAttribute("animalNum", animalNum);
         
+        LocalDate now = LocalDate.now();
         if (year == null || month == null) {
-            LocalDate today = LocalDate.now();
-            year = today.getYear();
-            month = today.getMonthValue();
+            year = now.getYear();
+            month = now.getMonthValue();
         }
-        
-        Animal animal = animalService.getAnimalByNum(animalNum);
-        model.addAttribute("animal", animal);
+
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate firstDayOfMonth = yearMonth.atDay(1);
+        int lengthOfMonth = yearMonth.lengthOfMonth();
+
+        int firstDayWeekValue = firstDayOfMonth.getDayOfWeek().getValue(); // 1=월, ... 7=일
+        int startBlank = firstDayWeekValue % 7;
+
+        int totalCells = startBlank + lengthOfMonth;
+        int weekCount = (int) Math.ceil(totalCells / 7.0);
+
         model.addAttribute("year", year);
         model.addAttribute("month", month);
-        model.addAttribute("userNum", user.getNum());
+        model.addAttribute("lengthOfMonth", lengthOfMonth);
+        model.addAttribute("startBlank", startBlank);
+        model.addAttribute("weekCount", weekCount);
 
-        return "AnimalDetails"; //
+        // animal detail 데이터는 따로 넣기
+        Animal animal = animalService.getAnimalByNum(animalNum);
+        model.addAttribute("animal", animal);
+
+        List<Memo> memos = memoService.memoSelectByAnimalNum(animalNum);
+        model.addAttribute("memos", memos);
+        
+        return "AnimalDetails";
     }
+
 
 }
