@@ -52,7 +52,6 @@ public class MyAnimalPageController {
         AnimalDto animalDto,
         @RequestParam("togetherDateStr") String togetherDateStr,
         HttpSession session) {
-    	System.out.println("gender 값 확인: " + animalDto.getGender());
         Users user = (Users) session.getAttribute(Redirect.loginSession);
         if (user == null) {
             return "redirect:/Login";
@@ -95,4 +94,33 @@ public class MyAnimalPageController {
         animalService.updateAnimal(animalNum, animalDto);
         return "success";
     }
+    
+    @GetMapping("/animal/detail")
+    public String showAnimalDetail(
+        @RequestParam("animalNum") int animalNum,
+        @RequestParam(value="year", required=false) Integer year,
+        @RequestParam(value="month", required=false) Integer month,
+        Model model,
+        HttpSession session) {
+        
+        Users user = (Users) session.getAttribute(Redirect.loginSession);
+        if (user == null) {
+            return "redirect:/Login";
+        }
+        
+        if (year == null || month == null) {
+            LocalDate today = LocalDate.now();
+            year = today.getYear();
+            month = today.getMonthValue();
+        }
+        
+        Animal animal = animalService.getAnimalByNum(animalNum);
+        model.addAttribute("animal", animal);
+        model.addAttribute("year", year);
+        model.addAttribute("month", month);
+        model.addAttribute("userNum", user.getNum());
+
+        return "AnimalDetails"; //
+    }
+
 }
