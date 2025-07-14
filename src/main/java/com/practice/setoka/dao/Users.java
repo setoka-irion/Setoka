@@ -2,6 +2,8 @@ package com.practice.setoka.dao;
 
 import java.time.LocalDateTime;
 
+import com.practice.setoka.Enum.Status;
+
 public class Users {
 	private int num;
 	private String id;
@@ -9,7 +11,7 @@ public class Users {
 	private String nickName;
 	private String realName;
 	private String phoneNumber;
-	private String status;
+	private Status status;
 	private int point;
 	private String grade;
 	private LocalDateTime registerDate;
@@ -50,10 +52,10 @@ public class Users {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 	public int getPoint() {

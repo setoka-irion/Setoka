@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
+import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.UserService;
@@ -158,7 +159,7 @@ public class MyPageController {
 		Users user = (Users) session.getAttribute(Redirect.loginSession);
 		if(Encryption.Decoder(user.getPassword(), password)) {
 			UsersDto dto = new UsersDto(user);
-			dto.setStatus("삭제");
+			dto.setStatus(Status.삭제);
 			System.out.println(dto.getStatus());
 			userService.updateUserDto(dto);
 			return Redirect.home;
