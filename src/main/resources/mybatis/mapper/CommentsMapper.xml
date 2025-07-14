@@ -4,13 +4,13 @@
 <mapper namespace="com.practice.setoka.mapper.commentMapper">
 	
 	<!--댓글 작성-->
-	<insert id="registComment"	parameterType="com.practice.setoka.dao.Comments">
+	<insert id="insertComment"	parameterType="com.practice.setoka.dao.Comments">
 		Insert Into comments ( userNum, boardNum, content, likes, registerDate)
 		VALUES (#{userNum}, #{boardNum}, #{content}, #{likes}, #{registerDate})
 	</insert>
 	
 	<!-- 댓글 수정-->
-	<update id="Comment" parameterType="com.practice.setoka.dao.Comments">
+	<update id="updateComment" parameterType="com.practice.setoka.dao.Comments">
 		UPDATE comments SET content = #{content}
 	</update>
 	
@@ -20,12 +20,12 @@
 	</delete>
 		
 	<!-- 좋아용 -->
-	<update id="addLikes" parameterType="int">
+	<update id="increaseCommentLikes" parameterType="int">
 		UPDATE comments SET likes + 1 where num = #{num}
 	</update>	
 		
 	<!-- 해당 게시글의 댓글 불러오기 -->
-	<select id="findByBoardNum" resultMap="CommentInfoDto">
+	<select id="findCommentsByBoardNum" resultMap="CommentInfoDto">
 		SELECT
     	c.num, c.userNum, c.boardNum, c.content, c.likes, c.registerDate, 
     
