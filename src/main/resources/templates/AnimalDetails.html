@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>애견 상세보기</title>
+</head>
+<body>
+
+  <h1 th:text="${animal.animalName} + ' 상세정보'">애견 이름 상세정보</h1>
+
+  <table border="1">
+    <tr>
+      <th>이름</th>
+      <td th:text="${animal.animalName}">멍멍이</td>
+    </tr>
+    <tr>
+      <th>종</th>
+      <td th:text="${animal.species}">진돗개</td>
+    </tr>
+    <tr>
+      <th>나이</th>
+      <td th:text="${animal.age}">3</td>
+    </tr>
+    <tr>
+      <th>성별</th>
+	  <td th:text="${animal.gender}"></td>
+	  </td>
+    </tr>
+  </table>
+
+  <a href="/myanimal">← 내 애견 목록으로 돌아가기</a>
+
+</body>
+</html>
