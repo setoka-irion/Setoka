@@ -20,8 +20,8 @@
 	<script>
 		const API_KEY = "XHC41TNS500y6frF0TuMqYySvFKQL6hse4IAH4hvUiCQKZwN3CAtfQcSzmNIOOcPpDJRG%2B6egChnmBDuJt1mIw%3D%3D";
 		const API_URL = `https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=1&perPage=300&serviceKey=${API_KEY}`;
-		const totalPages=3;
-		
+		const totalPages = 3;
+
 		let allItems = [];
 		let markers = [];
 		let map, geocoder; //주소->위도경도 바꾸는 객체
@@ -38,7 +38,7 @@
 		}
 
 		//마커 표시
-		function displayMarker(address,moveCenter=false) {
+		function displayMarker(address, callback) {
 			geocoder.addressSearch(address, function (result, status) {
 				if (status === kakao.maps.services.Status.OK) {
 					var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
@@ -46,58 +46,65 @@
 						map: map, position: coords
 					});
 					markers.push(marker);
-					
+
 					var infowindow = new kakao.maps.InfoWindow({
 						content: `<div style="width:150px;text-align:center;padding:6px 0;">${address}</div>`
 					});
 					infowindow.open(map, marker);
-					
-					if (moveCenter) {
-					       map.setCenter(coords); 
-					     }
+
+					if (callback) {
+						callback(coords);
+					}
+
 				}
 			});
 		}
-			//목록 필터링 후 지도 마커 표시
-			function filter(keyword) {
-				const place_list = document.getElementById("place_list");
-				place_list.innerHTML = ""; //기존 표시항목 지움
+		//목록 필터링 후 지도 마커 표시
+		function filter(keyword) {
+			const place_list = document.getElementById("place_list");
+			place_list.innerHTML = ""; //기존 표시항목 지움
 
-				clearMarker(); //기존 마커 제거
+			clearMarker(); //기존 마커 제거
 
-				const filtered = allItems.filter(function (item) {
-					return item['도로명주소'].includes(keyword);
+			const filtered = allItems.filter(function (item) {
+				return item['도로명주소'].includes(keyword);
+			});
+			if (filtered.length == 0) {
+				place_list.textContent = "검색 결과가 없습니다.";
+				return;//함수 종료(forEach 실행하지 않음)
+			}
+
+			filtered.forEach((item, index) => {
+				const li = document.createElement("li");
+				const address = item['도로명주소'];
+				li.textContent = `${item['시설명']} - ${address}`;
+				place_list.appendChild(li);
+				
+				displayMarker(address, index === 0 ? (coords) => map.setCenter(coords) : null);
+				
+				li.addEventListener('click',()=> {
+					displayMarker(address, coords => map.setCenter(coords));
 				});
-				if (filtered.length == 0) {
-					place_list.textContent = "검색 결과가 없습니다.";
-					return;//함수 종료(forEach 실행하지 않음)
-				}
+			});
+		}
 
-				filtered.forEach((item,index)=> {
-					const li = document.createElement("li");
-					li.textContent = `${item['시설명']} - ${item['도로명주소']}`;
-					place_list.appendChild(li);
-					displayMarker(item['도로명주소'],index===0);
-				});
-			}
+		//마커 초기화
+		function clearMarker() {
+			markers.forEach(marker => marker.setMap(null));
+			markers = [];
+		}
 
-			//마커 초기화
-			function clearMarker() {
-				markers.forEach(marker => marker.setMap(null));
-				markers = [];
+		async function fetchAll() {
+			for (let page = 1; page < totalPages; page++) {
+				const reponse = await fetch();
+				const data = await response.json();
+
+				allItems.push(...data.date);
 			}
-			
-			async function fetchAll(){
-				for(let page=1;page<totalPages;page++){
-					const reponse=await fetch();
-					const data = await response.json();
-					
-					allItems.push(...data.date);
-				}
-				filter(allItems);
-			}
-			
-			window.onload= function() {
+			filter(allItems);
+		}
+
+		window.onload = function () {
 			makeMap();
 			fetch(API_URL)
 				.then(response => {
@@ -108,17 +115,17 @@
 				})
 				.then(data => {
 					allItems = data.data || [];
-					
+
 				})
 				.catch(error => console.error("데이터 불러오기 오류:", error));
-			
-			document.getElementById("searchButton").addEventListener("click", () =>{
-				const keyword =document.getElementById("searchInput").value.trim();
+
+			document.getElementById("searchButton").addEventListener("click", () => {
+				const keyword = document.getElementById("searchInput").value.trim();
 				filter(keyword);
 			});
-			
-			};
-			
+
+		};
+
 	</script>
 
 </body>
