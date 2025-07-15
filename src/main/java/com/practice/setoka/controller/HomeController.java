@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.practice.setoka.dao.Users;
-import com.practice.setoka.service.EmailService;
 import com.practice.setoka.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -14,8 +13,6 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class HomeController 
 {
-	@Autowired
-	private UserService userService;
 	//홈화면
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model)
@@ -23,7 +20,12 @@ public class HomeController
 		Users loginData = (Users)session.getAttribute("LoginSession");
 		SessionUrlHandler.save(session, "");
 		if(loginData != null)
+		{
 			model.addAttribute("login", loginData.getNickName());
+			model.addAttribute("path", loginData.getProfilePath());
+			System.out.println(loginData.getProfilePath());
+		}
+			
 		return "home";
 	}
 	

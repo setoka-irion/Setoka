@@ -72,32 +72,33 @@ public class AttendCheckController {
 	}
 
 	@PostMapping("/point")
-	public String attendPoint(@RequestParam(name = "date", required = false) String date, RedirectAttributes redirectAttributes, HttpSession httpSession) {
+	public String attendPoint(@RequestParam(name = "date", required = false) String date,
+			RedirectAttributes redirectAttributes, HttpSession httpSession) {
 		var users = (Users) httpSession.getAttribute(Redirect.loginSession);
 		int userNum = users.getNum();
-		
+
 		LocalDate today = LocalDate.now();
 		LocalDate clickedDate = LocalDate.parse(date);
-		
-		//같은 날만 출석 체크 가능
+
+		// 같은 날만 출석 체크 가능
 		if (!clickedDate.equals(today)) {
 			redirectAttributes.addFlashAttribute("message", "다른 날은 출석할 수 없습니다.");
-		}
-		else {
+		} else {
 			attendCheckService.updatePoint(userNum);
 			attendCheckService.insertAttendance(userNum, date);
-			 redirectAttributes.addFlashAttribute("newAttendance", date);
-		     redirectAttributes.addFlashAttribute("message", "출석체크가 완료되었습니다.");		}
-		
+			redirectAttributes.addFlashAttribute("newAttendance", date);
+			redirectAttributes.addFlashAttribute("message", "출석체크가 완료되었습니다.");
+		}
+
 		return Redirect.attendcheck;
 	}
-	
+
 	@GetMapping("/getDate")
 	@ResponseBody
-	public List<String> attendanceDates(HttpSession httpSession){
+	public List<String> attendanceDates(HttpSession httpSession) {
 		var users = (Users) httpSession.getAttribute(Redirect.loginSession);
 		int userNum = users.getNum();
-		
+
 		List<String> attendanceDates = attendCheckService.getAttendanceDate(userNum);
 		return attendanceDates;
 	}

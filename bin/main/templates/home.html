@@ -8,14 +8,18 @@
 	<h1>홈</h1>
 	
 	<p>로그인: <a href="/MyPage"><span th:text="${login}"></span></a></p>
+	<p><img th:if="${path != null}" 
+	     th:src="@{'/images/' + ${path}}" 
+	alt="이미지" /></p>
+	
 	<button onclick="location.href='/Login'">로그인</button>
 	<button onclick="location.href='/Logout'">로그아웃</button>
 	<button onclick="location.href='/SignUp'">회원가입</button>
 	<button onclick="location.href='/calendar'">달력</button>
 	<button onclick="location.href='/PetPlaces'">반려동물 동반시설</button>
 	<button onclick="location.href='/myanimal'">마이애견페이지</button>
+	<button onclick="location.href='/FileTest'">프로필 사진</button>
 	<button onclick="location.href='/attendcheck'">출석체크</button>
-
 </body>
 
 </html>

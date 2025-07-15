@@ -47,4 +47,7 @@ public class BoardController
 	{
 		return "Adopt";
 	}
+	
+	//검색기능
+	
 }

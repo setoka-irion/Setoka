@@ -1,0 +1,27 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>입양 게시판 등록</title>
+	<style>
+		table { width: 100%; border-collapse: collapse; }
+		th, td { padding: 8px; text-align: center; border: 1px solid #ccc; }
+	</style>
+</head>
+<body>
+	<form:form modelAttribute="boardDto" method="post" action="/AdoptRegist">
+		<!-- 숨겨진 작성자 번호 (DB 저장용) -->
+		<form:hidden path="userNum" />
+
+		<!-- 작성자 닉네임 표시용 -->
+		<p>작성자: ${writerNick}</p>
+
+		<!-- 제목, 내용 등 -->
+		제목: <form:input path="title" />
+		내용: <form:textarea path="content" />
+	
+
+		<input type="submit" value="등록" />
+	</form:form>
