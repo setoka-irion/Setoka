@@ -10,6 +10,7 @@ public class AnimalDto {
 	private int status;					//상태
 	private String gender;				//성별
 	private LocalDateTime togetherDate;	//입양일
+	private String profilePath;			//프로필사진
 	
 	public int getUserNum() {
 		return userNum;
@@ -52,5 +53,11 @@ public class AnimalDto {
 	}
 	public void setTogetherDate(LocalDateTime togetherDate) {
 		this.togetherDate = togetherDate;
+	}
+	public String getProfilePath() {
+		return profilePath;
+	}
+	public void setProfilePath(String profilePath) {
+		this.profilePath = profilePath;
 	}
 }
