@@ -33,13 +33,13 @@
   </select>
 
   <!-- 새 애견 등록 -->
-  <insert id="insertAnimal" parameterType="com.practice.setoka.dao.Animal" useGeneratedKeys="true" keyProperty="num">
-    INSERT INTO animal (userNum, animalName, species, age, status, gender, togetherDate)
-    VALUES (#{userNum}, #{animalName}, #{species}, #{age}, #{status}, #{gender}, #{togetherDate})
+  <insert id="insertAnimal" parameterType="com.practice.setoka.dto.AnimalDto">
+    INSERT INTO animal (userNum, animalName, species, age, status, gender, togetherDate, profilePath)
+    VALUES (#{userNum}, #{animalName}, #{species}, #{age}, #{status}, #{gender}, #{togetherDate}, #{profilePath})
   </insert>
 
   <!-- 애견 정보 수정 -->
-  <update id="updateAnimal" parameterType="com.practice.setoka.dao.Animal">
+  <update id="updateAnimal" parameterType="com.practice.setoka.dto.AnimalDto">
     UPDATE animal
     SET userNum = #{userNum},
         animalName = #{animalName},
@@ -47,7 +47,8 @@
         age = #{age},
         status = #{status},
         gender = #{gender},
-        togetherDate = #{togetherDate}
+        togetherDate = #{togetherDate},
+        profilePath = #{profilePath}
     WHERE num = #{num}
   </update>
 

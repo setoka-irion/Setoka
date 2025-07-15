@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.practice.setoka.dao.Animal;
+import com.practice.setoka.dto.AnimalDto;
 
 @Mapper
 public interface AnimalMapper {
@@ -17,13 +18,13 @@ public interface AnimalMapper {
     Animal selectByNum(@Param("num") int num);
 
     // 동물 등록
-    int insertAnimal(Animal animal);
+    boolean insertAnimal(AnimalDto animalDto);
 
     // 동물 수정
-    int updateAnimal(Animal animal);
+    boolean updateAnimal(AnimalDto animalDto, @Param("num") int num);
 
     // 동물 삭제
-    int deleteAnimal(@Param("num") int num);
+    boolean deleteAnimal(@Param("num") int num);
     
 }
 

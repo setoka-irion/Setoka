@@ -2,7 +2,90 @@
 <html xmlns:th="http://thymeleaf.org">
 	
 <head>
-	<title>MyPage</title>	
+	<title>MyPage</title>
+	<style>
+		table {
+			width: 350px;
+			margin: 20px auto;
+			border-collapse: collapse;
+		}
+	
+		th,
+		td {
+			border: 1px solid #ccc;
+			width: 14.28%;
+			height: 80px;
+			vertical-align: top;
+			padding: 5px;
+			cursor: pointer;
+		}
+	
+		th {
+			background: #eee;
+		}
+	
+		.memo-title {
+			font-size: 0.75em;
+			color: #007bff;
+			margin-top: 5px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: block;
+		}
+	
+		.nav-buttons {
+			text-align: center;
+			margin: 10px 0;
+		}
+		
+		#memoModal {
+			display: none;
+			position: fixed;
+			z-index: 100;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.4);
+		}
+	
+		#memoModalContent {
+			background: white;
+			margin: 10% auto;
+			padding: 20px;
+			width: 350px;
+			border-radius: 5px;
+			position: relative;
+		}
+	
+		#memoModalContent label {
+			display: block;
+			margin-top: 10px;
+		}
+	
+		#memoModalContent input[type="text"],
+		#memoModalContent textarea,
+		#memoModalContent select {
+			width: 100%;
+			padding: 5px;
+			margin-top: 5px;
+		}
+	
+		#memoModalClose {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			cursor: pointer;
+			font-weight: bold;
+			font-size: 18px;
+		}
+	
+		.blank {
+			background: #f9f9f9;
+			cursor: default;
+		}
+	</style>
 </head>
 <body>
 	<h1>마이페이지</h1>
@@ -12,6 +95,347 @@
 	<button onclick="location.href='/AddProfile'">동물추가</button>
 	<button onclick="location.href='/Damagochi'">가반키</button>
 	<button onclick="location.href='/Withdrawal'">탈퇴</button>
+	<br>
+	
+	
+	<!--일정 달력-->
+	<div class="nav-buttons">
+	  <form th:action="@{/MyPage}" method="get" style="display:inline;">
+	    <input type="hidden" name="year" th:value="${month == 1} ? ${year - 1} : ${year}" />
+	    <input type="hidden" name="month" th:value="${month == 1} ? 12 : ${month - 1}" />
+	    <button type="submit">◀ 이전달</button>
+	  </form>
+
+	  <span id="yearMonth" 
+	        th:attr="data-year=${year}, data-month=${month}"
+	        th:text="${year} + '년 ' + ${month} + '월'"></span>
+
+	  <form th:action="@{/MyPage}" method="get" style="display:inline;">
+	    <input type="hidden" name="year" th:value="${month == 12} ? ${year + 1} : ${year}" />
+	    <input type="hidden" name="month" th:value="${month == 12} ? 1 : ${month + 1}" />
+	    <button type="submit">다음달 ▶</button>
+	  </form>
+	</div>
+
+	<table id="calendar">
+	  <thead>
+	    <tr>
+	      <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
+	    </tr>
+	  </thead>
+	  
+	  <tbody>
+	    <tr th:each="weekRow : ${#numbers.sequence(0, weekCount - 1)}">
+	      <td th:each="dayIdx : ${#numbers.sequence(0,6)}"
+	          th:classappend="${((weekRow * 7) + dayIdx + 1 - startBlank <= 0 
+	                           or (weekRow * 7) + dayIdx + 1 - startBlank > lengthOfMonth) ? 'blank' : ''}"
+	          th:attr="data-date=${(weekRow * 7) + dayIdx + 1 - startBlank > 0 and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth} ?
+	                       ${year + '-' + (month < 10 ? '0' + month : month) + '-' + (((weekRow * 7) + dayIdx + 1 - startBlank) < 10 ? '0' + ((weekRow * 7) + dayIdx + 1 - startBlank) : ((weekRow * 7) + dayIdx + 1 - startBlank))} : ''">
+	        
+	        <span th:if="${(weekRow * 7) + dayIdx + 1 - startBlank > 0 
+	                     and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth}"
+	              th:text="${(weekRow * 7) + dayIdx + 1 - startBlank}"></span>
+
+	      </td>
+	    </tr>
+	  </tbody>
+	</table>
+
+	<!-- 메모 모달 (수정 모달) -->
+	<div id="memoModal">
+	  <div id="memoModalContent">
+	    <span id="memoModalClose">&times;</span>
+	    <h2 id="modalTitle">메모 작성</h2>
+
+	    <form id="memoForm" method="post" th:action="@{/memo/add}">
+	      
+	      <input type="hidden" name="userNum" th:value="${userNum}" />
+	      <!-- 기존 animalNum 히든 필드 제거 -->
+	      
+	      <input type="hidden" id="memoNum" name="num" value="" />
+
+	      <label for="scheduleDate">날짜</label>
+	      <input type="text" id="scheduleDate" name="scheduleDateStr" readonly />
+
+	      <label for="animalSelect">애견 선택</label>
+	      <select id="animalSelect" name="animalNum[]" multiple required size="3">
+	        <option value="">-- 애견 선택 --</option>
+	        <!-- JS가 동적으로 옵션 추가 -->
+	      </select>
+
+	      <label for="title">제목</label>
+	      <input type="text" id="title" name="title" required />
+
+	      <label for="content">내용</label>
+	      <textarea id="content" name="content" rows="5" required></textarea>
+
+	      <div style="margin-top: 15px;">
+	        <button type="submit" id="saveBtn">저장</button>
+	      </div>
+	    </form>
+	  </div>
+	</div>
+
+	<!-- 리스트 모달 -->
+	<div id="memoListModal" style="display:none; position:fixed; z-index:250; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.4);">
+	  <div style="background:white; margin:10% auto; padding:20px; width:360px; border-radius:5px; position:relative; max-height: 60vh; overflow-y: auto;">
+	    <span id="memoListClose" style="position:absolute; right:10px; top:10px; cursor:pointer; font-weight:bold; font-size:18px;">&times;</span>
+	    <h2>메모 리스트</h2>
+	    <ul id="memoListContainer" style="list-style:none; padding:0; margin:0;"></ul>
+	    <button id="memoListAddBtn" style="margin-top: 15px;">메모 추가</button>
+	  </div>
+	</div>
+
+	<!-- 상세보기 모달 -->
+	<div id="memoDetailModal" style="display:none; position:fixed; z-index:200; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.4);">
+	  <div style="background:white; margin:10% auto; padding:20px; width:350px; border-radius:5px; position:relative;">
+	    <span id="memoDetailClose" style="position:absolute; right:10px; top:10px; cursor:pointer; font-weight:bold; font-size:18px;">&times;</span>
+	    <h2>메모 상세보기</h2>
+	    <p><strong>작성일:</strong> <span id="detailDate"></span></p>
+		<p><strong>애견 이름:</strong> <span id="detailAnimalName"></span></p>
+	    <p><strong>제목:</strong> <span id="detailTitleText"></span></p>
+	    <p><strong>내용:</strong> <span id="detailContent"></span></p>
+	    <div style="margin-top: 15px;">
+		  <button id="detailAddBtn" style="margin-left:10px;">메모 추가</button>
+	      <button id="detailEditBtn">수정</button>
+	      <button id="detailDeleteBtn" style="background-color:#f44336; color:#fff;">삭제</button>
+	    </div>
+	  </div>
+	</div>
+	
+	<script>
+	  // 1. 유저의 애니멀 리스트를 받아 animalNum → animalName 매핑 생성
+	  let animalMap = new Map();
+	  let currentDetailMemoNum;
+
+	  document.addEventListener('DOMContentLoaded', () => {
+	    const modal = document.getElementById('memoModal');
+	    const modalClose = document.getElementById('memoModalClose');
+	    const scheduleDateInput = document.getElementById('scheduleDate');
+	    const titleInput = document.getElementById('title');
+	    const contentInput = document.getElementById('content');
+	    const memoNumInput = document.getElementById('memoNum');
+	    const memoForm = document.getElementById('memoForm');
+	    const modalTitle = document.getElementById('modalTitle');
+	    const saveBtn = document.getElementById('saveBtn');
+	    const animalSelect = document.getElementById('animalSelect');
+
+	    const detailModal = document.getElementById('memoDetailModal');
+	    const detailClose = document.getElementById('memoDetailClose');
+	    const detailDate = document.getElementById('detailDate');
+	    const detailTitleText = document.getElementById('detailTitleText');
+	    const detailContent = document.getElementById('detailContent');
+	    const detailEditBtn = document.getElementById('detailEditBtn');
+	    const detailDeleteBtn = document.getElementById('detailDeleteBtn');
+	    const detailAddBtn = document.getElementById('detailAddBtn');
+	    const detailAnimalName = document.getElementById('detailAnimalName');
+
+	    const yearMonthSpan = document.getElementById('yearMonth');
+	    const year = yearMonthSpan.dataset.year;
+	    const month = yearMonthSpan.dataset.month;
+
+	    const userNum = document.querySelector('input[name="userNum"]').value;
+
+	    // 1) 애니멀 리스트 불러와 매핑 + select 옵션 생성
+	    fetch(`/animals?userNum=${userNum}`)
+	      .then(res => res.json())
+	      .then(animals => {
+	        animals.forEach(animal => {
+	          animalMap.set(animal.num, animal.animalName);
+	          const option = document.createElement('option');
+	          option.value = animal.num;
+	          option.textContent = animal.animalName;
+	          animalSelect.appendChild(option);
+	        });
+
+	        // 2) 메모 리스트 불러오기
+	        return fetch(`/memos?year=${year}&month=${month < 10 ? '0' + month : month}`);
+	      })
+	      .then(res => res.json())
+	      .then(memos => {
+	        const memoMap = {};
+
+	        memos.forEach(memo => {
+	          const dateOnly = memo.scheduleDate.split('T')[0];
+	          if (!memoMap[dateOnly]) memoMap[dateOnly] = [];
+
+	          // animalNum 으로 animalName 매핑해서 추가
+	          memo.animalName = animalMap.get(memo.animalNum) || '애견없음';
+
+	          memoMap[dateOnly].push(memo);
+	        });
+
+	        Object.keys(memoMap).forEach(date => {
+	          const td = document.querySelector(`td[data-date='${date}']`);
+	          if (td) {
+	            td.querySelectorAll('.memo-title').forEach(el => el.remove());
+
+	            memoMap[date].forEach(m => {
+	              const span = document.createElement('span');
+	              span.className = 'memo-title';
+	              span.textContent = m.title;
+	              td.appendChild(span);
+	            });
+
+	            td.dataset.memoList = JSON.stringify(memoMap[date]);
+	          }
+	        });
+
+	        // 3) 날짜 클릭 이벤트
+	        document.querySelectorAll('#calendar td').forEach(td => {
+	          td.addEventListener('click', () => {
+	            const dateStr = td.getAttribute('data-date');
+	            if (!dateStr) return;
+
+	            const memoListStr = td.dataset.memoList;
+	            let memoList = [];
+
+	            if (memoListStr) {
+	              try {
+	                memoList = JSON.parse(memoListStr);
+	              } catch (e) {
+	                console.error('메모 리스트 JSON 파싱 실패', e);
+	              }
+	            }
+
+	            if (memoList.length === 0) {
+	              // 메모 없음 -> 작성 모달
+	              detailModal.style.display = 'none';
+	              modalTitle.textContent = "메모 작성";
+	              saveBtn.textContent = "저장";
+
+	              memoNumInput.value = '';
+	              scheduleDateInput.value = dateStr;
+	              titleInput.value = '';
+	              contentInput.value = '';
+	              animalSelect.value = '';
+
+	              modal.style.display = "block";
+
+	            } else if (memoList.length === 1) {
+	              // 메모 1개 -> 상세보기 모달 + 버튼 핸들러 세팅
+	              showDetailModal(memoList[0], dateStr);
+
+	            } else {
+	              // 메모 2개 이상 -> 리스트 모달
+	              const memoListModal = document.getElementById('memoListModal');
+	              const memoListContainer = document.getElementById('memoListContainer');
+
+	              memoListContainer.innerHTML = '';
+
+	              memoList.forEach(memo => {
+	                const li = document.createElement('li');
+	                li.style.cursor = 'pointer';
+	                li.style.padding = '5px 0';
+	                li.style.borderBottom = '1px solid #ddd';
+
+	                li.textContent = `제목: ${memo.title} | 이름: ${memo.animalName || '애견없음'}`;
+
+	                li.addEventListener('click', () => {
+	                  memoListModal.style.display = 'none';
+
+	                  showDetailModal(memo, dateStr);
+	                });
+
+	                memoListContainer.appendChild(li);
+	              });
+
+	              // 리스트 모달 닫기 버튼
+	              document.getElementById('memoListClose').onclick = () => {
+	                memoListModal.style.display = 'none';
+	              };
+
+	              // 리스트 모달 내 메모 추가 버튼
+	              document.getElementById('memoListAddBtn').onclick = () => {
+	                memoListModal.style.display = 'none';
+
+	                modalTitle.textContent = "메모 작성";
+	                saveBtn.textContent = "저장";
+
+	                memoNumInput.value = '';
+	                scheduleDateInput.value = dateStr;
+	                titleInput.value = '';
+	                contentInput.value = '';
+	                animalSelect.value = '';
+
+	                modal.style.display = "block";
+	              };
+
+	              memoListModal.style.display = 'block';
+	            }
+	          });
+	        });
+	      });
+
+	    // 상세보기 모달 열기 및 버튼 핸들러 세팅 함수
+	    function showDetailModal(memo, dateStr) {
+	      currentDetailMemoNum = memo.num || memo.memoNum;
+
+	      detailDate.textContent = dateStr;
+	      detailTitleText.textContent = memo.title;
+	      detailContent.textContent = memo.content;
+	      detailAnimalName.textContent = memo.animalName || '알 수 없음';
+
+	      detailEditBtn.onclick = () => {
+	        detailModal.style.display = 'none';
+	        modalTitle.textContent = "메모 수정";
+	        saveBtn.textContent = "수정";
+
+	        memoNumInput.value = currentDetailMemoNum;
+	        scheduleDateInput.value = dateStr;
+	        titleInput.value = memo.title;
+	        contentInput.value = memo.content;
+	        animalSelect.value = memo.animalNum || '';
+	        modal.style.display = "block";
+	      };
+
+	      detailDeleteBtn.onclick = () => {
+	        if (confirm("정말 삭제하시겠습니까?")) {
+	          const formData = new URLSearchParams();
+	          formData.append('num', currentDetailMemoNum);
+	          formData.append('year', year);
+	          formData.append('month', month);
+
+	          fetch('/memo/delete', {
+	            method: 'POST',
+	            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+	            body: formData.toString()
+	          }).then(() => {
+	            detailModal.style.display = 'none';
+	            location.href = `/MyPage?year=${year}&month=${month}`;
+	          });
+	        }
+	      };
+
+	      detailAddBtn.onclick = () => {
+	        detailModal.style.display = 'none';
+	        modalTitle.textContent = "메모 작성";
+	        saveBtn.textContent = "저장";
+
+	        memoNumInput.value = '';
+	        scheduleDateInput.value = dateStr;
+	        titleInput.value = '';
+	        contentInput.value = '';
+	        animalSelect.value = '';
+	        modal.style.display = "block";
+	      };
+
+	      detailModal.style.display = 'block';
+	    }
+
+	    modalClose.onclick = () => modal.style.display = "none";
+	    detailClose.onclick = () => detailModal.style.display = "none";
+
+	    window.onclick = e => {
+	      if (e.target === modal) modal.style.display = "none";
+	      if (e.target === detailModal) detailModal.style.display = "none";
+	    };
+
+	    memoForm.onsubmit = () => {
+	      memoForm.action = memoNumInput.value ? '/memo/update' : '/memo/add';
+	    };
+	  });
+	</script>
 </body>
 
 </html>
