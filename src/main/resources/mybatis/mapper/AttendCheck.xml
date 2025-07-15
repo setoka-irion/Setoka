@@ -4,7 +4,16 @@
 <mapper namespace="com.practice.setoka.mapper.AttendCheckMapper">
 
 	<update id="updatePoint">
-    UPDATE users SET point = point + 1 WHERE userNum = #{userNum}
-</update>
+    	UPDATE users SET point = point + 1 WHERE num = #{num}
+	</update>
 	
+	<insert id="insertAttendance">
+	    INSERT INTO attendance (userNum, date) VALUES (#{userNum}, #{date})
+	</insert>
+	
+	<select id="getAttendanceDate" resultType="string">
+    	SELECT DATE_FORMAT(date, '%Y-%m-%d') 
+    	FROM attendance 
+    	WHERE userNum = #{userNum}
+	</select>
 </mapper>
