@@ -2,8 +2,10 @@ package com.practice.setoka.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.practice.setoka.Redirect;
+import com.practice.setoka.Upload;
 import com.practice.setoka.Enum.Grade;
 import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
@@ -16,6 +18,9 @@ public class UserService
 {
 	@Autowired
 	private UserMapper userMapper;
+	
+	@Autowired
+	private Upload upload;
 	
 	//num 으로 유저 리턴
 	public Users selectUser(int num)
@@ -81,5 +86,30 @@ public class UserService
 			return null;
 		
 		return user;
+	}
+
+	//유저의 프로필 사진을 입력하는 서비스 (회원가입시에 프로필 사진을 정하지 않으니)
+	public boolean insertProfilephoto(MultipartFile file, UsersDto dto)
+	{
+		return insertProfilephoto(file, dto.getId());
+	}
+	
+	//유저의 프로필 사진을 입력하는 서비스 (회원가입시에 프로필 사진을 정하지 않으니)
+	public boolean insertProfilephoto(MultipartFile file, String id)
+	{
+		String path = upload.fileUpload(file);
+		userMapper.updateProfilephotoPath(path, id);
+		
+		return true;
+	}
+	
+	//유저의 프로필 사진 경로를 가져오기
+	public String selectProfilePath(UsersDto dto)
+	{
+		return selectProfilePath(dto.getId());
+	}
+	public String selectProfilePath(String id)
+	{
+		return userMapper.selectProfilephotoPath(id);
 	}
 }
