@@ -40,6 +40,8 @@ Desktop.ini
 *.war
 *.ear
 
+*.gradle/
+
 # 기타
 logs/
 tmp/
