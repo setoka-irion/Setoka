@@ -7,6 +7,7 @@ public class Redirect
 	public static final String passwordConfirm = "redirect:/PasswordConfirm";
 	public static final String changePassword = "redirect:/ChangePassword";
 	public static final String withdrawal = "redirect:/Withdrawal";
+	public static final String attendcheck = "redirect:/attendcheck";
 	public static final String loginSession = "LoginSession";
 	public static final String passwordFindForm = "redirect:/passwordFind";
 	public static final String SignUp = "SignUp";
