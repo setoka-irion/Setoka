@@ -35,31 +35,30 @@ public class BoardActionController {
 //	}
 	
 	//	입양 메인페이지
-	@GetMapping(value="AdoptMain")
-	public String AdoptMain(Model model,
-			@RequestParam(required = false)String keyword,
-			@RequestParam(required = false)String field) {
-		
-		// 입양 페이지 전체 리스트(좋아요,조회수 포함)
-		List<BoardWithUserDto> findBoardsByType = boardService.findBoardsByType(1);
-		model.addAttribute("typeList", findBoardsByType);
-		
-		// 총 게시글 수
-		int countBoards= boardService.countBoards();
-		model.addAttribute("countBoards", countBoards);
-		
-		// 입양 게시판 내부 검색
-		List<BoardWithUserDto> searchResult;
-		if (keyword == null || keyword.isEmpty()) {
-			searchResult = boardService.findBoardsByType(1);
-		}
-		if (keyword == null || keyword.isEmpty()) {
-			searchResult = boardService.findBoardsByType(1);
-		}
-		
-		model.
-		return "Board/Adopt";
-	}
+//	@GetMapping(value="AdoptMain")
+//	public String AdoptMain(Model model,
+//			@RequestParam(required = false)String keyword,
+//			@RequestParam(required = false)String field) {
+//		
+//		// 입양 페이지 전체 리스트(좋아요,조회수 포함)
+//		List<BoardWithUserDto> findBoardsByType = boardService.findBoardsByType(1);
+//		model.addAttribute("typeList", findBoardsByType);
+//		
+//		// 총 게시글 수
+//		int countBoards= boardService.countBoards();
+//		model.addAttribute("countBoards", countBoards);
+//		
+//		// 입양 게시판 내부 검색
+//		List<BoardWithUserDto> searchResult;
+//		if (keyword == null || keyword.isEmpty()) {
+//			searchResult = boardService.findBoardsByType(1);
+//		} else { 
+//			boardList = boardService.findBoardsByType(countBoards)
+//		}
+//		
+//		model.addAttribute("", searchResult);
+//		return "Board/Adopt";
+//	}
 	
 	// 입양 상세 페이지 
 	@GetMapping(value="AdoptDetail")
