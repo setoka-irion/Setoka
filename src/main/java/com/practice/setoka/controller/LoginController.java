@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
@@ -150,6 +151,10 @@ public class LoginController {
 	}
 	
 	
+	
+	
+	
+	
 	@PostMapping("/sendSingUpCode")
 	public ResponseEntity<String> sendSingUpCode(@RequestBody Map<String, String> request)
 	{
@@ -191,5 +196,35 @@ public class LoginController {
 		emailService.SendPasswordResetMessage(email);
 		
 		return ResponseEntity.ok("메일 전송 성공");
+	}
+	
+	@GetMapping(value = "/FileTest")
+	public String Test(HttpSession session)
+	{
+		Users user = (Users)session.getAttribute(Redirect.loginSession);
+		if(user == null)
+			return Redirect.home;
+		
+		return "/FileTest";
+	}
+	@PostMapping(value = "/FileTest")
+	public String TTEst(@RequestParam("profile") MultipartFile[] files, HttpSession session)
+	{
+		Users user = (Users)session.getAttribute(Redirect.loginSession);
+		if(user == null)
+			return Redirect.home;
+		
+		if(files == null && files.length == 0)
+		{
+			System.out.println("파일이 없음");
+		}
+		else
+		{
+			System.out.println("파일의 이름 : " + files[0].getOriginalFilename());
+		}
+		
+		userService.insertProfilephoto(files[0], new UsersDto(user));
+		
+		return "/FileTest";
 	}
 }
