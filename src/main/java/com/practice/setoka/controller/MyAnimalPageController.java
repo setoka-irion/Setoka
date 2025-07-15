@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.practice.setoka.Redirect;
+import com.practice.setoka.Upload;
 import com.practice.setoka.dao.Animal;
 import com.practice.setoka.dao.Memo;
 import com.practice.setoka.dao.Users;
@@ -30,7 +32,9 @@ public class MyAnimalPageController {
     private AnimalService animalService;
     @Autowired
     private MemoService memoService;
-
+    @Autowired
+    private Upload upload;
+    
     @GetMapping("/myanimal")
     public String showMyAnimalPage(Model model, HttpSession session) {
         Users user = (Users) session.getAttribute(Redirect.loginSession);
@@ -54,7 +58,7 @@ public class MyAnimalPageController {
     // 애견 추가
     @PostMapping("/myanimal/add")
     public String addAnimal(
-				        AnimalDto animalDto,
+				        AnimalDto animalDto, @RequestParam("profileImage") MultipartFile file,
 				        @RequestParam("togetherDateStr") String togetherDateStr,
 				        HttpSession session) {
         Users user = (Users) session.getAttribute(Redirect.loginSession);
@@ -63,6 +67,11 @@ public class MyAnimalPageController {
         }
         animalDto.setUserNum(user.getNum());
 
+        if (file != null && !file.isEmpty()) {
+            animalDto.setProfilePath(upload.fileUpload(file));
+        }
+        
+        System.out.println(animalDto.getProfilePath());
         // 날짜 문자열 → LocalDateTime 변환
         LocalDateTime dateTime = LocalDate.parse(togetherDateStr).atStartOfDay();
         animalDto.setTogetherDate(dateTime);
@@ -85,6 +94,7 @@ public class MyAnimalPageController {
         @RequestParam("animalNum") int animalNum,
         AnimalDto animalDto,
         @RequestParam("togetherDateStr") String togetherDateStr,
+        @RequestParam(value="profileImage", required=false) MultipartFile file,
         HttpSession session) {
     	
         Users user = (Users) session.getAttribute(Redirect.loginSession);
@@ -93,6 +103,10 @@ public class MyAnimalPageController {
         }
         animalDto.setUserNum(user.getNum());
 
+        if (file != null && !file.isEmpty()) {
+            animalDto.setProfilePath(upload.fileUpload(file));
+        }
+        
         LocalDateTime dateTime = LocalDate.parse(togetherDateStr).atStartOfDay();
         animalDto.setTogetherDate(dateTime);
 

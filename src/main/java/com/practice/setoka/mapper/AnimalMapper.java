@@ -21,7 +21,7 @@ public interface AnimalMapper {
     boolean insertAnimal(AnimalDto animalDto);
 
     // 동물 수정
-    boolean updateAnimal(AnimalDto animalDto, @Param("num") int num);
+    boolean updateAnimal(@Param("animalDto") AnimalDto animalDto, @Param("num") int num);
 
     // 동물 삭제
     boolean deleteAnimal(@Param("num") int num);
