@@ -68,15 +68,23 @@ public class EmailService
 		VerifyCode verifyCode = selectByEmail(email);
 		//없는 메일이면 
 		if(verifyCode == null)
+		{
 			//새로 추가
 			if(!mailMapper.insertCode(email, code))
+			{
 				return false;
+			}
+		}		
 		//있는 경우
 		else
+		{
 			//코드와 시기를 수정함
 			if(!mailMapper.updateVerifyCode(email, code))
+			{
 				return false;
-		
+			}
+		}
+			
 		//메일 보내기
 		SendSimpleMessage(email, "인증번호", "인증번호 : " + code);
 		return true;

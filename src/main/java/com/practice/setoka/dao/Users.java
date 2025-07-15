@@ -2,6 +2,7 @@ package com.practice.setoka.dao;
 
 import java.time.LocalDateTime;
 
+import com.practice.setoka.Enum.Grade;
 import com.practice.setoka.Enum.Status;
 
 public class Users {
@@ -13,7 +14,7 @@ public class Users {
 	private String phoneNumber;
 	private Status status;
 	private int point;
-	private String grade;
+	private Grade grade = Grade.브론즈;;
 	private LocalDateTime registerDate;
 	
 	public int getNum() {
@@ -64,10 +65,10 @@ public class Users {
 	public void setPoint(int point) {
 		this.point = point;
 	}
-	public String getGrade() {
+	public Grade getGrade() {
 		return grade;
 	}
-	public void setGrade(String grade) {
+	public void setGrade(Grade grade) {
 		this.grade = grade;
 	}
 	public LocalDateTime getRegisterDate() { return registerDate; }
