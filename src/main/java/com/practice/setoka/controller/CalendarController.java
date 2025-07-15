@@ -74,7 +74,7 @@ public class CalendarController {
         List<Animal> animals = animalService.getAnimalsByUserNum(userNum);
         model.addAttribute("animals", animals);
         
-        return "calendar";
+        return "Calendar";
     }
 
     @PostMapping("/memo/add")
