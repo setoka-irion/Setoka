@@ -18,7 +18,7 @@
     	SELECT * FROM message WHERE sender = #{num}
   	</select>
   	
-	<select id="selectSenderMessage" resultType="com.practice.setoka.dao.Message" parameterType="int">
+	<select id="selectReceiverMessage" resultType="com.practice.setoka.dao.Message" parameterType="int">
     	SELECT * FROM message WHERE receiver = #{num}
   	</select>
 	
