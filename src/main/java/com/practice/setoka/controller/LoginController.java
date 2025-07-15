@@ -41,17 +41,20 @@ public class LoginController {
 	// 로그인 확인
 	@PostMapping(value = "Login")
 	public String loginSubmit(HttpSession session, UsersDto dto) {
-		// 중복처리
-
-		Users user = userService.selectByID(dto.getId());
+		
+		//db에서 정보 가져오기
+		Users user = userService.loginUser(dto);
+		//등록된 정보 없음
 		if(user == null)
 		{
+			//다시 로그인 폼으로
 			return Redirect.LoginForm;
 		}
 		
-		// 복호화
+		// 복호화, 같은 id는 있지만 비밀번호가 다를경우
 		if(!Encryption.Decoder(user.getPassword(), dto.getPassword()))
 		{
+			//다시 로그인 폼으로
 			return Redirect.LoginForm;
 		}
 		// 로그인 성공
@@ -89,7 +92,7 @@ public class LoginController {
 		}
 		
 
-		//아이디 중복 검사
+		//아이디 중복 검사 (삭제된 경우는 없는걸로 침) user가 없거나 있어도 삭제면 false가 리턴된다는 뜻
 		if(userService.existsByName(dto.getId()))
 		{
 			//회원가입 실패

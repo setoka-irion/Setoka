@@ -28,5 +28,13 @@
   	<update id="updateUser" parameterType="com.practice.setoka.dto.UsersDto">
   		UPDATE users SET password = #{password}, nickname = #{nickName}, realname = #{realName}, phoneNumber = #{phoneNumber}, status = #{status} WHERE id = #{id}
   	</update>
+  	
+  	<update id="updateProfilephotoPath">
+  		UPDATE users SET Profilephoto = #{path} WHERE id = #{id}
+  	</update>
+  	
+  	<select id="selectProfilephotoPath">
+  		SELECT Profilephoto FROM users WHERE id = #{id}
+  	</select>
 	
 </mapper>
