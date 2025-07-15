@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.setoka.mapper.UserMapper">
+
+
+	<insert id="insertMessage" parameterType="com.practice.setoka.dto.MessageDto">
+		INSERT INTO message (sender, receiver, title, content) VALUES (#{sender}, #{receiver}, #{title}, #{content})
+	</insert>
+
+	<select id="selectAllMessage" resultType="com.practice.setoka.dao.Message">
+    	SELECT * FROM message
+  	</select>
+  	
+	<select id="selectSenderMessage" resultType="com.practice.setoka.dao.Message" parameterType="int">
+    	SELECT * FROM message WHERE sender = #{num}
+  	</select>
+  	
+	<select id="selectReceiverMessage" resultType="com.practice.setoka.dao.Message" parameterType="int">
+    	SELECT * FROM message WHERE receiver = #{num}
+  	</select>
+	
+</mapper>
