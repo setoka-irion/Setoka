@@ -1,0 +1,58 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>입양 게시판</title>
+	<style>
+		table { width: 100%; border-collapse: collapse; }
+		th, td { padding: 8px; text-align: center; border: 1px solid #ccc; }
+	</style>
+</head>
+<body>
+
+<h1>입양 게시판</h1>
+
+<!-- 총 게시글 수 표시 -->
+<p>총 게시글 수: ${countBoards} 개</p>
+
+<!-- 게시글 리스트 -->
+<table>
+	<thead>
+		<tr>
+			<th>번호</th>
+			<th>제목</th>
+			<th>작성자</th>
+			<th>작성일</th>
+			<th>등급</th>
+			<th>좋아요</th>
+			<th>조회수</th>
+			<th>가격</th>
+			<th>지역</th>
+		</tr>
+	</thead>
+	<tbody>
+		<c:forEach var="board" items="${typeList}">
+			<tr>
+				<td>${num}</td>
+				<td>${title}</td>
+				<td>${userName}</td>
+				<td>${registerDate}</td>
+				<td>${grade}</td>
+				<td>${like}</td>
+				<td>${views}</td>
+				<td><c:if test="${board.price > 0}">${price}원</c:if></td>
+				<td>${area}</td>
+			</tr>
+		</c:forEach>
+	</tbody>
+</table>
+
+<!-- 게시글 등록 버튼 -->
+<form action="/insertBoard" method="get">
+	<button type="submit">게시글 등록</button>
+</form>
+
+</body>
+</html>

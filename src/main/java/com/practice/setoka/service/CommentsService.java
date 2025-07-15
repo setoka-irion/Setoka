@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.practice.setoka.dao.Comments;
-import com.practice.setoka.dto.CommentsInfoDto;
+import com.practice.setoka.dto.CommentInfoDto;
 import com.practice.setoka.mapper.CommentsMapper;
 
 @Service
@@ -40,7 +40,7 @@ public class CommentsService {
 	}
 	
 	//해당 게시글의 댓글 보기
-	public List<CommentsInfoDto> findCommentsByBoardNum(int boardNum){
+	public List<CommentInfoDto> findCommentsByBoardNum(int boardNum){
 		return commentsMapper.findCommentsByBoardNum(boardNum);
 	}
 }

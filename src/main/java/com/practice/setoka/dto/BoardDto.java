@@ -1,9 +1,13 @@
 package com.practice.setoka.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class BoardDto {
 	
 	private int userNum;
+	@NotBlank(message = "제목은 필수입니다.")
 	private String title;
+	@NotBlank(message = "내용은 필수입니다.")
 	private String content;
 	private int type;
 	private int price;

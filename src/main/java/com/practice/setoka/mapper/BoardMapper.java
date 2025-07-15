@@ -3,9 +3,14 @@ package com.practice.setoka.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import com.practice.setoka.dao.Board;
+import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
 
+@Mapper
 public interface BoardMapper {
 
 	//	총 게시글 수 
@@ -13,9 +18,12 @@ public interface BoardMapper {
 	
 	//	특정 게시판 전체리스트
 	List<BoardWithUserDto> findBoardsByType(int type);
-	 
+	
+	// 	특정 게시글 내용 게시글 넘버로 찾기(리스트 아님)
+	BoardWithUserDto findBoardByNum(@Param("num") int num);
+	
 	//	등록
-	void insertBoard(Board board);
+	void insertBoard(BoardDto boardDto);
 	
 	//	수정 
 	void updateBoard(Board board);

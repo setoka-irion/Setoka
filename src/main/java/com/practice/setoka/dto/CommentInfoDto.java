@@ -2,7 +2,7 @@ package com.practice.setoka.dto;
 
 import java.time.LocalDateTime;
 
-public class CommentsInfoDto {
+public class CommentInfoDto {
 		
 	//comment
 		int num;

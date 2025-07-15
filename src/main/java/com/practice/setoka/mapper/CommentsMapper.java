@@ -2,9 +2,12 @@ package com.practice.setoka.mapper;
 
 import java.util.List;
 
-import com.practice.setoka.dao.Comments;
-import com.practice.setoka.dto.CommentsInfoDto;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.practice.setoka.dao.Comments;
+import com.practice.setoka.dto.CommentInfoDto;
+
+@Mapper
 public interface CommentsMapper {
 	
 	//등록
@@ -20,5 +23,5 @@ public interface CommentsMapper {
 	void increaseCommentLikes(int num);
 	
 	//해당 게시글 댓글 보기
-	List<CommentsInfoDto> findCommentsByBoardNum(int boardNum);
+	List<CommentInfoDto> findCommentsByBoardNum(int boardNum);
 }
