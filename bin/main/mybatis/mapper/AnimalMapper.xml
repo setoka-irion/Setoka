@@ -39,16 +39,16 @@
   </insert>
 
   <!-- 애견 정보 수정 -->
-  <update id="updateAnimal" parameterType="com.practice.setoka.dto.AnimalDto">
+  <update id="updateAnimal">
     UPDATE animal
-    SET userNum = #{userNum},
-        animalName = #{animalName},
-        species = #{species},
-        age = #{age},
-        status = #{status},
-        gender = #{gender},
-        togetherDate = #{togetherDate},
-        profilePath = #{profilePath}
+    SET userNum = #{animalDto.userNum},
+        animalName = #{animalDto.animalName},
+        species = #{animalDto.species},
+        age = #{animalDto.age},
+        status = #{animalDto.status},
+        gender = #{animalDto.gender},
+        togetherDate = #{animalDto.togetherDate},
+        profilePath = #{animalDto.profilePath}
     WHERE num = #{num}
   </update>
 

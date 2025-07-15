@@ -82,7 +82,8 @@
 <!-- 추가 모달 -->
 <div id="addModal" class="modal">
   <h2>애견 추가</h2>
-  <form id="addForm" th:action="@{/myanimal/add}" method="post">
+  <form id="addForm" th:action="@{/myanimal/add}" method="post" enctype="multipart/form-data">
+	<label>프로필 사진: <input type="file" name="profileImage" accept="image/*" /></label><br/><br/>
     <label>이름: <input type="text" name="animalName" required /></label><br/><br/>
     <label>종: <input type="text" name="species" required /></label><br/><br/>
     <label>나이: <input type="number" name="age" min="0" required /></label><br/><br/>
@@ -108,9 +109,10 @@
 <!-- 수정 모달 -->
 <div id="editModal" class="modal">
   <h2>애견 수정</h2>
-  <form id="editForm">
+  <form id="editForm" enctype="multipart/form-data">
     <input type="hidden" name="animalNum" id="editAnimalNum" />
-    <label>이름: <input type="text" name="animalName" id="editAnimalName" required /></label><br/><br/>
+	<label>프로필 사진: <input type="file" name="profileImage" id="editProfileImage" accept="image/*" /></label><br/><br/>
+	<label>이름: <input type="text" name="animalName" id="editAnimalName" required /></label><br/><br/>
     <label>종: <input type="text" name="species" id="editSpecies" required /></label><br/><br/>
     <label>나이: <input type="number" name="age" id="editAge" min="0" required /></label><br/><br/>
     <label>성별:
@@ -170,10 +172,9 @@
     const formData = new FormData(form);
     const animalNum = formData.get('animalNum');
 
-    fetch(`/myanimal/edit?animalNum=${animalNum}`, {
+    fetch(`/myanimal/edit`, {
       method: 'POST',
-      body: new URLSearchParams(formData),
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData,
     })
     .then(res => res.text())
     .then(text => {
