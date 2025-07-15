@@ -25,5 +25,8 @@ public interface UserMapper
 	boolean updateUser(UsersDto dto);
 	//유저 삭제
 	void deleteUser(@Param("num") int num);
-	
+	//프로필 사진 수정
+	boolean updateProfilephotoPath(@Param("path") String path, @Param("id") String id);
+	//프로필 사진 주소 가져오기
+	String selectProfilephotoPath(@Param("id") String id);
 }
