@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import com.practice.setoka.Redirect;
 import com.practice.setoka.Upload;
@@ -71,7 +72,6 @@ public class MyAnimalPageController {
             animalDto.setProfilePath(upload.fileUpload(file));
         }
         
-        System.out.println(animalDto.getProfilePath());
         // 날짜 문자열 → LocalDateTime 변환
         LocalDateTime dateTime = LocalDate.parse(togetherDateStr).atStartOfDay();
         animalDto.setTogetherDate(dateTime);

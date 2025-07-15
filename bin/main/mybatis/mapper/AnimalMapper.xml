@@ -19,7 +19,7 @@
 
   <!-- 유저 번호로 해당 유저의 애견 목록 조회 -->
   <select id="selectByUserNum" resultMap="animalResultMap" parameterType="int">
-    SELECT num, userNum, animalName, species, age, status, gender, togetherDate
+    SELECT *
     FROM animal
     WHERE userNum = #{userNum}
     ORDER BY num
