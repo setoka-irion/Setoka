@@ -15,6 +15,7 @@ public class Users {
 	private Status status;
 	private int point;
 	private Grade grade = Grade.브론즈;;
+	private String profilePath;
 	private LocalDateTime registerDate;
 	
 	public int getNum() {
@@ -70,6 +71,12 @@ public class Users {
 	}
 	public void setGrade(Grade grade) {
 		this.grade = grade;
+	}
+	public String getProfilePath() {
+		return profilePath;
+	}
+	public void setProfilePath(String profilePath) {
+		this.profilePath = profilePath;
 	}
 	public LocalDateTime getRegisterDate() { return registerDate; }
 	public void setRegisterDate(LocalDateTime registerDate) { this.registerDate = registerDate; }

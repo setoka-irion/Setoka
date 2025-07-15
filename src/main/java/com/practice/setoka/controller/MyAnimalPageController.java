@@ -54,9 +54,9 @@ public class MyAnimalPageController {
     // 애견 추가
     @PostMapping("/myanimal/add")
     public String addAnimal(
-        AnimalDto animalDto,
-        @RequestParam("togetherDateStr") String togetherDateStr,
-        HttpSession session) {
+				        AnimalDto animalDto,
+				        @RequestParam("togetherDateStr") String togetherDateStr,
+				        HttpSession session) {
         Users user = (Users) session.getAttribute(Redirect.loginSession);
         if (user == null) {
             return "redirect:/Login";

@@ -21,36 +21,17 @@ public class AnimalService {
     }
 
     // DTO를 받아 새 애견 등록
-    public int insertAnimal(AnimalDto animalDto) {
-        Animal animal = new Animal();
-        animal.setUserNum(animalDto.getUserNum());
-        animal.setAnimalName(animalDto.getAnimalName());
-        animal.setSpecies(animalDto.getSpecies());
-        animal.setAge(animalDto.getAge());
-        animal.setStatus(animalDto.getStatus());
-        animal.setGender(animalDto.getGender());
-        animal.setTogetherDate(animalDto.getTogetherDate());
-
-        return animalMapper.insertAnimal(animal);
+    public boolean insertAnimal(AnimalDto animalDto) {      
+        return animalMapper.insertAnimal(animalDto);
     }
 
     // DTO를 받아 애견 정보 수정
-    public int updateAnimal(int num, AnimalDto animalDto) {
-        Animal animal = new Animal();
-        animal.setNum(num);
-        animal.setUserNum(animalDto.getUserNum());
-        animal.setAnimalName(animalDto.getAnimalName());
-        animal.setSpecies(animalDto.getSpecies());
-        animal.setAge(animalDto.getAge());
-        animal.setStatus(animalDto.getStatus());
-        animal.setGender(animalDto.getGender());
-        animal.setTogetherDate(animalDto.getTogetherDate());
-
-        return animalMapper.updateAnimal(animal);
+    public boolean updateAnimal(int num, AnimalDto animalDto) {
+        return animalMapper.updateAnimal(animalDto, num);
     }
 
     // 애견 삭제
-    public int deleteAnimal(int num) {
+    public boolean deleteAnimal(int num) {
         return animalMapper.deleteAnimal(num);
     }
 
@@ -64,9 +45,5 @@ public class AnimalService {
         return animalMapper.selectByUserNum(userNum);
     }
 
-    // 애견 등록
-    public void insertAnimal(Animal animal) {
-        animalMapper.insertAnimal(animal);
-    }
 }
 
