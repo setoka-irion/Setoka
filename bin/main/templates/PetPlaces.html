@@ -20,7 +20,7 @@
 	<script>
 		const API_KEY = "XHC41TNS500y6frF0TuMqYySvFKQL6hse4IAH4hvUiCQKZwN3CAtfQcSzmNIOOcPpDJRG%2B6egChnmBDuJt1mIw%3D%3D";
 		const API_URL = `https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc?page=1&perPage=300&serviceKey=${API_KEY}`;
-		const totalPages = 3;
+		const totalPages = 10;
 
 		let allItems = [];
 		let markers = [];
@@ -79,10 +79,10 @@
 				const address = item['도로명주소'];
 				li.textContent = `${item['시설명']} - ${address}`;
 				place_list.appendChild(li);
-				
+
 				displayMarker(address, index === 0 ? (coords) => map.setCenter(coords) : null);
-				
-				li.addEventListener('click',()=> {
+
+				li.addEventListener('click', () => {
 					displayMarker(address, coords => map.setCenter(coords));
 				});
 			});
@@ -96,10 +96,11 @@
 
 		async function fetchAll() {
 			for (let page = 1; page < totalPages; page++) {
-				const reponse = await fetch();
+				const url = `${API_URL}&page=${page}`;
+				const reponse = await fetch(url);
 				const data = await response.json();
 
-				allItems.push(...data.date);
+				allItems.push(...data.data);
 			}
 			filter(allItems);
 		}
@@ -127,7 +128,9 @@
 		};
 
 	</script>
-
+	<div class="buttons-container">
+		<button type="button" onclick="location.href='/';">홈으로</button>
+	</div>
 </body>
 
 </html>

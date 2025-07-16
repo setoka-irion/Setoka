@@ -48,7 +48,7 @@
 <div th:if="${!#lists.isEmpty(animalList)}" style="width: 800px; margin: auto;">
   <table>
     <thead>
-      <tr><th>사진</th><th>이름</th><th>종</th><th>나이</th><th>성별</th><th>수정</th><th>삭제</th></tr>
+      <tr><th>프로필사진</th><th>이름</th><th>종</th><th>나이</th><th>성별</th><th>수정</th><th>삭제</th></tr>
     </thead>
     <tbody>
       <tr th:each="animal : ${animalList}">
@@ -116,6 +116,7 @@
   <h2>애견 수정</h2>
   <form id="editForm" enctype="multipart/form-data">
     <input type="hidden" name="animalNum" id="editAnimalNum" />
+	<input type="hidden" name="existingProfilePath" id="editExistingProfilePath" />
 	<label>프로필 사진: <input type="file" name="profileImage" id="editProfileImage" accept="image/*" /></label><br/><br/>
 	<label>이름: <input type="text" name="animalName" id="editAnimalName" required /></label><br/><br/>
     <label>종: <input type="text" name="species" id="editSpecies" required /></label><br/><br/>
@@ -160,7 +161,8 @@
         document.getElementById('editGender').value = data.gender;
         document.getElementById('editStatus').value = data.status;
         document.getElementById('editTogetherDate').value = data.togetherDate ? data.togetherDate.substr(0,10) : '';
-        editModal.classList.add('active');
+		document.getElementById('editExistingProfilePath').value = data.profilePath || '';
+		editModal.classList.add('active');
         modalOverlay.classList.add('active');
       })
       .catch(() => alert('데이터를 불러오는 중 오류가 발생했습니다.'));

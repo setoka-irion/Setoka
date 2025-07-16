@@ -5,6 +5,7 @@ import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,7 @@ import com.practice.setoka.dao.Animal;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.service.AnimalService;
 import com.practice.setoka.service.AttendCheckService;
-
-import jakarta.servlet.http.HttpSession;
+import com.practice.setoka.springSecurity.CustomUserDetails;
 
 @Controller
 public class AttendCheckController {
@@ -32,15 +32,12 @@ public class AttendCheckController {
 
 	@GetMapping("/attendcheck")
 	public String calendar(Model model, @RequestParam(name = "year", required = false) Integer year,
-			@RequestParam(name = "month", required = false) Integer month, HttpSession session) {
+			@RequestParam(name = "month", required = false) Integer month, @AuthenticationPrincipal CustomUserDetails authUser) {
 
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
-		if (user == null) {
-			return "redirect:/Login";
-		}
-		int userNum = user.getNum();
+		Users users = (Users) authUser.getUser();
+		int userNum = users.getNum();
 		model.addAttribute("userNum", userNum);
-
+		
 		LocalDate now = LocalDate.now();
 		if (year == null || month == null) {
 			year = now.getYear();
@@ -73,8 +70,9 @@ public class AttendCheckController {
 
 	@PostMapping("/point")
 	public String attendPoint(@RequestParam(name = "date", required = false) String date,
-			RedirectAttributes redirectAttributes, HttpSession httpSession) {
-		var users = (Users) httpSession.getAttribute(Redirect.loginSession);
+			RedirectAttributes redirectAttributes, @AuthenticationPrincipal CustomUserDetails authUser) {
+		
+		var users = (Users) authUser.getUser();
 		int userNum = users.getNum();
 
 		LocalDate today = LocalDate.now();
@@ -95,8 +93,8 @@ public class AttendCheckController {
 
 	@GetMapping("/getDate")
 	@ResponseBody
-	public List<String> attendanceDates(HttpSession httpSession) {
-		var users = (Users) httpSession.getAttribute(Redirect.loginSession);
+	public List<String> attendanceDates(@AuthenticationPrincipal CustomUserDetails authUser) {
+		var users = (Users) authUser.getUser();		
 		int userNum = users.getNum();
 
 		List<String> attendanceDates = attendCheckService.getAttendanceDate(userNum);
