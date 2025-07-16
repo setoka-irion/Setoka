@@ -23,8 +23,8 @@ public class SecurityConfig {
 		http
 			.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(auth -> auth
-			    .requestMatchers("/","/Login", "/css/**", "/js/**").permitAll()
-//			    .requestMatchers("/MyPage").hasRole("관리자")
+			    .requestMatchers("/","/Login").permitAll()
+//			    .requestMatchers("/memos","/memo/detail","/animals").hasRole("관리자")
 			    .anyRequest().authenticated()
 			)
 			.formLogin(form -> form

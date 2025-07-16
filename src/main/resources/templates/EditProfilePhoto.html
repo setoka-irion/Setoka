@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+
+<head>
+	<title>프로필사진 수정</title>
+</head>
+
+<body>
+	<h1>프로필사진 수정</h1>
+
+	<form th:action="@{/EditProfilePhoto}" method="post" enctype="multipart/form-data">
+		<input type="file" id="profile" name="profile" multiple />
+
+	<div class="buttons-container">
+		<button type="submit">수정</button>
+	</div>
+	</form>
+
+</body>
+
+</html>

@@ -32,7 +32,6 @@ public class HomeController
 	        if(loginData != null) {
 	            model.addAttribute("login", loginData.getNickName());
 	            model.addAttribute("path", loginData.getProfilePath());
-	            System.out.println(loginData.getProfilePath());
 	        }
 	    }
 			
