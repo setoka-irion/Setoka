@@ -31,6 +31,15 @@
 	
   <!-- 애견 상세정보 -->
   <h1 th:text="${animal.animalName} + ' 상세정보'">애견 이름 상세정보</h1>
+
+  <div>
+      <img th:if="${animal.profilePath != null and animal.profilePath != ''}" 
+           th:src="@{/images/{filename}(filename=${animal.profilePath})}" 
+           alt="프로필 사진" 
+           style="width:150px; height:150px; object-fit:cover; border-radius:50%;" />
+      <p th:if="${animal.profilePath == null or animal.profilePath == ''}">프로필 사진이 없습니다.</p>
+  </div>
+  
   <table border="1" style="width:350px; margin:0 auto 30px;">
     <tr><th>이름</th><td th:text="${animal.animalName}"></td></tr>
     <tr><th>종</th><td th:text="${animal.species}"></td></tr>

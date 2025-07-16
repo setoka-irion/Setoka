@@ -91,28 +91,33 @@ public class MyAnimalPageController {
     @PostMapping("/myanimal/edit")
     @ResponseBody
     public String updateAnimal(
-        @RequestParam("animalNum") int animalNum,
-        AnimalDto animalDto,
-        @RequestParam("togetherDateStr") String togetherDateStr,
-        @RequestParam(value="profileImage", required=false) MultipartFile file,
-        HttpSession session) {
-    	
-        Users user = (Users) session.getAttribute(Redirect.loginSession);
-        if (user == null) {
-            return "redirect:/Login";
-        }
-        animalDto.setUserNum(user.getNum());
+    	    @RequestParam("animalNum") int animalNum,
+    	    AnimalDto animalDto,
+    	    @RequestParam("togetherDateStr") String togetherDateStr,
+    	    @RequestParam(value = "profileImage", required = false) MultipartFile file,
+    	    @RequestParam(value = "existingProfilePath", required = false) String existingProfilePath,
+    	    HttpSession session) {
 
-        if (file != null && !file.isEmpty()) {
-            animalDto.setProfilePath(upload.fileUpload(file));
-        }
-        
-        LocalDateTime dateTime = LocalDate.parse(togetherDateStr).atStartOfDay();
-        animalDto.setTogetherDate(dateTime);
+    	    Users user = (Users) session.getAttribute(Redirect.loginSession);
+    	    if (user == null) {
+    	        return "redirect:/Login";
+    	    }
+    	    animalDto.setUserNum(user.getNum());
 
-        animalService.updateAnimal(animalNum, animalDto);
-        return "success";
-    }
+    	    if (file != null && !file.isEmpty()) {
+    	        // 새 이미지 업로드
+    	        animalDto.setProfilePath(upload.fileUpload(file));
+    	    } else {
+    	        // 이미지 미변경 시 기존 경로 유지
+    	        animalDto.setProfilePath(existingProfilePath);
+    	    }
+
+    	    LocalDateTime dateTime = LocalDate.parse(togetherDateStr).atStartOfDay();
+    	    animalDto.setTogetherDate(dateTime);
+
+    	    animalService.updateAnimal(animalNum, animalDto);
+    	    return "success";
+    	}
     
     @GetMapping("/animal/detail")
     public String animalDetail(Model model,
