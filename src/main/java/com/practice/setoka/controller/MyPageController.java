@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +32,7 @@ import com.practice.setoka.service.AnimalService;
 import com.practice.setoka.service.MemoService;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
+import com.practice.setoka.springSecurity.CustomUserDetailsService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -41,20 +45,16 @@ public class MyPageController {
 	private AnimalService animalService;
 	@Autowired
     private MemoService memoService;
+	@Autowired
+	private CustomUserDetailsService userDetailsService;
 
 	// 마이페이지
 	@GetMapping(value = "MyPage")
-	public String myPage(HttpSession session,
-						Model model,
+	public String myPage(Model model,
 						@RequestParam(name = "year", required = false)Integer year,
 						@RequestParam(name = "month", required = false)Integer month,
 						@AuthenticationPrincipal CustomUserDetails authUser) {
-		Users user = (Users) authUser.getUser();
-//		if (user == null) {
-//			SessionUrlHandler.save(session, "MyPage");
-//			return Redirect.LoginForm;
-//		}
-		
+		Users user = (Users) authUser.getUser();		
 		//달력
 		int userNum = user.getNum();
     	model.addAttribute("userNum", userNum);
@@ -90,18 +90,13 @@ public class MyPageController {
 
 	// 비밀번호 재확인
 	@GetMapping(value = "PasswordConfirm")
-	public String passwordConfirmForm(HttpSession session) {
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
-		if (user == null) {
-			SessionUrlHandler.save(session, "MyPage");
-			return Redirect.LoginForm;
-		}
+	public String passwordConfirmForm() {
 		return "PasswordConfirm";
 	}
 
 	@PostMapping(value = "PasswordConfirm")
-	public String passwordConfirmSubmit(@RequestParam("password")String password, HttpSession session) {
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
+	public String passwordConfirmSubmit(@RequestParam("password")String password, HttpSession session, @AuthenticationPrincipal CustomUserDetails authUser) {
+		Users user = (Users) authUser.getUser();
 		if (Encryption.Decoder(user.getPassword(), password)) {
 			String url = SessionUrlHandler.load(session);
 			session.setAttribute("PasswordConfirmed", "PasswordConfirmed");
@@ -112,11 +107,8 @@ public class MyPageController {
 
 	// 개인정보수정
 	@GetMapping(value = "ModifyUser")
-	public String modifyUser(HttpSession session, Model model) {
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
-		if (user == null) {
-			return Redirect.home;
-		}
+	public String modifyUser(HttpSession session, Model model, @AuthenticationPrincipal CustomUserDetails authUser) {
+		Users user = (Users) authUser.getUser();
 
 		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
 		if (passwordConfirm == null) {
@@ -133,15 +125,19 @@ public class MyPageController {
 	}
 
 	@PostMapping(value = "ModifyUser")
-	public String modifyUserPost(HttpSession session, Model model, UsersDto userDto) {
-		// 로그인 되어 있는 사람의 정보
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
+	public String modifyUserPost(UsersDto userDto, @AuthenticationPrincipal CustomUserDetails authUser) {
+		Users user = (Users) authUser.getUser();
+		
 		// 수정될 정보
 		if (userService.updateUserDto(userDto)) {
 			// 정보 수정 성공
-			session.removeAttribute(Redirect.loginSession);
-			user = userService.selectByID(userDto.getId());
-			session.setAttribute(Redirect.loginSession, user);
+			UserDetails updatedUser = userDetailsService.loadUserByUsername(user.getId());
+			UsernamePasswordAuthenticationToken newAuth =
+					new UsernamePasswordAuthenticationToken(
+							updatedUser,
+							updatedUser.getPassword(),
+							updatedUser.getAuthorities());
+			SecurityContextHolder.getContext().setAuthentication(newAuth);		
 		} else {
 			// 정보 수정 실패
 		}
@@ -152,11 +148,6 @@ public class MyPageController {
 	// 비밀번호 변경
 	@GetMapping(value = "ChangePassword")
 	public String changePassword(HttpSession session) {
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
-		if (user == null) {
-			return Redirect.home;
-		}
-		
 		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
 		if (passwordConfirm == null) {
 			SessionUrlHandler.save(session, "ChangePassword");
@@ -170,15 +161,15 @@ public class MyPageController {
 	@PostMapping(value = "ChangePassword")
 	public String changePasswordsubmit(@RequestParam("password")String password,
 									@RequestParam("passwordCon")String passwordCon,
-									HttpSession session) {
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
+									HttpSession session,
+									@AuthenticationPrincipal CustomUserDetails authUser) {
+		Users user = (Users) authUser.getUser();
 		String encordPassowrd = Encryption.Encoder(password);
 		if (Encryption.Decoder(encordPassowrd, passwordCon) && !Encryption.Decoder(user.getPassword(), passwordCon)) {
 			UsersDto dto = new UsersDto(user);
 			dto.setPassword(encordPassowrd);
 			userService.updateUserDto(dto);
-			session.removeAttribute(Redirect.loginSession);
-			return Redirect.home;
+			return Redirect.Logout;
 		}
 		return Redirect.changePassword;
 	}
@@ -203,23 +194,18 @@ public class MyPageController {
 
 	// 탈퇴
 	@GetMapping(value = "Withdrawal")
-	public String withdrawal(HttpSession session) {
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
-		if (user == null) {
-			return Redirect.home;
-		}
+	public String withdrawal() {
 		return "Withdrawal";
 	}
 	
 	@PostMapping(value = "Withdrawal")
-	public String withdrawalSubmit(@RequestParam("password")String password, HttpSession session) {
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
+	public String withdrawalSubmit(@RequestParam("password")String password, @AuthenticationPrincipal CustomUserDetails authUser) {
+		Users user = (Users)authUser.getUser();
 		if(Encryption.Decoder(user.getPassword(), password)) {
 			UsersDto dto = new UsersDto(user);
 			dto.setStatus(Status.삭제);
 			userService.updateUserDto(dto);
-			session.removeAttribute(Redirect.loginSession);
-			return Redirect.home;
+			return Redirect.Logout;
 		}
 		return Redirect.withdrawal;
 	}
@@ -272,22 +258,26 @@ public class MyPageController {
 	
 	@GetMapping("/memo/detail")
 	@ResponseBody
-	public Map<String, Object> getMemoDetail(@RequestParam("memoNum")int memoNum) {
+	public Map<String, Object> getMemoDetail(@RequestParam("memoNum")int memoNum, @AuthenticationPrincipal CustomUserDetails authUser) {
 	    Memo memo = memoService.memoSelectByNum(memoNum);
+	    Users user = authUser.getUser();
 	    Map<String, Object> result = new HashMap<>();
-	    if (memo != null) {
-	        result.put("num", memo.getNum());
-	        result.put("title", memo.getTitle());
-	        result.put("content", memo.getContent());
-	    if (memo.getScheduleDate() != null) {
-	        result.put("scheduleDate", memo.getScheduleDate().toLocalDate().toString());
-	    } else {
-	        result.put("scheduleDate", "");
-	    }
-	        result.put("animalNum", memo.getAnimalNum());
-	        
-	        Animal animal = animalService.getAnimalByNum(memo.getAnimalNum());
-	        result.put("animalName", animal != null ? animal.getAnimalName() : "알 수 없음");
+	    if(user.getNum()==memo.getUserNum()) {
+	    	if (memo != null) {
+	    		result.put("num", memo.getNum());
+	    		result.put("title", memo.getTitle());
+	    		result.put("content", memo.getContent());
+	    		if (memo.getScheduleDate() != null) {
+	    			result.put("scheduleDate", memo.getScheduleDate().toLocalDate().toString());
+	    		} else {
+	    			result.put("scheduleDate", "");
+	    		}
+	    		result.put("animalNum", memo.getAnimalNum());
+	    		
+	    		Animal animal = animalService.getAnimalByNum(memo.getAnimalNum());
+	    		result.put("animalName", animal != null ? animal.getAnimalName() : "알 수 없음");
+	    	}
+	    	return result;
 	    }
 	    return result;
 	}

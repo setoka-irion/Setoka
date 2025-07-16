@@ -4,6 +4,7 @@ public class Redirect
 {
 	public static final String home = "redirect:/";
 	public static final String LoginForm = "redirect:/Login";
+	public static final String Logout = "redirect:/Logout";
 	public static final String passwordConfirm = "redirect:/PasswordConfirm";
 	public static final String changePassword = "redirect:/ChangePassword";
 	public static final String withdrawal = "redirect:/Withdrawal";
