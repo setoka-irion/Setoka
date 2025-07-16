@@ -21,7 +21,10 @@ public class AnimalService {
     }
 
     // DTO를 받아 새 애견 등록
-    public boolean insertAnimal(AnimalDto animalDto) {      
+    public boolean insertAnimal(AnimalDto animalDto) {
+    	if(animalDto.getProfilePath() == null)
+    		return animalMapper.insertAnimal2(animalDto);
+    	
         return animalMapper.insertAnimal(animalDto);
     }
 
