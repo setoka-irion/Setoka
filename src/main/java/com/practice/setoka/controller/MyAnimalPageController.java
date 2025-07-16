@@ -6,6 +6,7 @@ import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
-import com.practice.setoka.Redirect;
 import com.practice.setoka.Upload;
 import com.practice.setoka.dao.Animal;
 import com.practice.setoka.dao.Memo;
@@ -23,8 +22,7 @@ import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.AnimalDto;
 import com.practice.setoka.service.AnimalService;
 import com.practice.setoka.service.MemoService;
-
-import jakarta.servlet.http.HttpSession;
+import com.practice.setoka.springSecurity.CustomUserDetails;
 
 @Controller
 public class MyAnimalPageController {
@@ -37,11 +35,8 @@ public class MyAnimalPageController {
     private Upload upload;
     
     @GetMapping("/myanimal")
-    public String showMyAnimalPage(Model model, HttpSession session) {
-        Users user = (Users) session.getAttribute(Redirect.loginSession);
-        if (user == null) {
-            return "redirect:/Login";
-        }
+    public String showMyAnimalPage(Model model, @AuthenticationPrincipal CustomUserDetails authUser) {
+        Users user = (Users) authUser.getUser();
         int userNum = user.getNum();
 
         List<Animal> animals = animalService.getAnimalsByUserNum(userNum);
@@ -61,11 +56,9 @@ public class MyAnimalPageController {
     public String addAnimal(
 				        AnimalDto animalDto, @RequestParam("profileImage") MultipartFile file,
 				        @RequestParam("togetherDateStr") String togetherDateStr,
-				        HttpSession session) {
-        Users user = (Users) session.getAttribute(Redirect.loginSession);
-        if (user == null) {
-            return "redirect:/Login";
-        }
+				        @AuthenticationPrincipal CustomUserDetails authUser) {
+        Users user = (Users) authUser.getUser();
+
         animalDto.setUserNum(user.getNum());
 
         if (file != null && !file.isEmpty()) {
@@ -91,40 +84,41 @@ public class MyAnimalPageController {
     @PostMapping("/myanimal/edit")
     @ResponseBody
     public String updateAnimal(
-        @RequestParam("animalNum") int animalNum,
-        AnimalDto animalDto,
-        @RequestParam("togetherDateStr") String togetherDateStr,
-        @RequestParam(value="profileImage", required=false) MultipartFile file,
-        HttpSession session) {
-    	
-        Users user = (Users) session.getAttribute(Redirect.loginSession);
-        if (user == null) {
-            return "redirect:/Login";
-        }
-        animalDto.setUserNum(user.getNum());
+    	    @RequestParam("animalNum") int animalNum,
+    	    AnimalDto animalDto,
+    	    @RequestParam("togetherDateStr") String togetherDateStr,
+    	    @RequestParam(value = "profileImage", required = false) MultipartFile file,
+    	    @RequestParam(value = "existingProfilePath", required = false) String existingProfilePath,
+    	    @AuthenticationPrincipal CustomUserDetails authUser) {
 
-        if (file != null && !file.isEmpty()) {
-            animalDto.setProfilePath(upload.fileUpload(file));
-        }
-        
-        LocalDateTime dateTime = LocalDate.parse(togetherDateStr).atStartOfDay();
-        animalDto.setTogetherDate(dateTime);
+    	    Users user = (Users) authUser.getUser();
 
-        animalService.updateAnimal(animalNum, animalDto);
-        return "success";
-    }
+    	    animalDto.setUserNum(user.getNum());
+
+    	    if (file != null && !file.isEmpty()) {
+    	        // 새 이미지 업로드
+    	        animalDto.setProfilePath(upload.fileUpload(file));
+    	    } else {
+    	        // 이미지 미변경 시 기존 경로 유지
+    	        animalDto.setProfilePath(existingProfilePath);
+    	    }
+
+    	    LocalDateTime dateTime = LocalDate.parse(togetherDateStr).atStartOfDay();
+    	    animalDto.setTogetherDate(dateTime);
+
+    	    animalService.updateAnimal(animalNum, animalDto);
+    	    return "success";
+    	}
     
     @GetMapping("/animal/detail")
     public String animalDetail(Model model,
             @RequestParam(name = "animalNum") int animalNum,
             @RequestParam(name = "year", required = false) Integer year,
             @RequestParam(name = "month", required = false) Integer month,
-            HttpSession session) {
+            @AuthenticationPrincipal CustomUserDetails authUser) {
 
-        Users user = (Users) session.getAttribute(Redirect.loginSession);
-        if (user == null) {
-            return "redirect:/Login";
-        }
+        Users user = (Users) authUser.getUser();
+
         int userNum = user.getNum();
         model.addAttribute("userNum", userNum);
         model.addAttribute("animalNum", animalNum);
