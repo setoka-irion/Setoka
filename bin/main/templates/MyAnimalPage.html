@@ -17,7 +17,6 @@
   </style>
 </head>
 <body>
-
 <h1 style="text-align:center;">내 애견 목록</h1>
 
 <!-- 애견이 없으면 추가 폼만 보여줌 -->
@@ -49,11 +48,17 @@
 <div th:if="${!#lists.isEmpty(animalList)}" style="width: 800px; margin: auto;">
   <table>
     <thead>
-      <tr><th>이름</th><th>종</th><th>나이</th><th>성별</th><th>수정</th><th>삭제</th></tr>
+      <tr><th>사진</th><th>이름</th><th>종</th><th>나이</th><th>성별</th><th>수정</th><th>삭제</th></tr>
     </thead>
     <tbody>
       <tr th:each="animal : ${animalList}">
         
+		<td>
+			<img th:if="${animal.profilePath != null}" th:src="@{/images/{filename}(filename=${animal.profilePath})}"
+			alt="프로필" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;" />
+		   <span th:if="${animal.profilePath == null or animal.profilePath == ''}">없음</span>
+		</td>
+		
 		<td>
 		  <a th:href="@{/animal/detail(animalNum=${animal.num})}" 
 		     th:text="${animal.animalName}"></a>
