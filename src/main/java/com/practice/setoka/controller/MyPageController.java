@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.AnimalService;
 import com.practice.setoka.service.MemoService;
 import com.practice.setoka.service.UserService;
+import com.practice.setoka.springSecurity.CustomUserDetails;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -45,12 +47,13 @@ public class MyPageController {
 	public String myPage(HttpSession session,
 						Model model,
 						@RequestParam(name = "year", required = false)Integer year,
-						@RequestParam(name = "month", required = false)Integer month) {
-		Users user = (Users) session.getAttribute(Redirect.loginSession);
-		if (user == null) {
-			SessionUrlHandler.save(session, "MyPage");
-			return Redirect.LoginForm;
-		}
+						@RequestParam(name = "month", required = false)Integer month,
+						@AuthenticationPrincipal CustomUserDetails authUser) {
+		Users user = (Users) authUser.getUser();
+//		if (user == null) {
+//			SessionUrlHandler.save(session, "MyPage");
+//			return Redirect.LoginForm;
+//		}
 		
 		//달력
 		int userNum = user.getNum();
@@ -258,8 +261,8 @@ public class MyPageController {
 	@ResponseBody
 	public List<Memo> getMemos(@RequestParam(name="year")int year,
 							@RequestParam(name="month")int month,
-							HttpSession session) {
-	    Users user = (Users) session.getAttribute(Redirect.loginSession);
+							@AuthenticationPrincipal CustomUserDetails authUser) {
+	    Users user = (Users) authUser.getUser();
 	    if (user == null) {
 	    return Collections.emptyList(); // 혹은 예외 처리
 	    }
@@ -288,4 +291,12 @@ public class MyPageController {
 	    }
 	    return result;
 	}
+	
+	// 유저번호로 해당 유저의 애견 목록 반환 (JSON)
+    @GetMapping("/animals")
+    @ResponseBody
+    public List<Animal> getAnimalsByUserNum(@AuthenticationPrincipal CustomUserDetails authUser) {
+    	Users user = (Users) authUser.getUser();
+        return animalService.getAnimalsByUserNum(user.getNum());
+    }
 }
