@@ -25,8 +25,8 @@ public class CommentsService {
 	}
 	
 	//수정
-	public void updateComment(Comments comments) {
-		commentsMapper.updateComment(comments);
+	public void updateComment(CommentInfoDto commentInfoDto) {
+		commentsMapper.updateComment(commentInfoDto);
 	}
 	
 	//삭제
@@ -43,4 +43,11 @@ public class CommentsService {
 	public List<CommentInfoDto> findCommentsByBoardNum(int boardNum){
 		return commentsMapper.findCommentsByBoardNum(boardNum);
 	}
+	
+	//댓글 수정용 댓글 하나 불러오기
+	public CommentInfoDto findCommentByNum(int num) {
+		return commentsMapper.findCommentByNum(num);
+	}
+	
+	
 }

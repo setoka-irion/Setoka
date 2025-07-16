@@ -10,9 +10,9 @@
 	</insert>
 	
 	<!-- 댓글 수정-->
-	<update id="updateComment" parameterType="com.practice.setoka.dao.Comments">
+	<update id="updateComment" parameterType="com.practice.setoka.dto.commentInfoDto">
 		UPDATE comments SET content = #{content}
-		WHERE num = #{num}
+		WHERE num = #{num} AND userNum = #{userNum}
 	</update>
 	
 	<!-- 댓글 삭제 -->
@@ -25,7 +25,7 @@
 		UPDATE comments SET likes = likes + 1 WHERE num = #{num}
 	</update>	
 		
-	<!-- 해당 게시글의 댓글 불러오기 -->
+	<!-- 해당 게시글의 댓글전체 불러오기 -->
 	<select id="findCommentsByBoardNum" resultMap="CommentInfoDto">
 		SELECT
     	c.num, c.userNum, c.parentNum, c.boardNum, c.content, 
@@ -41,6 +41,15 @@
 		ORDER BY c.registerDate DESC;
 	</select>
 	
+	<!--댓글 수정용 해당 댓글 하나만 불러오기-->
+	<select id="findCommentByNum" parameterType="int" resultMap="CommentInfoDto">
+    	SELECT c.num, c.userNum, c.boardNum, c.content, c.likes, c.registerDate,
+           u.nickname, u.grade, b.type
+    	FROM comments c
+    	JOIN users u ON c.userNum = u.num
+    	JOIN board b ON c.boardNum = b.num
+    	WHERE c.num = #{num} AND c.status = 0
+	</select>
 	
 	<resultMap id ="CommentInfoDto" type ="com.practice.setoka.dto.CommentInfoDto">
 		<result property="num" column="num" />

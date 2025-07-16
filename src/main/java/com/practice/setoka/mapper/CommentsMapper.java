@@ -15,7 +15,7 @@ public interface CommentsMapper {
 	void insertComment(CommentInfoDto commentInfoDto);
 	
 	//수정
-	void updateComment(Comments comments);
+	void updateComment(CommentInfoDto commentInfoDto);
 	
 	//삭제
 	void deleteComment(int num);
@@ -25,4 +25,7 @@ public interface CommentsMapper {
 	
 	//해당 게시글 댓글 보기
 	List<CommentInfoDto> findCommentsByBoardNum(@Param("boardNum")int boardNum);
+	
+	// 댓글 수정용 해당 댓글 하나 불러오기 
+	CommentInfoDto findCommentByNum(int num); 
 }
