@@ -6,6 +6,7 @@ import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.AnimalDto;
 import com.practice.setoka.service.AnimalService;
 import com.practice.setoka.service.MemoService;
+import com.practice.setoka.springSecurity.CustomUserDetails;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -37,11 +39,8 @@ public class MyAnimalPageController {
     private Upload upload;
     
     @GetMapping("/myanimal")
-    public String showMyAnimalPage(Model model, HttpSession session) {
-        Users user = (Users) session.getAttribute(Redirect.loginSession);
-        if (user == null) {
-            return "redirect:/Login";
-        }
+    public String showMyAnimalPage(Model model, @AuthenticationPrincipal CustomUserDetails authUser) {
+        Users user = (Users) authUser.getUser();
         int userNum = user.getNum();
 
         List<Animal> animals = animalService.getAnimalsByUserNum(userNum);
@@ -61,11 +60,9 @@ public class MyAnimalPageController {
     public String addAnimal(
 				        AnimalDto animalDto, @RequestParam("profileImage") MultipartFile file,
 				        @RequestParam("togetherDateStr") String togetherDateStr,
-				        HttpSession session) {
-        Users user = (Users) session.getAttribute(Redirect.loginSession);
-        if (user == null) {
-            return "redirect:/Login";
-        }
+				        @AuthenticationPrincipal CustomUserDetails authUser) {
+        Users user = (Users) authUser.getUser();
+
         animalDto.setUserNum(user.getNum());
 
         if (file != null && !file.isEmpty()) {
@@ -96,12 +93,10 @@ public class MyAnimalPageController {
     	    @RequestParam("togetherDateStr") String togetherDateStr,
     	    @RequestParam(value = "profileImage", required = false) MultipartFile file,
     	    @RequestParam(value = "existingProfilePath", required = false) String existingProfilePath,
-    	    HttpSession session) {
+    	    @AuthenticationPrincipal CustomUserDetails authUser) {
 
-    	    Users user = (Users) session.getAttribute(Redirect.loginSession);
-    	    if (user == null) {
-    	        return "redirect:/Login";
-    	    }
+    	    Users user = (Users) authUser.getUser();
+
     	    animalDto.setUserNum(user.getNum());
 
     	    if (file != null && !file.isEmpty()) {
@@ -124,12 +119,10 @@ public class MyAnimalPageController {
             @RequestParam(name = "animalNum") int animalNum,
             @RequestParam(name = "year", required = false) Integer year,
             @RequestParam(name = "month", required = false) Integer month,
-            HttpSession session) {
+            @AuthenticationPrincipal CustomUserDetails authUser) {
 
-        Users user = (Users) session.getAttribute(Redirect.loginSession);
-        if (user == null) {
-            return "redirect:/Login";
-        }
+        Users user = (Users) authUser.getUser();
+
         int userNum = user.getNum();
         model.addAttribute("userNum", userNum);
         model.addAttribute("animalNum", animalNum);
