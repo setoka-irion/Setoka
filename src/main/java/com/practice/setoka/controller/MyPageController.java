@@ -146,7 +146,7 @@ public class MyPageController {
 			// 정보 수정 실패
 		}
 		// 정보 수정
-		return "MyPage";
+		return Redirect.MyPage;
 	}
 
 	// 비밀번호 변경
