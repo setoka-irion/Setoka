@@ -20,8 +20,8 @@ public class CommentsService {
 	}
 	
 	//등록
-	public void insertComment(Comments comments) {
-		commentsMapper.insertComment(comments);
+	public void insertComment(CommentInfoDto commentInfoDto) {
+		commentsMapper.insertComment(commentInfoDto);
 	}
 	
 	//수정

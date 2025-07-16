@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -14,7 +15,10 @@ import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
+import com.practice.setoka.dto.CommentInfoDto;
+import com.practice.setoka.dto.CommentsDto;
 import com.practice.setoka.service.BoardService;
+import com.practice.setoka.service.CommentsService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -25,6 +29,8 @@ public class BoardActionController {
 	@Autowired
 	public BoardService boardService;
 	
+	@Autowired
+	public CommentsService commentsService;
 //	public String test(Model model)
 //	{
 //		int count = boardService.countBoards();
@@ -35,40 +41,102 @@ public class BoardActionController {
 //	}
 	
 	//	입양 메인페이지
-//	@GetMapping(value="AdoptMain")
-//	public String AdoptMain(Model model,
-//			@RequestParam(required = false)String keyword,
-//			@RequestParam(required = false)String field) {
-//		
-//		// 입양 페이지 전체 리스트(좋아요,조회수 포함)
-//		List<BoardWithUserDto> findBoardsByType = boardService.findBoardsByType(1);
-//		model.addAttribute("typeList", findBoardsByType);
-//		
-//		// 총 게시글 수
-//		int countBoards= boardService.countBoards();
-//		model.addAttribute("countBoards", countBoards);
-//		
-//		// 입양 게시판 내부 검색
-//		List<BoardWithUserDto> searchResult;
-//		if (keyword == null || keyword.isEmpty()) {
-//			searchResult = boardService.findBoardsByType(1);
-//		} else { 
-//			boardList = boardService.findBoardsByType(countBoards)
-//		}
-//		
-//		model.addAttribute("", searchResult);
-//		return "Board/Adopt";
-//	}
+	@GetMapping(value="Adopt")
+	public String AdoptMain(Model model,
+			@RequestParam(required = false)String keyword,
+			@RequestParam(required = false)String field) {
+		
+		//입양게시판 총 게시글 수
+		int countBoards= boardService.countBoards(1);
+		model.addAttribute("countBoards", countBoards);
+		
+		// 입양 게시판 내부 검색
+		List<BoardWithUserDto> searchResult;
+		if (keyword == null || keyword.isEmpty()) {
+			//검색 값 안넣었을 경우 전체 게시판 리스트 출력
+			searchResult = boardService.findBoardsByType(1);
+		} else { 
+			switch(field) {
+			case "title":
+				searchResult = boardService.findBoardsByTitle(keyword.trim());
+				break;
+			case "content":
+				searchResult = boardService.findBoardsByContent(keyword.trim());
+				break;
+			case "Nickname":
+				searchResult = boardService.findBoardsByUserId(keyword.trim());
+				break;
+			default:
+				searchResult = boardService.findBoardsByType(1);
+			}
+		}
+		//메인 리스트 출력
+		model.addAttribute("mainList", searchResult);
+		// 검색값 유지 (검색창 value 유지용)
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("field", field);
+		
+		return "Board/Adopt";
+	}
 	
-	// 입양 상세 페이지 
+	
+	
+	// 입양 상세 페이지 (조회수증가,댓글작성,좋아요기능)
 	@GetMapping(value="AdoptDetail")
-	public String AdoptDetail(@RequestParam("num")int num, Model model) {
+	public String AdoptDetail(@RequestParam("num")int num, Model model, HttpSession session) {
+		
+		//상세 내용 보여줌
 		BoardWithUserDto Detail = boardService.findBoardByNum(num);
 		model.addAttribute("detail", Detail);
+		
+		// 유저에 한해 조회수 증가
+		Users user = (Users) session.getAttribute(Redirect.loginSession);
+		if (user !=null) {
+			boardService.increaseViewsBoard(num);	
+		}
+		
+		// 해당 게시글 기존 댓글 보여주기
+		List<CommentInfoDto> comments = commentsService.findCommentsByBoardNum(num);
+		model.addAttribute("comments", comments);		
+		// 댓글 수정 기능
+		
+		// 댓글 삭제 기능
 		return "/Board/AdoptDetail";
 	}
 	
-	//입양 글 등록
+	//댓글 기능
+	@PostMapping(value="AdoptDetail/{num}/comment")
+	public String AddComment(
+			@PathVariable("num") int boardNum, // 게시글 넘버
+			@RequestParam("content") String content,// 댓글내용
+			@RequestParam(value= "parentNum", defaultValue ="0") int parentNum, 
+			HttpSession session, Model model, CommentInfoDto commentInfoDto) {
+		
+		//로그인 검증 
+		Users user = (Users) session.getAttribute(Redirect.loginSession);
+		if (user == null) { 
+			return "redirect:/Login"; //로그인하라는 문구만 뜨게 수정.
+		}
+		
+		// 댓글 작성
+		commentInfoDto.setUserNum(user.getNum());
+		commentInfoDto.setBoardNum(boardNum);
+		commentInfoDto.setContent(content);
+		commentInfoDto.setParentNum(parentNum);
+		
+		commentsService.insertComment(commentInfoDto);
+		
+		//댓글 수정
+		//댓글 삭제
+		return "redirect:/Board/AdoptDetail?num=" + boardNum;
+	}
+	
+	
+	
+	
+	
+	
+	//입양 글 등록 (조회수증가,댓글작성기능)
 	@GetMapping(value="AdoptRegist")
 	public String AdoptRegistForm(Model model, HttpSession session) {
 		//로그인 검증
@@ -101,8 +169,8 @@ public class BoardActionController {
 	}
 	
 	// 입양 게시판 수정
-	@GetMapping (value="AdoptUpdate")
-	public String AdoptUpdateForm(@RequestParam("num") int num, Model model, HttpSession session) {
+	@GetMapping (value="/AdoptUpdate/{num}")
+	public String AdoptUpdateForm(@PathVariable("num") int num, Model model, HttpSession session) {
 		
 		Users user = (Users) session.getAttribute(Redirect.loginSession);
 		if (user==null) {
@@ -115,34 +183,47 @@ public class BoardActionController {
 		return "Board/AdoptUpdate";
 	}
 	
+	//입양 게시판 수정
+	@PostMapping(value="AdoptUpdate/{num}")
+	public String AdoptUpdateSubmit(
+		@Valid BoardDto boardDto, BindingResult bindingResult, 
+		Model model, HttpSession session, @PathVariable("num") int num) {
+		
+		//로그인 검증
+		Users user = (Users) session.getAttribute(Redirect.loginSession);
+		if (user==null) {
+		return "redirect:/Login";
+			}
+		
+		//오류 발생시 다시 수정페이지로
+		if(bindingResult.hasErrors()) {
+			return "Board/AdoptUpdate";
+		}
+		
+		boardDto.setNum(num);
+		boardService.updateBoard(boardDto);
+		return "redirect:/Board/AdoptDetail/"+num;
+	}
 	
 	
-	// 댓글수
-	// 좋아요수
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// (로그인시)
-	// 입양 게시물 조회수 
-	// 입양 게시물 수정
 	// 입양 게시물 삭제
-	// 입양 게시물 좋아요
 	// 입양 상세 게시물 댓글작성
 	
 	
 	
-	
-//	// 입양 게시판 수정
-//	@GetMapping(value="AdoptUpdate")
-//	public String updateAdopt(Model model, HttpSession session) {
-//		BoardWithUserDto findBoardsByNum = boardService.findBoardsByNum()
-//	}
-//	
-//	@PostMapping(value="AdoptUpdate")
-//	public String updateAdopt(Model model, HttpSession session){
-//		
-//		boardService.updateBoard((Board)model.getAttribute("AdoptData"));
-//		return "redirect:/Adopt";
-//	}
-//	
+
 	
 //	조회수 증가 
 	

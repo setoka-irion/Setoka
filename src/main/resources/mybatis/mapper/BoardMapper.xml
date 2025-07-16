@@ -4,22 +4,23 @@
 <mapper namespace="com.practice.setoka.mapper.BoardMapper">
 	
 	<!-- 총 게시글 수 -->
-	<select id="countBoards" resultType="int">
-		SELECT COUNT(*) FROM board WHERE type != 0
+	<select id="countBoards" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM board WHERE type = #{type}
 	</select>
 	
 	
 	
 	<!-- 글 등록 -->
-	<insert id="insertBoard" parameterType="com.practice.setoka.dao.Board">
+	<insert id="insertBoard" parameterType="com.practice.setoka.dto.BoardDto">
 	INSERT INTO board (userNum, title, content, type, price, area)
 	VALUES (#{userNum}, #{title}, #{content}, #{type}, #{price}, #{area})
 	</insert>
 	
 	<!-- 글 수정 -->
-	<update id="updateBoard" parameterType="com.practice.setoka.dao.Board">
+	<update id="updateBoard" parameterType="com.practice.setoka.dto.BoardDto">
 		UPDATE board
-		SET title = #{title}, content = #{content}, 
+		SET 
+		title = #{title}, content = #{content}, 
 		price = #{price}, area = #{area}
 		WHERE num = #{num}
 	</update>
@@ -44,19 +45,19 @@
 	
 	
 	<!--유저 아이디로 검색 -->
-	<select id="listById" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
-		SELECT b.* 	
+	<select id="findBoardsByUserId" parameterType="String" resultMap="BoardWithUserDto">
+		SELECT b.* 	u.nickName
 		FROM board b JOIN users u ON b.userNum = u.num 
 		WHERE u.id = #{id} AND type !=0
 	</select>
 
 	<!-- 게시글 제목으로 검색 -->
-	<select id="listByTitle" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
+	<select id="findBoardsByTitle" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
 		SELECT * FROM board WHERE title LIKE CONCAT('%', #{title}, '%') AND type !=0
 	</select>
 
 	<!-- 게시글 내용으로 검색 -->
-	<select id="listByContent" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
+	<select id="findBoardsByContent" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
 		SELECT * FROM board WHERE content LIKE CONCAT('%', #{content}, '%') AND type !=0
 	</select>
 	

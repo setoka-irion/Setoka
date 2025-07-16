@@ -4,7 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 
 public class BoardDto {
 	
+
 	private int userNum;
+	private int num;
 	@NotBlank(message = "제목은 필수입니다.")
 	private String title;
 	@NotBlank(message = "내용은 필수입니다.")
@@ -13,6 +15,13 @@ public class BoardDto {
 	private int price;
 	private String area;
 	
+	
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
+	}
 	public int getUserNum() {
 		return userNum;
 	}

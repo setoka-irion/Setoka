@@ -3,6 +3,7 @@ package com.practice.setoka.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.practice.setoka.dao.Comments;
 import com.practice.setoka.dto.CommentInfoDto;
@@ -11,7 +12,7 @@ import com.practice.setoka.dto.CommentInfoDto;
 public interface CommentsMapper {
 	
 	//등록
-	void insertComment(Comments comments);
+	void insertComment(CommentInfoDto commentInfoDto);
 	
 	//수정
 	void updateComment(Comments comments);
@@ -23,5 +24,5 @@ public interface CommentsMapper {
 	void increaseCommentLikes(int num);
 	
 	//해당 게시글 댓글 보기
-	List<CommentInfoDto> findCommentsByBoardNum(int boardNum);
+	List<CommentInfoDto> findCommentsByBoardNum(@Param("boardNum")int boardNum);
 }

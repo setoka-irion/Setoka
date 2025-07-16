@@ -14,7 +14,7 @@ import com.practice.setoka.dto.BoardWithUserDto;
 public interface BoardMapper {
 
 	//	총 게시글 수 
-	int countBoards();
+	int countBoards(int num);
 	
 	//	특정 게시판 전체리스트
 	List<BoardWithUserDto> findBoardsByType(int type);
@@ -26,7 +26,7 @@ public interface BoardMapper {
 	void insertBoard(BoardDto boardDto);
 	
 	//	수정 
-	void updateBoard(Board board);
+	void updateBoard(BoardDto boardDto);
 	
 	//	삭제
 	void deleteBoard(int num);
@@ -50,5 +50,5 @@ public interface BoardMapper {
 	List<BoardWithUserDto> findBoardsByContent(String content);
 	
 	//	통합 검색
-	List<BoardWithUserDto> searchBoards(Map<String, Object> params);
+	List<BoardWithUserDto> searchAll(Map<String, Object> params);
 }
