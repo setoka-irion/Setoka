@@ -109,9 +109,7 @@ public class BoardActionController {
 		if(editCommentNum !=null) {
 			CommentInfoDto commentToEdit = commentsService.findCommentByNum(editCommentNum);
 			model.addAttribute("commentToEdit",commentToEdit);
-		}
-		// 댓글 삭제 기능
-		
+		}		
 		return "/Board/AdoptDetail";
 	}
 	
@@ -257,9 +255,15 @@ public class BoardActionController {
 		
 			return "redirect:/Board/Adopt";
 		}
-		
-	// (로그인시)
-	// 입양 게시물 삭제
 			
 		//	좋아요	
-}
+		@PostMapping("/AdoptDetail/{num}/like")
+		public String likeBoard(@PathVariable("num") int num,
+					@AuthenticationPrincipal CustomUserDetails authUser) {
+			//로그인했으면 좋아요
+		    if(authUser != null) {
+		        boardService.increaseLikesBoard(num);
+		    }
+		    return "redirect:/Board/AdoptDetail?num=" + num;
+		}
+	}
