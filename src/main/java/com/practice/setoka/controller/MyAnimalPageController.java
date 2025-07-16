@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
-import com.practice.setoka.Redirect;
 import com.practice.setoka.Upload;
 import com.practice.setoka.dao.Animal;
 import com.practice.setoka.dao.Memo;
@@ -25,8 +23,6 @@ import com.practice.setoka.dto.AnimalDto;
 import com.practice.setoka.service.AnimalService;
 import com.practice.setoka.service.MemoService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
-
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MyAnimalPageController {
