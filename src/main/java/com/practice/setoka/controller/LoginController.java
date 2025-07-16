@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.EmailService;
 import com.practice.setoka.service.UserService;
+import com.practice.setoka.springSecurity.CustomUserDetails;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -86,7 +88,7 @@ public class LoginController {
 
 	// 회원가입 완료
 	@PostMapping(value = "SignUp")
-	public String SingupSubmit(HttpSession session, Model model, UsersDto dto) {
+	public String SingupSubmit(Model model, UsersDto dto) {
 		//비밀번호 검증
 		if(!userService.passwordInvalid(dto.getPassword()))
 		{
@@ -132,7 +134,7 @@ public class LoginController {
 	}
 
 	@PostMapping(value = "/sendPasswordFind")
-	public String sendPasswordFind(@RequestParam("email") String email, HttpSession session, Model model)
+	public String sendPasswordFind(@RequestParam("email") String email, Model model)
 	{
 		System.out.println(email);
 		if(userService.selectByID(email) == null)
@@ -203,33 +205,4 @@ public class LoginController {
 		return ResponseEntity.ok("메일 전송 성공");
 	}
 	
-	@GetMapping(value = "/FileTest")
-	public String Test(HttpSession session)
-	{
-		Users user = (Users)session.getAttribute(Redirect.loginSession);
-		if(user == null)
-			return Redirect.home;
-		
-		return "/FileTest";
-	}
-	@PostMapping(value = "/FileTest")
-	public String TTEst(@RequestParam("profile") MultipartFile[] files, HttpSession session)
-	{
-		Users user = (Users)session.getAttribute(Redirect.loginSession);
-		if(user == null)
-			return Redirect.home;
-		
-		if(files == null && files.length == 0)
-		{
-			System.out.println("파일이 없음");
-		}
-		else
-		{
-			System.out.println("파일의 이름 : " + files[0].getOriginalFilename());
-		}
-		
-		userService.insertProfilephoto(files[0], new UsersDto(user));
-		
-		return "/FileTest";
-	}
 }

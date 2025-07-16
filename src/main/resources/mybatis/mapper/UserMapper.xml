@@ -30,7 +30,7 @@
   	</update>
   	
   	<update id="updateProfilephotoPath">
-  		UPDATE users SET Profilephoto = #{path} WHERE id = #{id}
+  		UPDATE users SET Profilepath = #{path} WHERE id = #{id}
   	</update>
   	
   	<select id="selectProfilephotoPath">
