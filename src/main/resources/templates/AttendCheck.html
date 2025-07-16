@@ -79,7 +79,7 @@
 			"7월", "8월", "9월", "10월", "11월", "12월"
 		];
 		async function loadAttendanceDates() {
-		
+
 			try {
 				const response = await fetch('/getDate');
 				attendanceDates = await response.json();
@@ -133,12 +133,12 @@
 					document.getElementById("selectedDateInput").value = selectedDate;
 					document.getElementById("hiddenForm").submit();
 				});
-				
+
 				const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-					if (attendanceDates.includes(formattedDate)) {
-						cell.classList.add("checked");
-						cell.innerHTML = day + "<br>✓";
-					}
+				if (attendanceDates.includes(formattedDate)) {
+					cell.classList.add("checked");
+					cell.innerHTML = day + "<br>✓";
+				}
 				//오늘인지 체크 
 				if (year == todayYear && month == todayMonth && day == todayDate) {
 					cell.classList.add("today");
@@ -174,7 +174,7 @@
 			generateCalendar(currentYear, currentMonth);
 		}
 		window.onload = function () {
-		    loadAttendanceDates();
+			loadAttendanceDates();
 		};
 
 	</script>
@@ -183,7 +183,7 @@
 		let msg = /*[[${message}]]*/ "";
 		alert(msg);
 	</script>
-	
+
 	<script th:if="${newAttendance != null}" th:inline="javascript">
 		const newDate = /*[[${newAttendance}]]*/ "";
 		if (newDate) {
@@ -191,6 +191,9 @@
 			generateCalendar(currentYear, currentMonth);
 		}
 	</script>
+	<div class="buttons-container">
+		<button type="button" onclick="location.href='/';">홈으로</button>
+	</div>
 </body>
 
 </html>
