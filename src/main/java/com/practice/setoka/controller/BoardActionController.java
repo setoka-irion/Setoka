@@ -278,6 +278,7 @@ public class BoardActionController {
 		    if(authUser != null) {
 		        boardService.increaseLikesBoard(num);
 		    }
+		    
 		    return "redirect:/AdoptDetail?num=" + num;
 		}
 	}
