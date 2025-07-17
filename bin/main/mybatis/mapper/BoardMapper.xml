@@ -8,8 +8,6 @@
 		SELECT COUNT(*) FROM board WHERE type = #{type}
 	</select>
 	
-	
-	
 	<!-- 글 등록 -->
 	<insert id="insertBoard" parameterType="com.practice.setoka.dto.BoardDto">
 	INSERT INTO board (userNum, title, content, type, price, area)
@@ -26,7 +24,7 @@
 	</update>
 	
 	<!-- 글 삭제 (타입을 0번으로 지정)-->
-	<update id="deleteBoard">
+	<update id="deleteBoard" parameterType="int">
 		UPDATE board set type='0' WHERE num = #{num}
 	</update> 
 
@@ -45,8 +43,8 @@
 	
 	
 	<!--유저 아이디로 검색 -->
-	<select id="findBoardsByUserId" parameterType="String" resultMap="BoardWithUserDto">
-		SELECT b.* 	u.nickName
+	<select id="findBoardsByUserId" parameterType="String" resultMap="boardWithUserMap">
+		SELECT b.*, 	u.nickName,
 		FROM board b JOIN users u ON b.userNum = u.num 
 		WHERE u.id = #{id} AND type !=0
 	</select>
@@ -70,7 +68,7 @@
 		ON b.userNum = u.num
 		<where>
 			b.type != '0'
-			<if test="searchType == 'Title'">
+			<if test="searchType == 'title'">
 				AND b.title LIKE CONCAT('%', #{keyword}, '%')
 			</if>
 			<if test="searchType == 'content'">
@@ -85,13 +83,19 @@
 	
 	<!-- 게시글 넘버로 불러오기(상세페이지)-->
 	<select id="findBoardByNum" resultMap="boardWithUserMap" parameterType="int">
-		SELECT * FROM board WHERE num = #{num}
+		SELECT 	u.id, 
+    	u.num AS userNum, u.nickname, u.realname, u.grade,
+   	 	b.num, b.userNum, b.title, b.content, b.type, b.likes, 
+   	 	b.views, b.price, b.area, b.registerDate
+  		FROM board b
+  		JOIN users u ON b.userNum = u.num
+  		WHERE b.num = #{num}
 	</select>
 		
 	<!-- 특정 게시판 전체리스트 -->
 	<select id="findBoardsByType" resultMap="boardWithUserMap" parameterType="int">
     	SELECT 
-    	u.id, u.num AS userNum, b.num, b.userNum, b.title, b.content,
+    	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
     	b.type, b.likes, b.views, b.price, b.area, b.registerDate
     	FROM board b JOIN users u 
     	ON b.userNum = u.num
@@ -125,7 +129,7 @@
 		<result property="views" column="views"/>
 		<result property="price" column="price"/>
 		<result property="area" column="area"/>
-		<result property="registerDate" column="registerDate"/>
+		<result property="registerDate" column="registerDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 	
 </mapper>

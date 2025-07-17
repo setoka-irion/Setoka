@@ -37,9 +37,6 @@ public interface BoardMapper {
 	//	좋아요
 	void increaseLikesBoard(int num); 
 	
-	//	싫어요
-	void decreaseLikesBoard(int num);
-	
 	//	유저 아이디로 검색
 	List<BoardWithUserDto> findBoardsByUserId(String id);
 	

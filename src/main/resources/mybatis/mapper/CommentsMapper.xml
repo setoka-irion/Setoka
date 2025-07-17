@@ -4,21 +4,21 @@
 <mapper namespace="com.practice.setoka.mapper.CommentsMapper">
 	
 	<!--댓글 작성-->
-	<insert id="insertComment"	parameterType="com.practice.setoka.dao.Comments">
-		INSERT Into comments ( userNum, parantNum, boardNum, content, likes, registerDate)
-		VALUES (#{userNum},#{parantNum}, #{boardNum}, #{content}, #{likes}, #{registerDate})
+	<insert id="insertComment"	parameterType="com.practice.setoka.dto.CommentInfoDto">
+		INSERT Into comments ( userNum, parentNum, boardNum, content, likes, registerDate)
+		VALUES (#{userNum},#{parentNum}, #{boardNum}, #{content}, #{likes}, #{registerDate})
 	</insert>
 	
 	<!-- 댓글 수정-->
-	<update id="updateComment" parameterType="com.practice.setoka.dto.commentInfoDto">
+	<update id="updateComment" parameterType="com.practice.setoka.dto.CommentInfoDto">
 		UPDATE comments SET content = #{content}
 		WHERE num = #{num} AND userNum = #{userNum}
 	</update>
 	
 	<!-- 댓글 삭제 -->
-	<delete id="deleteComment" parameterType="com.practice.setoka.dao.Comments">
+	<update id="deleteComment" parameterType="com.practice.setoka.dao.Comments">
 		UPDATE comments SET status = #{status} WHERE num = #{num}
-	</delete>
+	</update>
 		
 	<!-- 좋아용 -->
 	<update id="increaseCommentLikes" parameterType="int">
@@ -38,7 +38,7 @@
 		JOIN users u ON c.userNum = u.num
 		JOIN board b ON c.boardNum = b.num
 		WHERE c.boardNum = #{boardNum} AND c.status = 0 <!--정상댓글-->
-		ORDER BY c.registerDate DESC;
+		ORDER BY c.registerDate DESC
 	</select>
 	
 	<!--댓글 수정용 해당 댓글 하나만 불러오기-->
