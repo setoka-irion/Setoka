@@ -31,7 +31,7 @@
 
 
 	<!-- 조회수 증가 -->
-	<update id="addviews" parameterType="int">
+	<update id="increaseViewsBoard" parameterType="int">
 		UPDATE board SET views = views + 1 WHERE num = #{num}
 	</update>
 	

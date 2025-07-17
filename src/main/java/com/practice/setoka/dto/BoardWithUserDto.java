@@ -23,10 +23,10 @@ public class BoardWithUserDto {
 	private LocalDateTime registerDate;
 	
 	
-	public int getNum() {
+	public int getBoardNum() {
 		return boardNum;
 	}
-	public void setNum(int boardNum) {
+	public void setBoardNum(int boardNum) {
 		this.boardNum = boardNum;
 	}
 	public int getUserNum() {

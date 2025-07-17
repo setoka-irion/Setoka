@@ -95,9 +95,11 @@ public class BoardActionController {
 		model.addAttribute("detail", Detail);
 		
 		// 유저에 한해 조회수 증가 
-		Users user = (Users) authUser.getUser(); 
-		if (user !=null) {
-			boardService.increaseViewsBoard(num);	
+		if(authUser!=null) { //원래 authUser는 비어있기 때문에 아래의 코드가 있으면 무조건 로그인 시킴. 
+			Users user = (Users) authUser.getUser();
+			if (user !=null) {
+				boardService.increaseViewsBoard(num);	
+			}
 		}
 		
 		// 해당 게시글 기존 댓글 보여주기
@@ -109,7 +111,7 @@ public class BoardActionController {
 			CommentInfoDto commentToEdit = commentsService.findCommentByNum(editCommentNum);
 			model.addAttribute("commentToEdit",commentToEdit);
 		}		
-		return "/Board/AdoptDetail";
+		return "Board/AdoptDetail";
 	}
 	
 	
@@ -155,7 +157,7 @@ public class BoardActionController {
 		}
 		
 		boardService.insertBoard(boardDto);
-		return "redirect:/Board/Adopt";
+		return "redirect:/Adopt";
 	}
 	
 	
@@ -245,8 +247,8 @@ public class BoardActionController {
 		}
 	
 		//삭제
-		@PostMapping("/AdoptDelete")
-		public String adoptDelete(@RequestParam("num") int num, 
+		@PostMapping("/AdoptDelete/{num}")
+		public String adoptDelete(@PathVariable("num") int num, 
 					@AuthenticationPrincipal CustomUserDetails authUser) {
 			
 			// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용) 
@@ -259,13 +261,13 @@ public class BoardActionController {
 			boolean isAuthur = user.getNum() == board.getUserNum();
 			boolean isAdmin = "관리자".equals(user.getGrade()); 
 			if(! isAuthur && !isAdmin) {
-				return "redirect:/Board/Adopt";
+				return "redirect:/Adopt";
 				
 			}
 		
 			boardService.deleteBoard(num);
 		
-			return "redirect:/Board/Adopt";
+			return "redirect:/Adopt";
 		}
 			
 		//	좋아요	
@@ -276,6 +278,6 @@ public class BoardActionController {
 		    if(authUser != null) {
 		        boardService.increaseLikesBoard(num);
 		    }
-		    return "redirect:/Board/AdoptDetail?num=" + num;
+		    return "redirect:/AdoptDetail?num=" + num;
 		}
 	}
