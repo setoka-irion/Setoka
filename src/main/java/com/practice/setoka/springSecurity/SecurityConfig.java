@@ -23,7 +23,7 @@ public class SecurityConfig {
 		http
 			.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(auth -> auth
-			    .requestMatchers("/","/Login").permitAll()
+			    .requestMatchers("/", "/Login", "/Adopt").permitAll()
 //			    .requestMatchers("/memos","/memo/detail","/animals").hasRole("관리자")
 			    .anyRequest().authenticated()
 			)

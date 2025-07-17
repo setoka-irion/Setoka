@@ -43,6 +43,11 @@ public class AnimalService {
         return animalMapper.selectByNum(num);
     }
     
+    //num 값으로 동물이름 반환
+    public String selectAnimalNameByNum(int num) {
+    	return animalMapper.selectAnimalNameByNum(num);
+    }
+    
 	// 유저의 애견 목록 가져오기
     public List<Animal> getPetsByUser(int userNum) {
         return animalMapper.selectByUserNum(userNum);

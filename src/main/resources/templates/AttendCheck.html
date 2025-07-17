@@ -2,198 +2,265 @@
 <html>
 
 <head>
-	<style>
-		table {
-			border-collapse: collapse;
-		}
+  <meta charset="UTF-8">
+  <title>출석 달력</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
 
-		th,
-		td {
-			border: 1px solid #ccc;
-			text-align: center;
-			height: 100px;
-			width: 100px;
-			font-size: 18px;
-		}
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-top: 10px;
+    }
 
-		th {
-			background-color: #f0f0f0;
-		}
+    .calendar-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+    }
 
-		.today {
-			background-color: #c1e1c1;
-			/* 연한 초록 */
-			border: 2px solid #4caf50;
-			/* 초록 테두리 */
-			font-weight: bold;
-			color: #2e7d32;
-		}
+    .calendar-header button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      margin: 0 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
 
-		.checked {
-			background-color: #d4edda;
-			/* 밝은 초록 */
-			color: #155724;
-			font-weight: bold;
-			cursor: default;
-		}
-	</style>
+    .calendar-header button:hover {
+      background-color: #388e3c;
+    }
+
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      text-align: center;
+      height: 80px;
+      width: 80px;
+      font-size: 18px;
+      position: relative;
+    }
+
+    th {
+      background-color: #ecf0f1;
+      font-weight: 600;
+    }
+
+    .today {
+      background-color: #d9fdd3;
+      border: 2px solid #4caf50;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    .checked {
+      background-color: #e0f7fa;
+      color: #0277bd;
+      font-weight: bold;
+      cursor: default;
+    }
+
+    .buttons-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .buttons-container button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      background-color: #2196F3;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .buttons-container button:hover {
+      background-color: #1976D2;
+    }
+
+    @media (max-width: 600px) {
+      th, td {
+        height: 60px;
+        width: 60px;
+        font-size: 14px;
+      }
+
+      .calendar-header button {
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+
+      .buttons-container button {
+        width: 80%;
+      }
+    }
+  </style>
 </head>
 
 <body>
-	<form id="hiddenForm" method="post" action="/point" style="display:none;">
-		<input type="hidden" name="date" id="selectedDateInput" />
-	</form>
+  <form id="hiddenForm" method="post" action="/point" style="display:none;">
+    <input type="hidden" name="date" id="selectedDateInput" />
+  </form>
 
-	<div class="calendar-header">
-		<button onclick="prevMonth()">&lt;</button>
-		<h2 id="month-year"></h2>
-		<button onclick="nextMonth()">&gt;</button>
-	</div>
+  <div class="calendar-header">
+    <button onclick="prevMonth()">&lt;</button>
+    <h2 id="month-year"></h2>
+    <button onclick="nextMonth()">&gt;</button>
+  </div>
 
-	<h2 id="month-year"></h2>
-	<table id="calendar">
-		<thead>
-			<tr>
-				<th>일</th>
-				<th>월</th>
-				<th>화</th>
-				<th>수</th>
-				<th>목</th>
-				<th>금</th>
-				<th>토</th>
-			</tr>
-		</thead>
-		<tbody id="calendar-body">
-			<!-- 날짜 들어가는 곳 -->
-		</tbody>
-	</table>
+  <table id="calendar">
+    <thead>
+      <tr>
+        <th>일</th>
+        <th>월</th>
+        <th>화</th>
+        <th>수</th>
+        <th>목</th>
+        <th>금</th>
+        <th>토</th>
+      </tr>
+    </thead>
+    <tbody id="calendar-body">
+      <!-- 날짜 들어가는 곳 -->
+    </tbody>
+  </table>
 
-	<script>
-		//화면에 보여줄 달력의 정보
-		let currentDate = new Date();
-		let currentYear = currentDate.getFullYear();
-		let currentMonth = currentDate.getMonth(); // 0 = 1월
-		let attendanceDates = [];
-		const monthNames = [
-			"1월", "2월", "3월", "4월", "5월", "6월",
-			"7월", "8월", "9월", "10월", "11월", "12월"
-		];
-		async function loadAttendanceDates() {
+  <div class="buttons-container">
+    <button type="button" onclick="location.href='/';">홈으로</button>
+  </div>
 
-			try {
-				const response = await fetch('/getDate');
-				attendanceDates = await response.json();
-				generateCalendar(currentYear, currentMonth);
-			} catch (e) {
-				console.error("출석 날짜 불러오기 실패", e);
-				generateCalendar(currentYear, currentMonth); // 그래도 달력 생성
-			}
-		}
-		//달력 만들기
-		function generateCalendar(year, month) {
-			//오늘날
-			const today = new Date();
-			const todayDate = today.getDate();
-			const todayMonth = today.getMonth();
-			const todayYear = today.getFullYear();
+  <script>
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth();
+    let attendanceDates = [];
 
-			//
-			const monthYear = document.getElementById("month-year");
-			const calendarBody = document.getElementById("calendar-body");
-			const firstDay = new Date(year, month, 1).getDay();
-			const lastDate = new Date(year, month + 1, 0).getDate();
+    const monthNames = [
+      "1월", "2월", "3월", "4월", "5월", "6월",
+      "7월", "8월", "9월", "10월", "11월", "12월"
+    ];
 
-			monthYear.textContent = `${year}년 ${monthNames[month]}`;
+    async function loadAttendanceDates() {
+      try {
+        const response = await fetch('/getDate');
+        attendanceDates = await response.json();
+        generateCalendar(currentYear, currentMonth);
+      } catch (e) {
+        console.error("출석 날짜 불러오기 실패", e);
+        generateCalendar(currentYear, currentMonth);
+      }
+    }
 
-			calendarBody.innerHTML = "";
-			let row = document.createElement("tr");
+    function generateCalendar(year, month) {
+      const today = new Date();
+      const todayDate = today.getDate();
+      const todayMonth = today.getMonth();
+      const todayYear = today.getFullYear();
 
-			for (let i = 0; i < firstDay; i++) {
-				row.appendChild(document.createElement("td"));
-			}
+      const monthYear = document.getElementById("month-year");
+      const calendarBody = document.getElementById("calendar-body");
+      const firstDay = new Date(year, month, 1).getDay();
+      const lastDate = new Date(year, month + 1, 0).getDate();
 
-			//셀 하나하나 만들고 이벤트 등록
-			for (let day = 1; day <= lastDate; day++) {
-				const cell = document.createElement("td");
-				cell.textContent = day;
-				cell.addEventListener("click", function () {
-					//셀을 클릭했을때 동작할 로직
-					const selectedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-					console.log("출석 날짜 배열: ", attendanceDates);
-					console.log("선택한 날짜: ", selectedDate);
+      monthYear.textContent = `${year}년 ${monthNames[month]}`;
+      calendarBody.innerHTML = "";
+      let row = document.createElement("tr");
 
-					if (attendanceDates.includes(selectedDate)) {
-						alert("출석체크가 이미 완료되었습니다.");
-						return;
-					}
+      for (let i = 0; i < firstDay; i++) {
+        row.appendChild(document.createElement("td"));
+      }
 
-					cell.classList.add("checked");
-					cell.innerHTML = day + "<br>✓";
-					// form에 날짜 넣고 submit
-					document.getElementById("selectedDateInput").value = selectedDate;
-					document.getElementById("hiddenForm").submit();
-				});
+      for (let day = 1; day <= lastDate; day++) {
+        const cell = document.createElement("td");
+        cell.textContent = day;
 
-				const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-				if (attendanceDates.includes(formattedDate)) {
-					cell.classList.add("checked");
-					cell.innerHTML = day + "<br>✓";
-				}
-				//오늘인지 체크 
-				if (year == todayYear && month == todayMonth && day == todayDate) {
-					cell.classList.add("today");
-				}
+        const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-				row.appendChild(cell);
+        if (attendanceDates.includes(formattedDate)) {
+          cell.classList.add("checked");
+          cell.innerHTML = day + "<br>✓";
+        }
 
-				if ((firstDay + day) % 7 === 0 || day === lastDate) {
-					calendarBody.appendChild(row);
-					row = document.createElement("tr");
-				}
-			}
+        if (year == todayYear && month == todayMonth && day == todayDate) {
+          cell.classList.add("today");
+        }
 
-		}
+        cell.addEventListener("click", function () {
+          if (attendanceDates.includes(formattedDate)) {
+            alert("출석체크가 이미 완료되었습니다.");
+            return;
+          }
 
-		//이전달로
-		function prevMonth() {
-			currentMonth--;
-			if (currentMonth < 0) {
-				currentMonth = 11;
-				currentYear--;
-			}
-			generateCalendar(currentYear, currentMonth);
-		}
+          cell.classList.add("checked");
+          cell.innerHTML = day + "<br>✓";
+          document.getElementById("selectedDateInput").value = formattedDate;
+          document.getElementById("hiddenForm").submit();
+        });
 
-		//다음달로
-		function nextMonth() {
-			currentMonth++;
-			if (currentMonth > 11) {
-				currentMonth = 0;
-				currentYear++;
-			}
-			generateCalendar(currentYear, currentMonth);
-		}
-		window.onload = function () {
-			loadAttendanceDates();
-		};
+        row.appendChild(cell);
 
-	</script>
+        if ((firstDay + day) % 7 === 0 || day === lastDate) {
+          calendarBody.appendChild(row);
+          row = document.createElement("tr");
+        }
+      }
+    }
 
-	<script th:if="${message != null}" th:inline="javascript">
-		let msg = /*[[${message}]]*/ "";
-		alert(msg);
-	</script>
+    function prevMonth() {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      generateCalendar(currentYear, currentMonth);
+    }
 
-	<script th:if="${newAttendance != null}" th:inline="javascript">
-		const newDate = /*[[${newAttendance}]]*/ "";
-		if (newDate) {
-			attendanceDates.push(newDate); // 추가
-			generateCalendar(currentYear, currentMonth);
-		}
-	</script>
-	<div class="buttons-container">
-		<button type="button" onclick="location.href='/';">홈으로</button>
-	</div>
+    function nextMonth() {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      generateCalendar(currentYear, currentMonth);
+    }
+
+    window.onload = function () {
+      loadAttendanceDates();
+    };
+  </script>
+
+  <script th:if="${message != null}" th:inline="javascript">
+    let msg = /*[[${message}]]*/ "";
+    alert(msg);
+  </script>
+
+  <script th:if="${newAttendance != null}" th:inline="javascript">
+    const newDate = /*[[${newAttendance}]]*/ "";
+    if (newDate) {
+      attendanceDates.push(newDate);
+      generateCalendar(currentYear, currentMonth);
+    }
+  </script>
 </body>
 
 </html>

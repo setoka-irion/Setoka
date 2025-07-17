@@ -52,7 +52,7 @@
 	</insert>
 
 	<update id="updateMemo" parameterType="map">
-		UPDATE memo SET title = #{memoDto.title}, content = #{memoDto.content},
+		UPDATE memo SET animalNum = #{memoDto.animalNum}, title = #{memoDto.title}, content = #{memoDto.content},
 		scheduleDate = #{memoDto.scheduleDate}, registerDate = NOW() WHERE num =
 		#{num}
 	</update>
