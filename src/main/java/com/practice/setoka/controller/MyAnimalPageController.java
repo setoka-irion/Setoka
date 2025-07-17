@@ -44,13 +44,7 @@ public class MyAnimalPageController {
 
         return "MyAnimalPage";
     }
-
-    @GetMapping("/myanimal/edit")
-    @ResponseBody
-    public Animal getAnimalForEdit(@RequestParam("animalNum") int animalNum) {
-        return animalService.getAnimalByNum(animalNum);
-    }
-
+    
     // 애견 추가
     @PostMapping("/myanimal/add")
     public String addAnimal(
@@ -79,8 +73,14 @@ public class MyAnimalPageController {
         animalService.deleteAnimal(animalNum);
         return "redirect:/myanimal";
     }
-
-    // 애견 수정 처리
+    
+    // 애견 수정
+    @GetMapping("/myanimal/edit")
+    @ResponseBody
+    public Animal getAnimalForEdit(@RequestParam("animalNum") int animalNum) {
+    	return animalService.getAnimalByNum(animalNum);
+    }
+    
     @PostMapping("/myanimal/edit")
     @ResponseBody
     public String updateAnimal(
@@ -147,7 +147,7 @@ public class MyAnimalPageController {
 
         // animal detail 데이터는 따로 넣기
         Animal animal = animalService.getAnimalByNum(animalNum);
-        model.addAttribute("animal", animal);
+        model.addAttribute("CurrentAnimal", animal);
 
         List<Memo> memos = memoService.memoSelectByAnimalNum(animalNum);
         model.addAttribute("memos", memos);

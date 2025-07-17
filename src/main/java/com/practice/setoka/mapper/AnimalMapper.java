@@ -16,6 +16,9 @@ public interface AnimalMapper {
 
     // 동물 한 건 조회 (고유번호 기준)
     Animal selectByNum(@Param("num") int num);
+    
+    //num 값으로 동물이름 반환
+    String selectAnimalNameByNum(@Param("num")int num);
 
     // 동물 등록
     boolean insertAnimal(AnimalDto animalDto);

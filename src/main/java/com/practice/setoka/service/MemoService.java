@@ -1,5 +1,6 @@
 package com.practice.setoka.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ public class MemoService {
 
 	@Autowired
 	private MemoMapper memoMapper;
+	@Autowired
+	private AnimalService animalService;
 	
 	public List<Memo> memoSelectByUserNumAndMonth(int userNum, int year, int month) {
 	    Map<String, Object> params = new HashMap<>();
@@ -55,6 +58,14 @@ public class MemoService {
 	
 	public int deleteMemo(int num) {
 		return memoMapper.deleteMemo(num);
+	}
+	
+	public List<String> getAnimalNamebyNum(int[] animalNum) {
+		List<String> animalNameList = new ArrayList<>();
+		for(int i=0; i<animalNum.length;i++) {
+			animalNameList.add(animalService.selectAnimalNameByNum(animalNum[i]));
+		}
+		return animalNameList;
 	}
 }
 

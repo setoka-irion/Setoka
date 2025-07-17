@@ -31,6 +31,11 @@
 		FROM animal
 		WHERE num = #{num}
 	</select>
+	
+	<!--num값으로 동물이름 반환-->
+	<select id="selectAnimalNameByNum" parameterType="int">
+		SELECT animalName FROM animal WHERE num = #{num}
+	</select>
 
 	<!-- 새 애견 등록 -->
 	<insert id="insertAnimal" parameterType="com.practice.setoka.dto.AnimalDto">
