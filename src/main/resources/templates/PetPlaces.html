@@ -122,7 +122,7 @@
   <h1>반려동물 동반 시설 검색</h1>
 
   <div id="searchArea">
-    <input type="text" id="searchInput" placeholder="도로명 주소를 입력하세요" />
+    <input type="text" id="searchInput" placeholder="시설명 또는 도로명 주소를 입력하세요" />
     <button id="searchButton">검색</button>
   </div>
 
@@ -184,7 +184,7 @@
 	  clearMarker();
 
 	  const filtered = allItems.filter(item => {
-	    const address = item['도로명주소'];
+	    const address = item['도로명주소'] + item['시설명'];
 	    return address && address.includes(keyword);
 	  });
 
@@ -192,7 +192,10 @@
 	    place_list.textContent = "검색 결과가 없습니다.";
 	    return;
 	  }
-
+	  if (keyword.length === 0) {
+	  	    place_list.textContent = "검색어를 입력하세요.";
+	  	    return;
+	  	  }
 	  const itemsPerPage = 20;
 	  const totalPages = Math.ceil(filtered.length / itemsPerPage);
 
@@ -208,8 +211,8 @@
 	      const li = document.createElement("li");
 	      const address = item['도로명주소'];
 	      li.textContent = `${item['시설명']} - ${address}`;
-	      place_list.appendChild(li);
-
+		place_list.appendChild(li);
+		
 	      li.addEventListener('click', () => {
 	        displayMarker(address, coords => map.setCenter(coords));
 	      });
@@ -217,7 +220,7 @@
 
 	    // 마커 찍기
 	    pageItems.forEach(item => {
-	      const address = item['도로명주소'];
+	      const address = item['도로명주소'] + item['시설명'];
 	      displayMarker(address);
 	    });
 	  }
