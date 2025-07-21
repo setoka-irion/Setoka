@@ -1,5 +1,6 @@
 package com.practice.setoka.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public interface BoardMapper {
 	void insertBoard(BoardDto boardDto);
 	
 	//	수정 
-	void updateBoard(BoardDto boardDto);
+	void updateBoard(Board board);
 	
 	//	삭제
 	void deleteBoard(int num);

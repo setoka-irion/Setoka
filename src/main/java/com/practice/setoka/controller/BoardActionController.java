@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.practice.setoka.dao.Board;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
@@ -26,11 +27,17 @@ import jakarta.validation.Valid;
 @Controller
 public class BoardActionController {
 
+    private final BoardController boardController;
+
 	@Autowired
 	public BoardService boardService;
 	
 	@Autowired
 	public CommentsService commentsService;
+
+    BoardActionController(BoardController boardController) {
+        this.boardController = boardController;
+    }
 //	public String test(Model model)
 //	{
 //		int count = boardService.countBoards();
@@ -80,9 +87,7 @@ public class BoardActionController {
 	}
 	
 	
-	
-	
-	// 입양 상세 페이지 (조회수증가,댓글작성,좋아요기능)
+	// 입양 상세 페이지 (조회수증가)
 	@GetMapping(value="AdoptDetail")
 	public String adoptDetail(
 			@RequestParam("num")int num,
@@ -111,13 +116,14 @@ public class BoardActionController {
 			CommentInfoDto commentToEdit = commentsService.findCommentByNum(editCommentNum);
 			model.addAttribute("commentToEdit",commentToEdit);
 		}		
+		
 		return "Board/AdoptDetail";
 	}
 	
 	
 			 
 		
-	//입양 글 등록 
+	//입양 게시글 등록 
 	@GetMapping(value="AdoptRegist")
 	public String adoptRegistForm(
 			@AuthenticationPrincipal CustomUserDetails authUser,
@@ -135,7 +141,7 @@ public class BoardActionController {
 		return "/Board/AdoptRegist";
 	}
 	
-	//입양 글 등록
+	//입양 게시글 등록
 	@PostMapping(value="AdoptRegist")
 	public String adoptRegistSubmit(
 			//오류 검증 
@@ -144,17 +150,7 @@ public class BoardActionController {
 		
 		if(bindingResult.hasErrors()) {
 			return "Board/AdoptRegist";
-		}
-		// 넣을 내용 json타입 변환
-		String plainContent = boardDto.getContent();
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-		    String jsonContent = objectMapper.writeValueAsString(plainContent);
-		    boardDto.setContent(jsonContent);
-		} catch (Exception e) {
-		    e.printStackTrace();
-		    // 예외 처리 (로그 출력 등)
-		}
+		}	
 		
 		boardService.insertBoard(boardDto);
 		return "redirect:/Adopt";
@@ -163,12 +159,11 @@ public class BoardActionController {
 	
 	
 	
-	// 입양 게시판 수정
+	// 입양 게시글 수정
 	@GetMapping (value="/AdoptUpdate/{num}")
 	public String adoptUpdateForm(
 			@PathVariable("num") int num, Model model, 
 			@AuthenticationPrincipal CustomUserDetails authUser) {
-		
 	
 		//해당 게시글 내용
 		BoardWithUserDto board = boardService.findBoardByNum(num);  // 상세보기와 동일 코드
@@ -177,24 +172,28 @@ public class BoardActionController {
 		return "/Board/AdoptUpdate";
 	}
 	
-	//입양 게시판 수정
+	//입양 게시글 수정
 	@PostMapping(value="AdoptUpdate/{num}")
 	public String adoptUpdateSubmit(
-		@Valid BoardDto boardDto, BindingResult bindingResult, 
+		@PathVariable("num") int num, Model model,
+		@Valid Board board, BindingResult bindingResult, 
 		@AuthenticationPrincipal CustomUserDetails authUser,
-		@PathVariable("num") int num, Model model) {
-		
+		RedirectAttributes redirectAttributes) {
+		redirectAttributes.addAttribute("num", num); 
 		
 		//유저 검증
 		
 		//오류 발생시 다시 수정페이지로
 		if(bindingResult.hasErrors()) {
+
+			System.out.println("45634");
 			return "/Board/AdoptUpdate";
 		}
+		System.out.println("123");
+		board.setNum(num);
 		
-		boardDto.setNum(num);
-		boardService.updateBoard(boardDto);
-		return "redirect:/Board/AdoptDetail/"+num;
+		boardService.updateBoard(board);
+		return "redirect:/AdoptDetail";
 	}
 	
 	
@@ -208,11 +207,13 @@ public class BoardActionController {
 				@RequestParam(value= "parentNum", defaultValue ="0") int parentNum, 
 				@AuthenticationPrincipal CustomUserDetails authUser, //로그인 검증용
 				Model model) {
-			
-			
-			
+		
 			//로그인 유저 정보 가져오기용 
 			Users user = (Users) authUser.getUser(); 
+			
+			// 댓글 불러오기
+			List<CommentInfoDto> comments = commentsService.findCommentsByBoardNum(boardNum);
+			model.addAttribute("comments", comments);
 			
 			// 댓글 작성
 			CommentInfoDto commentInfoDto = new CommentInfoDto();
@@ -224,7 +225,7 @@ public class BoardActionController {
 			commentsService.insertComment(commentInfoDto);
 					
 			//댓글 삭제
-			return "redirect:/Board/AdoptDetail?num=" + boardNum;
+			return "redirect:/AdoptDetail/" + boardNum;
 		}
 		
 		//댓글 수정
@@ -243,9 +244,12 @@ public class BoardActionController {
 			commentInfoDto.setUserNum(user.getNum());
 			
 			commentsService.updateComment(commentInfoDto);
-			return "redirect:/Board/AdoptDetail?num=" + boardNum;
+			return "redirect:/AdoptDetail/" + boardNum;
 		}
 	
+		
+		
+		
 		//삭제
 		@PostMapping("/AdoptDelete/{num}")
 		public String adoptDelete(@PathVariable("num") int num, 
@@ -270,6 +274,7 @@ public class BoardActionController {
 			return "redirect:/Adopt";
 		}
 			
+		
 		//	좋아요	
 		@PostMapping("/AdoptDetail/{num}/like")
 		public String likeBoard(@PathVariable("num") int num,

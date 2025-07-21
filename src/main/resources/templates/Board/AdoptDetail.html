@@ -72,14 +72,24 @@
 	</table>
 
 
-	<h3>댓글</h3>
-	<!--댓글 작성 기능 구현-->
+	<h4>댓글</h4>
+	<!-- 댓글 출력-->
 	<table>
-		<tr th:each="comments : ${comments}">
-			<td th:text="${comments.comment}"></td>
+		<tr th:each="comment : ${comments}">
+			<td th:text="${comment.nickname}"></td>			
+			<td th:text="${comment.content}"></td>
+			<td th:text="${comment.userGrade}"></td>
+			<td th:text="${comment.registerDate}"></td>
 		</tr>
 	</table>
-	<!-- 댓글 수정, 삭제-->
+			
+	<h4>댓글 작성</h4>
+	<form th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post">
+	    <input type="hidden" name="parentNum" value="0" />
+	    <textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+	    <br />
+	    <button type="submit">댓글 등록</button>
+	</form>
 </body>
 
 </html>

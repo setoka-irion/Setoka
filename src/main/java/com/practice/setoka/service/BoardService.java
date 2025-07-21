@@ -1,5 +1,7 @@
 package com.practice.setoka.service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,8 +46,8 @@ public class BoardService {
 	}
 
 	// 수정
-	public void updateBoard(BoardDto boardDto) {
-	    boardMapper.updateBoard(boardDto);
+	public void updateBoard(Board board) {	
+	    boardMapper.updateBoard(board);
 	}
 
 	// 삭제

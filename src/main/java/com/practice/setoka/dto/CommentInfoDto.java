@@ -11,12 +11,12 @@ public class CommentInfoDto {
 		int boardNum;
 		String content;
 		int likes;
-		LocalDateTime localDateTime;
+		private LocalDateTime registerDate ;
 		int status;
 		
 	//users
 		String nickname;
-		String grade;
+		String userGrade;
 		
 	//board
 		int type;
@@ -69,12 +69,12 @@ public class CommentInfoDto {
 			this.likes = likes;
 		}
 
-		public LocalDateTime getLocalDateTime() {
-			return localDateTime;
+		public LocalDateTime getRegisterDate() {
+			return registerDate;
 		}
 
-		public void setLocalDateTime(LocalDateTime localDateTime) {
-			this.localDateTime = localDateTime;
+		public void setRegisterDate(LocalDateTime registerDate) {
+			this.registerDate = registerDate;
 		}
 
 		public int getStatus() {
@@ -93,12 +93,12 @@ public class CommentInfoDto {
 			this.nickname = nickname;
 		}
 
-		public String getGrade() {
-			return grade;
+		public String getUserGrade() {
+			return userGrade;
 		}
 
-		public void setGrade(String grade) {
-			this.grade = grade;
+		public void setUserGrade(String userGrade) {
+			this.userGrade = userGrade;
 		}
 
 		public int getType() {
