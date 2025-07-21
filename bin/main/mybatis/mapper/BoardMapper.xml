@@ -45,7 +45,7 @@
 	
 <!--	유저 아이디로 검색 -->
 	<select id="findBoardsByUserId" parameterType="String" resultMap="boardWithUserMap">
-		SELECT b.*, 	u.nickName,
+		SELECT b.*, 	u.nickName
 		FROM board b JOIN users u ON b.userNum = u.num 
 		WHERE u.id = #{id} AND type !=0
 	</select>
@@ -68,16 +68,15 @@
 		FROM board b JOIN users u 
 		ON b.userNum = u.num
 		<where>
-			b.type != '0'
-			<if test="searchType == 'title'">
-				AND b.title LIKE CONCAT('%', #{keyword}, '%')
-			</if>
-			<if test="searchType == 'content'">
-				AND b.content LIKE CONCAT('%', #{keyword}, '%')
-			</if>
-			<if test="searchType == 'userNum'">
-				AND u.id LIKE CONCAT('%', #{keyword}, '%')
-			</if>
+			b.type != 0
+			
+				AND( 
+				b.title LIKE CONCAT('%', #{keyword}, '%')
+			
+				OR b.content LIKE CONCAT('%', #{keyword}, '%')
+			
+				OR u.id LIKE CONCAT('%', #{keyword}, '%')
+			)
 		</where>
 		ORDER BY registerDate DESC
 	</select>

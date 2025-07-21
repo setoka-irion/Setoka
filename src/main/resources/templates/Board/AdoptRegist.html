@@ -12,7 +12,8 @@
 </head>
 <body>
     <h1>입양 글 등록</h1>
-
+	
+    <!-- boardDto에서 변수 가져옴 *{}안에 있는것들.-->
     <form th:action="@{/AdoptRegist}" method="post" th:object="${boardDto}">
         
 		<!-- 유효성 검사 오류 메시지 -->
@@ -27,7 +28,7 @@
         <input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요" required />
 
         <label for="content">내용</label>
-        <textarea id="content" name="content[text]" rows="10" placeholder="내용을 입력하세요" required></textarea>
+        <textarea id="content" th:field="*{content}" rows="10" placeholder="내용을 입력하세요" required></textarea>
 
         <label for="area">지역</label>
         <input type="text" id="area" th:field="*{area}" placeholder="예: 서울, 경기 등" required />

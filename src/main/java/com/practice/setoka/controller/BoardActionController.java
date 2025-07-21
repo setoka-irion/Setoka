@@ -48,7 +48,7 @@ public class BoardActionController {
 //	}
 	
 	//	입양 메인페이지
-	@GetMapping(value="Adopt")
+	@GetMapping(value="/Adopt")
 	public String adoptMain(Model model,
 			@RequestParam(value="keyword", required = false) String keyword,
 	        @RequestParam(value="field", required = false) String field) {
@@ -88,9 +88,9 @@ public class BoardActionController {
 	
 	
 	// 입양 상세 페이지 (조회수증가)
-	@GetMapping(value="AdoptDetail")
+	@GetMapping(value="/AdoptDetail/{num}")
 	public String adoptDetail(
-			@RequestParam("num")int num,
+			@PathVariable("num")int num,
 			@RequestParam(value="editCommentNum", required = false) Integer editCommentNum,
 			@AuthenticationPrincipal CustomUserDetails authUser,
 			Model model) {
@@ -116,7 +116,7 @@ public class BoardActionController {
 			CommentInfoDto commentToEdit = commentsService.findCommentByNum(editCommentNum);
 			model.addAttribute("commentToEdit",commentToEdit);
 		}		
-		
+		System.out.println("adoptDetail 진입");
 		return "Board/AdoptDetail";
 	}
 	
@@ -124,7 +124,7 @@ public class BoardActionController {
 			 
 		
 	//입양 게시글 등록 
-	@GetMapping(value="AdoptRegist")
+	@GetMapping(value="/AdoptRegist")
 	public String adoptRegistForm(
 			@AuthenticationPrincipal CustomUserDetails authUser,
 			Model model) {
@@ -138,11 +138,11 @@ public class BoardActionController {
 		boardDto.setUserNum(user.getNum());
 		boardDto.setType(1);
 		model.addAttribute("boardDto", boardDto);
-		return "/Board/AdoptRegist";
+		return "Board/AdoptRegist";
 	}
 	
 	//입양 게시글 등록
-	@PostMapping(value="AdoptRegist")
+	@PostMapping(value="/AdoptRegist")
 	public String adoptRegistSubmit(
 			//오류 검증 
 			@Valid BoardDto boardDto,
@@ -169,11 +169,11 @@ public class BoardActionController {
 		BoardWithUserDto board = boardService.findBoardByNum(num);  // 상세보기와 동일 코드
 	    model.addAttribute("board", board);  // 수정 폼에서 기본값으로 사용
 		
-		return "/Board/AdoptUpdate";
+		return "Board/AdoptUpdate";
 	}
 	
 	//입양 게시글 수정
-	@PostMapping(value="AdoptUpdate/{num}")
+	@PostMapping(value="/AdoptUpdate/{num}")
 	public String adoptUpdateSubmit(
 		@PathVariable("num") int num, Model model,
 		@Valid Board board, BindingResult bindingResult, 
@@ -193,7 +193,7 @@ public class BoardActionController {
 		board.setNum(num);
 		
 		boardService.updateBoard(board);
-		return "redirect:/AdoptDetail";
+		return "redirect:/AdoptDetail/" + num;
 	}
 	
 	
@@ -284,6 +284,6 @@ public class BoardActionController {
 		        boardService.increaseLikesBoard(num);
 		    }
 		    
-		    return "redirect:/AdoptDetail?num=" + num;
+		    return "redirect:/AdoptDetail/" + num;
 		}
 	}
