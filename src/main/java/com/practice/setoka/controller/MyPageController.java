@@ -236,21 +236,20 @@ public class MyPageController {
 
 	// 달력 스크립트 이용 기능들
 	@PostMapping("/memo/add")
-	public String addMemo(MemoDto memoDto) {
-		LocalDateTime dt = LocalDate.parse(memoDto.getScheduleDateStr()).atStartOfDay();
+	public String addMemo(MemoDto memoDto, @RequestParam("animalNumStr")String animalNumStr, @RequestParam("scheduleDateStr")String scheduleDateStr) {
+		LocalDateTime dt = LocalDate.parse(scheduleDateStr).atStartOfDay();
 		memoDto.setScheduleDate(dt);
-
+		memoDto.setAnimalNum(animalNumStr);
 		memoService.insertMemo(memoDto);
 		LocalDate date = dt.toLocalDate();
-
 		return "redirect:/MyPage?year=" + date.getYear() + "&month=" + date.getMonthValue();
 	}
 
 	@PostMapping("/memo/update")
-	public String updateMemo(@RequestParam(name = "num") int num, MemoDto memoDto) {
-		LocalDateTime dt = LocalDate.parse(memoDto.getScheduleDateStr()).atStartOfDay();
+	public String updateMemo(@RequestParam(name = "num") int num, MemoDto memoDto, @RequestParam("animalNumStr")String animalNumStr, @RequestParam("scheduleDateStr")String scheduleDateStr) {
+		LocalDateTime dt = LocalDate.parse(scheduleDateStr).atStartOfDay();
 		memoDto.setScheduleDate(dt);
-
+		memoDto.setAnimalNum(animalNumStr);
 		memoService.updateMemo(num, memoDto);
 		LocalDate date = dt.toLocalDate();
 
@@ -277,32 +276,32 @@ public class MyPageController {
 		return memoService.memoSelectByUserNumAndMonth(userNum, year, month);
 	}
 
-	@GetMapping("/memo/detail")
-	@ResponseBody
-	public Map<String, Object> getMemoDetail(@RequestParam("memoNum") int memoNum,
-			@AuthenticationPrincipal CustomUserDetails authUser) {
-		Memo memo = memoService.memoSelectByNum(memoNum);
-		Users user = authUser.getUser();
-		Map<String, Object> result = new HashMap<>();
-		if (user.getNum() == memo.getUserNum()) {
-			if (memo != null) {
-				result.put("num", memo.getNum());
-				result.put("title", memo.getTitle());
-				result.put("content", memo.getContent());
-				if (memo.getScheduleDate() != null) {
-					result.put("scheduleDate", memo.getScheduleDate().toLocalDate().toString());
-				} else {
-					result.put("scheduleDate", "");
-				}
-				result.put("animalNum", memo.getAnimalNum());
-
-				Animal animal = animalService.getAnimalByNum(memo.getAnimalNum());
-				result.put("animalName", animal != null ? animal.getAnimalName() : "알 수 없음");
-			}
-			return result;
-		}
-		return result;
-	}
+//	@GetMapping("/memo/detail")
+//	@ResponseBody
+//	public Map<String, Object> getMemoDetail(@RequestParam("memoNum") int memoNum,
+//			@AuthenticationPrincipal CustomUserDetails authUser) {
+//		Memo memo = memoService.memoSelectByNum(memoNum);
+//		Users user = authUser.getUser();
+//		Map<String, Object> result = new HashMap<>();
+//		if (user.getNum() == memo.getUserNum()) {
+//			if (memo != null) {
+//				result.put("num", memo.getNum());
+//				result.put("title", memo.getTitle());
+//				result.put("content", memo.getContent());
+//				if (memo.getScheduleDate() != null) {
+//					result.put("scheduleDate", memo.getScheduleDate().toLocalDate().toString());
+//				} else {
+//					result.put("scheduleDate", "");
+//				}
+//				result.put("animalNum", memo.getAnimalNum());
+//
+//				List<String> animalNameList = memoService.getAnimalNamebyNum(memo.getIntAnimalNum());
+//				result.put("animalNameList", animalNameList.size() != 0 ? animalNameList.get(0) : "알 수 없음");
+//			}
+//			return result;
+//		}
+//		return result;
+//	}
 
 	// 유저번호로 해당 유저의 애견 목록 반환 (JSON)
 	@GetMapping("/animals")
