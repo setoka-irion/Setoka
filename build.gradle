@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'		//로그인 메일
 	implementation 'org.springframework.boot:spring-boot-starter-validation' //valid 추가
 	implementation 'org.springframework.boot:spring-boot-starter-security'	//로그인 검증
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
