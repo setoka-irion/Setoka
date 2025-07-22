@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+
+<head>
+	<title>편지 작성 폼</title>
+</head>
+
+<body>
+	<h1>홈</h1>
+
+	<form th:action="@{/SendMessage}" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="id"/>
+
+		<label for="name">title:</label>
+		<input type="text" id="title" name="title" size="50"/><br/>
+
+		<label for="context">내용:</label>
+		<textarea id="context" name="context" cols="50" rows="30"></textarea><br/>
+		
+		<button type="submit">전송</button>
+	</form>
+
+</body>
+
+</html>

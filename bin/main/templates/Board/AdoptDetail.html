@@ -142,7 +142,7 @@
 		</td>
 	</tr>
 </table>
-
+</div>
 <!-- 댓글 -->
 <h4>댓글</h4>
 <table>
@@ -165,6 +165,8 @@
 			<th>등급</th>
 			<th>좋아요</th>
 			<th>작성일</th>
+			<th>수정</th>
+			<th>삭제</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -175,15 +177,33 @@
 			<td th:text="${comment.userGrade}"></td>
 			<td th:text="${comment.likes}"></td>
 			<td th:text="${comment.registerDate}"></td>
+			<td>
+				<form th:action="@{'/AdoptDetail/' + ${detail.boardNum}+ '/comment/update'}" method="post">
+					<input type="hidden" name="commentNum" th:value="${comment.num}" />
+					<label for="content">내용</label><br />
+					
+				<button type="submit">수정</button>
+				<textarea name="content" th:text="${comment.content}" required></textarea>
+				</form>
+			</td>
+			
+			<td>
+			<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post">
+				<input type="hidden" name="commentNum" th:value="${comment.num}" />
+			<button type="submit">삭제</button>
+			</form>
+			</td>
 		</tr>
 	</tbody>
 </table>
 
+
 <!-- 댓글 작성 -->
 <h4>댓글 작성</h4>
 <form th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post">
-	<input type="hidden" name="parentNum" value="0" />
+	<!--<input type="hidden" name="parentNum" value="0" /> 대댓글 기능--> 
+	
 	<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
 	<br />
 	<button type="submit">댓글 등록</button>
-</form>
+	</form>

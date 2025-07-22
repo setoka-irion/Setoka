@@ -17,7 +17,7 @@
 	
 	<!-- 댓글 삭제 -->
 	<update id="deleteComment" parameterType="com.practice.setoka.dao.Comments">
-		UPDATE comments SET status = #{status} WHERE num = #{num}
+		UPDATE comments SET status = status + 1 WHERE num = #{num}
 	</update>
 		
 	<!-- 좋아용 -->

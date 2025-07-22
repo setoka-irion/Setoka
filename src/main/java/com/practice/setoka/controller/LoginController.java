@@ -31,53 +31,13 @@ public class LoginController {
 	
 	@Autowired
 	private EmailService emailService;
-
-	// 로그인 페이지로
-//	@GetMapping(value = "Login")
-//	public String login(Model model) {
-//		UsersDto user = new UsersDto();
-//		model.addAttribute("Users", user);
-//
-//		return "Login";
-//	}
+	
 	
 	@GetMapping(value = "Login")
 	public String login() {
 		return "Login";
 	}
 	
-	// 로그인 확인
-//	@PostMapping(value = "Login")
-//	public String loginSubmit(HttpSession session, UsersDto dto) {
-//		
-//		//db에서 정보 가져오기
-//		Users user = userService.loginUser(dto);
-//		//등록된 정보 없음
-//		if(user == null)
-//		{
-//			//다시 로그인 폼으로
-//			return Redirect.LoginForm;
-//		}
-//		
-//		// 복호화, 같은 id는 있지만 비밀번호가 다를경우
-//		if(!Encryption.Decoder(user.getPassword(), dto.getPassword()))
-//		{
-//			//다시 로그인 폼으로
-//			return Redirect.LoginForm;
-//		}
-//		// 로그인 성공
-//		// 세션처리
-//		session.setAttribute(Redirect.loginSession, user);
-//		return SessionUrlHandler.load(session);
-//	}
-
-//	@GetMapping(value = "Logout")
-//	public String logout(HttpSession session) {
-//		// 세션 없애기
-//		session.removeAttribute(Redirect.loginSession);
-//		return Redirect.home;
-//	}
-
 	// 회원가입 페이지로
 	@GetMapping(value = "SignUp")
 	public String Signup(Model model) {

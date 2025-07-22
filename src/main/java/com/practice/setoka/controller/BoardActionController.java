@@ -198,13 +198,55 @@ public class BoardActionController {
 	
 	
 	
-	
-	//댓글 기능
+	//삭제
+			@PostMapping("/AdoptDelete/{num}")
+			public String adoptDelete(@PathVariable("num") int num, 
+						@AuthenticationPrincipal CustomUserDetails authUser) {
+				
+				// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용) 
+				BoardWithUserDto board = boardService.findBoardByNum(num);
+				
+				// 유저 정보 가져오기 
+				Users user = (Users)authUser.getUser();
+				
+				// 작성자, 관리자 삭제권한 부여
+				boolean isAuthur = user.getNum() == board.getUserNum();
+				boolean isAdmin = "관리자".equals(user.getGrade()); 
+				if(! isAuthur && !isAdmin) {
+					return "redirect:/Adopt";
+					
+				}
+			
+				boardService.deleteBoard(num);
+			
+				return "redirect:/Adopt";
+			}
+			
+			
+
+			
+			
+			//	좋아요	
+			@PostMapping("/AdoptDetail/{num}/like")
+			public String likeBoard(@PathVariable("num") int num,
+						@AuthenticationPrincipal CustomUserDetails authUser) {
+				
+				//로그인했으면 좋아요
+			    if(authUser != null) {
+			        boardService.increaseLikesBoard(num);
+			    }
+			    
+			    return "redirect:/AdoptDetail/" + num;
+			}
+		
+
+			
+	//댓글 등록
 		@PostMapping(value="AdoptDetail/{num}/comment")
 		public String addComment(
 				@PathVariable("num") int boardNum, // 게시글 넘버
 				@RequestParam("content") String content,// 댓글내용
-				@RequestParam(value= "parentNum", defaultValue ="0") int parentNum, 
+				@RequestParam(value= "parentNum", defaultValue ="0") int parentNum, //대댓글 기능 없어도 됌
 				@AuthenticationPrincipal CustomUserDetails authUser, //로그인 검증용
 				Model model) {
 		
@@ -217,16 +259,16 @@ public class BoardActionController {
 			
 			// 댓글 작성
 			CommentInfoDto commentInfoDto = new CommentInfoDto();
-			commentInfoDto.setUserNum(user.getNum()); //닉네임 들어가야하는거 아닌가.
+			commentInfoDto.setUserNum(user.getNum()); 
 			commentInfoDto.setBoardNum(boardNum);
 			commentInfoDto.setContent(content);
-			commentInfoDto.setParentNum(parentNum);	// 댓글작성하는데 이게 필요한가?
-			
+			commentInfoDto.setParentNum(parentNum);	// 대댓글기능이라 없어도 됌
 			commentsService.insertComment(commentInfoDto);
 					
-			//댓글 삭제
+			
 			return "redirect:/AdoptDetail/" + boardNum;
 		}
+		
 		
 		//댓글 수정
 		@PostMapping ("/AdoptDetail/{num}/comment/edit")
@@ -246,44 +288,21 @@ public class BoardActionController {
 			commentsService.updateComment(commentInfoDto);
 			return "redirect:/AdoptDetail/" + boardNum;
 		}
+			
 	
+		//댓글 삭제
+	@PostMapping("/AdoptDetail/{num}/comment/delete")
+	public String deleteComment(
+			@AuthenticationPrincipal CustomUserDetails authUser,
+			@PathVariable("num") int boardNum,
+			@RequestParam("commentNum") int commentNum) {
 		
+		commentsService.deleteComment(commentNum);
 		
-		
-		//삭제
-		@PostMapping("/AdoptDelete/{num}")
-		public String adoptDelete(@PathVariable("num") int num, 
-					@AuthenticationPrincipal CustomUserDetails authUser) {
-			
-			// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용) 
-			BoardWithUserDto board = boardService.findBoardByNum(num);
-			
-			// 유저 정보 가져오기 
-			Users user = (Users)authUser.getUser();
-			
-			// 작성자, 관리자 삭제권한 부여
-			boolean isAuthur = user.getNum() == board.getUserNum();
-			boolean isAdmin = "관리자".equals(user.getGrade()); 
-			if(! isAuthur && !isAdmin) {
-				return "redirect:/Adopt";
-				
-			}
-		
-			boardService.deleteBoard(num);
-		
-			return "redirect:/Adopt";
-		}
-			
-		
-		//	좋아요	
-		@PostMapping("/AdoptDetail/{num}/like")
-		public String likeBoard(@PathVariable("num") int num,
-					@AuthenticationPrincipal CustomUserDetails authUser) {
-			//로그인했으면 좋아요
-		    if(authUser != null) {
-		        boardService.increaseLikesBoard(num);
-		    }
-		    
-		    return "redirect:/AdoptDetail/" + num;
-		}
+		return "redirect:/AdoptDetail/" + boardNum;
 	}
+	
+}
+	
+	
+	
