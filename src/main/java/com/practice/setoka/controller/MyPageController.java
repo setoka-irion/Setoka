@@ -275,7 +275,7 @@ public class MyPageController {
 		if (user == null) {
 			return Collections.emptyList(); // 혹은 예외 처리
 		}
-		int userNum = user.getNum();\
+		int userNum = user.getNum();
 		List<Memo> memos = memoService.memoSelectByUserNumAndMonth(userNum, year, month);
 		return memos;
 	}
