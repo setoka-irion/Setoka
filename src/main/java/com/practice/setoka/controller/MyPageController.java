@@ -256,7 +256,6 @@ public class MyPageController {
 			memoDto.setAnimalNum(null);
 		else
 			memoDto.setAnimalNum(animalNumStr);
-		memoDto.setAnimalNum(animalNumStr);
 		memoService.updateMemo(num, memoDto);
 		LocalDate date = dt.toLocalDate();
 
