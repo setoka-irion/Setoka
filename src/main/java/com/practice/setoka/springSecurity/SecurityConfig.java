@@ -24,7 +24,7 @@ public class SecurityConfig {
 			.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(auth -> auth
 			    .requestMatchers("/", "/Login", "/SignUp", "/Adopt", "/sendSingUpCode").permitAll()
-			    .requestMatchers("/AllUsers").hasRole("관리자")
+			    //.requestMatchers("/AllUsers").hasRole("관리자")
 			    .anyRequest().authenticated()
 			)
 			.formLogin(form -> form
