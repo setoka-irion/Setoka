@@ -20,7 +20,7 @@ public interface CommentsMapper {
 	//삭제
 	void deleteComment(int num);
 	
-	//좋아용
+	//댓글 좋아용
 	void increaseCommentLikes(int num);
 	
 	//해당 게시글 댓글 보기
