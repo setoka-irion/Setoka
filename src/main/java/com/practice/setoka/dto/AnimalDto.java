@@ -2,12 +2,14 @@ package com.practice.setoka.dto;
 
 import java.time.LocalDateTime;
 
+import com.practice.setoka.Enum.AnimalStatus;
+
 public class AnimalDto {
 	private int userNum;				//유저번호
 	private String animalName;			//동물이름
 	private String species;				//종
 	private int age;					//나이
-	private int status;					//상태
+	private AnimalStatus status;		//상태
 	private String gender;				//성별
 	private LocalDateTime togetherDate;	//입양일
 	private String profilePath;			//프로필사진
@@ -36,10 +38,10 @@ public class AnimalDto {
 	public void setAge(int age) {
 		this.age = age;
 	}
-	public int getStatus() {
+	public AnimalStatus getStatus() {
 		return status;
 	}
-	public void setStatus(int status) {
+	public void setStatus(AnimalStatus status) {
 		this.status = status;
 	}
 	public String getGender() {
