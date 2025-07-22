@@ -10,12 +10,8 @@
   	</select>
   	
   	<select id="selectVerifyCodeByID" resultType="com.practice.setoka.dao.VerifyCode" parameterType="String">
-    	SELECT v.num, v.email, v.verifyCode 
-    	FROM verifycode v 
-    	JOIN users u 
-    	ON v.email = u.id 
-    	WHERE u.id = #{email}
-    	ORDER BY v.num DESC LIMIT 1
+    	SELECT * FROM verifycode WHERE email = #{email}
+    	ORDER BY num DESC LIMIT 1
   	</select>
   	
   	<select id="selectVerifyCodeByIDLimit" resultType="com.practice.setoka.dao.VerifyCode" parameterType="String">

@@ -69,6 +69,7 @@ public class EmailService
 		//없는 메일이면 
 		if(verifyCode == null)
 		{
+			System.out.println("입력");
 			//새로 추가
 			if(!mailMapper.insertCode(email, code))
 			{
@@ -78,13 +79,15 @@ public class EmailService
 		//있는 경우
 		else
 		{
+			System.out.println("새로고침");
 			//코드와 시기를 수정함
 			if(!mailMapper.updateVerifyCode(email, code))
 			{
 				return false;
 			}
 		}
-			
+
+		System.out.println("메일 보내기");
 		//메일 보내기
 		SendSimpleMessage(email, "인증번호", "인증번호 : " + code);
 		return true;

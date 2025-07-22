@@ -4,25 +4,19 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
 import com.practice.setoka.Enum.Status;
-import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.EmailService;
 import com.practice.setoka.service.UserService;
-import com.practice.setoka.springSecurity.CustomUserDetails;
-
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class LoginController {
@@ -125,6 +119,7 @@ public class LoginController {
 	@PostMapping("/sendSingUpCode")
 	public ResponseEntity<String> sendSingUpCode(@RequestBody Map<String, String> request)
 	{
+		System.out.println("send code");
 		String email = request.get("email");
 		
 		//아이디 중복 검사
