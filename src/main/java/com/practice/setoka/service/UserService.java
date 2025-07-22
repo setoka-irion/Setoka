@@ -1,5 +1,7 @@
 package com.practice.setoka.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,6 +69,11 @@ public class UserService
 	{
 		dto.setGrade(Grade.관리자);
 		return userMapper.insertUserToDto(dto);
+	}
+	
+	//모든 유저 가져오기
+	public List<Users> selectAllUsers(){
+		return userMapper.selectAllUsers();
 	}
 	
 	//update
