@@ -5,8 +5,6 @@ import java.util.Map;
 
 import com.practice.setoka.JsonConverter;
 
-import jakarta.persistence.Convert;
-
 public class Board {
 	
 	private int num;
