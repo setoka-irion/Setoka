@@ -55,6 +55,8 @@ public class Memo {
 	}
 	
 	public int[] getIntAnimalNum() {
+		if(animalNum == null)
+			return null;
 		String[] animalNumStr = animalNum.split(",");
 		int[] animalNumInt = new int[animalNumStr.length];
 		for(int i=0; i<animalNumStr.length;i++) {

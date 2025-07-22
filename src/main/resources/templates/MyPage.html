@@ -262,12 +262,15 @@
 	          if (!memoMap[dateOnly]) memoMap[dateOnly] = [];
 
 	          // animalNum 으로 animalName 매핑해서 추가
-			  if(Array.isArray(memo.intAnimalNum)){
-				const names = memo.intAnimalNum.map(num => animalMap.get(num));
-				memo.animalName = names.join(', ');
-			  } else{
-				memo.animalName = animalMap.get(memo.intAnimalNum);
+			  if (Array.isArray(memo.intAnimalNum)) {
+			  	const names = memo.intAnimalNum.map(num => animalMap.get(num) || '애견없음');
+			  	memo.animalName = names.join(', ');
+			  } else if (memo.intAnimalNum) {
+			  	memo.animalName = animalMap.get(memo.intAnimalNum) || '애견없음';
+			  } else {
+			  	memo.animalName = '애견없음';
 			  }
+
 
 	          memoMap[dateOnly].push(memo);
 	        });
