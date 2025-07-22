@@ -283,33 +283,6 @@ public class MyPageController {
 		return memos;
 	}
 
-//	@GetMapping("/memo/detail")
-//	@ResponseBody
-//	public Map<String, Object> getMemoDetail(@RequestParam("memoNum") int memoNum,
-//			@AuthenticationPrincipal CustomUserDetails authUser) {
-//		Memo memo = memoService.memoSelectByNum(memoNum);
-//		Users user = authUser.getUser();
-//		Map<String, Object> result = new HashMap<>();
-//		if (user.getNum() == memo.getUserNum()) {
-//			if (memo != null) {
-//				result.put("num", memo.getNum());
-//				result.put("title", memo.getTitle());
-//				result.put("content", memo.getContent());
-//				if (memo.getScheduleDate() != null) {
-//					result.put("scheduleDate", memo.getScheduleDate().toLocalDate().toString());
-//				} else {
-//					result.put("scheduleDate", "");
-//				}
-//				result.put("animalNum", memo.getAnimalNum());
-//
-//				List<String> animalNameList = memoService.getAnimalNamebyNum(memo.getIntAnimalNum());
-//				result.put("animalNameList", animalNameList.size() != 0 ? animalNameList.get(0) : "알 수 없음");
-//			}
-//			return result;
-//		}
-//		return result;
-//	}
-
 	// 유저번호로 해당 유저의 애견 목록 반환 (JSON)
 	@GetMapping("/animals")
 	@ResponseBody
