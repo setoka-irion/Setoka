@@ -1,5 +1,7 @@
 package com.practice.setoka.service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +26,8 @@ public class BoardService {
 	}
 
 	//	총 게시글 수
-	public int countBoards() {
-		return boardMapper.countBoards();
+	public int countBoards(int num) {
+		return boardMapper.countBoards(num);
 	}
 	
 	//	특정 게시판 전체 리스트
@@ -44,7 +46,7 @@ public class BoardService {
 	}
 
 	// 수정
-	public void updateBoard(Board board) {
+	public void updateBoard(Board board) {	
 	    boardMapper.updateBoard(board);
 	}
 
@@ -79,7 +81,7 @@ public class BoardService {
 	}
 
 	// 통합 검색
-	public List<BoardWithUserDto> searchBoards(Map<String, Object> params) {
-	    return boardMapper.searchBoards(params);
+	public List<BoardWithUserDto> searchAll(Map<String, Object> params) {
+	    return boardMapper.searchAll(params);
 	}
 }

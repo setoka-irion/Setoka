@@ -1,17 +1,22 @@
 package com.practice.setoka.dto;
 
+import java.util.Map;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class BoardDto {
 	
+    @NotNull(message = "작성자 정보가 누락되었습니다.")
 	private int userNum;
 	@NotBlank(message = "제목은 필수입니다.")
 	private String title;
 	@NotBlank(message = "내용은 필수입니다.")
-	private String content;
-	private int type;
+	private String  content;
+	private Integer type;
 	private int price;
 	private String area;
+	
 	
 	public int getUserNum() {
 		return userNum;
@@ -25,10 +30,10 @@ public class BoardDto {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getContent() {
+	public String  getContent() {
 		return content;
 	}
-	public void setContent(String content) {
+	public void setContent(String  content) {
 		this.content = content;
 	}
 	public int getType() {

@@ -1,11 +1,19 @@
 package com.practice.setoka.dao;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+
+import com.practice.setoka.JsonConverter;
+
+import jakarta.persistence.Convert;
 
 public class Board {
+	
 	private int num;
 	private int userNum;
 	private String title;
+//	@Convert(converter = JsonConverter.class)
+//	private Map<String, Object> content;
 	private String content;
 	private int type;
 	private int likes;

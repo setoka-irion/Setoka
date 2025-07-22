@@ -3,64 +3,64 @@
 
 <mapper namespace="com.practice.setoka.mapper.BoardMapper">
 	
-	<!-- 총 게시글 수 -->
-	<select id="countBoards" resultType="int">
-		SELECT COUNT(*) FROM board WHERE type != 0
+<!--	 총 게시글 수 -->
+	<select id="countBoards" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM board WHERE type = #{type}
 	</select>
 	
-	
-	
-	<!-- 글 등록 -->
-	<insert id="insertBoard" parameterType="com.practice.setoka.dao.Board">
+<!--	 글 등록 -->
+	<insert id="insertBoard" parameterType="com.practice.setoka.dto.BoardDto">
 	INSERT INTO board (userNum, title, content, type, price, area)
 	VALUES (#{userNum}, #{title}, #{content}, #{type}, #{price}, #{area})
 	</insert>
 	
-	<!-- 글 수정 -->
-	<update id="updateBoard" parameterType="com.practice.setoka.dao.Board">
+<!--	 글 수정 -->
+	<update id="updateBoard" parameterType="com.practice.setoka.dto.BoardDto">
 		UPDATE board
-		SET title = #{title}, content = #{content}, 
+		SET 
+		title = #{title}, content = #{content}, 
 		price = #{price}, area = #{area}
 		WHERE num = #{num}
 	</update>
 	
-	<!-- 글 삭제 (타입을 0번으로 지정)-->
-	<update id="deleteBoard">
+	
+<!--	 글 삭제 (타입을 0번으로 지정)-->
+	<update id="deleteBoard" parameterType="int">
 		UPDATE board set type='0' WHERE num = #{num}
 	</update> 
 
 
 
-	<!-- 조회수 증가 -->
-	<update id="addviews" parameterType="int">
+<!--	 조회수 증가 -->
+	<update id="increaseViewsBoard" parameterType="int">
 		UPDATE board SET views = views + 1 WHERE num = #{num}
 	</update>
 	
-	<!--좋아용 -->
+<!--	좋아용 -->
 	<update id="increaseLikesBoard" parameterType="int">
 		UPDATE board SET likes = likes + 1 WHERE num = #{num}
 	</update>	
 	
 	
 	
-	<!--유저 아이디로 검색 -->
-	<select id="listById" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
-		SELECT b.* 	
+<!--	유저 아이디로 검색 -->
+	<select id="findBoardsByUserId" parameterType="String" resultMap="boardWithUserMap">
+		SELECT b.*, 	u.nickName
 		FROM board b JOIN users u ON b.userNum = u.num 
 		WHERE u.id = #{id} AND type !=0
 	</select>
 
-	<!-- 게시글 제목으로 검색 -->
-	<select id="listByTitle" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
+<!--	 게시글 제목으로 검색 -->
+	<select id="findBoardsByTitle" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
 		SELECT * FROM board WHERE title LIKE CONCAT('%', #{title}, '%') AND type !=0
 	</select>
 
-	<!-- 게시글 내용으로 검색 -->
-	<select id="listByContent" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
+<!--	 게시글 내용으로 검색 -->
+	<select id="findBoardsByContent" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
 		SELECT * FROM board WHERE content LIKE CONCAT('%', #{content}, '%') AND type !=0
 	</select>
 	
-	<!-- 통합 검색 -->
+<!--	 통합 검색 -->
 	<select id="searchAll" resultMap="boardWithUserMap">
 		SELECT 
 		u.id, u.num AS userNum, b.num, b.userNum, b.title, b.content, 
@@ -68,29 +68,34 @@
 		FROM board b JOIN users u 
 		ON b.userNum = u.num
 		<where>
-			b.type != '0'
-			<if test="searchType == 'Title'">
-				AND b.title LIKE CONCAT('%', #{keyword}, '%')
-			</if>
-			<if test="searchType == 'content'">
-				AND b.content LIKE CONCAT('%', #{keyword}, '%')
-			</if>
-			<if test="searchType == 'userNum'">
-				AND u.id LIKE CONCAT('%', #{keyword}, '%')
-			</if>
+			b.type != 0
+			
+				AND( 
+				b.title LIKE CONCAT('%', #{keyword}, '%')
+			
+				OR b.content LIKE CONCAT('%', #{keyword}, '%')
+			
+				OR u.id LIKE CONCAT('%', #{keyword}, '%')
+			)
 		</where>
 		ORDER BY registerDate DESC
 	</select>
 	
-	<!-- 게시글 넘버로 불러오기(상세페이지)-->
+<!--	 게시글 넘버로 불러오기(상세페이지)-->
 	<select id="findBoardByNum" resultMap="boardWithUserMap" parameterType="int">
-		SELECT * FROM board WHERE num = #{num}
+		SELECT 	u.id, 
+    	u.num AS userNum, u.nickname, u.realname, u.grade,
+   	 	b.num, b.userNum, b.title, b.content, b.type, b.likes, 
+   	 	b.views, b.price, b.area, b.registerDate
+  		FROM board b
+  		JOIN users u ON b.userNum = u.num
+  		WHERE b.num = #{num}
 	</select>
 		
-	<!-- 특정 게시판 전체리스트 -->
+<!--	 특정 게시판 전체리스트 -->
 	<select id="findBoardsByType" resultMap="boardWithUserMap" parameterType="int">
     	SELECT 
-    	u.id, u.num AS userNum, b.num, b.userNum, b.title, b.content,
+    	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
     	b.type, b.likes, b.views, b.price, b.area, b.registerDate
     	FROM board b JOIN users u 
     	ON b.userNum = u.num
@@ -98,7 +103,7 @@
     	ORDER BY b.registerDate DESC
 	</select>
 	
- 	<!-- 유저 고유번호 이용 특정 유저의 게시글 목록 조회--> 
+<!-- 	 유저 고유번호 이용 특정 유저의 게시글 목록 조회 -->
 	<select id="findBoardsByUser" resultMap="boardWithUserMap">
 		SELECT u.num AS userNum, u.id, u.nickname, u.realname, u.grade, 
 		b.num, b.title,	b.content, b.type, b.likes, b.views, 
@@ -107,16 +112,16 @@
 		ON u.num = b.userNum
 	</select>
 
-	<!-- 위에 세 쿼리 결과 매핑 -->
+<!--	 위에 세 쿼리 결과 매핑 -->
 	<resultMap id="boardWithUserMap" type="com.practice.setoka.dto.BoardWithUserDto">
 		<id property="boardNum" column="num" />
-		<!--user-->
+<!--		user-->
 		<result property="userNum" column="userNum" />
 		<result property="userId" column="id" />
 		<result property="nickName" column="nickname"/>
 		<result property="realName" column="realname"/>
 		<result property="grade" column="grade"/>
-		<!--board-->
+<!--		board-->
 		<result property="title" column="title" />
 		<result property="content" column="content" />
 		<result property="type" column="type"/>
@@ -124,7 +129,7 @@
 		<result property="views" column="views"/>
 		<result property="price" column="price"/>
 		<result property="area" column="area"/>
-		<result property="registerDate" column="registerDate"/>
+		<result property="registerDate" column="registerDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 	
 </mapper>

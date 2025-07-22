@@ -42,7 +42,7 @@ public class BoardController
 	}
 	
 	//분양
-	@GetMapping(value = "Adopt")
+	@GetMapping(value = "AdoptPage")
 	public String adopt()
 	{
 		return "Adopt";

@@ -4,46 +4,57 @@
 <mapper namespace="com.practice.setoka.mapper.CommentsMapper">
 	
 	<!--댓글 작성-->
-	<insert id="insertComment"	parameterType="com.practice.setoka.dao.Comments">
-		INSERT Into comments ( userNum, boardNum, content, likes, registerDate)
-		VALUES (#{userNum}, #{boardNum}, #{content}, #{likes}, #{registerDate})
+	<insert id="insertComment"	parameterType="com.practice.setoka.dto.CommentInfoDto">
+		INSERT Into comments ( userNum, parentNum, boardNum, content, likes, registerDate)
+		VALUES (#{userNum},#{parentNum}, #{boardNum}, #{content}, #{likes}, #{registerDate})
 	</insert>
 	
 	<!-- 댓글 수정-->
-	<update id="updateComment" parameterType="com.practice.setoka.dao.Comments">
+	<update id="updateComment" parameterType="com.practice.setoka.dto.CommentInfoDto">
 		UPDATE comments SET content = #{content}
-		WHERE num = #{num}
+		WHERE num = #{num} AND userNum = #{userNum}
 	</update>
 	
 	<!-- 댓글 삭제 -->
-	<delete id="deleteComment" parameterType="com.practice.setoka.dao.Comments">
-		UPDATE comments SET status = #{status} WHERE num = #{num}
-	</delete>
+	<update id="deleteComment" parameterType="com.practice.setoka.dao.Comments">
+		UPDATE comments SET status = status + 1 WHERE num = #{num}
+	</update>
 		
 	<!-- 좋아용 -->
 	<update id="increaseCommentLikes" parameterType="int">
 		UPDATE comments SET likes = likes + 1 WHERE num = #{num}
 	</update>	
 		
-	<!-- 해당 게시글의 댓글 불러오기 -->
+	<!-- 해당 게시글의 댓글전체 불러오기 -->
 	<select id="findCommentsByBoardNum" resultMap="CommentInfoDto">
 		SELECT
-    	c.num, c.userNum, c.boardNum, c.content, c.likes, c.registerDate, 
+    	c.num, c.userNum, c.parentNum, c.boardNum, c.content, 
+    	c.likes, c.registerDate, 
     
-    	u.nickname, u.grade
+    	u.nickname, u.grade,
     	b.type 
     	
 		FROM comments c
 		JOIN users u ON c.userNum = u.num
 		JOIN board b ON c.boardNum = b.num
-		WHERE c.boardNum = #{boardNum} AND c.status = 0
-		ORDER BY c.registerDate DESC;
+		WHERE c.boardNum = #{boardNum} AND c.status = 0 <!--정상댓글-->
+		ORDER BY c.registerDate DESC
 	</select>
 	
+	<!--댓글 수정용 해당 댓글 하나만 불러오기-->
+	<select id="findCommentByNum" parameterType="int" resultMap="CommentInfoDto">
+    	SELECT c.num, c.userNum, c.boardNum, c.content, c.likes, c.registerDate,
+           u.nickname, u.grade, b.type
+    	FROM comments c
+    	JOIN users u ON c.userNum = u.num
+    	JOIN board b ON c.boardNum = b.num
+    	WHERE c.num = #{num} AND c.status = 0
+	</select>
 	
 	<resultMap id ="CommentInfoDto" type ="com.practice.setoka.dto.CommentInfoDto">
 		<result property="num" column="num" />
 		<result property="userNum" column="userNum" />
+		<result property="parentNum" column="parentNum"/>
 		<result property="boardNum" column="boardNum" />
 		<result property="content" column="content" />
 		<result property="likes" column="likes" />
