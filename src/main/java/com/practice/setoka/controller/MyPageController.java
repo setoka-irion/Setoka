@@ -239,7 +239,10 @@ public class MyPageController {
 	public String addMemo(MemoDto memoDto, @RequestParam("animalNumStr")String animalNumStr, @RequestParam("scheduleDateStr")String scheduleDateStr) {
 		LocalDateTime dt = LocalDate.parse(scheduleDateStr).atStartOfDay();
 		memoDto.setScheduleDate(dt);
-		memoDto.setAnimalNum(animalNumStr);
+		if(animalNumStr.length() == 0)
+			memoDto.setAnimalNum(null);
+		else
+			memoDto.setAnimalNum(animalNumStr);
 		memoService.insertMemo(memoDto);
 		LocalDate date = dt.toLocalDate();
 		return "redirect:/MyPage?year=" + date.getYear() + "&month=" + date.getMonthValue();
@@ -272,8 +275,9 @@ public class MyPageController {
 		if (user == null) {
 			return Collections.emptyList(); // 혹은 예외 처리
 		}
-		int userNum = user.getNum();
-		return memoService.memoSelectByUserNumAndMonth(userNum, year, month);
+		int userNum = user.getNum();\
+		List<Memo> memos = memoService.memoSelectByUserNumAndMonth(userNum, year, month);
+		return memos;
 	}
 
 //	@GetMapping("/memo/detail")
