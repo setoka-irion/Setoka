@@ -19,13 +19,13 @@ public class MessageService {
 		messageMapper.insertMessage(dto);
 	}
 	
-	public List<Message> sendSelect(int userNum)
+	public List<Message> sendSelect(String userId)
 	{
-		return messageMapper.selectSenderMessage(userNum);
+		return messageMapper.selectSenderMessage(userId);
 	}
 	
-	public List<Message> receiverSelect(int userNum)
+	public List<Message> receiverSelect(String userId)
 	{
-		return messageMapper.selectReceiverMessage(userNum);
+		return messageMapper.selectReceiverMessage(userId);
 	}
 }
