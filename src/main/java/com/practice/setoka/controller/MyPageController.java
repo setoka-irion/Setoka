@@ -252,6 +252,10 @@ public class MyPageController {
 	public String updateMemo(@RequestParam(name = "num") int num, MemoDto memoDto, @RequestParam("animalNumStr")String animalNumStr, @RequestParam("scheduleDateStr")String scheduleDateStr) {
 		LocalDateTime dt = LocalDate.parse(scheduleDateStr).atStartOfDay();
 		memoDto.setScheduleDate(dt);
+		if(animalNumStr.length() == 0)
+			memoDto.setAnimalNum(null);
+		else
+			memoDto.setAnimalNum(animalNumStr);
 		memoDto.setAnimalNum(animalNumStr);
 		memoService.updateMemo(num, memoDto);
 		LocalDate date = dt.toLocalDate();
