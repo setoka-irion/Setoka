@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.practice.setoka.dao.Board;
@@ -200,8 +201,10 @@ public class BoardActionController {
 	
 	//삭제
 			@PostMapping("/AdoptDelete/{num}")
+			@ResponseBody
 			public String adoptDelete(@PathVariable("num") int num, 
-						@AuthenticationPrincipal CustomUserDetails authUser) {
+						@AuthenticationPrincipal CustomUserDetails authUser,
+						RedirectAttributes redirectAttributes) {
 				
 				// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용) 
 				BoardWithUserDto board = boardService.findBoardByNum(num);
@@ -212,14 +215,17 @@ public class BoardActionController {
 				// 작성자, 관리자 삭제권한 부여
 				boolean isAuthur = user.getNum() == board.getUserNum();
 				boolean isAdmin = "관리자".equals(user.getGrade()); 
+				
 				if(! isAuthur && !isAdmin) {
-					return "redirect:/Adopt";
+					//redirectAttributes.addFlashAttribute("errorMessage", "작성자만 삭제가능!"); 삭제 경고 메세지
+					//return "redirect:/Adopt";
+					return "<script>alert('작성자만 삭제할 수 있다는거임!'); history.back();</script>";
 					
 				}
 			
 				boardService.deleteBoard(num);
 			
-				return "redirect:/Adopt";
+				return "<script>location.href='/Adopt';</script>"; //@Responsebody땜에 이거 써야함
 			}
 			
 			
@@ -271,38 +277,92 @@ public class BoardActionController {
 		
 		
 		//댓글 수정
-		@PostMapping ("/AdoptDetail/{num}/comment/edit")
+		@PostMapping("/AdoptDetail/{num}/comment/update")
 		public String editComment(
-				@PathVariable("num") int boardNum,
-				@RequestParam("commentNum") int commentNum,
-				@RequestParam("content") String content,
-				@AuthenticationPrincipal CustomUserDetails authUser,
-				CommentInfoDto commentInfoDto) {
+		        @PathVariable("num") int boardNum,
+		        @RequestParam("commentNum") int commentNum,
+		        @RequestParam("content") String content,
+		        @AuthenticationPrincipal CustomUserDetails authUser,
+		        RedirectAttributes redirectAttributes) {
 			
-			Users user = (Users)authUser.getUser(); 
-				
-			commentInfoDto.setNum(commentNum);
-			commentInfoDto.setContent(content);
-			commentInfoDto.setUserNum(user.getNum());
-			
-			commentsService.updateComment(commentInfoDto);
-			return "redirect:/AdoptDetail/" + boardNum;
+			//로그인 확인
+		    Users user = (Users)authUser.getUser();
+		    if (user == null) {
+		        redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
+		        return "redirect:/AdoptDetail/" + boardNum;
+		    }
+		    
+		    //본인확인
+		    CommentInfoDto originalComment = commentsService.findCommentByNum(commentNum);
+		    if (originalComment == null || originalComment.getUserNum() != user.getNum()) {
+		        redirectAttributes.addFlashAttribute("errorMessage", "본인 댓글만 수정할 수 있습니다.");
+		        return "redirect:/AdoptDetail/" + boardNum;
+		    }
+		    
+		    // 댓글 내용불러오기
+		    CommentInfoDto commentInfoDto = new CommentInfoDto();
+		    commentInfoDto.setNum(commentNum);
+		    commentInfoDto.setContent(content);
+		    commentInfoDto.setUserNum(user.getNum());
+
+		    commentsService.updateComment(commentInfoDto);
+		    
+		    //html 에러메세지 보내기
+		    redirectAttributes.addFlashAttribute("successMessage", "수정 완료!");
+		    return "redirect:/AdoptDetail/" + boardNum;
 		}
 			
 	
 		//댓글 삭제
 	@PostMapping("/AdoptDetail/{num}/comment/delete")
+	@ResponseBody
 	public String deleteComment(
 			@AuthenticationPrincipal CustomUserDetails authUser,
 			@PathVariable("num") int boardNum,
 			@RequestParam("commentNum") int commentNum) {
 		
+		// 현재 로그인한 유저 정보
+	    Users loginUser = authUser.getUser();
+
+	    // 댓글 정보 조회 (작성자 확인용)
+	    CommentInfoDto comment = commentsService.findCommentByNum(commentNum);
+
+	    // 작성자 본인인지 확인
+	    if (comment.getUserNum() != loginUser.getNum()) {
+	        // 본인이 아니라면 삭제하지 않고 되돌림 (또는 에러 페이지로)
+	        return "<script>alert('작성자만 삭제할 수 있다는 거임!'); location.href='/AdoptDetail/" + boardNum + "';</script>";
+	    }
+		
 		commentsService.deleteComment(commentNum);
 		
-		return "redirect:/AdoptDetail/" + boardNum;
+		return "<script>alert('삭제 완료!'); location.href = '/AdoptDetail/" + boardNum + "';</script>";
+	}
+	
+	//댓글 좋아요
+	@PostMapping("/AdoptDetail/{num}/comment/like")
+	public String likeComment(
+	        @AuthenticationPrincipal CustomUserDetails authUser,
+	        @PathVariable("num") int boardNum,
+	        @RequestParam("commentNum") int commentNum) {
+	    
+	    // 로그인 유저 확인
+	    Users loginUser = authUser.getUser();
+	    if (loginUser == null) {
+	        return "redirect:/AdoptDetail/" + boardNum;
+	    }
+
+	    // 댓글 존재 확인
+	    CommentInfoDto comment = commentsService.findCommentByNum(commentNum);
+	    if (comment == null) {
+	        return "redirect:/AdoptDetail/" + boardNum;
+	    }
+
+	    // 좋아요 증가 처리
+	    commentsService.increaseCommentLikes(commentNum);
+
+	    return "redirect:/AdoptDetail/" + boardNum;
 	}
 	
 }
-	
 	
 	

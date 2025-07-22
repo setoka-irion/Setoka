@@ -1,209 +1,279 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>입양 상세 페이지</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 40px 0;
-            text-align: center;
-        }
+	<meta charset="UTF-8">
+	<title>입양 상세 페이지</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f9f9f9;
+			margin: 0;
+			padding: 40px 0;
+			text-align: center;
+		}
 
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
+		.container {
+			width: 80%;
+			margin: 0 auto;
+			background: white;
+			padding: 30px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			border-radius: 10px;
+		}
 
-        h1, h3, h4 {
-            color: #333;
-            margin-top: 30px;
-        }
+		h1,
+		h3,
+		h4 {
+			color: #333;
+			margin-top: 30px;
+		}
 
-        a.button-link {
-            display: inline-block;
-            margin: 10px 10px;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+		a.button-link {
+			display: inline-block;
+			margin: 10px 10px;
+			padding: 10px 20px;
+			background-color: #3498db;
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+		}
 
-        a.button-link:hover {
-            background-color: #2980b9;
-        }
+		a.button-link:hover {
+			background-color: #2980b9;
+		}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px auto;
-        }
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 20px auto;
+		}
 
-        th, td {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
+		th,
+		td {
+			padding: 10px;
+			border: 1px solid #ccc;
+			text-align: center;
+		}
 
-        th {
-            background-color: #f0f0f0;
-        }
+		th {
+			background-color: #f0f0f0;
+		}
 
-        form {
-            display: inline;
-        }
+		form {
+			display: inline;
+		}
 
-        button {
-            padding: 6px 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
+		button {
+			padding: 6px 12px;
+			background-color: #4CAF50;
+			color: white;
+			border: none;
+			border-radius: 3px;
+			cursor: pointer;
+		}
 
-        button:hover {
-            background-color: #45a049;
-        }
+		button:hover {
+			background-color: #45a049;
+		}
 
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            resize: vertical;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
+		textarea {
+			width: 100%;
+			padding: 10px;
+			margin-top: 10px;
+			resize: vertical;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+		}
 
-        .like-section {
-            margin: 20px 0;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
+		.like-section {
+			margin: 20px 0;
+		}
+	</style>
 
-<a th:href="@{/Adopt}" class="button-link">입양 메인 페이지</a>
-<a th:href="@{/}" class="button-link">홈으로</a>
-<!-- 상단 정보 테이블-->
-<table>
-	<thead>
-		<tr>
-			<th>제목</th>
-			<th>작성자</th>
-			<th>작성일</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td th:text="${detail.title}"></td>
-			<td th:text="${detail.nickName}"></td>
-			<td th:text="${detail.registerDate}"></td>
-			<td>
-				<!-- pathVariable로 해놨기 때문에 경로 는 이렇게 됨.-->
-				<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}">
-					<button type="submit">수정</button>
-				</form>
-			</td>
-			<td>
-				<!-- pathVariable로 해놨기 때문에 경로 는 이렇게 됨.-->
-				<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
-					onsubmit="return confirm('정말 삭제하시겠습니까?')">
-					<button type="submit">삭제</button>
-				</form>
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-<!-- 본문 -->
-<h3>본문</h3>
-<table>
-	<tr>
-		<td th:text="${detail.content}"></td>
-	</tr>
-</table>
-
-<!-- 좋아요 -->
-<table>
-	<tr>
-		<td>
-			<span th:text="${detail.likes}">0</span> ❤️
-			<form th:action="@{/AdoptDetail/{num}/like(num=${detail.boardNum})}" method="post" style="display:inline;">
-				<button type="submit">좋아요</button>
-			</form>
-		</td>
-	</tr>
-</table>
-</div>
-<!-- 댓글 -->
-<h4>댓글</h4>
-<table>
-	<!-- 테이블 넓이 조절-->
-	<colgroup>
-		<col style="width: 10%;" /> <!-- 번호 -->
-		<col style="width: 10%;" /> <!-- 작성자 -->
-		<col style="width: 40%;" /> <!-- 내용 -->
-		<col style="width: 10%;" /> <!-- 등급 -->
-		<col style="width: 10%;" /> <!-- 좋아요 -->
-		<col style="width: 20%;" /> <!-- 작성일 -->
-	</colgroup>
-
-	<thead>
-		<!-- 테이블 제목 행-->
-		<tr>
-			<th>번호</th>
-			<th>작성자</th>
-			<th>내용</th>
-			<th>등급</th>
-			<th>좋아요</th>
-			<th>작성일</th>
-			<th>수정</th>
-			<th>삭제</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr th:each="comment : ${comments}">
-			<td th:text="${comment.num}"></td>
-			<td th:text="${comment.nickname}"></td>
-			<td th:text="${comment.content}"></td>
-			<td th:text="${comment.userGrade}"></td>
-			<td th:text="${comment.likes}"></td>
-			<td th:text="${comment.registerDate}"></td>
-			<td>
-				<form th:action="@{'/AdoptDetail/' + ${detail.boardNum}+ '/comment/update'}" method="post">
-					<input type="hidden" name="commentNum" th:value="${comment.num}" />
-					<label for="content">내용</label><br />
-					
-				<button type="submit">수정</button>
-				<textarea name="content" th:text="${comment.content}" required></textarea>
-				</form>
-			</td>
-			
-			<td>
-			<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post">
-				<input type="hidden" name="commentNum" th:value="${comment.num}" />
-			<button type="submit">삭제</button>
-			</form>
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-
-<!-- 댓글 작성 -->
-<h4>댓글 작성</h4>
-<form th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post">
-	<!--<input type="hidden" name="parentNum" value="0" /> 대댓글 기능--> 
 	
-	<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
-	<br />
-	<button type="submit">댓글 등록</button>
+
+</head>
+
+<body>
+	
+	<div class="container">
+
+		<!-- 에러 메시지-->
+		<div th:if="${errorMessage}" style="color: red; font-weight: bold; margin: 10px 0;">
+				<p th:text="${errorMessage}"></p>
+			</div>
+			<div th:if="${successMessage}" style="color: green; font-weight: bold; margin: 10px 0;">
+				<p th:text="${successMessage}"></p>
+			</div>
+		
+			<!-- 상단 버튼-->
+		<a th:href="@{/Adopt}" class="button-link">입양 메인 페이지</a>
+		<a th:href="@{/}" class="button-link">홈으로</a>
+		
+		<!-- 상단 정보 테이블-->
+		<div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:20px;">
+		      <table style="width:70%;">
+			<thead>
+				<tr>
+					<th>제목</th>
+					<th>작성자</th>
+					<th>작성일</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td th:text="${detail.title}"></td>
+					<td th:text="${detail.nickName}"></td>
+					<td th:text="${detail.registerDate}"></td>
+				</tr>
+				</tbody>
+		      </table>
+			  		
+						<!-- pathVariable로 해놨기 때문에 경로 는 이렇게 됨.-->
+						<div>
+						<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" style="display:inline-block; margin-right:10px;">
+							<button type="submit">수정</button>
+						</form>
+						<!-- pathVariable로 해놨기 때문에 경로 는 이렇게 됨.-->
+						<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" 
+						method="post" style="display:inline-block;" onsubmit="return confirm('정말 삭제하시겠습니까?')">
+							<button type="submit">삭제</button>
+						</form>
+						</div>
+					</div>
+		
+		<!-- 본문 -->
+		<h3>본문</h3>
+		<table>
+			<thead>
+				<tr>
+					<th>분양가</th>
+					<th>지역</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td th:text="${detail.price}"></td>
+					<td th:text="${detail.area}"></td>
+				</tr>
+				
+				<tr>
+				<td colspan="2" th:text="${detail.content}"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- 좋아요 -->
+		<table>
+			<tr>
+				<td>
+					<span th:text="${detail.likes}">0</span> ❤️
+					<form th:action="@{/AdoptDetail/{num}/like(num=${detail.boardNum})}" 
+					method="post" style="display:inline;">
+						<button type="submit">좋아요</button>
+					</form>
+				</td>
+			</tr>
+		</table>
+		
+	<!-- 댓글 -->
+	<h4>댓글</h4>
+	<table>
+		<!-- 테이블 넓이 조절-->
+		<colgroup>
+			<col style="width: 10%;" /> <!-- 번호 -->
+			<col style="width: 10%;" /> <!-- 작성자 -->
+			<col style="width: 40%;" /> <!-- 내용 -->
+			<col style="width: 10%;" /> <!-- 등급 -->
+			<col style="width: 10%;" /> <!-- 좋아요 -->
+			<col style="width: 20%;" /> <!-- 작성일 -->
+		</colgroup>
+
+		<thead>
+			<!-- 테이블 제목 행-->
+			<tr>
+				<th>번호</th>
+				<th>작성자</th>
+				<th>내용</th>
+				<th>등급</th>
+				<th>좋아요</th>
+				<th>작성일</th>
+				<th>수정</th>
+				<th>삭제</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="comment : ${comments}">
+				<td th:text="${comment.num}"></td>
+				<td th:text="${comment.nickname}"></td>
+
+				<!-- 내용: 기본적으로 span 으로 보여주고 -->
+				<td>
+				  <span th:text="${comment.content}" 
+				        class="comment-content" 
+				        th:attr="id=${'content-span-' + comment.num}"></span>
+
+				  <!-- 수정 폼은 기본 숨김 -->
+				  <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/update'}" method="post" 
+				        class="edit-form" 
+				        th:attr="id=${'edit-form-' + comment.num}" 
+				        style="display:none; margin-top:5px;">
+				    <input type="hidden" name="commentNum" th:value="${comment.num}" />
+				    <textarea name="content" required 
+				              th:text="${comment.content}" 
+				              style="width:100%; height:60px;"></textarea><br />
+				    <button type="submit">저장</button>
+				    <button type="button" th:onclick="|cancelEdit(${comment.num})|">취소</button>
+				  </form>
+				</td>
+				
+				
+				<td th:text="${comment.userGrade}"></td>
+				<td th:text="${comment.likes}"></td>
+				<td th:text="${comment.registerDate}"></td>
+			
+					
+					<!-- 수정 버튼: 클릭 시 수정 폼 보여주기 -->
+		      <td>
+		        <button type="button" th:onclick="|showEditForm(${comment.num})|">수정</button>
+		      </td>
+
+				<td>
+					<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post">
+						<input type="hidden" name="commentNum" th:value="${comment.num}" />
+						<button type="submit">삭제</button>
+					</form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<script>
+	  // 수정 폼 보이기
+	  function showEditForm(commentNum) {
+	    // 텍스트 숨기기
+	    document.getElementById('content-span-' + commentNum).style.display = 'none';
+	    // 수정 폼 보이기
+	    document.getElementById('edit-form-' + commentNum).style.display = 'block';
+	  }
+
+	  // 수정 취소
+	  function cancelEdit(commentNum) {
+	    // 텍스트 보이기
+	    document.getElementById('content-span-' + commentNum).style.display = 'inline';
+	    // 수정 폼 숨기기
+	    document.getElementById('edit-form-' + commentNum).style.display = 'none';
+	  }
+	</script>
+
+	<!-- 댓글 작성 -->
+	<h4>댓글 작성</h4>
+	<form th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post">
+		<!--<input type="hidden" name="parentNum" value="0" /> 대댓글 기능-->
+
+		<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+		<br />
+		<button type="submit">댓글 등록</button>
 	</form>

@@ -1,11 +1,6 @@
 package com.practice.setoka.dao;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-
-import com.practice.setoka.JsonConverter;
-
-import jakarta.persistence.Convert;
 
 public class Board {
 	
