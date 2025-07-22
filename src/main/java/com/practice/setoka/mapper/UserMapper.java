@@ -29,4 +29,6 @@ public interface UserMapper
 	boolean updateProfilephotoPath(@Param("path") String path, @Param("id") String id);
 	//프로필 사진 주소 가져오기
 	String selectProfilephotoPath(@Param("id") String id);
+	//유저 포인트 변경
+	boolean userPointUpdate(@Param("id")String id, @Param("point") int point);
 }

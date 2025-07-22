@@ -119,4 +119,9 @@ public class UserService
 	{
 		return userMapper.selectProfilephotoPath(id);
 	}
+	
+	public boolean userPointUpdate(String id, int point)
+	{
+		return userMapper.userPointUpdate(id, point);
+	}
 }
