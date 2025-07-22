@@ -17,7 +17,7 @@ public interface MessageMapper {
 	//모드 메세지 받기
 	public List<Message> selectAllMessage();
 	//num이 보내는 사람인 전부
-	public List<Message> selectSenderMessage(@Param("num") int num);
+	public List<Message> selectSenderMessage(@Param("id") String id);
 	//num이 받는 사람인 전부
-	public List<Message> selectReceiverMessage(@Param("num") int num);
+	public List<Message> selectReceiverMessage(@Param("id") String id);
 }
