@@ -277,26 +277,39 @@ public class BoardActionController {
 		
 		
 		//댓글 수정
-		@PostMapping ("/AdoptDetail/{num}/comment/edit")
-		@ResponseBody
+		@PostMapping("/AdoptDetail/{num}/comment/update")
 		public String editComment(
-				@PathVariable("num") int boardNum,
-				@RequestParam("commentNum") int commentNum,
-				@RequestParam("content") String content,
-				@AuthenticationPrincipal CustomUserDetails authUser,
-				CommentInfoDto commentInfoDto) {
+		        @PathVariable("num") int boardNum,
+		        @RequestParam("commentNum") int commentNum,
+		        @RequestParam("content") String content,
+		        @AuthenticationPrincipal CustomUserDetails authUser,
+		        RedirectAttributes redirectAttributes) {
 			
-			Users user = (Users)authUser.getUser(); 
-				if (user == null) {
-					return "<script>alert('작성자만 수정할 수 있다는거임!'); history.back();</script>";
-					
-				}
-			commentInfoDto.setNum(commentNum);
-			commentInfoDto.setContent(content);
-			commentInfoDto.setUserNum(user.getNum());
-			
-			commentsService.updateComment(commentInfoDto);
-			return "<script>alert('수정 완료!'); location.href = '/AdoptDetail/\" + boardNum + \"';</script>\";
+			//로그인 확인
+		    Users user = (Users)authUser.getUser();
+		    if (user == null) {
+		        redirectAttributes.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
+		        return "redirect:/AdoptDetail/" + boardNum;
+		    }
+		    
+		    //본인확인
+		    CommentInfoDto originalComment = commentsService.findCommentByNum(commentNum);
+		    if (originalComment == null || originalComment.getUserNum() != user.getNum()) {
+		        redirectAttributes.addFlashAttribute("errorMessage", "본인 댓글만 수정할 수 있습니다.");
+		        return "redirect:/AdoptDetail/" + boardNum;
+		    }
+		    
+		    // 댓글 내용불러오기
+		    CommentInfoDto commentInfoDto = new CommentInfoDto();
+		    commentInfoDto.setNum(commentNum);
+		    commentInfoDto.setContent(content);
+		    commentInfoDto.setUserNum(user.getNum());
+
+		    commentsService.updateComment(commentInfoDto);
+		    
+		    //html 에러메세지 보내기
+		    redirectAttributes.addFlashAttribute("successMessage", "수정 완료!");
+		    return "redirect:/AdoptDetail/" + boardNum;
 		}
 			
 	
@@ -325,7 +338,31 @@ public class BoardActionController {
 		return "<script>alert('삭제 완료!'); location.href = '/AdoptDetail/" + boardNum + "';</script>";
 	}
 	
-}
+	//댓글 좋아요
+	@PostMapping("/AdoptDetail/{num}/comment/like")
+	public String likeComment(
+	        @AuthenticationPrincipal CustomUserDetails authUser,
+	        @PathVariable("num") int boardNum,
+	        @RequestParam("commentNum") int commentNum) {
+	    
+	    // 로그인 유저 확인
+	    Users loginUser = authUser.getUser();
+	    if (loginUser == null) {
+	        return "redirect:/AdoptDetail/" + boardNum;
+	    }
+
+	    // 댓글 존재 확인
+	    CommentInfoDto comment = commentsService.findCommentByNum(commentNum);
+	    if (comment == null) {
+	        return "redirect:/AdoptDetail/" + boardNum;
+	    }
+
+	    // 좋아요 증가 처리
+	    commentsService.increaseCommentLikes(commentNum);
+
+	    return "redirect:/AdoptDetail/" + boardNum;
+	}
 	
+}
 	
 	
