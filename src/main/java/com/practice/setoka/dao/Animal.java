@@ -1,6 +1,7 @@
 package com.practice.setoka.dao;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import com.practice.setoka.Enum.AnimalStatus;
 
@@ -68,6 +69,10 @@ public class Animal {
 	}
 	public void setProfilePath(String profilePath) {
 		this.profilePath = profilePath;
+	}
+	public long getTogetherDateLong() {
+		LocalDateTime now = LocalDateTime.now();
+		return ChronoUnit.DAYS.between(togetherDate, now);
 	}
 	
 }

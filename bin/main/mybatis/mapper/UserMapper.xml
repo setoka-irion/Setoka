@@ -36,5 +36,9 @@
   	<select id="selectProfilephotoPath">
   		SELECT Profilephoto FROM users WHERE id = #{id}
   	</select>
+  	
+  	<update id="userPointUpdate">
+  		UPDATE users SET point = #{point} WHERE id = #{id}
+  	</update>
 	
 </mapper>

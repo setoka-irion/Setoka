@@ -12,11 +12,24 @@
 		<input type="hidden" name="id"/>
 
 		<label for="name">title:</label>
-		<input type="text" id="title" name="title" size="50"/><br/>
+		<input type="text" id="title" name="title" size="50" required/><br/>
 
 		<label for="context">내용:</label>
-		<textarea id="context" name="context" cols="50" rows="30"></textarea><br/>
+		<textarea id="content" name="content" cols="50" rows="30"></textarea><br/>
 		
+		<label for="item_Type">보낼 아이템 종류:</label>
+		<select id="item_Type" name="item_Type">
+		    <option value="">-- 선택 없음 --</option>
+		    <th:block th:each="type : ${itemTypes}">
+		        <option th:value="${type.name()}" 
+		                th:text="${type.displayName}"></option>
+		    </th:block>
+		</select><br/>
+
+		<!-- 수치/개수 입력 -->
+		<label for="item_Value">수량 / 포인트 수치:</label>
+		<input type="number" id="item_Value" name="item_Value" min="0" value = "0" /><br/>
+				
 		<button type="submit">전송</button>
 	</form>
 
