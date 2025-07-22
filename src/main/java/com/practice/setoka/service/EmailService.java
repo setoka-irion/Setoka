@@ -69,6 +69,7 @@ public class EmailService
 		//없는 메일이면 
 		if(verifyCode == null)
 		{
+			System.out.println("추가");
 			//새로 추가
 			if(!mailMapper.insertCode(email, code))
 			{
@@ -78,6 +79,7 @@ public class EmailService
 		//있는 경우
 		else
 		{
+			System.out.println("수정");
 			//코드와 시기를 수정함
 			if(!mailMapper.updateVerifyCode(email, code))
 			{

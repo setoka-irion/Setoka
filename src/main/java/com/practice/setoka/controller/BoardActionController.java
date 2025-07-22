@@ -278,6 +278,7 @@ public class BoardActionController {
 		
 		//댓글 수정
 		@PostMapping ("/AdoptDetail/{num}/comment/edit")
+		@ResponseBody
 		public String editComment(
 				@PathVariable("num") int boardNum,
 				@RequestParam("commentNum") int commentNum,
@@ -286,13 +287,16 @@ public class BoardActionController {
 				CommentInfoDto commentInfoDto) {
 			
 			Users user = (Users)authUser.getUser(); 
-				
+				if (user == null) {
+					return "<script>alert('작성자만 수정할 수 있다는거임!'); history.back();</script>";
+					
+				}
 			commentInfoDto.setNum(commentNum);
 			commentInfoDto.setContent(content);
 			commentInfoDto.setUserNum(user.getNum());
 			
 			commentsService.updateComment(commentInfoDto);
-			return "redirect:/AdoptDetail/" + boardNum;
+			return "<script>alert('수정 완료!'); location.href = '/AdoptDetail/\" + boardNum + \"';</script>\";
 		}
 			
 	
