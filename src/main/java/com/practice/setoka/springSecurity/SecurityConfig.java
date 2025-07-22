@@ -23,7 +23,7 @@ public class SecurityConfig {
 		http
 			.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(auth -> auth
-			    .requestMatchers("/", "/Login", "/SignUp", "/Adopt", "/sendSingUpCode", "/verifySingUpCode").permitAll()
+			    .requestMatchers("/", "/Login", "/SignUp", "/Adopt", "/sendSingUpCode").permitAll()
 			    .requestMatchers("/AllUsers").hasRole("관리자")
 			    .anyRequest().authenticated()
 			)
