@@ -38,8 +38,6 @@ public class HomeController {
 				model.addAttribute("login", loginData.getNickName());
 				model.addAttribute("path", loginData.getProfilePath());
 				model.addAttribute("grade", loginData.getGrade());
-				model.addAttribute("id", loginData.getId());
-
 			}
 		}
 
