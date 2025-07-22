@@ -8,29 +8,29 @@
 <body>
 	<h1>홈</h1>
 	<table id="usersTable">
-			<thead>
-				<tr>
-					<th>sneder</th>
-					<th>title</th>
-					<th>context</th>
-					<th>item</th>
-					<th>value</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- 사용자 데이터가 여기에 추가됩니다 -->
-				<tr th:each="message : ${messageList}">
-				  
-				  <td th:text="${message.sender}"></td>
-				  <td th:text="${message.title}"></td>
-				  <td th:text="${message.content}"></td>
-				  <td th:text="${message.item_Type}"></td>
-				  <td th:text="${message.item_Value}"></td>
-				 
-				</tr>
-			</tbody>
-		</table>
-	
+		<thead>
+			<tr>
+				<th>sneder</th>
+				<th>title</th>
+				<th>context</th>
+				<th>item</th>
+				<th>value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- 사용자 데이터가 여기에 추가됩니다 -->
+			<tr th:each="message : ${messageList}">
+
+				<td th:text="${message.sender}"></td>
+				<td th:text="${message.title}"></td>
+				<td th:text="${message.content}"></td>
+				<td th:text="${message.item_Type}"></td>
+				<td th:text="${message.item_Value}"></td>
+
+			</tr>
+		</tbody>
+	</table>
+	<button onclick="location.href='/CreateLetter'">쪽지작성</button>
 
 </body>
 
