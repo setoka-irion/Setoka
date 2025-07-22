@@ -1,22 +1,29 @@
 package com.practice.setoka.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Users;
+import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-public class HomeController 
-{
-	//홈화면
+public class HomeController {
+	
+	@Autowired
+	UserService userService;
+	// 홈화면
 	@GetMapping(value = "/")
-	public String home(HttpSession session, Model model, @AuthenticationPrincipal CustomUserDetails authUser)
-	{
+	public String home(HttpSession session, Model model, @AuthenticationPrincipal CustomUserDetails authUser) {
 //		Users loginData = (Users) authUser.getUser();
 //		SessionUrlHandler.save(session, "");
 //		if(loginData != null)
@@ -25,45 +32,56 @@ public class HomeController
 //			model.addAttribute("path", loginData.getProfilePath());
 //			System.out.println(loginData.getProfilePath());
 //		}
-		if(authUser != null) {
-	        Users loginData = authUser.getUser();
-	        if(loginData != null) {
-	            model.addAttribute("login", loginData.getNickName());
-	            model.addAttribute("path", loginData.getProfilePath());
-	            model.addAttribute("id", loginData.getId());
+		if (authUser != null) {
+			Users loginData = authUser.getUser();
+			if (loginData != null) {
+				model.addAttribute("login", loginData.getNickName());
+				model.addAttribute("path", loginData.getProfilePath());
+				model.addAttribute("id", loginData.getId());
 
-	        }
-	    }
-			
+			}
+		}
+
 		return "home";
 	}
-	
-	//병원
+
+	// 병원
 	@GetMapping(value = "Hospital")
-	public String hospital()
-	{
+	public String hospital() {
 		return "Hospital";
 	}
-	
-	//동물카페
+
+	// 동물카페
 	@GetMapping(value = "AnimalCafe")
-	public String animalCafe()
-	{
+	public String animalCafe() {
 		return "AnimalCafe";
 	}
-	
-	//출석체크
+
+	// 출석체크
 	@GetMapping(value = "Attendance")
-	public String attendance()
-	{
+	public String attendance() {
 		return "Attendance";
 	}
-	
+
 	@GetMapping(value = "PetPlaces")
-	public String petPlaces()
-	{
+	public String petPlaces() {
 		return "PetPlaces";
 	}
-	
 
+	@GetMapping("AllUsers")
+	public String PrintAllUsers(Model model, @AuthenticationPrincipal CustomUserDetails authUser,
+			RedirectAttributes redirectAttributes) {
+		List<Users> allUsers = userService.selectAllUsers();
+		Users loginData = authUser.getUser();
+
+		String id = loginData.getId();
+
+		if ("asd".equals(id)) {
+			model.addAttribute("allUsers", allUsers);
+			return "AllUsers";
+		} else {
+			redirectAttributes.addFlashAttribute("message", "관리자 이외에는 접근할 수 없습니다.");
+			return Redirect.home;
+		}
+	}
 }
