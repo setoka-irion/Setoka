@@ -1,5 +1,6 @@
 package com.practice.setoka.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.CommentsService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -94,22 +96,39 @@ public class BoardActionController {
 			@PathVariable("num")int num,
 			@RequestParam(value="editCommentNum", required = false) Integer editCommentNum,
 			@AuthenticationPrincipal CustomUserDetails authUser,
+			HttpSession session,
 			Model model) {
 		
 		//상세 내용 보여줌
 		BoardWithUserDto Detail = boardService.findBoardByNum(num);
 		model.addAttribute("detail", Detail);
 		
+		//세션에서 조회한 게시글 번호 리스트 받아오기
+		@SuppressWarnings("unchecked")
+		List<Integer> viewedBoards = (List<Integer>) session.getAttribute("VIEWED_BOARDS");
+		if(viewedBoards == null) {
+			viewedBoards = new ArrayList<>(); 
+		}
+				
 		// 유저에 한해 조회수 증가 
 		if(authUser!=null) { //원래 authUser는 비어있기 때문에 아래의 코드가 있으면 무조건 로그인 시킴. 
 			Users user = (Users) authUser.getUser();
 			if (user !=null) {
-				boardService.increaseViewsBoard(num);	
+				// 이 게시글 번호가 세션에 없으면 조회수 증가 및 세션에 저장
+				if(!viewedBoards.contains(num)) {
+				boardService.increaseViewsBoard(num);
+				viewedBoards.add(num);
+				session.setAttribute("VIEWED_BOARDS", viewedBoards);
+				}
 			}
 		}
-		
 		// 해당 게시글 기존 댓글 보여주기
 		List<CommentInfoDto> comments = commentsService.findCommentsByBoardNum(num);
+//		for (var c : comments)
+//		{
+//			System.out.println(c.getNum());
+//			System.out.println(c.getRegisterDate());
+//		}
 		model.addAttribute("comments", comments);		
 		
 		// 댓글 수정 기능
@@ -117,6 +136,7 @@ public class BoardActionController {
 			CommentInfoDto commentToEdit = commentsService.findCommentByNum(editCommentNum);
 			model.addAttribute("commentToEdit",commentToEdit);
 		}		
+		
 		System.out.println("adoptDetail 진입");
 		return "Board/AdoptDetail";
 	}
@@ -232,22 +252,39 @@ public class BoardActionController {
 
 			
 			
-			//	좋아요	
+			// 게시글 좋아요	
 			@PostMapping("/AdoptDetail/{num}/like")
 			public String likeBoard(@PathVariable("num") int num,
-						@AuthenticationPrincipal CustomUserDetails authUser) {
+						@AuthenticationPrincipal CustomUserDetails authUser,
+						HttpSession session) {
 				
-				//로그인했으면 좋아요
-			    if(authUser != null) {
-			        boardService.increaseLikesBoard(num);
-			    }
+				//세션에서 좋아요한 게시글 번호 리스트 받 아오기 없으면 만들기
+				@SuppressWarnings("unchecked")
+				List<Integer> likedBoards = (List<Integer>) session.getAttribute("LIKED_BOARDS");
+				if(likedBoards == null) {
+					likedBoards = new ArrayList<>(); 
+				}
+						
+				// 유저에 한해 조회수 증가 
+				if(authUser!=null) { //원래 authUser는 비어있기 때문에 아래의 코드가 있으면 무조건 로그인 시킴. 
+					Users user =  authUser.getUser(); //허가받은 유저 가져옴
+					if (user !=null) { //유저라면.
+						// 이 좋아요가 세션에 없으면(좋아요 안했다면) 좋아요 증가 및 세션에 저장
+						if(!likedBoards.contains(num)) {
+
+						boardService.increaseLikesBoard(num);
+						likedBoards.add(num);
+						session.setAttribute("LIKED_BOARDS", likedBoards);
+						}
+					}
+				}
 			    
 			    return "redirect:/AdoptDetail/" + num;
 			}
 		
 
 			
-	//댓글 등록
+		//댓글 등록
 		@PostMapping(value="AdoptDetail/{num}/comment")
 		public String addComment(
 				@PathVariable("num") int boardNum, // 게시글 넘버
@@ -261,6 +298,7 @@ public class BoardActionController {
 			
 			// 댓글 불러오기
 			List<CommentInfoDto> comments = commentsService.findCommentsByBoardNum(boardNum);
+			
 			model.addAttribute("comments", comments);
 			
 			// 댓글 작성
@@ -356,7 +394,7 @@ public class BoardActionController {
 	    if (comment == null) {
 	        return "redirect:/AdoptDetail/" + boardNum;
 	    }
-
+	    
 	    // 좋아요 증가 처리
 	    commentsService.increaseCommentLikes(commentNum);
 

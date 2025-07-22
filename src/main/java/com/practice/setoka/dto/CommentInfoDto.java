@@ -1,6 +1,8 @@
 package com.practice.setoka.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class CommentInfoDto {
 		
@@ -108,5 +110,23 @@ public class CommentInfoDto {
 		public void setType(int type) {
 			this.type = type;
 		}
-		
+		public String getFormattedRegistDate() {
+			if (registerDate == null)
+				return "";
+			LocalDate registLocalDate = registerDate.toLocalDate();
+			LocalDate today = LocalDate.now();
+
+			if (registLocalDate.equals(today)) {
+				return registerDate.format(DateTimeFormatter.ofPattern("HH:mm"));
+			} else {
+				return registerDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+			}
+		}
+
+		public String getFormattedRegistDateOne() {
+			if (registerDate == null)
+				return "";
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+			return registerDate.format(formatter);
+		}
 }

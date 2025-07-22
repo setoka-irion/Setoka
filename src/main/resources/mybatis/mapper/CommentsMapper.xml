@@ -5,10 +5,10 @@
 	
 	<!--댓글 작성-->
 	<insert id="insertComment"	parameterType="com.practice.setoka.dto.CommentInfoDto">
-		INSERT Into comments ( userNum, parentNum, boardNum, content, likes, registerDate)
-		VALUES (#{userNum},#{parentNum}, #{boardNum}, #{content}, #{likes}, #{registerDate})
+		INSERT Into comments ( userNum, parentNum, boardNum, content, likes)
+		VALUES (#{userNum},#{parentNum}, #{boardNum}, #{content}, #{likes})
 	</insert>
-	
+
 	<!-- 댓글 수정-->
 	<update id="updateComment" parameterType="com.practice.setoka.dto.CommentInfoDto">
 		UPDATE comments SET content = #{content}

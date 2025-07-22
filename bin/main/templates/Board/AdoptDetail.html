@@ -125,7 +125,7 @@
 				<tr>
 					<td th:text="${detail.title}"></td>
 					<td th:text="${detail.nickName}"></td>
-					<td th:text="${detail.registerDate}"></td>
+					<td th:text="${detail.formattedRegistDate}"></td>
 				</tr>
 				</tbody>
 		      </table>
@@ -205,8 +205,8 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr th:each="comment : ${comments}">
-				<td th:text="${comment.num}"></td>
+			<tr th:each="comment, iterStat : ${comments}">
+				<td th:text="${iterStat.index + 1}"></td> <!-- 댓글 번호 순차 번호 1부터 시작 -->
 				<td th:text="${comment.nickname}"></td>
 
 				<!-- 내용: 기본적으로 span 으로 보여주고 -->
@@ -232,7 +232,7 @@
 				
 				<td th:text="${comment.userGrade}"></td>
 				<td th:text="${comment.likes}"></td>
-				<td th:text="${comment.registerDate}"></td>
+				<td th:text="${comment.formattedRegistDate}"></td>
 			
 					
 					<!-- 수정 버튼: 클릭 시 수정 폼 보여주기 -->
