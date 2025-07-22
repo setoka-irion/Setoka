@@ -205,7 +205,8 @@
     fetch(`/memos?year=${year}&month=${month < 10 ? '0' + month : month}`)
       .then(res => res.json())
       .then(memos => {
-		const filteredMemos = memos.filter(memo => {return memo.intAnimalNum.includes(Number(animalNum));});
+//		const filteredMemos = memos.filter(memo => {return memo.intAnimalNum.includes(Number(animalNum));});
+		const filteredMemos = memos.filter(memo => {return memo.intAnimalNum != null && memo.intAnimalNum.includes(Number(animalNum));});
         const memoMap = {};
 
         filteredMemos.forEach(memo => {
