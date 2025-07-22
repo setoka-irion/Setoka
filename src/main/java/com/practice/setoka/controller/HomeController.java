@@ -1,13 +1,11 @@
 package com.practice.setoka.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.practice.setoka.dao.Users;
-import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,6 +30,7 @@ public class HomeController
 	        if(loginData != null) {
 	            model.addAttribute("login", loginData.getNickName());
 	            model.addAttribute("path", loginData.getProfilePath());
+	            model.addAttribute("id", loginData.getId());
 	        }
 	    }
 			
@@ -65,4 +64,5 @@ public class HomeController
 		return "PetPlaces";
 	}
 	
+
 }
