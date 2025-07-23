@@ -23,9 +23,6 @@ public class MessageController {
 	@GetMapping(value = "CreateLetter")
 	public String CreateLetter(Model model)
 	{
-		String id = "bit393298@gmail.com";
-		
-		model.addAttribute("id", id);
 		model.addAttribute("itemTypes", Item.values());
 		return "CreateLetter";
 	}
@@ -33,8 +30,7 @@ public class MessageController {
 	@PostMapping(value = "SendMessage")
 	public String sendMessage(MessageDto dto, @AuthenticationPrincipal CustomUserDetails authUser)
 	{
-		dto.setSender("bit393298@gmail.com");
-		dto.setReceiver("bit393298@gmail.com");
+		dto.setSender(authUser.getUser().getId());
 		if(dto.getItem_Type() == null)
 			dto.setItem_Value(0);
 		messageService.sendMessage(dto);
