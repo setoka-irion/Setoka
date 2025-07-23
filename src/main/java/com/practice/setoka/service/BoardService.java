@@ -60,11 +60,6 @@ public class BoardService {
 	    boardMapper.increaseViewsBoard(num);
 	}
 
-	// 좋아요 증가
-	public void increaseLikesBoard(int num) {
-	    boardMapper.increaseLikesBoard(num);
-	}
-
 	// 유저 ID로 검색
 	public List<BoardWithUserDto> findBoardsByUserId(String id) {
 	    return boardMapper.findBoardsByUserId(id);

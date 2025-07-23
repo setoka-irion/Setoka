@@ -38,7 +38,7 @@
 		JOIN users u ON c.userNum = u.num
 		JOIN board b ON c.boardNum = b.num
 		WHERE c.boardNum = #{boardNum} AND c.status = 0 <!--정상댓글-->
-		ORDER BY c.registerDate DESC
+		ORDER BY c.registerDate ASC
 	</select>
 	
 	<!--댓글 수정용 해당 댓글 하나만 불러오기-->

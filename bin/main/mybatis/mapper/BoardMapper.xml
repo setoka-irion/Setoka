@@ -31,15 +31,16 @@
 
 
 
-<!--	 조회수 증가 -->
+<!--	게시글 조회수 증가 -->
 	<update id="increaseViewsBoard" parameterType="int">
 		UPDATE board SET views = views + 1 WHERE num = #{num}
 	</update>
 	
-<!--	좋아용 -->
-	<update id="increaseLikesBoard" parameterType="int">
-		UPDATE board SET likes = likes + 1 WHERE num = #{num}
-	</update>	
+	
+	
+	
+	
+	
 	
 	
 	

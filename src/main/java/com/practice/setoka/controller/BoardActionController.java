@@ -20,8 +20,10 @@ import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
 import com.practice.setoka.dto.CommentInfoDto;
+import com.practice.setoka.dto.LikeDto;
 import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.CommentsService;
+import com.practice.setoka.service.LikeService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
 import jakarta.servlet.http.HttpSession;
@@ -37,6 +39,9 @@ public class BoardActionController {
 	
 	@Autowired
 	public CommentsService commentsService;
+	
+	@Autowired
+		public LikeService likeService;
 
     BoardActionController(BoardController boardController) {
         this.boardController = boardController;
@@ -124,11 +129,6 @@ public class BoardActionController {
 		}
 		// 해당 게시글 기존 댓글 보여주기
 		List<CommentInfoDto> comments = commentsService.findCommentsByBoardNum(num);
-//		for (var c : comments)
-//		{
-//			System.out.println(c.getNum());
-//			System.out.println(c.getRegisterDate());
-//		}
 		model.addAttribute("comments", comments);		
 		
 		// 댓글 수정 기능
@@ -252,35 +252,18 @@ public class BoardActionController {
 
 			
 			
-			// 게시글 좋아요	
-			@PostMapping("/AdoptDetail/{num}/like")
-			public String likeBoard(@PathVariable("num") int num,
-						@AuthenticationPrincipal CustomUserDetails authUser,
-						HttpSession session) {
-				
-				//세션에서 좋아요한 게시글 번호 리스트 받 아오기 없으면 만들기
-				@SuppressWarnings("unchecked")
-				List<Integer> likedBoards = (List<Integer>) session.getAttribute("LIKED_BOARDS");
-				if(likedBoards == null) {
-					likedBoards = new ArrayList<>(); 
-				}
-						
-				// 유저에 한해 조회수 증가 
-				if(authUser!=null) { //원래 authUser는 비어있기 때문에 아래의 코드가 있으면 무조건 로그인 시킴. 
-					Users user =  authUser.getUser(); //허가받은 유저 가져옴
-					if (user !=null) { //유저라면.
-						// 이 좋아요가 세션에 없으면(좋아요 안했다면) 좋아요 증가 및 세션에 저장
-						if(!likedBoards.contains(num)) {
-
-						boardService.increaseLikesBoard(num);
-						likedBoards.add(num);
-						session.setAttribute("LIKED_BOARDS", likedBoards);
-						}
-					}
-				}
+		// 게시글 좋아요	
+		@PostMapping("/AdoptDetail/{num}/like")
+		public String likeBoard(@PathVariable("num") int num,
+					@AuthenticationPrincipal CustomUserDetails authUser) {
+			
+			
+			if(authUser.getUser() != null)
+				likeService.likeBoard(new LikeDto(authUser.getUser().getNum(), num));
+			
 			    
-			    return "redirect:/AdoptDetail/" + num;
-			}
+		    return "redirect:/AdoptDetail/" + num;
+		}
 		
 
 			
