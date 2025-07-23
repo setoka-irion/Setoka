@@ -79,22 +79,10 @@ public class UserService
 	//update
 	public boolean updateUserDto(UsersDto dto)
 	{
+		dto.setGrade(gradeMeasurement(dto.getPoint()));
 		return userMapper.updateUser(dto);
 	}
 	
-	//유저가 존재하면서 삭제가 아닌 경우에만 리턴 나머지는 null 리턴
-	public Users loginUser(UsersDto dto)
-	{
-		Users user = selectByID(dto.getId());
-		if(user == null)
-			return null;
-		
-		if(user.getStatus().equals(Status.삭제))
-			return null;
-		
-		return user;
-	}
-
 	//유저의 프로필 사진을 입력하는 서비스 (회원가입시에 프로필 사진을 정하지 않으니)
 	public boolean insertProfilephoto(MultipartFile file, UsersDto dto)
 	{
@@ -123,5 +111,15 @@ public class UserService
 	public boolean userPointUpdate(String id, int point)
 	{
 		return userMapper.userPointUpdate(id, point);
+	}
+	
+	public Grade gradeMeasurement(int point)
+	{
+		if(point > 10000)
+			return Grade.골드;
+		else if(point > 1000)
+			return Grade.실버;
+		else
+			return Grade.브론즈;
 	}
 }
