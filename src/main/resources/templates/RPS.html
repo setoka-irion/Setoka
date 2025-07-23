@@ -6,6 +6,8 @@
 </head>
 
 <body>
+	<div th:replace="header :: siteHeader"></div>
+	
 	<h1>가위바위보 게임</h1>
 
 	<p th:if="${result != null}" th:text="${result}"></p>

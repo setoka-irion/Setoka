@@ -5,6 +5,8 @@
 	<title>개인정보수정</title>	
 </head>
 <body>
+	<div th:replace="header :: siteHeader"></div>
+	
 	<h1>개인정보수정</h1>
 	<form th:action="@{/ModifyUser}" th:object="${UsersDto}" method="post">
 		<p th:if="${errorMessage}" th:text="${errorMessage}"></p>

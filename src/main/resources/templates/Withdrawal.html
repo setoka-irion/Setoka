@@ -5,6 +5,8 @@
 	<title>탈퇴</title>	
 </head>
 <body>
+	<div th:replace="header :: siteHeader"></div>
+	
 	<h1>탈퇴</h1>
 	<form th:action="@{/Withdrawal}" method="post">
 		비밀번호:
