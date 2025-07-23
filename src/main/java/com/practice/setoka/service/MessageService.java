@@ -13,9 +13,15 @@ import com.practice.setoka.mapper.MessageMapper;
 public class MessageService {
 	@Autowired
 	private MessageMapper messageMapper;
+	@Autowired
+	private UserService userService;
 	
 	public void sendMessage(MessageDto dto)
 	{
+		if(userService.selectByID(dto.getReceiver()) == null)
+			return;
+		if(userService.selectByID(dto.getSender()) == null)
+			return;
 		messageMapper.insertMessage(dto);
 	}
 	
