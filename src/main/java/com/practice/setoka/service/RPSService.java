@@ -39,20 +39,17 @@ public class RPSService {
 		{
 		case 0:	//패배
 			user.setPoint(user.getPoint() - point);
-			System.out.println("패배");
 			s = "패배";
 			break;
 		case 1:	//승리
 			user.setPoint(user.getPoint() + point);
-			System.out.println("승리");
 			s = "승리";
 			break;
 		case 2:	//무승부
-			System.out.println("무승부");
+			
 			s = "무승부";
 			break;
 		}
-		System.out.println(user.getPoint());
 		userService.userPointUpdate(user.getId(), user.getPoint());
 		return s;
 	}
