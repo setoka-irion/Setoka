@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.practice.setoka.Redirect;
 import com.practice.setoka.Upload;
 import com.practice.setoka.dao.Animal;
 import com.practice.setoka.dao.Memo;
@@ -77,8 +78,13 @@ public class MyAnimalPageController {
     // 애견 수정
     @GetMapping("/myanimal/edit")
     @ResponseBody
-    public Animal getAnimalForEdit(@RequestParam("animalNum") int animalNum) {
-    	return animalService.getAnimalByNum(animalNum);
+    public Animal getAnimalForEdit(@RequestParam("animalNum") int animalNum, @AuthenticationPrincipal CustomUserDetails authUser) {
+    	Animal animal = animalService.getAnimalByNum(animalNum);
+    	Users user = authUser.getUser();
+    	if(animal!=null&&animal.getUserNum()==user.getNum()) {
+    		return animalService.getAnimalByNum(animalNum);
+    	}
+    	return null;
     }
     
     @PostMapping("/myanimal/edit")

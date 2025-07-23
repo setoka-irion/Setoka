@@ -11,9 +11,12 @@
 	<form th:action="@{/SendMessage}" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="id"/>
 
-		<label for="name">title:</label>
+		<label for="name">제목:</label>
 		<input type="text" id="title" name="title" size="50" required/><br/>
 
+		<label for="text">받는사람:</label>
+		<input type="text" id="receiver" name="receiver" size = "50" required/><br/>
+		
 		<label for="context">내용:</label>
 		<textarea id="content" name="content" cols="50" rows="30"></textarea><br/>
 		
