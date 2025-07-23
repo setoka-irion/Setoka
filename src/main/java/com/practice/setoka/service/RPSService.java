@@ -46,6 +46,7 @@ public class RPSService {
 		//유저 포인트 증가, 감소
 		switch(re)
 		{
+<<<<<<< HEAD
 		case LOSE:	//패배
 			point *= -1;
 			break;
@@ -59,6 +60,21 @@ public class RPSService {
 		user.setPoint(user.getPoint() + point);
 
 		rpsMapper.insertRPSResult(user.getNum(), RPSEnum.getEnum(ch), RPSEnum.getEnum(ran), re, point);
+=======
+		case 0:	//패배
+			user.setPoint(user.getPoint() - point);
+			s = "패배";
+			break;
+		case 1:	//승리
+			user.setPoint(user.getPoint() + point);
+			s = "승리";
+			break;
+		case 2:	//무승부
+			
+			s = "무승부";
+			break;
+		}
+>>>>>>> 65eddbaf19f2ad76429f327d50c101b6923c0549
 		userService.userPointUpdate(user.getId(), user.getPoint());
 		return re;
 	}

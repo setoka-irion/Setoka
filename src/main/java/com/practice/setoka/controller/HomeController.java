@@ -7,9 +7,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.practice.setoka.Redirect;
+import com.practice.setoka.Enum.Grade;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
@@ -37,8 +37,7 @@ public class HomeController {
 			if (loginData != null) {
 				model.addAttribute("login", loginData.getNickName());
 				model.addAttribute("path", loginData.getProfilePath());
-				model.addAttribute("id", loginData.getId());
-
+				model.addAttribute("grade", loginData.getGrade());
 			}
 		}
 
@@ -69,18 +68,17 @@ public class HomeController {
 	}
 
 	@GetMapping("AllUsers")
-	public String PrintAllUsers(Model model, @AuthenticationPrincipal CustomUserDetails authUser,
-			RedirectAttributes redirectAttributes) {
+	public String PrintAllUsers(Model model, @AuthenticationPrincipal CustomUserDetails authUser
+			) {
 		List<Users> allUsers = userService.selectAllUsers();
 		Users loginData = authUser.getUser();
 
-		String id = loginData.getId();
+		Grade grade = loginData.getGrade();
 
-		if ("asd".equals(id)) {
+		if (grade.equals(Grade.관리자)) {
 			model.addAttribute("allUsers", allUsers);
 			return "AllUsers";
 		} else {
-			redirectAttributes.addFlashAttribute("message", "관리자 이외에는 접근할 수 없습니다.");
 			return Redirect.home;
 		}
 	}

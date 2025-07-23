@@ -21,7 +21,7 @@
 		SELECT *
 		FROM animal
 		WHERE userNum = #{userNum}
-		ORDER BY num
+		ORDER BY togetherDate
 	</select>
 
 	<!-- 고유번호로 단일 애견 조회 -->

@@ -1,400 +1,508 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>애견 상세보기 + 달력</title>
-  <style>
-    /* 기본 스타일 */
-    table { width: 350px; margin: 20px auto; border-collapse: collapse; }
-    th, td { border: 1px solid #ccc; width: 14.28%; height: 80px; vertical-align: top; padding: 5px; cursor: pointer; }
-    th { background: #eee; }
-    .memo-title { font-size: 0.75em; color: #007bff; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
-    .nav-buttons { text-align: center; margin: 10px 0; }
-    button { margin: 0 10px; padding: 5px 15px; }
-    #memoModal, #memoListModal, #memoDetailModal {
-      display: none; position: fixed; z-index: 100; left:0; top:0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);
-    }
-    #memoModalContent, #memoListModal > div, #memoDetailModal > div {
-      background: white; margin: 10% auto; padding: 20px; width: 350px; border-radius: 5px; position: relative;
-      max-height: 70vh; overflow-y: auto;
-    }
-    #memoModalContent label, #memoModalContent input[type="text"], #memoModalContent textarea, #memoModalContent select {
-      display: block; width: 100%; margin-top: 10px; padding: 5px;
-    }
-    #memoModalClose, #memoListClose, #memoDetailClose {
-      position: absolute; right: 10px; top: 10px; cursor: pointer; font-weight: bold; font-size: 18px;
-    }
-    .blank { background: #f9f9f9; cursor: default; }
-  </style>
+	<meta charset="UTF-8" />
+	<title>애견 상세보기 + 달력</title>
+	<style>
+		/* 기본 스타일 */
+		table {
+			width: 350px;
+			margin: 20px auto;
+			border-collapse: collapse;
+		}
+
+		th,
+		td {
+			border: 1px solid #ccc;
+			width: 14.28%;
+			height: 80px;
+			vertical-align: top;
+			padding: 5px;
+			cursor: pointer;
+		}
+
+		th {
+			background: #eee;
+		}
+
+		.memo-title {
+			font-size: 0.75em;
+			color: #007bff;
+			margin-top: 5px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: block;
+		}
+
+		.nav-buttons {
+			text-align: center;
+			margin: 10px 0;
+		}
+
+		button {
+			margin: 0 10px;
+			padding: 5px 15px;
+		}
+
+		#memoModal,
+		#memoListModal,
+		#memoDetailModal {
+			display: none;
+			position: fixed;
+			z-index: 100;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.4);
+		}
+
+		#memoModalContent,
+		#memoListModal>div,
+		#memoDetailModal>div {
+			background: white;
+			margin: 10% auto;
+			padding: 20px;
+			width: 350px;
+			border-radius: 5px;
+			position: relative;
+			max-height: 70vh;
+			overflow-y: auto;
+		}
+
+		#memoModalContent label,
+		#memoModalContent input[type="text"],
+		#memoModalContent textarea,
+		#memoModalContent select {
+			display: block;
+			width: 100%;
+			margin-top: 10px;
+			padding: 5px;
+		}
+
+		#memoModalClose,
+		#memoListClose,
+		#memoDetailClose {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			cursor: pointer;
+			font-weight: bold;
+			font-size: 18px;
+		}
+
+		.blank {
+			background: #f9f9f9;
+			cursor: default;
+		}
+	</style>
 </head>
+
 <body>
-	
-  <!-- 애견 상세정보 -->
-  <h1 th:text="${CurrentAnimal.animalName} + ' 상세정보'">애견 이름 상세정보</h1>
 
-  <div>
-      <img th:if="${CurrentAnimal.profilePath != null and CurrentAnimal.profilePath != ''}" 
-           th:src="@{/images/{filename}(filename=${CurrentAnimal.profilePath})}" 
-           alt="프로필 사진" 
-           style="width:150px; height:150px; object-fit:cover; border-radius:50%;" />
-      <p th:if="${CurrentAnimal.profilePath == null or CurrentAnimal.profilePath == ''}">프로필 사진이 없습니다.</p>
-  </div>
-  
-  <table border="1" style="width:350px; margin:0 auto 30px;">
-    <tr><th>이름</th><td th:text="${CurrentAnimal.animalName}"></td></tr>
-    <tr><th>종</th><td th:text="${CurrentAnimal.species}"></td></tr>
-    <tr><th>나이</th><td th:text="${CurrentAnimal.age}"></td></tr>
-    <tr><th>성별</th><td th:text="${CurrentAnimal.gender}"></td></tr>
-  </table>
+	<!-- 애견 상세정보 -->
+	<h1 th:text="${CurrentAnimal.animalName} + ' 상세정보'">애견 이름 상세정보</h1>
 
-  <a href="/myanimal">← 내 애견 목록으로 돌아가기</a>
+	<div>
+		<img th:if="${CurrentAnimal.profilePath != null and CurrentAnimal.profilePath != ''}"
+			th:src="@{/images/{filename}(filename=${CurrentAnimal.profilePath})}" alt="프로필 사진"
+			style="width:150px; height:150px; object-fit:cover; border-radius:50%;" />
+		<p th:if="${CurrentAnimal.profilePath == null or CurrentAnimal.profilePath == ''}">프로필 사진이 없습니다.</p>
+	</div>
 
-  <!-- 달력 네비게이션 -->
-  <div class="nav-buttons">
-    <form th:action="@{/animal/detail}" method="get" style="display:inline;">
-      <input type="hidden" name="animalNum" th:value="${CurrentAnimal.num}" />
-      <input type="hidden" name="year" th:value="${month == 1} ? ${year - 1} : ${year}" />
-      <input type="hidden" name="month" th:value="${month == 1} ? 12 : ${month - 1}" />
-      <button type="submit">◀ 이전달</button>
-    </form>
+	<table border="1" style="width:350px; margin:0 auto 30px;">
+		<tr>
+			<th>이름</th>
+			<td th:text="${CurrentAnimal.animalName}"></td>
+		</tr>
+		<tr>
+			<th>종</th>
+			<td th:text="${CurrentAnimal.species}"></td>
+		</tr>
+		<tr>
+			<th>나이</th>
+			<td th:text="${CurrentAnimal.age}"></td>
+		</tr>
+		<tr>
+			<th>함께한 날</th>
+			<td th:text="${CurrentAnimal.togetherDateLong}"></td>
+		</tr>
+		<tr>
+			<th>성별</th>
+			<td th:text="${CurrentAnimal.gender}"></td>
+		</tr>
+	</table>
 
-    <span id="yearMonth"
-          th:attr="data-year=${year}, data-month=${month}"
-          th:text="${year} + '년 ' + ${month} + '월'"></span>
+	<a href="/myanimal">← 내 애견 목록으로 돌아가기</a>
 
-    <form th:action="@{/animal/detail}" method="get" style="display:inline;">
-      <input type="hidden" name="animalNum" th:value="${CurrentAnimal.num}" />
-      <input type="hidden" name="year" th:value="${month == 12} ? ${year + 1} : ${year}" />
-      <input type="hidden" name="month" th:value="${month == 12} ? 1 : ${month + 1}" />
-      <button type="submit">다음달 ▶</button>
-    </form>
-  </div>
+	<!-- 달력 네비게이션 -->
+	<div class="nav-buttons">
+		<form th:action="@{/animal/detail}" method="get" style="display:inline;">
+			<input type="hidden" name="animalNum" th:value="${CurrentAnimal.num}" />
+			<input type="hidden" name="year" th:value="${month == 1} ? ${year - 1} : ${year}" />
+			<input type="hidden" name="month" th:value="${month == 1} ? 12 : ${month - 1}" />
+			<button type="submit">◀ 이전달</button>
+		</form>
 
-  <!-- 달력 테이블 -->
-  <table id="calendar">
-    <thead>
-      <tr>
-        <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr th:each="weekRow : ${#numbers.sequence(0, weekCount - 1)}">
-        <td th:each="dayIdx : ${#numbers.sequence(0,6)}"
-            th:classappend="${((weekRow * 7) + dayIdx + 1 - startBlank <= 0 or (weekRow * 7) + dayIdx + 1 - startBlank > lengthOfMonth) ? 'blank' : ''}"
-            th:attr="data-date=${(weekRow * 7) + dayIdx + 1 - startBlank > 0 and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth} ? ${year + '-' + (month < 10 ? '0' + month : month) + '-' + (((weekRow * 7) + dayIdx + 1 - startBlank) < 10 ? '0' + ((weekRow * 7) + dayIdx + 1 - startBlank) : ((weekRow * 7) + dayIdx + 1 - startBlank))} : ''">
-          
-          <span th:if="${(weekRow * 7) + dayIdx + 1 - startBlank > 0 and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth}"
-                th:text="${(weekRow * 7) + dayIdx + 1 - startBlank}"></span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+		<span id="yearMonth" th:attr="data-year=${year}, data-month=${month}"
+			th:text="${year} + '년 ' + ${month} + '월'"></span>
 
-  <!-- 메모 모달 -->
-  <div id="memoModal">
-    <div id="memoModalContent">
-      <span id="memoModalClose">&times;</span>
-      <h2 id="modalTitle">메모 작성</h2>
-      <form id="memoForm" method="post" th:action="@{/memo/add}">
-        <input type="hidden" name="userNum" th:value="${userNum}" />
-        <input type="hidden" id="memoNum" name="num" value="" />
-        <label for="scheduleDate">날짜</label>
-        <input type="text" id="scheduleDate" name="scheduleDateStr" readonly />
-        <label for="animalSelect">애견</label>
-		<select id="animalSelect" name="animalNum[]" multiple required size="3">
-		        <option value="">-- 애견 선택 --</option>
-		        <!-- JS가 동적으로 옵션 추가 -->
-		</select>
-		<input type="hidden" id="animalNumStr" name="animalNumStr" />
-        <label for="title">제목</label>
-        <input type="text" id="title" name="title" required />
-        <label for="content">내용</label>
-        <textarea id="content" name="content" rows="5" required></textarea>
-        <div style="margin-top: 15px;">
-          <button type="submit" id="saveBtn">저장</button>
-        </div>
-      </form>
-    </div>
-  </div>
+		<form th:action="@{/animal/detail}" method="get" style="display:inline;">
+			<input type="hidden" name="animalNum" th:value="${CurrentAnimal.num}" />
+			<input type="hidden" name="year" th:value="${month == 12} ? ${year + 1} : ${year}" />
+			<input type="hidden" name="month" th:value="${month == 12} ? 1 : ${month + 1}" />
+			<button type="submit">다음달 ▶</button>
+		</form>
+	</div>
 
-  <!-- 리스트 모달 -->
-  <div id="memoListModal">
-    <div>
-      <span id="memoListClose">&times;</span>
-      <h2>메모 리스트</h2>
-      <ul id="memoListContainer" style="list-style:none; padding:0; margin:0;"></ul>
-      <button id="memoListAddBtn" style="margin-top: 15px;">메모 추가</button>
-    </div>
-  </div>
+	<!-- 달력 테이블 -->
+	<table id="calendar">
+		<thead>
+			<tr>
+				<th>일</th>
+				<th>월</th>
+				<th>화</th>
+				<th>수</th>
+				<th>목</th>
+				<th>금</th>
+				<th>토</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="weekRow : ${#numbers.sequence(0, weekCount - 1)}">
+				<td th:each="dayIdx : ${#numbers.sequence(0,6)}"
+					th:classappend="${((weekRow * 7) + dayIdx + 1 - startBlank <= 0 or (weekRow * 7) + dayIdx + 1 - startBlank > lengthOfMonth) ? 'blank' : ''}"
+					th:attr="data-date=${(weekRow * 7) + dayIdx + 1 - startBlank > 0 and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth} ? ${year + '-' + (month < 10 ? '0' + month : month) + '-' + (((weekRow * 7) + dayIdx + 1 - startBlank) < 10 ? '0' + ((weekRow * 7) + dayIdx + 1 - startBlank) : ((weekRow * 7) + dayIdx + 1 - startBlank))} : ''">
 
-  <!-- 상세보기 모달 -->
-  <div id="memoDetailModal">
-    <div>
-      <span id="memoDetailClose">&times;</span>
-      <h2>메모 상세보기</h2>
-      <p><strong>작성일:</strong> <span id="detailDate"></span></p>
-      <p><strong>제목:</strong> <span id="detailTitleText"></span></p>
-      <p><strong>내용:</strong> <span id="detailContent"></span></p>
-      <p><strong>애견 이름:</strong> <span id="detailAnimalName"></span></p>
-      <div style="margin-top: 15px;">
-        <button id="detailAddBtn" style="margin-left:10px;">메모 추가</button>
-        <button id="detailEditBtn">수정</button>
-        <button id="detailDeleteBtn" style="background-color:#f44336; color:#fff;">삭제</button>
-      </div>
-    </div>
-  </div>
+					<span
+						th:if="${(weekRow * 7) + dayIdx + 1 - startBlank > 0 and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth}"
+						th:text="${(weekRow * 7) + dayIdx + 1 - startBlank}"></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
-  <script th:inline="javascript">
-  /*<![CDATA[*/
-  const animalNum = /*[[${animalNum}]]*/ 0;
-  const userNum = /*[[${userNum}]]*/ 0;
-  /*]]>*/
-  </script>
+	<!-- 메모 모달 -->
+	<div id="memoModal">
+		<div id="memoModalContent">
+			<span id="memoModalClose">&times;</span>
+			<h2 id="modalTitle">메모 작성</h2>
+			<form id="memoForm" method="post" th:action="@{/memo/add}">
+				<input type="hidden" name="userNum" th:value="${userNum}" />
+				<input type="hidden" id="memoNum" name="num" value="" />
+				<label for="scheduleDate">날짜</label>
+				<input type="text" id="scheduleDate" name="scheduleDateStr" readonly />
+				<label for="animalSelect">애견</label>
+				<div id="animalCheckboxContainer"></div>
+				<input type="hidden" id="animalNumStr" name="animalNumStr" />
+				<label for="title">제목</label>
+				<input type="text" id="title" name="title" required />
+				<label for="content">내용</label>
+				<textarea id="content" name="content" rows="5" required></textarea>
+				<div style="margin-top: 15px;">
+					<button type="submit" id="saveBtn">저장</button>
+				</div>
+			</form>
+		</div>
+	</div>
 
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('memoModal');
-    const modalClose = document.getElementById('memoModalClose');
-    const scheduleDateInput = document.getElementById('scheduleDate');
-    const titleInput = document.getElementById('title');
-    const contentInput = document.getElementById('content');
-    const memoNumInput = document.getElementById('memoNum');
-    const memoForm = document.getElementById('memoForm');
-    const modalTitle = document.getElementById('modalTitle');
-    const saveBtn = document.getElementById('saveBtn');
-    const animalSelect = document.getElementById('animalSelect');
+	<!-- 리스트 모달 -->
+	<div id="memoListModal">
+		<div>
+			<span id="memoListClose">&times;</span>
+			<h2>메모 리스트</h2>
+			<ul id="memoListContainer" style="list-style:none; padding:0; margin:0;"></ul>
+			<button id="memoListAddBtn" style="margin-top: 15px;">메모 추가</button>
+		</div>
+	</div>
 
-    const detailModal = document.getElementById('memoDetailModal');
-    const detailClose = document.getElementById('memoDetailClose');
-    const detailDate = document.getElementById('detailDate');
-    const detailTitleText = document.getElementById('detailTitleText');
-    const detailContent = document.getElementById('detailContent');
-    const detailEditBtn = document.getElementById('detailEditBtn');
-    const detailDeleteBtn = document.getElementById('detailDeleteBtn');
-    const detailAddBtn = document.getElementById('detailAddBtn');
-    const detailAnimalName = document.getElementById('detailAnimalName');
+	<!-- 상세보기 모달 -->
+	<div id="memoDetailModal">
+		<div>
+			<span id="memoDetailClose">&times;</span>
+			<h2>메모 상세보기</h2>
+			<p><strong>작성일:</strong> <span id="detailDate"></span></p>
+			<p><strong>제목:</strong> <span id="detailTitleText"></span></p>
+			<p><strong>내용:</strong> <span id="detailContent"></span></p>
+			<p><strong>애견 이름:</strong> <span id="detailAnimalName"></span></p>
+			<div style="margin-top: 15px;">
+				<button id="detailAddBtn" style="margin-left:10px;">메모 추가</button>
+				<button id="detailEditBtn">수정</button>
+				<button id="detailDeleteBtn" style="background-color:#f44336; color:#fff;">삭제</button>
+			</div>
+		</div>
+	</div>
 
-    const memoListModal = document.getElementById('memoListModal');
-    const memoListClose = document.getElementById('memoListClose');
-    const memoListContainer = document.getElementById('memoListContainer');
-    const memoListAddBtn = document.getElementById('memoListAddBtn');
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		const animalNum = /*[[${animalNum}]]*/ 0;
+		const userNum = /*[[${userNum}]]*/ 0;
+		/*]]>*/
+	</script>
 
-    const yearMonthSpan = document.getElementById('yearMonth');
-    const year = parseInt(yearMonthSpan.dataset.year);
-    const month = parseInt(yearMonthSpan.dataset.month);
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const modal = document.getElementById('memoModal');
+			const modalClose = document.getElementById('memoModalClose');
+			const scheduleDateInput = document.getElementById('scheduleDate');
+			const titleInput = document.getElementById('title');
+			const contentInput = document.getElementById('content');
+			const memoNumInput = document.getElementById('memoNum');
+			const memoForm = document.getElementById('memoForm');
+			const modalTitle = document.getElementById('modalTitle');
+			const saveBtn = document.getElementById('saveBtn');
+			const animalCheckboxContainer = document.getElementById('animalCheckboxContainer');
 
-    let animalMap = new Map();
-    let currentDetailMemoNum = null;
+			const detailModal = document.getElementById('memoDetailModal');
+			const detailClose = document.getElementById('memoDetailClose');
+			const detailDate = document.getElementById('detailDate');
+			const detailTitleText = document.getElementById('detailTitleText');
+			const detailContent = document.getElementById('detailContent');
+			const detailEditBtn = document.getElementById('detailEditBtn');
+			const detailDeleteBtn = document.getElementById('detailDeleteBtn');
+			const detailAddBtn = document.getElementById('detailAddBtn');
+			const detailAnimalName = document.getElementById('detailAnimalName');
 
-    // ✅ 해당 애견만 등록
-	
-	
-	fetch(`/animals`)
-		      .then(res => res.json())
-		      .then(animals => {
-		        animals.forEach(animal => {
-		          animalMap.set(animal.num, animal.animalName);
-		          const option = document.createElement('option');
-		          option.value = animal.num;
-		          option.textContent = animal.animalName;
-		          animalSelect.appendChild(option);
-		        });
-		})
-	
-    // ✅ 메모 가져오기
-    fetch(`/memos?year=${year}&month=${month < 10 ? '0' + month : month}`)
-      .then(res => res.json())
-      .then(memos => {
-//		const filteredMemos = memos.filter(memo => {return memo.intAnimalNum.includes(Number(animalNum));});
-		const filteredMemos = memos.filter(memo => {return memo.intAnimalNum != null && memo.intAnimalNum.includes(Number(animalNum));});
-        const memoMap = {};
+			const memoListModal = document.getElementById('memoListModal');
+			const memoListClose = document.getElementById('memoListClose');
+			const memoListContainer = document.getElementById('memoListContainer');
+			const memoListAddBtn = document.getElementById('memoListAddBtn');
 
-        filteredMemos.forEach(memo => {
-          const dateOnly = memo.scheduleDate.split('T')[0];
-          if (!memoMap[dateOnly]) memoMap[dateOnly] = [];
+			const yearMonthSpan = document.getElementById('yearMonth');
+			const year = parseInt(yearMonthSpan.dataset.year);
+			const month = parseInt(yearMonthSpan.dataset.month);
 
-		  if(Array.isArray(memo.intAnimalNum)){
-		  const names = memo.intAnimalNum.map(num => animalMap.get(num));
-			memo.animalName = names.join(', ');
-		  } else{
-			memo.animalName = animalMap.get(memo.intAnimalNum);
-		  }
-          memoMap[dateOnly].push(memo);
-        });
+			let animalMap = new Map();
+			let currentDetailMemoNum = null;
 
-        Object.keys(memoMap).forEach(date => {
-          const td = document.querySelector(`td[data-date='${date}']`);
-          if (td) {
-            td.querySelectorAll('.memo-title').forEach(el => el.remove());
-            memoMap[date].forEach(m => {
-              const span = document.createElement('span');
-              span.className = 'memo-title';
-              span.textContent = m.title;
-              td.appendChild(span);
-            });
-            td.dataset.memoList = JSON.stringify(memoMap[date]);
-          }
-        });
+			// ✅ 해당 애견만 등록
 
-        document.querySelectorAll('#calendar td').forEach(td => {
-          td.addEventListener('click', () => {
-            const dateStr = td.getAttribute('data-date');
-            if (!dateStr) return;
 
-            const memoListStr = td.dataset.memoList;
-            let memoList = [];
+			fetch(`/animals`)
+				.then(res => res.json())
+				.then(animals => {
+					animals.forEach(animal => {
+						animalMap.set(animal.num, animal.animalName);
 
-            if (memoListStr) {
-              try {
-                memoList = JSON.parse(memoListStr);
-              } catch (e) {
-                console.error('메모 리스트 JSON 파싱 실패', e);
-              }
-            }
+						// 체크박스 input 생성
+						const label = document.createElement('label');
+						label.style.display = 'block'; // 줄바꿈
 
-            if (memoList.length === 0) {
-              detailModal.style.display = 'none';
-              modalTitle.textContent = "메모 작성";
-              saveBtn.textContent = "저장";
+						const checkbox = document.createElement('input');
+						checkbox.type = 'checkbox';
+						checkbox.name = 'animalNum'; // 혹은 배열로 받으려면 name='animalNum[]'
+						checkbox.value = animal.num;
 
-              memoNumInput.value = '';
-              scheduleDateInput.value = dateStr;
-              titleInput.value = '';
-              contentInput.value = '';
-              animalSelect.value = '';
+						label.appendChild(checkbox);
+						label.appendChild(document.createTextNode(' ' + animal.animalName));
+						animalCheckboxContainer.appendChild(label);
+					});
+				});
 
-              modal.style.display = "block";
+			// ✅ 메모 가져오기
+			fetch(`/memos?year=${year}&month=${month < 10 ? '0' + month : month}`)
+				.then(res => res.json())
+				.then(memos => {
+					const filteredMemos = memos.filter(memo => {return memo.intAnimalNum != null && memo.intAnimalNum.includes(Number(animalNum));});
+					const memoMap = {};
 
-            } else if (memoList.length === 1) {
-              showDetailModal(memoList[0], dateStr);
+					filteredMemos.forEach(memo => {
+						const dateOnly = memo.scheduleDate.split('T')[0];
+						if (!memoMap[dateOnly]) memoMap[dateOnly] = [];
 
-            } else {
-              memoListContainer.innerHTML = '';
+						if (Array.isArray(memo.intAnimalNum)) {
+							const names = memo.intAnimalNum.map(num => animalMap.get(num));
+							memo.animalName = names.join(', ');
+						} else {
+							memo.animalName = animalMap.get(memo.intAnimalNum);
+						}
+						memoMap[dateOnly].push(memo);
+					});
 
-              memoList.forEach(memo => {
-                const li = document.createElement('li');
-                li.style.cursor = 'pointer';
-                li.style.padding = '5px 0';
-                li.style.borderBottom = '1px solid #ddd';
+					Object.keys(memoMap).forEach(date => {
+						const td = document.querySelector(`td[data-date='${date}']`);
+						if (td) {
+							td.querySelectorAll('.memo-title').forEach(el => el.remove());
+							memoMap[date].forEach(m => {
+								const span = document.createElement('span');
+								span.className = 'memo-title';
+								span.textContent = m.title;
+								td.appendChild(span);
+							});
+							td.dataset.memoList = JSON.stringify(memoMap[date]);
+						}
+					});
 
-                li.textContent = `제목: ${memo.title} | 이름: ${memo.animalName || '애견없음'}`;
+					document.querySelectorAll('#calendar td').forEach(td => {
+						td.addEventListener('click', () => {
+							const dateStr = td.getAttribute('data-date');
+							if (!dateStr) return;
 
-                li.addEventListener('click', () => {
-                  memoListModal.style.display = 'none';
-                  showDetailModal(memo, dateStr);
-                });
+							const memoListStr = td.dataset.memoList;
+							let memoList = [];
 
-                memoListContainer.appendChild(li);
-              });
+							if (memoListStr) {
+								try {
+									memoList = JSON.parse(memoListStr);
+								} catch (e) {
+									console.error('메모 리스트 JSON 파싱 실패', e);
+								}
+							}
 
-              memoListModal.style.display = 'block';
-            }
-          });
-        });
-      });
+							if (memoList.length === 0) {
+								detailModal.style.display = 'none';
+								modalTitle.textContent = "메모 작성";
+								saveBtn.textContent = "저장";
 
-    function showDetailModal(memo, dateStr) {
-      currentDetailMemoNum = memo.num || memo.memoNum;
+								memoNumInput.value = '';
+								scheduleDateInput.value = dateStr;
+								titleInput.value = '';
+								contentInput.value = '';
 
-      detailDate.textContent = dateStr;
-      detailTitleText.textContent = memo.title;
-      detailContent.textContent = memo.content;
-      detailAnimalName.textContent = memo.animalName || '알 수 없음';
+								modal.style.display = "block";
 
-      detailEditBtn.onclick = () => {
-        detailModal.style.display = 'none';
-        modalTitle.textContent = "메모 수정";
-        saveBtn.textContent = "수정";
+							} else if (memoList.length === 1) {
+								showDetailModal(memoList[0], dateStr);
 
-        memoNumInput.value = currentDetailMemoNum;
-        scheduleDateInput.value = dateStr;
-        titleInput.value = memo.title;
-        contentInput.value = memo.content;
-        animalSelect.value = memo.animalNum || '';
-        modal.style.display = "block";
-      };
+							} else {
+								memoListContainer.innerHTML = '';
 
-      detailDeleteBtn.onclick = () => {
-        if (confirm("정말 삭제하시겠습니까?")) {
-          const formData = new URLSearchParams();
-          formData.append('num', currentDetailMemoNum);
-          formData.append('year', year);
-          formData.append('month', month);
+								memoList.forEach(memo => {
+									const li = document.createElement('li');
+									li.style.cursor = 'pointer';
+									li.style.padding = '5px 0';
+									li.style.borderBottom = '1px solid #ddd';
 
-          fetch('/memo/delete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData.toString()
-          }).then(() => {
-            detailModal.style.display = 'none';
-            location.href = `/animal/detail?animalNum=${animalNum}&year=${year}&month=${month}`;
-          });
-        }
-      };
+									li.textContent = `제목: ${memo.title} | 이름: ${memo.animalName || '애견없음'}`;
 
-      detailAddBtn.onclick = () => {
-        detailModal.style.display = 'none';
-        modalTitle.textContent = "메모 작성";
-        saveBtn.textContent = "저장";
+									li.addEventListener('click', () => {
+										memoListModal.style.display = 'none';
+										showDetailModal(memo, dateStr);
+									});
 
-        memoNumInput.value = '';
-        scheduleDateInput.value = dateStr;
-        titleInput.value = '';
-        contentInput.value = '';
-        animalSelect.value = '';
-        modal.style.display = "block";
-      };
+									memoListContainer.appendChild(li);
+								});
 
-      detailModal.style.display = "block";
-    }
+								memoListModal.style.display = 'block';
+							}
+						});
+					});
+				});
 
-    modalClose.onclick = () => modal.style.display = "none";
-    detailClose.onclick = () => detailModal.style.display = "none";
-    memoListClose.onclick = () => memoListModal.style.display = "none";
-    memoListAddBtn.onclick = () => {
-      memoListModal.style.display = "none";
-      modalTitle.textContent = "메모 작성";
-      saveBtn.textContent = "저장";
-      memoNumInput.value = '';
-      scheduleDateInput.value = '';
-      titleInput.value = '';
-      contentInput.value = '';
-      animalSelect.value = '';
-      modal.style.display = "block";
-    };
+			function showDetailModal(memo, dateStr) {
+				currentDetailMemoNum = memo.num || memo.memoNum;
 
-    window.onclick = e => {
-      if (e.target === modal) modal.style.display = "none";
-      if (e.target === detailModal) detailModal.style.display = "none";
-      if (e.target === memoListModal) memoListModal.style.display = "none";
-    };
+				detailDate.textContent = dateStr;
+				detailTitleText.textContent = memo.title;
+				detailContent.textContent = memo.content;
+				detailAnimalName.textContent = memo.animalName || '알 수 없음';
 
-	memoForm.onsubmit = (e) => {
-		const selected = Array.from(animalSelect.selectedOptions).map(opt => opt.value);
-		const joined = selected.join(',');
-		document.getElementById('animalNumStr').value = joined;
-		memoForm.action = memoNumInput.value ? '/memo/update' : '/memo/add';
-	  e.preventDefault();
+				detailEditBtn.onclick = () => {
+					detailModal.style.display = 'none';
+					modalTitle.textContent = "메모 수정";
+					saveBtn.textContent = "수정";
 
-	  const url = memoNumInput.value ? '/memo/update' : '/memo/add';
-	  const formData = new FormData(memoForm);
+					memoNumInput.value = currentDetailMemoNum;
+					scheduleDateInput.value = dateStr;
+					titleInput.value = memo.title;
+					contentInput.value = memo.content;
+					// 체크박스 선택 처리
+					const selectedAnimals = memo.intAnimalNum || memo.animalNum || []; // 배열 형태라고 가정
 
-	  fetch(url, {
-	    method: 'POST',
-	    body: new URLSearchParams(formData)
-	  })
-	  .then(res => {
-	    if (res.ok) {
-	      location.href = `/animal/detail?animalNum=${animalNum}&year=${year}&month=${month}`;
-	    } else {
-	      alert('저장 실패');
-	    }
-	  });
-	};
+					// 체크박스 모두 언체크 후,
+					animalCheckboxContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+						cb.checked = selectedAnimals.includes(Number(cb.value));
+					});
+					modal.style.display = "block";
+				};
 
-  });
-  </script>
+				detailDeleteBtn.onclick = () => {
+					if (confirm("정말 삭제하시겠습니까?")) {
+						const formData = new URLSearchParams();
+						formData.append('num', currentDetailMemoNum);
+						formData.append('year', year);
+						formData.append('month', month);
+
+						fetch('/memo/delete', {
+							method: 'POST',
+							headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+							body: formData.toString()
+						}).then(() => {
+							detailModal.style.display = 'none';
+							location.href = `/animal/detail?animalNum=${animalNum}&year=${year}&month=${month}`;
+						});
+					}
+				};
+
+				detailAddBtn.onclick = () => {
+					detailModal.style.display = 'none';
+					modalTitle.textContent = "메모 작성";
+					saveBtn.textContent = "저장";
+
+					memoNumInput.value = '';
+					scheduleDateInput.value = dateStr;
+					titleInput.value = '';
+					contentInput.value = '';
+					animalSelect.value = '';
+					modal.style.display = "block";
+				};
+
+				detailModal.style.display = "block";
+			}
+
+			modalClose.onclick = () => modal.style.display = "none";
+			detailClose.onclick = () => detailModal.style.display = "none";
+			memoListClose.onclick = () => memoListModal.style.display = "none";
+			memoListAddBtn.onclick = () => {
+				memoListModal.style.display = "none";
+				modalTitle.textContent = "메모 작성";
+				saveBtn.textContent = "저장";
+				memoNumInput.value = '';
+				scheduleDateInput.value = '';
+				titleInput.value = '';
+				contentInput.value = '';
+				animalSelect.value = '';
+				modal.style.display = "block";
+			};
+
+			window.onclick = e => {
+				if (e.target === modal) modal.style.display = "none";
+				if (e.target === detailModal) detailModal.style.display = "none";
+				if (e.target === memoListModal) memoListModal.style.display = "none";
+			};
+
+			memoForm.onsubmit = (e) => {
+				// 체크된 체크박스만 골라서
+				const checkedBoxes = animalCheckboxContainer.querySelectorAll('input[type="checkbox"]:checked');
+				const selected = Array.from(checkedBoxes).map(cb => cb.value);
+				const joined = selected.join(',');
+				document.getElementById('animalNumStr').value = joined;
+
+				memoForm.action = memoNumInput.value ? '/memo/update' : '/memo/add';
+				e.preventDefault();
+
+				const url = memoNumInput.value ? '/memo/update' : '/memo/add';
+				const formData = new FormData(memoForm);
+
+				fetch(url, {
+					method: 'POST',
+					body: new URLSearchParams(formData)
+				})
+					.then(res => {
+						if (res.ok) {
+							location.href = `/animal/detail?animalNum=${animalNum}&year=${year}&month=${month}`;
+						} else {
+							alert('저장 실패');
+						}
+					});
+			};
+
+		});
+	</script>
 
 
 </body>
+
 </html>
