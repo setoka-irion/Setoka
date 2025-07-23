@@ -20,8 +20,10 @@ import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
 import com.practice.setoka.dto.CommentInfoDto;
+import com.practice.setoka.dto.CommentLikeDto;
 import com.practice.setoka.dto.LikeDto;
 import com.practice.setoka.service.BoardService;
+import com.practice.setoka.service.CommentLikeService;
 import com.practice.setoka.service.CommentsService;
 import com.practice.setoka.service.LikeService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
@@ -41,7 +43,10 @@ public class BoardActionController {
 	public CommentsService commentsService;
 	
 	@Autowired
-		public LikeService likeService;
+	public LikeService likeService;
+	
+	@Autowired
+	public CommentLikeService commentLikeService;
 
     BoardActionController(BoardController boardController) {
         this.boardController = boardController;
@@ -252,6 +257,7 @@ public class BoardActionController {
 
 			
 			
+			
 		// 게시글 좋아요	
 		@PostMapping("/AdoptDetail/{num}/like")
 		public String likeBoard(@PathVariable("num") int num,
@@ -264,6 +270,8 @@ public class BoardActionController {
 			    
 		    return "redirect:/AdoptDetail/" + num;
 		}
+		
+
 		
 
 			
@@ -377,9 +385,9 @@ public class BoardActionController {
 	    if (comment == null) {
 	        return "redirect:/AdoptDetail/" + boardNum;
 	    }
-	    
-	    // 좋아요 증가 처리
-	    commentsService.increaseCommentLikes(commentNum);
+	    System.out.println("댓글 좋아");
+	    if(authUser.getUser() != null)
+			commentLikeService.likeComment(new CommentLikeDto(loginUser.getNum(), commentNum));
 
 	    return "redirect:/AdoptDetail/" + boardNum;
 	}
