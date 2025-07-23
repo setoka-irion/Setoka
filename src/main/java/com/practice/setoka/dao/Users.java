@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.practice.setoka.Enum.Grade;
 import com.practice.setoka.Enum.Status;
+import com.practice.setoka.dto.UsersDto;
 
 public class Users {
 	private int num;
@@ -17,6 +18,12 @@ public class Users {
 	private Grade grade = Grade.브론즈;;
 	private String profilePath;
 	private LocalDateTime registerDate;
+	
+	public void modifyUser(UsersDto userDto) {
+		nickName = userDto.getNickName();
+		realName = userDto.getRealName();
+		phoneNumber = userDto.getPhoneNumber();
+	}
 	
 	public int getNum() {
 		return num;
