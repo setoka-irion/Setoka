@@ -115,9 +115,13 @@ public class UserService
 	
 	public Grade gradeMeasurement(int point)
 	{
-		if(point > 10000)
+		if(point > 20000)
+			return Grade.다이아;
+		else if(point > 10000)
+			return Grade.플레티넘;
+		else if(point > 5000)
 			return Grade.골드;
-		else if(point > 1000)
+		else if(point > 2000)
 			return Grade.실버;
 		else
 			return Grade.브론즈;
