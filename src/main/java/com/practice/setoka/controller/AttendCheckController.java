@@ -20,6 +20,7 @@ import com.practice.setoka.dao.Users;
 import com.practice.setoka.service.AnimalService;
 import com.practice.setoka.service.AttendCheckService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
+import com.practice.setoka.springSecurity.CustomUserDetailsService;
 
 @Controller
 public class AttendCheckController {
@@ -30,6 +31,9 @@ public class AttendCheckController {
 	@Autowired
 	private AnimalService animalService;
 
+	@Autowired
+	private CustomUserDetailsService userDetailsService;
+	
 	@GetMapping("/attendcheck")
 	public String calendar(Model model, @RequestParam(name = "year", required = false) Integer year,
 			@RequestParam(name = "month", required = false) Integer month, @AuthenticationPrincipal CustomUserDetails authUser) {
@@ -74,7 +78,6 @@ public class AttendCheckController {
 		
 		var users = (Users) authUser.getUser();
 		int userNum = users.getNum();
-
 		LocalDate today = LocalDate.now();
 		LocalDate clickedDate = LocalDate.parse(date);
 
@@ -82,8 +85,10 @@ public class AttendCheckController {
 		if (!clickedDate.equals(today)) {
 			redirectAttributes.addFlashAttribute("message", "다른 날은 출석할 수 없습니다.");
 		} else {
+			users.setPoint(users.getPoint()+100);
 			attendCheckService.updatePoint(userNum);
 			attendCheckService.insertAttendance(userNum, date);
+			
 			redirectAttributes.addFlashAttribute("newAttendance", date);
 			redirectAttributes.addFlashAttribute("message", "출석체크가 완료되었습니다.");
 		}

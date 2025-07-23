@@ -62,23 +62,19 @@
 	<!-- 애견이 없으면 추가 폼만 보여줌 -->
 	<div th:if="${#lists.isEmpty(animalList)}" style="width: 400px; margin: auto;">
 		<h3>등록된 애견이 없습니다. 애견을 추가하세요.</h3>
-		<form th:action="@{/myanimal/add}" method="post">
+		<form th:action="@{/myanimal/add}" method="post" enctype="multipart/form-data">
+			<label>프로필 사진: <input type="file" name="profileImage" accept="image/*" /></label><br /><br />
 			<label>이름: <input type="text" name="animalName" required /></label><br /><br />
 			<label>종: <input type="text" name="species" required /></label><br /><br />
 			<label>나이: <input type="number" name="age" min="0" required /></label><br /><br />
-			<label>성별:
-				<select name="gender" required>
-					<option value="">선택</option>
-					<option value="1">수컷</option>
-					<option value="2">암컷</option>
-				</select>
+			<label>성별:</label><br />
+			<label>
+				<input type="radio" name="gender" value="수컷" id="editMale" /> 수컷
+			</label>
+			<label>
+				<input type="radio" name="gender" value="암컷" id="editFemale" /> 암컷
 			</label><br /><br />
-			<label>상태:
-				<select name="status" required>
-					<option value="1">활성</option>
-					<option value="0">비활성</option>
-				</select>
-			</label><br /><br />
+			<input type="hidden" name="status" value="정상" id="editStatus">
 			<label>입양일: <input type="date" name="togetherDateStr" required /></label><br /><br />
 			<button type="submit">추가하기</button>
 		</form>
@@ -142,19 +138,14 @@
 			<label>이름: <input type="text" name="animalName" required /></label><br /><br />
 			<label>종: <input type="text" name="species" required /></label><br /><br />
 			<label>나이: <input type="number" name="age" min="0" required /></label><br /><br />
-			<label>성별:
-				<select name="gender" required>
-					<option value="">선택</option>
-					<option value="1">수컷</option>
-					<option value="2">암컷</option>
-				</select>
+			<label>성별:</label><br />
+			<label>
+				<input type="radio" name="gender" value="수컷"/> 수컷
+			</label>
+			<label>
+				<input type="radio" name="gender" value="암컷"/> 암컷
 			</label><br /><br />
-			<label>상태:
-				<select name="status" required>
-					<option value="1">활성</option>
-					<option value="0">비활성</option>
-				</select>
-			</label><br /><br />
+			<input type="hidden" name="status" value="정상"/>
 			<label>입양일: <input type="date" name="togetherDateStr" required /></label><br /><br />
 			<button type="submit">추가하기</button>
 			<button type="button" onclick="closeModal()">취소</button>
@@ -172,17 +163,17 @@
 			<label>이름: <input type="text" name="animalName" id="editAnimalName" required /></label><br /><br />
 			<label>종: <input type="text" name="species" id="editSpecies" required /></label><br /><br />
 			<label>나이: <input type="number" name="age" id="editAge" min="0" required /></label><br /><br />
-			<label>성별:
-				<select name="gender" id="editGender" required>
-					<option value="">선택</option>
-					<option value="1">수컷</option>
-					<option value="2">암컷</option>
-				</select>
+			<label>성별:</label><br />
+			<label>
+				<input type="radio" name="gender" value="수컷" id="editMale" /> 수컷
+			</label>
+			<label>
+				<input type="radio" name="gender" value="암컷" id="editFemale" /> 암컷
 			</label><br /><br />
 			<label>상태:
 				<select name="status" id="editStatus" required>
-					<option value="1">활성</option>
-					<option value="0">비활성</option>
+					<option value="정상">정상</option>
+					<option value="사망">사망</option>
 				</select>
 			</label><br /><br />
 			<label>입양일: <input type="date" name="togetherDateStr" id="editTogetherDate" required /></label><br /><br />
@@ -209,7 +200,11 @@
 					document.getElementById('editAnimalName').value = data.animalName;
 					document.getElementById('editSpecies').value = data.species;
 					document.getElementById('editAge').value = data.age;
-					document.getElementById('editGender').value = data.gender;
+					if (data.gender == '수컷') {
+						document.getElementById('editMale').checked = true;
+					} else if (data.gender == '암컷') {
+						document.getElementById('editFemale').checked = true;
+					}
 					document.getElementById('editStatus').value = data.status;
 					document.getElementById('editTogetherDate').value = data.togetherDate ? data.togetherDate.substr(0, 10) : '';
 					document.getElementById('editExistingProfilePath').value = data.profilePath || '';

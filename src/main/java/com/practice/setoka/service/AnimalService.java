@@ -17,9 +17,14 @@ public class AnimalService {
     
     // 유저 번호로 해당 유저가 가진 모든 애견 목록 조회
     public List<Animal> getAnimalsByUserNum(int userNum) {
-        return animalMapper.selectByUserNum(userNum);
+    	return animalMapper.selectByUserNum(userNum);
     }
-
+    
+    // 유저 번호로 해당 유저가 가진 삭제되지않은 애견 목록 조회
+    public List<Animal> getAnimalsByUserNumNormal(int userNum) {
+    	return animalMapper.selectByUserNumNormal(userNum);
+    }
+    
     // DTO를 받아 새 애견 등록
     public boolean insertAnimal(AnimalDto animalDto) {
     	if(animalDto.getProfilePath() == null)
@@ -33,6 +38,10 @@ public class AnimalService {
         return animalMapper.updateAnimal(animalDto, num);
     }
 
+    // 동물 status 삭제
+    public boolean updateDeleteAnimal(int num) {
+    	return animalMapper.updateDeleteAnimal(num);
+    }
     // 애견 삭제
     public boolean deleteAnimal(int num) {
         return animalMapper.deleteAnimal(num);

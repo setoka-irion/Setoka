@@ -13,6 +13,9 @@ public interface AnimalMapper {
 
     // 유저 번호로 동물 리스트 조회
     List<Animal> selectByUserNum(@Param("userNum") int userNum);
+    
+    // 유저 번호로 삭제되지않은 동물 리스트 조회
+    List<Animal> selectByUserNumNormal(@Param("userNum") int userNum);
 
     // 동물 한 건 조회 (고유번호 기준)
     Animal selectByNum(@Param("num") int num);
@@ -27,6 +30,9 @@ public interface AnimalMapper {
 
     // 동물 수정
     boolean updateAnimal(@Param("animalDto") AnimalDto animalDto, @Param("num") int num);
+    
+    //동물 status 삭제
+    boolean updateDeleteAnimal(@Param("num")int num);
 
     // 동물 삭제
     boolean deleteAnimal(@Param("num") int num);

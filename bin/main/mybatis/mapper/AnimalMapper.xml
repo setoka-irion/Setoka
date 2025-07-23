@@ -23,6 +23,14 @@
 		WHERE userNum = #{userNum}
 		ORDER BY togetherDate
 	</select>
+	
+	<!-- 유저 번호로 해당 유저 삭제되지 않은 애견 목록 조회 -->
+	<select id="selectByUserNumNormal" resultMap="animalResultMap" parameterType="int">
+		SELECT *
+		FROM animal
+		WHERE userNum = #{userNum} AND status in ('정상', '사망')
+		ORDER BY togetherDate
+	</select>
 
 	<!-- 고유번호로 단일 애견 조회 -->
 	<select id="selectByNum" resultMap="animalResultMap" parameterType="int">
@@ -64,6 +72,12 @@
 		togetherDate = #{animalDto.togetherDate},
 		profilePath = #{animalDto.profilePath}
 		WHERE num = #{num}
+	</update>
+	
+	<!-- 애견 status 삭제 -->
+	<update id="updateDeleteAnimal">
+		UPDATE animal
+		SET	status = '삭제' WHERE num = #{num}
 	</update>
 
 	<!-- 애견 삭제 -->

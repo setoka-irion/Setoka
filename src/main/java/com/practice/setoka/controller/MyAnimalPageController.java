@@ -39,7 +39,7 @@ public class MyAnimalPageController {
         Users user = (Users) authUser.getUser();
         int userNum = user.getNum();
 
-        List<Animal> animals = animalService.getAnimalsByUserNum(userNum);
+        List<Animal> animals = animalService.getAnimalsByUserNumNormal(userNum);
         model.addAttribute("animalList", animals);
 
         return "MyAnimalPage";
@@ -70,7 +70,7 @@ public class MyAnimalPageController {
     // 애견 삭제
     @PostMapping("/myanimal/delete")
     public String deleteAnimal(@RequestParam("animalNum") int animalNum) {
-        animalService.deleteAnimal(animalNum);
+        animalService.updateDeleteAnimal(animalNum);
         return "redirect:/myanimal";
     }
     
