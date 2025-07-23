@@ -58,6 +58,10 @@ public class RPSService {
 		
 		user.setPoint(user.getPoint() + point);
 		rpsMapper.insertRPSResult(user.getNum(), RPSEnum.getEnum(ch), RPSEnum.getEnum(ran), re, point);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9fee7aae4d0549cccb9f761d9b5a9d73504619be
 		userService.userPointUpdate(user.getId(), user.getPoint());
 		return re;
 	}

@@ -154,18 +154,10 @@ public class MyPageController {
 	@PostMapping(value = "ModifyUser")
 	public String modifyUserPost(UsersDto userDto, @AuthenticationPrincipal CustomUserDetails authUser) {
 		Users user = (Users) authUser.getUser();
-
-		// 수정될 정보
-		if (userService.updateUserDto(userDto)) {
-			// 정보 수정 성공
-			UserDetails updatedUser = userDetailsService.loadUserByUsername(user.getId());
-			UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedUser,
-					updatedUser.getPassword(), updatedUser.getAuthorities());
-			SecurityContextHolder.getContext().setAuthentication(newAuth);
-		} else {
-			// 정보 수정 실패
-		}
+		
 		// 정보 수정
+		user.modifyUser(userDto);
+		userService.updateUserDto(userDto);		
 		return Redirect.MyPage;
 	}
 
