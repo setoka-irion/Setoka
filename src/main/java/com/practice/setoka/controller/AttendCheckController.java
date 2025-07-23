@@ -5,10 +5,7 @@ import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,7 +78,6 @@ public class AttendCheckController {
 		
 		var users = (Users) authUser.getUser();
 		int userNum = users.getNum();
-		
 		LocalDate today = LocalDate.now();
 		LocalDate clickedDate = LocalDate.parse(date);
 
@@ -89,15 +85,9 @@ public class AttendCheckController {
 		if (!clickedDate.equals(today)) {
 			redirectAttributes.addFlashAttribute("message", "다른 날은 출석할 수 없습니다.");
 		} else {
-			
+			users.setPoint(users.getPoint()+100);
 			attendCheckService.updatePoint(userNum);
 			attendCheckService.insertAttendance(userNum, date);
-			
-			UserDetails updatedUser = userDetailsService.loadUserByUsername(users.getId());
-
-			UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedUser,
-					updatedUser.getPassword(), updatedUser.getAuthorities());
-			SecurityContextHolder.getContext().setAuthentication(newAuth);
 			
 			redirectAttributes.addFlashAttribute("newAttendance", date);
 			redirectAttributes.addFlashAttribute("message", "출석체크가 완료되었습니다.");
