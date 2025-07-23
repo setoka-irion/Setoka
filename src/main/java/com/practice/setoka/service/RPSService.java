@@ -57,7 +57,6 @@ public class RPSService {
 		}
 		
 		user.setPoint(user.getPoint() + point);
-
 		rpsMapper.insertRPSResult(user.getNum(), RPSEnum.getEnum(ch), RPSEnum.getEnum(ran), re, point);
 
 		userService.userPointUpdate(user.getId(), user.getPoint());
