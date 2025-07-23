@@ -6,15 +6,8 @@
 </head>
 
 <body>
-	<h1>홈</h1>
-
-	<p>로그인: <a href="/MyPage"><span th:text="${login}"></span></a></p>
-	<span th:text="${grade}"></span>
-	<p><img th:if="${path != null}" th:src="@{'/images/' + ${path}}" alt="이미지" /></p>
-
-	<button onclick="location.href='/Login'">로그인</button>
-	<button onclick="location.href='/Logout'">로그아웃</button>
-	<button onclick="location.href='/SignUp'">회원가입</button>
+	<div th:replace="header :: siteHeader"></div>
+	
 	<button onclick="location.href='/MessageList'">쪽지</button>
 	<button onclick="location.href='/PetPlaces'">반려동물 동반시설</button>
 	<button onclick="location.href='/Adopt'">입양게시판</button>
