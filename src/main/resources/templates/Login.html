@@ -2,15 +2,24 @@
 <html xmlns:th="http://thymeleaf.org">
 
 <head>
-	<title>로그인 폼</title>	
+	<title>로그인 폼</title>
 </head>
-<body>
-	<div th:replace="header :: siteHeader"></div>
 
-	<form th:action="@{/doLogin}" method="post">
-	    <input type="text" id="id" name="id" placeholder="아이디" required/><br/>
-	    <input type="password" id="password" name="password" placeholder="비밀번호" required/><br/>
-	    <button type="submit">로그인</button>
-	</form>
+<body>
+	<div th:replace="~{header :: siteHeader}"></div>
+
+	<!--중복 로그인시 에러메세지 출력-->
+	<div th:if="${error}" style="color: red; text-align: center;">
+		<p th:text="${error}"></p>
+	</div>
+	<div style="text-align: center;">
+		<h1>로그인</h1>
+		<form th:action="@{/doLogin}" method="post">
+			<input type="text" id="id" name="id" placeholder="아이디" required /><br />
+			<input type="password" id="password" name="password" placeholder="비밀번호" required /><br />
+			<button type="submit">로그인</button>
+		</form>
+	</div>
 </body>
+
 </html>

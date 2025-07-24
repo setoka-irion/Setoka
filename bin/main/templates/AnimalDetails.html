@@ -101,16 +101,19 @@
 </head>
 
 <body>
-	<div th:replace="header :: siteHeader"></div>
-	
-	<!-- 애견 상세정보 -->
-	<h1 th:text="${CurrentAnimal.animalName} + ' 상세정보'">애견 이름 상세정보</h1>
+	<div th:replace="~{header :: siteHeader}"></div>
 
-	<div>
+	<!-- 애견 상세정보 -->
+	<div style="text-align: center;">
+		<h1 th:text="${CurrentAnimal.animalName} + ' 상세정보'">애견 이름 상세정보</h1>
+
+
 		<img th:if="${CurrentAnimal.profilePath != null and CurrentAnimal.profilePath != ''}"
 			th:src="@{/images/{filename}(filename=${CurrentAnimal.profilePath})}" alt="프로필 사진"
 			style="width:150px; height:150px; object-fit:cover; border-radius:50%;" />
 		<p th:if="${CurrentAnimal.profilePath == null or CurrentAnimal.profilePath == ''}">프로필 사진이 없습니다.</p>
+		<br>
+		<button onclick="location.href='/myanimal'">목록으로</button>
 	</div>
 
 	<table border="1" style="width:350px; margin:0 auto 30px;">
@@ -136,7 +139,7 @@
 		</tr>
 	</table>
 
-	<a href="/myanimal">← 내 애견 목록으로 돌아가기</a>
+	
 
 	<!-- 달력 네비게이션 -->
 	<div class="nav-buttons">
