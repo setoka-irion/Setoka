@@ -6,7 +6,7 @@
 </head>
 
 <body>
-	<div th:replace="header :: siteHeader"></div>
+	<div th:replace="~{header :: siteHeader}"></div>
 	
 	<button onclick="location.href='/MessageList'">쪽지</button>
 	<button onclick="location.href='/PetPlaces'">반려동물 동반시설</button>

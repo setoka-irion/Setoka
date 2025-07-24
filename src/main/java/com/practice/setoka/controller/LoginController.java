@@ -28,7 +28,11 @@ public class LoginController {
 	
 	
 	@GetMapping(value = "Login")
-	public String login() {
+	public String login(@RequestParam(value = "expired", required = false) String expired, Model model) {
+		
+		if(expired!=null) {
+			model.addAttribute("error", "다른 위치에서 로그인되어 세션이 종료되었습니다.");
+		}
 		return "Login";
 	}
 	

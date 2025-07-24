@@ -89,7 +89,7 @@
 </head>
 
 <body>
-	<div th:replace="header :: siteHeader"></div>
+	<div th:replace="~{header :: siteHeader}"></div>
 	
 	<h1>마이페이지</h1>
 	<button onclick="location.href='/EditProfilePhoto'">프로필 사진수정</button>

@@ -5,7 +5,7 @@
 	<title>회원가입 폼</title>	
 </head>
 <body>
-	<div th:replace="header :: siteHeader"></div>
+	<div th:replace="~{header :: siteHeader}"></div>
 
 	<form th:action="@{/SignUp}" th:object="${Users}" method="post">
 			<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
