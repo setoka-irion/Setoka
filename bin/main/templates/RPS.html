@@ -7,18 +7,16 @@
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
-	
-	<h1>가위바위보 게임</h1>
 
-	<p th:if="${result != null}" th:text="${result}"></p>
-	
+	<div style="text-align: center;">
+		<h1>가위바위보 게임</h1>
+
+		<p th:if="${result != null}" th:text="${result}"></p>
+
 		<form th:action="@{/playRps}" method="post">
 			<!-- 포인트 입력 -->
 			<label for="point">배팅할 포인트 (최대 [[${user.point}]])</label><br>
-			<input type="number" id="point" name="point" 
-			       min="10" 
-			       th:attr="max=${user.point}" 
-			       required /><br><br>
+			<input type="number" id="point" name="point" min="10" th:attr="max=${user.point}" required /><br><br>
 
 			<!-- 선택지 -->
 			<label>가위바위보 선택:</label><br>
@@ -33,6 +31,7 @@
 
 			<button type="submit">게임 시작</button>
 		</form>
+	</div>
 </body>
 
 </html>
