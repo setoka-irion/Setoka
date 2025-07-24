@@ -11,12 +11,7 @@
 			margin: 0;
 			padding: 20px;
 		}
-
-		h1 {
-			text-align: center;
-			color: #333;
-		}
-
+		
 		#searchArea {
 			display: flex;
 			justify-content: center;
@@ -121,7 +116,7 @@
 <body>
 	<div th:replace="header :: siteHeader"></div>
 	
-	<h1>반려동물 동반 시설 검색</h1>
+	<h1 style="text-align:center;">반려동물 동반 시설 검색</h1>
 
 	<div id="searchArea">
 		<input type="text" id="searchInput" placeholder="시설명 또는 도로명 주소를 입력하세요" />
