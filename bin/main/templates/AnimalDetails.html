@@ -101,7 +101,7 @@
 </head>
 
 <body>
-	<div th:replace="header :: siteHeader"></div>
+	<div th:replace="~{header :: siteHeader}"></div>
 	
 	<!-- 애견 상세정보 -->
 	<h1 th:text="${CurrentAnimal.animalName} + ' 상세정보'">애견 이름 상세정보</h1>
