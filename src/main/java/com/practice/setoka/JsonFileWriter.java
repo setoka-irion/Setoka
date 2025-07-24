@@ -6,16 +6,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonFileWriter 
 {
-	public static void saveJsonToFile(Map<String, Object> jsonString, String filePath) 
+	public static String saveJsonToFile(Map<String, Object> jsonString, String filePath, String fileName) 
 	{
         try 
         {
-            Path path = Paths.get(filePath);
+            String uuid = UUID.randomUUID().toString();
+            fileName = uuid + "_" + fileName + ".json";
+            
+            Path path = Paths.get(filePath + "/" + fileName);
 
             // 디렉토리 없으면 생성
             Files.createDirectories(path.getParent());
@@ -26,11 +30,13 @@ public class JsonFileWriter
             Files.write(path, prettyJson.getBytes(StandardCharsets.UTF_8));	
 
             System.out.println("✅ JSON 파일 저장 완료: " + path);
+            return fileName;
         } 
         catch (IOException e) 
         {
             System.err.println("❌ JSON 파일 저장 실패: " + e.getMessage());
         }
+        return null;
     }
 	
 	public static Map<String, Object> readJsonFileToMap(String filePath) throws Exception {

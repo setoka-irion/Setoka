@@ -1,13 +1,12 @@
 package com.practice.setoka.mapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.practice.setoka.dao.Board;
+import com.practice.setoka.dao.Report;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
 
@@ -46,4 +45,14 @@ public interface BoardMapper {
 	
 	//	통합 검색
 	List<BoardWithUserDto> searchAll(String keyword);
+	
+	// 신고 
+	void reportBoard(@Param("boardNum")int boardNum,@Param("userNum") int userNum);
+	
+//	// 신고 내용
+//	List<Report> findReportByBoardNum(@Param("boardNum") int boardNum);
+//	
+	// 게시글 신고 유저내용
+	Report findReportByBC(@Param("boardNum")int boardNum,@Param("userNum") int userNum);
+	
 }

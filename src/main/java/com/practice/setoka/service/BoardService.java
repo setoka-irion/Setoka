@@ -1,15 +1,13 @@
 package com.practice.setoka.service;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.practice.setoka.dao.Board;
+import com.practice.setoka.dao.Report;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
 import com.practice.setoka.mapper.BoardMapper;
@@ -79,4 +77,18 @@ public class BoardService {
 	public List<BoardWithUserDto> searchAll(String keyword) {
 	    return boardMapper.searchAll(keyword);
 	}
+	
+	//신고 
+	public void reportBoard(int boardNum, int userNum) {
+		boardMapper.reportBoard(boardNum, userNum);
+	}
+	
+	// 신고 
+	
+	// 게시판 신고 유저 내용
+	public Report findReportByBC (int boardNum, int userNum) {
+		return boardMapper.findReportByBC(boardNum, userNum);
+	}
+	
+	
 }

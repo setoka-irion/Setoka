@@ -51,6 +51,25 @@
     	WHERE c.num = #{num} AND c.status = 0
 	</select>
 	
+	
+	
+	<!-- 댓글 신고-->
+	<insert id="reportComment" parameterType="int">
+	INSERT INTO commentReport (commentNum,userNum) VALUES(#{commentNum}, #{userNum})
+	</insert>
+
+<!--	<select id="findReportByCommentNum" parameterType="int" resultType="com.practice.setoka.dao.Report">-->
+<!--	SELECT * FROM commentReport WHERE commentNum = #{commentNum}-->
+<!--	</select>-->
+	
+	<!-- 댓글 신고 유저내용-->
+	<select id="findReportByCB" parameterType="int" resultType="com.practice.setoka.dao.Report">
+	SELECT * FROM commentReport WHERE commentNum = #{commentNum} AND userNum = #{userNum}
+	</select>
+
+
+
+	
 	<resultMap id ="CommentInfoDto" type ="com.practice.setoka.dto.CommentInfoDto">
 		<result property="num" column="num" />
 		<result property="userNum" column="userNum" />

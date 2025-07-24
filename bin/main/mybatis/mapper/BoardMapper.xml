@@ -52,7 +52,7 @@
 	</select>
 
 <!--	 게시글 제목으로 검색 -->
-	<select id="findBoardsByTitle" parameterType="String" resultType="com.practice.setoka.dto.BoardWithUserDto">
+	<select id="findBoardsByTitle" parameterType="String" resultMap="boardWithUserMap">
 		SELECT 
     	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
     	b.type, b.likes, b.views, b.price, b.area, b.registerDate
@@ -62,7 +62,7 @@
 	</select>
 
 <!--	 게시글 내용으로 검색 -->
-	<select id="findBoardsByContent" parameterType="String" resultType="com.practice.setoka.dto.BoardWithUserDto">
+	<select id="findBoardsByContent" parameterType="String" resultMap="boardWithUserMap">
 		SELECT 
     	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
     	b.type, b.likes, b.views, b.price, b.area, b.registerDate
@@ -129,6 +129,20 @@
 
 
 
+
+
+<!-- 신고 -->
+<insert id="reportBoard" parameterType="int">
+INSERT INTO boardReport (boardNum,userNum) VALUES(#{boardNum}, #{userNum})
+</insert>
+
+<select id="findReportByBoardNum" parameterType="int" resultType="com.practice.setoka.dao.Report">
+SELECT * FROM boardReport WHERE boardNum = #{boardNum}
+</select>
+<!-- 게시판 신고 유저내용-->
+<select id="findReportByBC" parameterType="int" resultType="com.practice.setoka.dao.Report">
+SELECT * FROM boardReport WHERE boardNum = #{boardNum} AND userNum = #{userNum}
+</select>
 
 
 <!--	 위에 세 쿼리 결과 매핑 -->
