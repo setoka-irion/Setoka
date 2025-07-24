@@ -45,5 +45,5 @@ public interface BoardMapper {
 	List<BoardWithUserDto> findBoardsByContent(String content);
 	
 	//	통합 검색
-	List<BoardWithUserDto> searchAll(Map<String, Object> params);
+	List<BoardWithUserDto> searchAll(String keyword);
 }

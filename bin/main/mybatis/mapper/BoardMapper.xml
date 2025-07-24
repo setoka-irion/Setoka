@@ -8,6 +8,9 @@
 		SELECT COUNT(*) FROM board WHERE type = #{type}
 	</select>
 	
+	
+	
+	
 <!--	 글 등록 -->
 	<insert id="insertBoard" parameterType="com.practice.setoka.dto.BoardDto">
 	INSERT INTO board (userNum, title, content, type, price, area)
@@ -31,14 +34,11 @@
 
 
 
+
 <!--	게시글 조회수 증가 -->
 	<update id="increaseViewsBoard" parameterType="int">
 		UPDATE board SET views = views + 1 WHERE num = #{num}
 	</update>
-	
-	
-	
-	
 	
 	
 	
@@ -52,17 +52,27 @@
 	</select>
 
 <!--	 게시글 제목으로 검색 -->
-	<select id="findBoardsByTitle" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
-		SELECT * FROM board WHERE title LIKE CONCAT('%', #{title}, '%') AND type !=0
+	<select id="findBoardsByTitle" parameterType="String" resultType="com.practice.setoka.dto.BoardWithUserDto">
+		SELECT 
+    	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
+    	b.type, b.likes, b.views, b.price, b.area, b.registerDate
+    	FROM board b JOIN users u 
+    	ON b.userNum = u.num 
+		WHERE b.title LIKE CONCAT('%', #{title}, '%') AND type !=0
 	</select>
 
 <!--	 게시글 내용으로 검색 -->
-	<select id="findBoardsByContent" parameterType="String" resultType="com.practice.setoka.dto.BoardDto">
-		SELECT * FROM board WHERE content LIKE CONCAT('%', #{content}, '%') AND type !=0
+	<select id="findBoardsByContent" parameterType="String" resultType="com.practice.setoka.dto.BoardWithUserDto">
+		SELECT 
+    	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
+    	b.type, b.likes, b.views, b.price, b.area, b.registerDate
+    	FROM board b JOIN users u 
+    	ON b.userNum = u.num 
+		WHERE b.content LIKE CONCAT('%', #{content}, '%') AND type !=0
 	</select>
 	
 <!--	 통합 검색 -->
-	<select id="searchAll" resultMap="boardWithUserMap">
+	<select id="searchAll" parameterType="String" resultMap="boardWithUserMap">
 		SELECT 
 		u.id, u.num AS userNum, b.num, b.userNum, b.title, b.content, 
 		b.type, b.likes, b.views, b.price, b.area, b.registerDate
@@ -81,6 +91,10 @@
 		</where>
 		ORDER BY registerDate DESC
 	</select>
+	
+	
+	
+	
 	
 <!--	 게시글 넘버로 불러오기(상세페이지)-->
 	<select id="findBoardByNum" resultMap="boardWithUserMap" parameterType="int">
@@ -112,6 +126,10 @@
 		FROM users u JOIN board b 
 		ON u.num = b.userNum
 	</select>
+
+
+
+
 
 <!--	 위에 세 쿼리 결과 매핑 -->
 	<resultMap id="boardWithUserMap" type="com.practice.setoka.dto.BoardWithUserDto">

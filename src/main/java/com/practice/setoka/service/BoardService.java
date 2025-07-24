@@ -76,7 +76,7 @@ public class BoardService {
 	}
 
 	// 통합 검색
-	public List<BoardWithUserDto> searchAll(Map<String, Object> params) {
-	    return boardMapper.searchAll(params);
+	public List<BoardWithUserDto> searchAll(String keyword) {
+	    return boardMapper.searchAll(keyword);
 	}
 }

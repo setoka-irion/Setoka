@@ -87,7 +87,7 @@ public class BoardActionController {
 				searchResult = boardService.findBoardsByUserId(keyword.trim());
 				break;
 			default:
-				searchResult = boardService.findBoardsByType(1);
+				searchResult = boardService.searchAll(keyword.trim());
 			}
 		}
 		//메인 리스트 출력
@@ -106,14 +106,14 @@ public class BoardActionController {
 			@PathVariable("num")int num,
 			@RequestParam(value="editCommentNum", required = false) Integer editCommentNum,
 			@AuthenticationPrincipal CustomUserDetails authUser,
-			HttpSession session,
-			Model model) {
+			HttpSession session, Model model) {
 		
 		//상세 내용 보여줌
 		BoardWithUserDto Detail = boardService.findBoardByNum(num);
 		model.addAttribute("detail", Detail);
+		System.out.println("detail null? → " + (Detail == null));
 		
-		//세션에서 조회한 게시글 번호 리스트 받아오기
+		//세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
 		@SuppressWarnings("unchecked")
 		List<Integer> viewedBoards = (List<Integer>) session.getAttribute("VIEWED_BOARDS");
 		if(viewedBoards == null) {
@@ -211,7 +211,7 @@ public class BoardActionController {
 		
 		//오류 발생시 다시 수정페이지로
 		if(bindingResult.hasErrors()) {
-
+			 model.addAttribute("board", board);  // 반드시 넣어줘야 함
 			System.out.println("45634");
 			return "/Board/AdoptUpdate";
 		}

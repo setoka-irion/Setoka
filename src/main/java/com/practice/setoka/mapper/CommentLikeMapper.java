@@ -12,7 +12,7 @@ public interface CommentLikeMapper {
 		int existCommentLike(CommentLikeDto likeCommentDto);
 			
 		// 좋아요 증가기능
-		void insertCommentLike(@Param("userNum") int userNum, @Param("commetNum") int commentNum);
+		void insertCommentLike(@Param("userNum") int userNum, @Param("commentNum") int commentNum);
 			
 		//좋아요 취소기능 
 		void disLikeComment(CommentLikeDto likeCommentDto);

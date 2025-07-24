@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.practice.setoka.mapper.LikeMapper">
+<mapper namespace="com.practice.setoka.mapper.CommentLikeMapper">
 
 <!-- 댓글좋아요 중복검사용 liked-->
 	<select id="existCommentLike" parameterType="com.practice.setoka.dto.CommentLikeDto">
