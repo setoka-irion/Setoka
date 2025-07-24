@@ -2,7 +2,9 @@ package com.practice.setoka.dao;
 
 import java.time.LocalDateTime;
 
+import com.practice.setoka.RatingRule;
 import com.practice.setoka.Enum.Grade;
+import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dto.UsersDto;
 
@@ -15,10 +17,13 @@ public class Users {
 	private String phoneNumber;
 	private Status status;
 	private int point;
-	private Grade grade = Grade.브론즈;;
+	private Privileges privileges;
+	private long exp;
 	private String profilePath;
 	private LocalDateTime registerDate;
+	private Grade grade;
 	
+
 	public void modifyUser(UsersDto userDto) {
 		nickName = userDto.getNickName();
 		realName = userDto.getRealName();
@@ -73,12 +78,6 @@ public class Users {
 	public void setPoint(int point) {
 		this.point = point;
 	}
-	public Grade getGrade() {
-		return grade;
-	}
-	public void setGrade(Grade grade) {
-		this.grade = grade;
-	}
 	public String getProfilePath() {
 		return profilePath;
 	}
@@ -87,7 +86,33 @@ public class Users {
 	}
 	public LocalDateTime getRegisterDate() { return registerDate; }
 	public void setRegisterDate(LocalDateTime registerDate) { this.registerDate = registerDate; }
-	
+
+	public Privileges getPrivileges() {
+		return privileges;
+	}
+
+	public void setPrivileges(Privileges privileges) {
+		this.privileges = privileges;
+	}
+
+	public long getExp() {
+		return exp;
+	}
+
+	public void setExp(long exp) {
+		this.exp = exp;
+	}
+
+	public Grade getGrade() {
+		grade = RatingRule.ratingRule.GetGrade(exp);
+		return grade;
+	}
+
+	public void PlusPoint(int point)
+	{
+		this.point += point;
+		exp += point;
+	}
 	public boolean isAdmin()
 	{
 		return status.equals("admin");

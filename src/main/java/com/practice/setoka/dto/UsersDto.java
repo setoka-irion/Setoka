@@ -1,6 +1,8 @@
 package com.practice.setoka.dto;
 
+import com.practice.setoka.RatingRule;
 import com.practice.setoka.Enum.Grade;
+import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
 
@@ -12,8 +14,10 @@ public class UsersDto {
 	private String phoneNumber;
 	private Status status;
 	private int point;
-	private Grade grade = Grade.브론즈;
+	private Privileges privileges = Privileges.일반인;
+	private long exp;
 	private String profilePath;
+	private Grade grade = Grade.브론즈;
 	
 	public UsersDto() {}
 	public UsersDto(Users user) {
@@ -24,6 +28,9 @@ public class UsersDto {
 		phoneNumber = user.getPhoneNumber();
 		status = user.getStatus();
 		point = user.getPoint();
+		privileges = user.getPrivileges();
+		exp = user.getExp();
+		profilePath = user.getProfilePath();
 		grade = user.getGrade();
 	}
 	
@@ -69,12 +76,6 @@ public class UsersDto {
 	public void setPoint(int point) {
 		this.point = point;
 	}
-	public Grade getGrade() {
-		return grade;
-	}
-	public void setGrade(Grade grade) {
-		this.grade = grade;
-	}
 	public String getProfilePath() {
 		return profilePath;
 	}
@@ -82,4 +83,20 @@ public class UsersDto {
 		this.profilePath = profilePath;
 	}
 	
+	public long getExp() {
+		return exp;
+	}
+	public void setExp(long exp) {
+		this.exp = exp;
+	}
+	public Privileges getPrivileges() {
+		return privileges;
+	}
+	public void setPrivileges(Privileges privileges) {
+		this.privileges = privileges;
+	}
+	public Grade getGrade() {
+		grade = RatingRule.ratingRule.GetGrade(exp);
+		return grade;
+	}
 }

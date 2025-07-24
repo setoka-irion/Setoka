@@ -22,11 +22,21 @@
   	</select>
   	
   	<insert id="insertUserToDto" parameterType="com.practice.setoka.dto.UsersDto">
-  		INSERT INTO users (id, password, nickname, realname, phoneNumber) VALUES(#{id}, #{password}, #{nickName}, #{realName}, #{phoneNumber})
+  		INSERT INTO users (id, password, nickname, realname, phoneNumber, privileges) VALUES(#{id}, #{password}, #{nickName}, #{realName}, #{phoneNumber}, #{privileges})
   	</insert>
   	
   	<update id="updateUser" parameterType="com.practice.setoka.dto.UsersDto">
-  		UPDATE users SET password = #{password}, nickname = #{nickName}, realname = #{realName}, phoneNumber = #{phoneNumber}, status = #{status} WHERE id = #{id}
+  		UPDATE users SET 
+  		password = #{password}, 
+  		nickname = #{nickName}, 
+  		realname = #{realName}, 
+  		phoneNumber = #{phoneNumber}, 
+  		status = #{status},
+  		point = #{point},
+  		privileges = #{privileges},
+  		exp = #{exp},
+  		grade = #{grade}
+  		WHERE id = #{id}
   	</update>
   	
   	<update id="updateProfilephotoPath">
