@@ -17,8 +17,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.practice.setoka.Redirect;
 import com.practice.setoka.dao.Animal;
 import com.practice.setoka.dao.Users;
+import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.AnimalService;
 import com.practice.setoka.service.AttendCheckService;
+import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 import com.practice.setoka.springSecurity.CustomUserDetailsService;
 
@@ -27,6 +29,9 @@ public class AttendCheckController {
 
 	@Autowired
 	private AttendCheckService attendCheckService;
+	
+	@Autowired
+	private UserService userSerivce;
 
 	@Autowired
 	private AnimalService animalService;
@@ -85,8 +90,8 @@ public class AttendCheckController {
 		if (!clickedDate.equals(today)) {
 			redirectAttributes.addFlashAttribute("message", "다른 날은 출석할 수 없습니다.");
 		} else {
-			users.setPoint(users.getPoint()+100);
-			attendCheckService.updatePoint(userNum);
+			users.PlusPoint(100);
+			userSerivce.updateUserDto(new UsersDto(users));
 			attendCheckService.insertAttendance(userNum, date);
 			
 			redirectAttributes.addFlashAttribute("newAttendance", date);

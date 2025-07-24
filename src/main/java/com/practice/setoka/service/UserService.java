@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.practice.setoka.Redirect;
 import com.practice.setoka.Upload;
-import com.practice.setoka.Enum.Grade;
+import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.UsersDto;
@@ -61,13 +61,16 @@ public class UserService
 		if(selectByID(dto.getId()) == null)
 			return userMapper.insertUserToDto(dto);
 		else
+		{
+			dto.setStatus(Status.정상);
 			return userMapper.updateUser(dto);
+		}
 	}
 	
 	//어드민 넣기
 	public boolean insertUserAdmin(UsersDto dto)
 	{
-		dto.setGrade(Grade.관리자);
+		dto.setPrivileges(Privileges.관리자);
 		return userMapper.insertUserToDto(dto);
 	}
 	
@@ -79,7 +82,7 @@ public class UserService
 	//update
 	public boolean updateUserDto(UsersDto dto)
 	{
-		dto.setGrade(gradeMeasurement(dto.getPoint()));
+		dto.getExp();
 		return userMapper.updateUser(dto);
 	}
 	
@@ -111,19 +114,5 @@ public class UserService
 	public boolean userPointUpdate(String id, int point)
 	{
 		return userMapper.userPointUpdate(id, point);
-	}
-	
-	public Grade gradeMeasurement(int point)
-	{
-		if(point > 20000)
-			return Grade.다이아;
-		else if(point > 10000)
-			return Grade.플레티넘;
-		else if(point > 5000)
-			return Grade.골드;
-		else if(point > 2000)
-			return Grade.실버;
-		else
-			return Grade.브론즈;
 	}
 }
