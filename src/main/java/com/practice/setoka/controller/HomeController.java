@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.practice.setoka.Redirect;
 import com.practice.setoka.Enum.Grade;
+import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
@@ -45,9 +46,9 @@ public class HomeController {
 		List<Users> allUsers = userService.selectAllUsers();
 		Users loginData = authUser.getUser();
 
-		Grade grade = loginData.getGrade();
+		Privileges privileges = loginData.getPrivileges();
 
-		if (grade.equals(Grade.관리자)) {
+		if (privileges.equals(Privileges.관리자)) {
 			model.addAttribute("allUsers", allUsers);
 			return "AllUsers";
 		} else {
