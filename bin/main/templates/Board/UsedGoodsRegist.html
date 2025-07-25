@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>산책로 글 등록</title>
+    <title>중고거래 글 등록</title>
     <style>
         label { display: block; margin: 10px 0 5px; }
         input, textarea { width: 100%; padding: 8px; margin-bottom: 10px; }
@@ -11,10 +11,10 @@
     </style>
 </head>
 <body>
-    <h1>산책로 글 등록</h1>
+    <h1>중고장터 글 등록</h1>
 	
     <!-- boardDto에서 변수 가져옴 *{}안에 있는것들.--> 
-    <form th:action="@{/WalkTrailRegist}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
+    <form th:action="@{/UsedGoodsRegist}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
         
 		<!-- 유효성 검사 오류 메시지 -->
         <div th:if="${#fields.hasErrors('*')}">
@@ -39,6 +39,6 @@
         <button type="submit">등록</button>
     </form>
 
-    <p><a th:href="@{/WalkTrail}">목록으로 돌아가기</a></p>
+    <p><a th:href="@{/UsedGoods}">목록으로 돌아가기</a></p>
 </body>
 </html>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>입양 상세 페이지</title>
+    <title>산책로 상세 페이지</title>
     <style>
         /* Reset 및 기본 설정 */
         * {
@@ -78,61 +78,70 @@
             margin-bottom: 25px;
         }
 
-        .header-table th,
-        .header-table td {
-            padding: 12px 15px;
-            border-bottom: 2px solid #e1e4e8;
-            text-align: left;
-            font-size: 1.1rem;
-            color: #555;
-        }
+		.header-table th,
+		.header-table td {
+		    padding: 16px 20px; /* 기존 12px 15px에서 좀 더 넉넉하게 */
+		    border-bottom: 2px solid #e1e4e8;
+		    text-align: left;
+		    font-size: 1.1rem;
+		    color: #555;
+		}
 
         .header-table th {
             background-color: #f7f9fb;
         }
 
         /* 상단 수정/삭제/신고 버튼 */
-        .action-buttons {
-            float: right;
-            margin-top: -45px;
-        }
+		.action-buttons {
+		    float: right;
+		    margin-top: -45px;
+		    display: flex;
+		    gap: 10px; /* 버튼들 사이 간격 통일 */
+		}
 
-        .action-buttons form {
-            display: inline-block;
-            margin-left: 10px;
-        }
+		.action-buttons form {
+		    margin: 0; /* form 태그 기본 마진 제거 */
+		}
 
-        .action-buttons button {
-            background-color: #4caf50;
-            border: none;
-            padding: 8px 16px;
-            color: white;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+		.action-buttons button {
+		    min-width: 80px; /* 버튼 최소 너비로 균일하게 */
+		    padding: 10px 16px;
+		    border: none;
+		    border-radius: 6px;
+		    font-weight: 600;
+		    cursor: pointer;
+		    transition: background-color 0.3s ease;
+		    color: white;
+		    font-size: 1rem;
+		    user-select: none;
+		}
 
-        .action-buttons button:hover {
-            background-color: #3a8e38;
-        }
+		/* 수정 버튼 */
+		.action-buttons button:nth-child(1) {
+		    background-color: #4caf50;
+		}
 
-        .action-buttons button.delete-btn {
-            background-color: #e74c3c;
-        }
+		.action-buttons button:nth-child(1):hover {
+		    background-color: #3a8e38;
+		}
 
-        .action-buttons button.delete-btn:hover {
-            background-color: #b62d20;
-        }
+		/* 삭제 버튼 */
+		.action-buttons button.delete-btn {
+		    background-color: #e74c3c;
+		}
 
-        .action-buttons button.report-btn {
-            background-color: #f39c12;
-        }
+		.action-buttons button.delete-btn:hover {
+		    background-color: #b62d20;
+		}
 
-        .action-buttons button.report-btn:hover {
-            background-color: #c67a0a;
-        }
+		/* 신고 버튼 */
+		.action-buttons button.report-btn {
+		    background-color: #f39c12;
+		}
 
+		.action-buttons button.report-btn:hover {
+		    background-color: #c67a0a;
+		}
         /* 본문 테이블 */
         .content-table {
             width: 100%;
@@ -378,7 +387,7 @@
 
         <!-- 상단 버튼 -->
         <div class="top-buttons" style="text-align: left;">
-            <a th:href="@{/WaliTrail}" class="button-link">산책로 메인 페이지</a>
+            <a th:href="@{/WalkTrail}" class="button-link">산책로 메인 페이지</a>
             <a th:href="@{/}" class="button-link">홈으로</a>
         </div>
 
@@ -388,6 +397,7 @@
                 <tr>
                     <th>제목</th>
                     <th>작성자</th>
+					<th>좋아요</th>
                     <th>작성일</th>
                 </tr>
             </thead>
@@ -395,6 +405,7 @@
                 <tr>
                     <td th:text="${detail.title}">제목</td>
                     <td th:text="${detail.nickName}">작성자</td>
+					<td th:text="${detail.likes}">좋아요</td>
                     <td th:text="${detail.formattedRegistDate}">2025-07-24</td>
                 </tr>
             </tbody>
@@ -406,7 +417,7 @@
                 <button type="submit">수정</button>
             </form>
 
-            <form th:action="@{'/walkTrailDelete/' + ${detail.boardNum}}" method="post"
+            <form th:action="@{'/WalkTrailDelete/' + ${detail.boardNum}}" method="post"
                 onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <button type="submit" class="delete-btn">삭제</button>
             </form>
