@@ -1,11 +1,10 @@
 package com.practice.setoka.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.practice.setoka.dto.CommentLikeDto;
 import com.practice.setoka.mapper.CommentLikeMapper;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class CommentLikeService {
