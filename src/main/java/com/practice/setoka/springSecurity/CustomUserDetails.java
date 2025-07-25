@@ -49,6 +49,9 @@ public class CustomUserDetails implements UserDetails {
 	     return Objects.hash(getUsername());
 	 }
 	 
+	 
+		
+	 
 	 @Override public boolean isAccountNonExpired() { return true; }
 	 @Override public boolean isAccountNonLocked() { return true; }
 	 @Override public boolean isCredentialsNonExpired() { return true; }

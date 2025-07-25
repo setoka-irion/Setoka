@@ -401,21 +401,25 @@
         </table>
 
         <!-- 수정/삭제/신고 버튼 -->
-        <div class="action-buttons" style="float: right;">
-            <form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
-                <button type="submit">수정</button>
-            </form>
+		<div class="action-buttons" style="float: right;">
+		    
+		    <!-- ✅ 수정/삭제는 작성자 본인만 볼 수 있도록 -->
+		        <form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
+		            <button type="submit">수정</button>
+		        </form>
 
-            <form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
-                onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                <button type="submit" class="delete-btn">삭제</button>
-            </form>
+		        <form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
+		              onsubmit="return confirm('정말 삭제하시겠습니까?');">
+		            <button type="submit" class="delete-btn">삭제</button>
+		        </form>
+		   
 
-            <form th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
-                <button type="submit" class="report-btn">신고</button>
-            </form>
-        </div>
+		    <!-- ✅ 신고는 누구나 가능 -->
+		    <form th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
+		        <button type="submit" class="report-btn">신고</button>
+		    </form>
 
+		</div>
         <!-- 본문 테이블 -->
         <table class="content-table">
             <thead>
@@ -491,13 +495,17 @@
                     <td th:text="${comment.likes}">0</td>
                     <td th:text="${comment.formattedRegistDate}">2025-07-24</td>
                     <td>
+						
                         <button type="button" th:onclick="|showEditForm(${comment.num})|">수정</button>
+				
                     </td>
                     <td>
+						
                         <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post">
                             <input type="hidden" name="commentNum" th:value="${comment.num}" />
                             <button type="submit" class="delete-btn">삭제</button>
                         </form>
+						
                     </td>
                     <td>
                         <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"

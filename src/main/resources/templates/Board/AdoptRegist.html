@@ -14,7 +14,7 @@
     <h1>입양 글 등록</h1>
 	
     <!-- boardDto에서 변수 가져옴 *{}안에 있는것들.-->
-    <form th:action="@{/AdoptRegist}" method="post" th:object="${boardDto}">
+    <form th:action="@{/AdoptRegist}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
         
 		<!-- 유효성 검사 오류 메시지 -->
         <div th:if="${#fields.hasErrors('*')}">
