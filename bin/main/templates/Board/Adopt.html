@@ -149,6 +149,19 @@
 		<p class="right-top-button">
 			<a th:href="@{/AdoptRegist}" class="button-link">새 글 등록하기</a>
 		</p>
+		
+		<div>
+		    <h3>🔥 인기 입양글</h3>
+		    <div th:each="post : ${popularPosts}">
+		        <a th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum})}">
+		            <strong th:text="${post.title}">제목</strong>
+		        </a>
+		        <span th:text="'작성자: ' + ${post.nickName}">작성자</span>
+		        <span th:text="'좋아요: ' + ${post.likes}">좋아요</span>
+		        <hr>
+		    </div>
+		</div>
+		
 		<table>
 			<!-- 테이블 넓이 조절-->
 			<colgroup>
@@ -175,7 +188,7 @@
 
 			<tbody>
 				<!-- 반복문 -->
-				<tr th:each="board : ${mainList}">
+				<tr th:each="board, iterStat : ${mainList}" th:if ="${iterStat.index <15}">
 					<td th:text="${board.boardNum}">1</td>
 					<td>
 						<!-- 제목 클릭 시 상세보기 -->

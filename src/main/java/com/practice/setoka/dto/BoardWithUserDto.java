@@ -23,8 +23,16 @@ public class BoardWithUserDto {
 	private int price;
 	private String area;
 	private LocalDateTime registerDate;
+	//인기 게시글용 댓글 수 
+	private int commentCount;
 	
 	
+	public int getCommentCount() {
+		return commentCount;
+	}
+	public void setCommentCount(int commentCount) {
+		this.commentCount = commentCount;
+	}
 	public int getBoardNum() {
 		return boardNum;
 	}

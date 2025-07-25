@@ -55,4 +55,6 @@ public interface BoardMapper {
 	// 게시글 신고 유저내용
 	Report findReportByBC(@Param("boardNum")int boardNum,@Param("userNum") int userNum);
 	
+	// 인기 게시글
+	List<BoardWithUserDto> popularPosts(int type);
 }

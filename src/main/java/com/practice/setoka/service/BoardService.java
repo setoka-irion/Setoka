@@ -90,5 +90,8 @@ public class BoardService {
 		return boardMapper.findReportByBC(boardNum, userNum);
 	}
 	
-	
+	// 인기 게시글
+	public List<BoardWithUserDto> popularPosts(int type){
+		return boardMapper.popularPosts(type);
+	}
 }

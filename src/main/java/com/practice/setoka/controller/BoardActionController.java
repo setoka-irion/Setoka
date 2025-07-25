@@ -76,7 +76,9 @@ public class BoardActionController {
 		// 입양게시판 총 게시글 수
 		int countBoards = boardService.countBoards(1);
 		model.addAttribute("countBoards", countBoards);
-
+		
+		List<BoardWithUserDto>  popularPosts = boardService.popularPosts(1);
+		model.addAttribute("popularPosts", popularPosts);
 		// 입양 게시판 내부 검색
 		List<BoardWithUserDto> searchResult;
 		if (keyword == null || keyword.isEmpty()) {
