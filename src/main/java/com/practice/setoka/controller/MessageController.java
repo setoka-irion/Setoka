@@ -72,7 +72,7 @@ public class MessageController {
 	@GetMapping(value = "GettingGift")
 	public String GettingGift(@RequestParam("messageNum") int num, @AuthenticationPrincipal CustomUserDetails authUser)
 	{
-		messageService.GettingMessage(num);
+		messageService.GettingMessage(num, authUser.getUser());
 		return "redirect:/MessageList";
 	}
 }
