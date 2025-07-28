@@ -17,7 +17,7 @@ public class UploadController {
 
 	@PostMapping("/upload/image")
 	public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file){
-		String imageUrl = "/images/" + upload.fileUpload(file);
+		String imageUrl = "/images/" + upload.imageFileUpload(file);
 		System.out.println("이미지 업로드 실행 url:"+ imageUrl);
 		return ResponseEntity.ok(imageUrl);
 	}

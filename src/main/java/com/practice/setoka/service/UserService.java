@@ -95,7 +95,7 @@ public class UserService
 	//유저의 프로필 사진을 입력하는 서비스 (회원가입시에 프로필 사진을 정하지 않으니)
 	public boolean insertProfilephoto(MultipartFile file, String id)
 	{
-		String fileName = upload.fileUpload(file);
+		String fileName = upload.imageFileUpload(file);
 		userMapper.updateProfilephotoPath(fileName, id);
 		
 		return true;
