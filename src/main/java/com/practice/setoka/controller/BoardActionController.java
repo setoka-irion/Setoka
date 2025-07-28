@@ -287,7 +287,7 @@ public class BoardActionController {
 
 		// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용)
 		BoardWithUserDto board = boardService.findBoardByNum(num);
-
+			
 		// 유저 정보 가져오기
 		Users user = (Users) authUser.getUser();
 
@@ -299,7 +299,7 @@ public class BoardActionController {
 			redirectAttributes.addFlashAttribute("errorMessage", "작성자만 삭제가능!");
 			return "redirect:/Adopt";
 		}
-
+		upload.fileDelete(board.getContent());
 		boardService.deleteBoard(num);
 
 		return "redirect:/Adopt";
