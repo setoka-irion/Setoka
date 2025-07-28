@@ -14,6 +14,10 @@
     	SELECT * FROM message
   	</select>
   	
+  	<select id="selectToNum">
+  		SELECT * FROM message WHERE num = #{num}
+  	</select>
+  	
 	<select id="selectSenderMessage" resultType="com.practice.setoka.dao.Message" parameterType="String">
     	SELECT * FROM message WHERE sender = #{id}
   	</select>
@@ -22,4 +26,7 @@
     	SELECT * FROM message WHERE receiver = #{id}
   	</select>
 	
+	<update id="updateMessageStatus">
+		UPDATE message SET messageStatus = #{status} WHERE num = #{num}
+	</update>
 </mapper>
