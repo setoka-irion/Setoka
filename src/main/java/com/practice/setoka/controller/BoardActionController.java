@@ -299,7 +299,7 @@ public class BoardActionController {
 			redirectAttributes.addFlashAttribute("errorMessage", "작성자만 삭제가능!");
 			return "redirect:/Adopt";
 		}
-		upload.fileDelete(board.getContent());
+
 		boardService.deleteBoard(num);
 
 		return "redirect:/Adopt";
