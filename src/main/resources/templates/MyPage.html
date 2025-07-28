@@ -102,6 +102,11 @@
 	<button onclick="location.href='/Withdrawal'">탈퇴</button>
 	<br>
 	</div>
+	
+	<div style="text-align: center;">
+		<p>포인트: <span th:text="${loginUser.point}"></span></p>
+		<p>경험치: <span th:text="${loginUser.exp}"></span></p>
+	</div>
 
 	<!--일정 달력-->
 	<div class="nav-buttons">
