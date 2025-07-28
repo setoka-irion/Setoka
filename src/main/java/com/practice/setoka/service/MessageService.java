@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.practice.setoka.Enum.MessageStatus;
 import com.practice.setoka.dao.Message;
+import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.MessageDto;
 import com.practice.setoka.mapper.MessageMapper;
 
@@ -36,7 +37,7 @@ public class MessageService {
 		return messageMapper.selectReceiverMessage(userId);
 	}
 	
-	public void GettingMessage(int num)
+	public void GettingMessage(int num, Users user)
 	{
 		Message message = messageMapper.selectToNum(num);
 		if(message.getItem_Type() == null)
@@ -48,7 +49,8 @@ public class MessageService {
 		switch(message.getItem_Type())
 		{
 		case POINT:
-			userService.userPointUpdate(message.getReceiver(), message.getItem_Value());
+			userService.userPointUpdate(message.getReceiver(), user.getPoint() + message.getItem_Value());
+			user.setPoint(user.getPoint() + message.getItem_Value());
 			break;
 			default:
 				
