@@ -151,7 +151,7 @@
 		</p>
 		
 		<div>
-		    <h3>🔥 인기 입양글</h3>
+		    <h3>🔥 인기글</h3>
 		    <div th:each="post : ${popularPosts}">
 		        <a th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum})}">
 		            <strong th:text="${post.title}">제목</strong>

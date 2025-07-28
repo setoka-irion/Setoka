@@ -76,7 +76,7 @@ public class BoardActionController {
 		// 입양게시판 총 게시글 수
 		int countBoards = boardService.countBoards(1);
 		model.addAttribute("countBoards", countBoards);
-		
+		//인기게시글
 		List<BoardWithUserDto>  popularPosts = boardService.popularPosts(1);
 		model.addAttribute("popularPosts", popularPosts);
 		// 입양 게시판 내부 검색
@@ -99,9 +99,7 @@ public class BoardActionController {
 				searchResult = boardService.searchAll(keyword.trim());
 			}
 		}
-		for (var d : searchResult) {
-			System.out.println(d.getBoardNum());
-		}
+		
 		// 메인 리스트 출력
 		model.addAttribute("mainList", searchResult);
 		// 검색값 유지 (검색창 value 유지용)
@@ -123,8 +121,25 @@ public class BoardActionController {
 		
 		// 상세 내용 보여줌
 		BoardWithUserDto Detail = boardService.findBoardByNum(num);
+		Map<String, Object> map = null;
+		try
+		{
+			map = JsonFileWriter.readJsonFileToMap("C:/board/" + Detail.getContent());
+		}
+		catch(Exception e)
+		{
+			
+		}
+		
+		if(map != null)
+		{
+			Detail.setContent(map.get("text").toString());
+			String s = map.get("imagePath").toString();
+			System.out.println(s);
+			model.addAttribute("image", s);
+		}
+		
 		model.addAttribute("detail", Detail);
-		System.out.println("detail null? → " + (Detail == null));
 
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
 		@SuppressWarnings("unchecked")
@@ -187,9 +202,19 @@ public class BoardActionController {
 			return "Board/AdoptRegist";
 		}
 		
+
+		if (images == null && images.size() == 0) {
+			System.out.println("파일이 없음");
+		} else {
+			System.out.println("파일의 이름 : " + images.get(0).getOriginalFilename());
+		}
+		
+		String fileName = upload.fileUpload(images.get(0));
 		Map<String, Object> apple = new HashMap<String, Object>();
 		apple.put("text",boardDto.getContent());
-		String str = JsonFileWriter.saveJsonToFile(apple, "C:/images/", "test");
+		apple.put("imagePath", fileName);
+		
+		String str = JsonFileWriter.saveJsonToFile(apple, "C:/board/", "board");
 		boardDto.setContent(str);
 		boardService.insertBoard(boardDto);
 		return "redirect:/Adopt";
@@ -230,8 +255,9 @@ public class BoardActionController {
 
 		// 유저 검증
 		Users user = (Users) authUser.getUser();
+		
+		// 수정전 작성자 내용불러오기
 	    BoardWithUserDto existing = boardService.findBoardByNum(num);
-
 	    boolean isAuthor = user.getNum() == existing.getUserNum();
 	    boolean isAdmin = "관리자".equals(user.getGrade());
 
@@ -243,12 +269,31 @@ public class BoardActionController {
 		// 오류 발생시 다시 수정페이지로
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("board", board); // 반드시 넣어줘야 함
-			System.out.println("45634");
+		
 			return "/Board/AdoptUpdate";
 		}
-		System.out.println("123");
+		
+		//텍스트, 사진 분리
+		BoardWithUserDto Detail = boardService.findBoardByNum(num);
+		Map<String, Object> map = null;
+		try
+		{
+			map = JsonFileWriter.readJsonFileToMap("C:/board/" + Detail.getContent());
+		}
+		catch(Exception e)
+		{
+			
+		}
+		
+		if(map != null)
+		{
+			Detail.setContent(map.get("text").toString());
+			String s = map.get("imagePath").toString();
+			System.out.println(s);
+			model.addAttribute("image", s);
+		}
+		
 		board.setNum(num);
-
 		boardService.updateBoard(board);
 		return "redirect:/AdoptDetail/" + num;
 	}

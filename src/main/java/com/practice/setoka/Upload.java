@@ -15,7 +15,6 @@ public class Upload {
 	{
 		String path = null;
 		if (!file.isEmpty()) {
-
 			String originalFilename = file.getOriginalFilename();
 			String uuid = UUID.randomUUID().toString();
 			String savedFilename = uuid + "_" + originalFilename;
