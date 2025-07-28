@@ -57,7 +57,7 @@ public class MyAnimalPageController {
         animalDto.setUserNum(user.getNum());
 
         if (file != null && !file.isEmpty()) {
-            animalDto.setProfilePath(upload.fileUpload(file));
+            animalDto.setProfilePath(upload.imageFileUpload(file));
         }
         
         // 날짜 문자열 → LocalDateTime 변환
@@ -103,7 +103,7 @@ public class MyAnimalPageController {
 
     	    if (file != null && !file.isEmpty()) {
     	        // 새 이미지 업로드
-    	        animalDto.setProfilePath(upload.fileUpload(file));
+    	        animalDto.setProfilePath(upload.imageFileUpload(file));
     	    } else {
     	        // 이미지 미변경 시 기존 경로 유지
     	        animalDto.setProfilePath(existingProfilePath);

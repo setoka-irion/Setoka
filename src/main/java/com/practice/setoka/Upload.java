@@ -15,7 +15,7 @@ public class Upload {
 	public final String txtSavePath = "C:/board/";
 	
 	//사진 서버 디렉토리에 저장, 저장된 파일명 반환
-	public String fileUpload(MultipartFile file)
+	public String imageFileUpload(MultipartFile file)
 	{
 		String path = null;
 		if (!file.isEmpty()) {
@@ -42,7 +42,7 @@ public class Upload {
 		return path;
 	}
 	
-	public boolean fileDelete(String fileName)
+	public boolean imageFileDelete(String fileName)
 	{
 		File file = new File(savePath + fileName);
 		if(!file.exists())
@@ -91,5 +91,14 @@ public class Upload {
 		}
 		
 		return text;
+	}
+	
+	public boolean fileDelete(String fileName)
+	{
+		File file = new File(txtSavePath + fileName);
+		if(!file.exists())
+			return false;
+		
+		return file.delete();
 	}
 }
