@@ -1,6 +1,7 @@
 package com.practice.setoka.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,7 +18,7 @@ public interface BoardMapper {
 	int countBoards(int num);
 	
 	//	특정 게시판 전체리스트
-	List<BoardWithUserDto> findBoardsByType(int type);
+	List<BoardWithUserDto> findBoardsByType(Map<String, Object> params);
 	
 	// 	특정 게시글 내용 게시글 넘버로 찾기(리스트 아님)
 	BoardWithUserDto findBoardByNum(@Param("num") int num);
