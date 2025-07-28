@@ -119,19 +119,6 @@ public class BoardActionController {
 
 		// 상세 내용 보여줌
 		BoardWithUserDto Detail = boardService.findBoardByNum(num);
-//		Map<String, Object> map = null;
-//		try {
-//			map = JsonFileWriter.readJsonFileToMap("C:/board/" + Detail.getContent());
-//		} catch (Exception e) {
-//
-//		}
-
-//		if (map != null) {
-//			Detail.setContent(map.get("text").toString());
-//			String s = map.get("imagePath").toString();
-//			System.out.println(s);
-//			model.addAttribute("image", s);
-//		}
 
 		model.addAttribute("detail", Detail);
 
@@ -189,26 +176,14 @@ public class BoardActionController {
 	public String adoptRegistSubmit(
 			// 오류 검증
 			@Valid BoardDto boardDto,
-			/* @RequestParam("images") List<MultipartFile> images, */ BindingResult bindingResult,
+			
+			BindingResult bindingResult,
 			Model model) {
 
 		if (bindingResult.hasErrors()) {
 			return "Board/AdoptRegist";
 		}
 
-//		if (images == null && images.size() == 0) {
-//			System.out.println("파일이 없음");
-//		} else {
-//			System.out.println("파일의 이름 : " + images.get(0).getOriginalFilename());
-//		}
-
-//		String fileName = upload.fileUpload(images.get(0));
-//		Map<String, Object> apple = new HashMap<String, Object>();
-//		apple.put("text", boardDto.getContent());
-//		apple.put("imagePath", fileName);
-//
-//		String str = JsonFileWriter.saveJsonToFile(apple, "C:/board/", "board");
-//		boardDto.setContent(str);
 		boardService.insertBoard(boardDto);
 		return "redirect:/Adopt";
 	}

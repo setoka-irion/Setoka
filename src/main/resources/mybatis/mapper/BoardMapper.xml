@@ -178,6 +178,7 @@ SELECT * FROM boardReport WHERE boardNum = #{boardNum} AND userNum = #{userNum}
 		<result property="likes" column="likes"/>
 		<result property="views" column="views"/>
 		<result property="price" column="price"/>
+		<result property="commentCount" column="comments_Counts"/>
 		<result property="area" column="area"/>
 		<result property="registerDate" column="registerDate" jdbcType="TIMESTAMP" />
 	</resultMap>
