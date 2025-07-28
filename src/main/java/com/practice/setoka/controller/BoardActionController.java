@@ -118,7 +118,9 @@ public class BoardActionController {
 		// 수정 삭제버튼 감추기용
 
 		// 상세 내용 보여줌
-		BoardWithUserDto Detail = boardService.findBoardByNum(num);
+		BoardWithUserDto detail = boardService.findBoardByNum(num);
+		String content = upload.fileLoad(detail.getContent());
+		detail.setContent(content);
 //		Map<String, Object> map = null;
 //		try {
 //			map = JsonFileWriter.readJsonFileToMap("C:/board/" + Detail.getContent());
@@ -133,7 +135,7 @@ public class BoardActionController {
 //			model.addAttribute("image", s);
 //		}
 
-		model.addAttribute("detail", Detail);
+		model.addAttribute("detail", detail);
 
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
 		@SuppressWarnings("unchecked")
