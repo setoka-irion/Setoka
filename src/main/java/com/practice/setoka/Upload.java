@@ -1,6 +1,8 @@
 package com.practice.setoka;
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -40,6 +42,16 @@ public class Upload {
 		return path;
 	}
 	
+	public boolean fileDelete(String fileName)
+	{
+		File file = new File(savePath + fileName);
+		if(!file.exists())
+			return false;
+		
+		return file.delete();
+	}
+	
+	
 	public String fileUpload(String txt)
 	{
 		String uuid = UUID.randomUUID().toString();
@@ -59,5 +71,25 @@ public class Upload {
 			e.printStackTrace();
 		}
 		return fileName;
+	}
+	
+	public String fileLoad(String fileName)
+	{
+		File file = new File(txtSavePath + fileName);
+		if(!file.exists())
+			return null;
+
+		String text = null;
+		
+		try
+		{
+			text = Files.readString(Paths.get(txtSavePath + fileName));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return text;
 	}
 }
