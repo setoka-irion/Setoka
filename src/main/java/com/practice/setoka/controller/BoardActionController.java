@@ -195,20 +195,9 @@ public class BoardActionController {
 		if (bindingResult.hasErrors()) {
 			return "Board/AdoptRegist";
 		}
-
-//		if (images == null && images.size() == 0) {
-//			System.out.println("파일이 없음");
-//		} else {
-//			System.out.println("파일의 이름 : " + images.get(0).getOriginalFilename());
-//		}
-
-//		String fileName = upload.fileUpload(images.get(0));
-//		Map<String, Object> apple = new HashMap<String, Object>();
-//		apple.put("text", boardDto.getContent());
-//		apple.put("imagePath", fileName);
-//
-//		String str = JsonFileWriter.saveJsonToFile(apple, "C:/board/", "board");
-//		boardDto.setContent(str);
+		
+		String fileName = upload.fileUpload(boardDto.getContent());
+		boardDto.setContent(fileName);
 		boardService.insertBoard(boardDto);
 		return "redirect:/Adopt";
 	}
