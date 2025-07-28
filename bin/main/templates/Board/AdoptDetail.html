@@ -434,8 +434,7 @@
                     <td th:text="${detail.area}">지역명</td>
                 </tr>
                 <tr>
-                    <td colspan="2" th:text="${detail.content}">본문 내용이 여기에 표시됩니다.</td>
-					<img th:src="@{'/images/' + ${image}}">
+                    <td colspan="2" th:utext="${detail.content}"></td>
                 </tr>
             </tbody>
         </table>
