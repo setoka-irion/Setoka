@@ -23,14 +23,7 @@ public class HomeController {
 	UserService userService;
 	// 홈화면
 	@GetMapping(value = "/")
-	public String home(HttpSession session, Model model, @AuthenticationPrincipal CustomUserDetails authUser) {
-		if (authUser != null) {
-			Users loginData = authUser.getUser();
-			if (loginData != null) {
-				model.addAttribute("privileges", loginData.getPrivileges());
-			}
-		}
-
+	public String home(HttpSession session, Model model) {
 		return "home";
 	}
 

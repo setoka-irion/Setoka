@@ -21,9 +21,9 @@
 				</span>
 			</div>
 			<nav style="text-align:right;">
-				<a href="/Login">로그인</a>
-				<a href="/Logout">로그아웃</a>
-				<a href="/SignUp">회원가입</a>
+				<a th:if="${loginUser == null}" href="/Login">로그인</a>
+				<a th:if="${loginUser == null}" href="/SignUp">회원가입</a>
+				<a th:if="${loginUser != null}" href="/Logout">로그아웃</a>
 			</nav>
 		</header>
 		<hr />
