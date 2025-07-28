@@ -17,18 +17,22 @@
 				<th>내용</th>
 				<th>아이템종류</th>
 				<th>양</th>
+				<th>받기</th>
 			</tr>
 		</thead>
 		<tbody>
 			<!-- 사용자 데이터가 여기에 추가됩니다 -->
-			<tr th:each="message : ${messageList}">
+			<tr th:each="message : ${messageList}" th:if="${message.messageStatus.name() != 'DELETE'}">
 
 				<td th:text="${message.sender}"></td>
 				<td th:text="${message.title}"></td>
 				<td th:text="${message.content}"></td>
 				<td th:text="${message.item_Type}"></td>
 				<td th:text="${message.item_Value}"></td>
-
+				<td>
+					<a th:href="@{/GettingGift(messageNum=${message.num})}" class="btn"
+					th:if="${message.messageStatus.name() != 'TAKE'}">받기</a>
+				</td>
 			</tr>
 		</tbody>
 	</table>
