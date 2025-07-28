@@ -224,6 +224,7 @@ public class BoardActionController {
 		}
 		// 해당 게시글 내용
 		// 상세보기와 동일 코드
+		board.setContent(upload.fileLoad(board.getContent()));
 		model.addAttribute("board", board); // 수정 폼에서 기본값으로 사용
 
 		return "Board/AdoptUpdate";
@@ -257,21 +258,23 @@ public class BoardActionController {
 		}
 
 		// 텍스트, 사진 분리
-		BoardWithUserDto Detail = boardService.findBoardByNum(num);
-		Map<String, Object> map = null;
-		try {
-			map = JsonFileWriter.readJsonFileToMap("C:/board/" + Detail.getContent());
-		} catch (Exception e) {
-
-		}
-
-		if (map != null) {
-			Detail.setContent(map.get("text").toString());
-			String s = map.get("imagePath").toString();
-			System.out.println(s);
-			model.addAttribute("image", s);
-		}
-
+//		BoardWithUserDto Detail = boardService.findBoardByNum(num);
+//		Map<String, Object> map = null;
+//		try {
+//			map = JsonFileWriter.readJsonFileToMap("C:/board/" + Detail.getContent());
+//		} catch (Exception e) {
+//
+//		}
+//
+//		if (map != null) {
+//			Detail.setContent(map.get("text").toString());
+//			String s = map.get("imagePath").toString();
+//			System.out.println(s);
+//			model.addAttribute("image", s);
+//		}
+		String fileName = upload.fileUpload(board.getContent());
+		board.setContent(fileName);
+		
 		board.setNum(num);
 		boardService.updateBoard(board);
 		return "redirect:/AdoptDetail/" + num;
