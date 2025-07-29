@@ -13,6 +13,7 @@ public class Upload {
 	//public final String savePath = "/var/www/uploads/";	//실전
 	public final String savePath = "C:/images/";	
 	public final String txtSavePath = "C:/board/";
+	public final String tempImagePath = "C:/images/temp/";
 	
 	//사진 서버 디렉토리에 저장, 저장된 파일명 반환
 	public String imageFileUpload(MultipartFile file)
@@ -49,6 +50,33 @@ public class Upload {
 			return false;
 		
 		return file.delete();
+	}
+	
+	public String tempImageUpload(MultipartFile file)
+	{
+		String path = null;
+		if (!file.isEmpty()) {
+			String originalFilename = file.getOriginalFilename();
+			String uuid = UUID.randomUUID().toString();
+			String savedFilename = uuid + "_" + originalFilename;
+			File uploadDir = new File(tempImagePath);
+
+			path = savedFilename;
+			if (!uploadDir.exists()) {
+				uploadDir.mkdirs(); // 폴더가 없으면 자동 생성
+			}
+
+			File dest = new File(tempImagePath + savedFilename);
+
+			try {
+				file.transferTo((dest));
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return path;
 	}
 	
 	
