@@ -14,9 +14,9 @@
 			<tr>
 				<th>보낸사람</th>
 				<th>제목</th>
-				<th>내용</th>
+				<!--<th>내용</th>
 				<th>아이템종류</th>
-				<th>양</th>
+				<th>양</th>-->
 				<th>받기</th>
 			</tr>
 		</thead>
@@ -24,15 +24,25 @@
 			<!-- 사용자 데이터가 여기에 추가됩니다 -->
 			<tr th:each="message : ${messageList}" th:if="${message.messageStatus.name() != 'DELETE'}">
 
-				<td th:text="${message.sender}"></td>
-				<td th:text="${message.title}"></td>
-				<td th:text="${message.content}"></td>
-				<td th:text="${message.item_Type}"></td>
-				<td th:text="${message.item_Value}"></td>
-				<td>
-					<a th:href="@{/GettingGift(messageNum=${message.num})}" class="btn"
-					th:if="${message.messageStatus.name() != 'TAKE'}">받기</a>
-				</td>
+				<table>
+					<tr onclick="toggleDetail(this)">
+						<td th:text="${message.sender}"></td>
+						<td th:text="${message.title}"></td>
+					</tr>
+					<tr class="detail-row" style="display: none;">
+						<td colspan="3">
+							<strong>내용:</strong> <span th:text="${message.content}"></span><br>
+							<strong>아이템 종류:</strong> <span th:text="${message.item_Type}"></span><br>
+							<strong>아이템 값:</strong> <span th:text="${message.item_Value}"></span>
+							<a th:href="@{/GettingGift(messageNum=${message.num})}" class="btn"
+							th:if="${message.messageStatus.name() != 'TAKE' 
+							          and message.item_Type == 'NONE'
+							          and message.item_Value != 0}">
+									  받기
+								  </a>
+						</td>
+					</tr>
+				</table>
 			</tr>
 		</tbody>
 	</table>
@@ -41,3 +51,14 @@
 </body>
 
 </html>
+
+<script>
+	function toggleDetail(row) {
+		const detailRow = row.nextElementSibling;
+		if (detailRow.style.display === "none") {
+			detailRow.style.display = "table-row";
+		} else {
+			detailRow.style.display = "none";
+		}
+	}
+</script>
