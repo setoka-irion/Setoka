@@ -49,6 +49,7 @@
 		SELECT b.*, 	u.nickName
 		FROM board b JOIN users u ON b.userNum = u.num 
 		WHERE u.id = #{id} AND type !=0
+		ORDER BY b.registerDate DESC
 	</select>
 
 <!--	 게시글 제목으로 검색 -->
@@ -59,6 +60,7 @@
     	FROM board b JOIN users u 
     	ON b.userNum = u.num 
 		WHERE b.title LIKE CONCAT('%', #{title}, '%') AND type !=0
+		ORDER BY b.registerDate DESC
 	</select>
 
 <!--	 게시글 내용으로 검색 -->
@@ -69,6 +71,7 @@
     	FROM board b JOIN users u 
     	ON b.userNum = u.num 
 		WHERE b.content LIKE CONCAT('%', #{content}, '%') AND type !=0
+		ORDER BY b.registerDate DESC
 	</select>
 	
 <!--	 통합 검색 -->
@@ -145,8 +148,7 @@
 	FROM board b
 	LEFT JOIN (
     SELECT boardNum, COUNT(*) AS comments_counts
-    FROM comments
-    GROUP BY boardNum
+    FROM comments GROUP BY boardNum
 	) c ON b.num = c.boardNum
 	JOIN users u ON b.userNum = u.num
 	WHERE b.type = #{type}
@@ -156,17 +158,21 @@
 
 
 	<!-- 신고 -->
-<insert id="reportBoard" parameterType="int">
-INSERT INTO boardReport (boardNum,userNum) VALUES(#{boardNum}, #{userNum})
-</insert>
+	<insert id="reportBoard" parameterType="int">
+		INSERT INTO boardReport (boardNum,userNum) 
+		VALUES(#{boardNum},	#{userNum})
+	</insert>
 
-<select id="findReportByBoardNum" parameterType="int" resultType="com.practice.setoka.dao.Report">
-SELECT * FROM boardReport WHERE boardNum = #{boardNum}
-</select>
+	<select id="findReportByBoardNum" parameterType="int"
+		resultType="com.practice.setoka.dao.Report">
+		SELECT * FROM boardReport WHERE boardNum = #{boardNum}
+	</select>
 	<!-- 게시판 신고 유저내용-->
-<select id="findReportByBC" parameterType="int" resultType="com.practice.setoka.dao.Report">
-SELECT * FROM boardReport WHERE boardNum = #{boardNum} AND userNum = #{userNum}
-</select>
+	<select id="findReportByBC" parameterType="int"
+		resultType="com.practice.setoka.dao.Report">
+		SELECT * FROM boardReport 
+		WHERE boardNum = #{boardNum} AND userNum = #{userNum}
+	</select>
 
 
 	<!--	 위에 세 쿼리 결과 매핑 -->

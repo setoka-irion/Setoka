@@ -112,7 +112,8 @@ public class BoardActionController {
 		
 		int totalPages = (int) Math.ceil((double) totalCount / limit);	// 총게시글수/페이지당 갯수
 		model.addAttribute("totalPages", totalPages);
-
+		
+		// 썸네일 이미지 없으면 기본 이미지 적용
 		for(var dto : searchResult)
 		{
 			if(dto.getImage_paths() == null)
@@ -317,14 +318,19 @@ public class BoardActionController {
 			return "redirect:/Adopt";
 		}
 
+		
 		boardService.deleteBoard(num);
+		redirectAttributes.addFlashAttribute("deleteSuccess","삭제 완료되었습니다");
 
 		return "redirect:/Adopt";
 	}
 
 	// 신고기능
 	@PostMapping("/AdoptDetail/{num}/report")
-	public String reportBoard(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser) {
+	public String reportBoard(
+			@PathVariable("num") int num, 
+			@AuthenticationPrincipal CustomUserDetails authUser,
+			RedirectAttributes redirectAttributes) {
 
 		Users user = authUser.getUser();
 		if (user != null) { // 로그인유저가 신고시 내역없으면 신고가능
@@ -333,6 +339,7 @@ public class BoardActionController {
 			}
 		}
 		// 중복신고 안됌
+		redirectAttributes.addFlashAttribute("reportSuccess", "신고가 정상적으로 처리되었습니다.");
 		return "redirect:/AdoptDetail/" + num;
 	}
 

@@ -375,7 +375,8 @@
         <!-- 에러/성공 메시지 -->
         <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
         <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
-
+		<div th:if="${deleteSuccess}" class="message success" th:text="${deleteSuccess}"></div>
+		
         <!-- 상단 버튼 -->
         <div class="top-buttons" style="text-align: left;">
             <a th:href="@{/Adopt}" class="button-link">입양 메인 페이지</a>
@@ -412,12 +413,24 @@
 		              onsubmit="return confirm('정말 삭제하시겠습니까?');">
 		            <button type="submit" class="delete-btn">삭제</button>
 		        </form>
+				
 		   
 
-		    <!-- ✅ 신고는 누구나 가능 -->
-		    <form th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
-		        <button type="submit" class="report-btn">신고</button>
-		    </form>
+		<!--✅ 신고 -->
+		<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post"
+			style="display:inline;">
+			<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
+			<button type="button" onclick="confirmReport()">🚨 신고</button>
+		</form>
+			<script>
+			  function confirmReport() {
+			    if (confirm("정말 이 게시글을 신고하시겠습니까?")) {
+			      document.getElementById("reportForm").submit(); // 폼 제출
+			    }
+			  }
+			</script>
+		<!-- 신고 완료 메시지 (있을 때만 보여줌) -->
+			<div th:if="${reportSuccess}" class="message success" th:text="${reportSuccess}"></div>
 
 		</div>
         <!-- 본문 테이블 -->
