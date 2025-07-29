@@ -1,6 +1,7 @@
 package com.practice.setoka.Enum;
 
 public enum Item {
+	NONE("없음"),
 	POINT("포인트");
  
 	
