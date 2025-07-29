@@ -175,6 +175,18 @@
 	</select>
 
 
+<insert id="insertTempImage" parameterType="com.practice.setoka.dto.TempImageDto">
+	INSERT INTO tempimage (userNum, imageName) values (#{userNum}, #{imageName})
+</insert>
+
+<select id="selectTempImageAllToUsersNum" resultType="com.practice.setoka.dao.TempImage">
+	SELECT * FROM tempimage WHERE userNum = #{userNum}
+</select>
+
+<delete id="deleteTempImage">
+	DELETE FROM tempimage WHERE userNum = #{userNum}
+</delete>
+
 	<!--	 위에 세 쿼리 결과 매핑 -->
 	<resultMap id="boardWithUserMap" type="com.practice.setoka.dto.BoardWithUserDto">
 		<id property="boardNum" column="num" />

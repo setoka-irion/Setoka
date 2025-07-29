@@ -3,15 +3,16 @@
 
 <head>
 	<title>MyPage</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<style>
-		table {
+		#calendar {
 			width: 350px;
 			margin: 20px auto;
 			border-collapse: collapse;
 		}
 
-		th,
-		td {
+		#calendar th,
+		#calendar td {
 			border: 1px solid #ccc;
 			width: 14.28%;
 			height: 80px;
@@ -20,7 +21,7 @@
 			cursor: pointer;
 		}
 
-		th {
+		#calendar th {
 			background: #eee;
 		}
 
@@ -91,21 +92,35 @@
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
-	<div style="text-align:center;">
-	<h1>마이페이지</h1>
-	<button onclick="location.href='/EditProfilePhoto'">프로필 사진수정</button>
-	<button onclick="location.href='/ModifyUser'">개인정보수정</button>
-	<button onclick="location.href='/ChangePassword'">비밀번호변경</button>
-	<button onclick="location.href='/myanimal'">동물프로필</button>
-	<button onclick="location.href='/attendcheck'">출석체크</button>
-	<button onclick="location.href='/Damagochi'">가반키</button>
-	<button onclick="location.href='/Withdrawal'">탈퇴</button>
-	<br>
-	</div>
-	
-	<div style="text-align: center;">
-		<p>포인트: <span th:text="${loginUser.point}"></span></p>
-		<p>경험치: <span th:text="${loginUser.exp}"></span></p>
+	<div class="UserInfo" style="text-align: center;">
+		<table border="1" style="margin: 0 auto;">
+			<tr>
+				<!--<td rowspan="4"><a href="/EditProfilePhoto"><img th:src="@{'/images/' + ${loginUser.profilePath}}"
+						style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;" alt="이미지" /></a></td>-->
+				<td rowspan="4" style="padding: 0;">
+					<a href="/EditProfilePhoto">
+						<img th:src="@{'/images/' + ${loginUser.profilePath}}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="이미지" />
+					</a>
+				</td>
+				<td>닉네임</td>
+				<td th:text="${loginUser.nickName}">닉네임</td>
+			</tr>
+			<tr>
+				<td>실명</td>
+				<td th:text="${loginUser.realName}">포인트</td>
+			</tr>
+			<tr>
+				<td>포인트</td>
+				<td th:text="${loginUser.point}">포인트</td>
+			</tr>
+			<tr>
+				<td>경험치</td>
+				<td th:text="${loginUser.exp}">경험치</td>
+			</tr>
+		</table>
+		<button onclick="location.href='/ModifyUser'">개인정보수정</button>
+		<button onclick="location.href='/ChangePassword'">비밀번호변경</button>
+		<button onclick="location.href='/Withdrawal'">탈퇴</button>
 	</div>
 
 	<!--일정 달력-->

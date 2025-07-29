@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="UTF-8">
 	<title>모든 사용자 출력</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<style>
-		table, th, td {
+		table,
+		th,
+		td {
 			border: 1px solid black;
 			border-collapse: collapse;
 			padding: 8px;
 		}
 	</style>
 </head>
+
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
-	
+
 	<h1>모든 사용자 목록</h1>
 	<table id="usersTable">
 		<thead>
@@ -33,23 +38,24 @@
 		<tbody>
 			<!-- 사용자 데이터가 여기에 추가됩니다 -->
 			<tr th:each="users : ${allUsers}">
-			  
-			  <td th:text="${users.id}"></td>
-			  <td th:text="${users.password}"></td>
-			  <td th:text="${users.nickName}"></td>
-			  <td th:text="${users.realName}"></td>
-			  <td th:text="${users.phoneNumber}"></td>
-			  <td th:text="${users.status}"></td>
-			  <td th:text="${users.point}"></td>
-			  <td th:text="${users.grade}"></td>
-			  <td th:text="${users.registerDate}"></td>
-			 
+
+				<td th:text="${users.id}"></td>
+				<td th:text="${users.password}"></td>
+				<td th:text="${users.nickName}"></td>
+				<td th:text="${users.realName}"></td>
+				<td th:text="${users.phoneNumber}"></td>
+				<td th:text="${users.status}"></td>
+				<td th:text="${users.point}"></td>
+				<td th:text="${users.grade}"></td>
+				<td th:text="${users.registerDate}"></td>
+
 			</tr>
 		</tbody>
 	</table>
 
 	<script>
-		
+
 	</script>
 </body>
+
 </html>

@@ -1,12 +1,13 @@
 package com.practice.setoka.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.diagnostics.analyzer.BeanNotOfRequiredTypeFailureAnalyzer;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.practice.setoka.JsonFileWriter;
 import com.practice.setoka.Upload;
 import com.practice.setoka.dao.Board;
+import com.practice.setoka.dao.TempImage;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
@@ -146,7 +147,8 @@ public class BoardActionController {
 
 		// 상세 내용 보여줌
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
-		
+		String content = upload.fileLoad(detail.getContent());
+		detail.setContent(content);
 		
 		
 		model.addAttribute("detail", detail);
@@ -197,6 +199,10 @@ public class BoardActionController {
 		boardDto.setUserNum(user.getNum());
 		boardDto.setType(1);
 		model.addAttribute("boardDto", boardDto);
+		
+		//예비 db 비우기
+		boardService.DeleteTempImage(user.getNum());
+		
 		return "Board/AdoptRegist";
 	}
 
@@ -211,6 +217,8 @@ public class BoardActionController {
 		if (bindingResult.hasErrors()) {
 			return "Board/AdoptRegist";
 		}
+		String original=boardDto.getContent().replaceAll("images/temp/", "images/");
+		boardDto.setContent(original);
 		
 		String fileName = upload.fileUpload(boardDto.getContent());
 		String thumnailName = null;
@@ -219,6 +227,28 @@ public class BoardActionController {
 		boardDto.setContent(fileName);
 		boardDto.setImage_paths(thumnailName);
 		boardService.insertBoard(boardDto);
+		
+		// 예비 db에서 가져오기
+		List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
+		// 제대로 된 db로 옮기기
+		for (TempImage l : list) {
+			TempImage tempImage = l;
+			
+			// 원본 파일 경로
+			Path sourcePath = Paths.get("C:/images/temp/" + tempImage.getImageName());
+
+			// 이동할 대상 경로
+			Path targetPath = Paths.get("C:/images/" + tempImage.getImageName());
+
+			try {
+				// 파일 이동 (이미 존재하면 덮어쓰기)
+				Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+				System.out.println("파일이 성공적으로 이동되었습니다!");
+			} catch (Exception e) {
+				System.err.println("파일 이동 중 오류 발생: " + e.getMessage());
+			}
+		}
+		
 		return "redirect:/Adopt";
 	}
 
