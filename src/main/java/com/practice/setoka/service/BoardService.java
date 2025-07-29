@@ -104,8 +104,8 @@ public class BoardService {
 	public List<BoardWithUserDto> popularPosts(int type){
 		return boardMapper.popularPosts(type);
 	}
-	
-<<<<<<< HEAD
+
+
 	public void insertTempImage(TempImageDto dto)
 	{
 		boardMapper.insertTempImage(dto);
@@ -119,7 +119,8 @@ public class BoardService {
 	public void DeleteTempImage(int userNum)
 	{
 		boardMapper.deleteTempImage(userNum);
-=======
+	}
+
 	//페이지 자르는 메소드						시작점		몇개를 자를건지		전체 리스트
 	public List<BoardWithUserDto> cutPage (int offset, int limit, List<BoardWithUserDto>cutPage){
 		//리턴해줄 리스트 생성 (지금은 비어있음)
@@ -143,6 +144,5 @@ public class BoardService {
 		
 		//리스트 리턴
 		return result;  
->>>>>>> 712fbd415b37f0b36bb96202ffacc8aa81b7469c
 	}
 }
