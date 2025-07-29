@@ -1,9 +1,7 @@
 package com.practice.setoka.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.diagnostics.analyzer.BeanNotOfRequiredTypeFailureAnalyzer;
@@ -15,12 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.practice.setoka.JsonFileWriter;
 import com.practice.setoka.Upload;
 import com.practice.setoka.dao.Board;
+import com.practice.setoka.dao.TempImage;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
@@ -196,6 +193,10 @@ public class BoardActionController {
 		boardDto.setUserNum(user.getNum());
 		boardDto.setType(1);
 		model.addAttribute("boardDto", boardDto);
+		
+		//예비 db 비우기
+		boardService.DeleteTempImage(user.getNum());
+		
 		return "Board/AdoptRegist";
 	}
 
@@ -218,6 +219,11 @@ public class BoardActionController {
 		boardDto.setContent(fileName);
 		boardDto.setImage_paths(thumnailName);
 		boardService.insertBoard(boardDto);
+		
+		//예비 db에서 가져오기
+		List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
+		//제대로 된 db로 옮기기
+		
 		return "redirect:/Adopt";
 	}
 
