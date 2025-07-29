@@ -3,11 +3,12 @@
 
 <head>
 	<title>편지 확인 폼</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
-	
+
 	<h1>쪽지함</h1>
 	<table id="usersTable">
 		<thead>
@@ -34,12 +35,11 @@
 							<strong>내용:</strong> <span th:text="${message.content}"></span><br>
 							<strong>아이템 종류:</strong> <span th:text="${message.item_Type}"></span><br>
 							<strong>아이템 값:</strong> <span th:text="${message.item_Value}"></span>
-							<a th:href="@{/GettingGift(messageNum=${message.num})}" class="btn"
-							th:if="${message.messageStatus.name() != 'TAKE' 
+							<a th:href="@{/GettingGift(messageNum=${message.num})}" class="btn" th:if="${message.messageStatus.name() != 'TAKE' 
 							          and message.item_Type == 'NONE'
 							          and message.item_Value != 0}">
-									  받기
-								  </a>
+								받기
+							</a>
 						</td>
 					</tr>
 				</table>

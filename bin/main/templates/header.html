@@ -5,25 +5,63 @@
 	<meta charset="UTF-8">
 	<title>헤더</title>
 	<style>
-
 	</style>
 </head>
 
 <body>
 	<div th:fragment="siteHeader">
-		<header style="background:#f1f1f1; padding: 15px;">
+		<header class="header" style="background:#f1f1f1; padding: 15px;">
 			<h1 style="text-align:left;" onclick="location.href='/'">여기에 제목을 입력</h1>
 			<div style="text-align:center; margin-right: 20px;">
 				<span th:if="${loginUser != null}">
-					<img th:src="@{'/images/' + ${loginUser.profilePath}}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;" alt="이미지" />
+					<img th:src="@{'/images/' + ${loginUser.profilePath}}"
+						style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;" alt="이미지" />
 					로그인ID: <a href="/MyPage"><strong th:text="${loginUser.nickName}"></strong></a>
-					| 등급: <span th:text="${loginUser.grade}"></span> 
+					| 등급: <span th:text="${loginUser.grade}"></span>
 				</span>
 			</div>
+
 			<nav style="text-align:right;">
 				<a th:if="${loginUser == null}" href="/Login">로그인</a>
-				<a th:if="${loginUser == null}" href="/SignUp">회원가입</a>
 				<a th:if="${loginUser != null}" href="/Logout">로그아웃</a>
+			</nav>
+
+			<!--<nav style="text-align: center;">
+				<button onclick="location.href='/MessageList'">쪽지</button>
+				<button onclick="location.href='/PetPlaces'">반려동물 동반시설</button>
+				<button onclick="location.href='/Adopt'">입양게시판</button>
+				<button onclick="location.href='/RPS'">가위바위보</button>
+				<button th:if="${loginUser != null and loginUser.privileges.name() == '관리자'}"
+					onclick="location.href='/AllUsers'">모든 사용자 목록</button>
+			</nav>-->
+
+			<nav class="main-nav">
+				<ul>
+					<li class="menu-item">
+						<a href="/MessageList">쪽지</a>
+					</li>
+					<li class="menu-item">
+						<a href="/PetPlaces">반려동물 동반시설</a>
+					</li>
+					<li class="menu-item">
+						<a href="/">게시판</a>
+						<ul class="submenu">
+							<li><a href="/Adopt">입양게시판</a></li>
+						</ul>
+					</li>
+					<li class="menu-item">
+						<a href="/RPS">가위바위보</a>
+					</li>
+					<li class="menu-item">
+						<a href="/MyPage">마이페이지</a>
+						<ul class="submenu">
+							<li><a href="/ModifyUser">개인정보수정</a></li>
+							<li><a href="/myanimal">동물프로필</a></li>
+							<li><a href="/attendcheck">출석체크</a></li>
+							<li><a href="/Withdrawal">탈퇴</a></li>
+						</ul>
+					</li>
+				</ul>
 			</nav>
 		</header>
 		<hr />

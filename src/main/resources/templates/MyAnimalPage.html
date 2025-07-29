@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8" />
 	<title>My Animal Page</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<style>
 		table {
 			border-collapse: collapse;
@@ -58,7 +59,7 @@
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
-	
+
 	<h1 style="text-align:center;">내 동물 목록</h1>
 
 	<!-- 동물이 없으면 추가 폼만 보여줌 -->
@@ -142,12 +143,12 @@
 			<label>나이: <input type="number" name="age" min="0" required /></label><br /><br />
 			<label>성별:</label><br />
 			<label>
-				<input type="radio" name="gender" value="수컷"/> 수컷
+				<input type="radio" name="gender" value="수컷" /> 수컷
 			</label>
 			<label>
-				<input type="radio" name="gender" value="암컷"/> 암컷
+				<input type="radio" name="gender" value="암컷" /> 암컷
 			</label><br /><br />
-			<input type="hidden" name="status" value="정상"/>
+			<input type="hidden" name="status" value="정상" />
 			<label>입양일: <input type="date" name="togetherDateStr" required /></label><br /><br />
 			<button type="submit">추가하기</button>
 			<button type="button" onclick="closeModal()">취소</button>
