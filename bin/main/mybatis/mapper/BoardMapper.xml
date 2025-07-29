@@ -13,8 +13,8 @@
 	
 <!--	 글 등록 -->
 	<insert id="insertBoard" parameterType="com.practice.setoka.dto.BoardDto">
-	INSERT INTO board (userNum, title, content, type, price, area)
-	VALUES (#{userNum}, #{title}, #{content}, #{type}, #{price}, #{area})
+	INSERT INTO board (userNum, title, content, type, price, area, Image_paths)
+	VALUES (#{userNum}, #{title}, #{content}, #{type}, #{price}, #{area}, #{Image_paths})
 	</insert>
 	
 <!--	 글 수정 -->
@@ -52,7 +52,7 @@
 	</select>
 
 <!--	 게시글 제목으로 검색 -->
-	<select id="findBoardsByTitle" parameterType="String" resultMap="boardWithUserMap">
+	<select id="findBoardsByTitle"  resultMap="boardWithUserMap">
 		SELECT 
     	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
     	b.type, b.likes, b.views, b.price, b.area, b.registerDate
@@ -62,7 +62,7 @@
 	</select>
 
 <!--	 게시글 내용으로 검색 -->
-	<select id="findBoardsByContent" parameterType="String" resultMap="boardWithUserMap">
+	<select id="findBoardsByContent" resultMap="boardWithUserMap">
 		SELECT 
     	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
     	b.type, b.likes, b.views, b.price, b.area, b.registerDate
@@ -74,7 +74,7 @@
 <!--	 통합 검색 -->
 	<select id="searchAll" parameterType="String" resultMap="boardWithUserMap">
 		SELECT 
-		u.id, u.num AS userNum, b.num, b.userNum, b.title, b.content, 
+		u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content, 
 		b.type, b.likes, b.views, b.price, b.area, b.registerDate
 		FROM board b JOIN users u 
 		ON b.userNum = u.num
@@ -112,18 +112,18 @@
 		SELECT
 		u.id, u.num AS userNum, u.nickname,
 		b.num, b.userNum, b.title, b.content,
-		b.type, b.likes, b.views, b.price, b.area, b.registerDate,
-		IFNULL(c.comments_counts, 0) AS comments_counts 	<!--댓글 수 -->
+		b.type, b.likes, b.views, b.price, b.area, b.registerDate, b.Image_paths,
+		IFNULL(c.comments_counts, 0) AS comments_counts 	<!--댓글 수 IFNULL(c.comments_counts, 0) 로 없으면 0으로 처리해줌 -->
 		FROM board b
 		JOIN users u ON b.userNum = u.num
-		LEFT JOIN (
-		SELECT boardNum, COUNT(*) AS comments_counts
+		LEFT JOIN ( <!--댓글 수를 가져오기 위한 서브쿼리를 왼쪽 외부조인-->
+		SELECT boardNum, COUNT(*) AS comments_counts <!--comments 테이블에서 boardNum 별로 댓글 수(count) 세어줌-->
 		FROM comments
 		GROUP BY boardNum
 		) c ON b.num = c.boardNum
 		WHERE b.type = #{type}
 		ORDER BY b.registerDate DESC
-		LIMIT #{offset}, #{limit} <!--페이지네이션 기능용-->
+		<!--LIMIT #{offset}, #{limit} 시작위치, 제한갯수-->
 	</select>
 
 	<!-- 	 유저 고유번호 이용 특정 유저의 게시글 목록 조회 -->
@@ -169,6 +169,18 @@ SELECT * FROM boardReport WHERE boardNum = #{boardNum} AND userNum = #{userNum}
 </select>
 
 
+<insert id="insertTempImage" parameterType="com.practice.setoka.dto.TempImageDto">
+	INSERT INTO tempimage (userNum, imageName) values (#{userNum}, #{imageName})
+</insert>
+
+<select id="selectTempImageAllToUsersNum" resultType="com.practice.setoka.dao.TempImage">
+	SELECT * FROM tempimage WHERE userNum = #{userNum}
+</select>
+
+<delete id="deleteTempImage">
+	DELETE FROM tempimage WHERE userNum = #{userNum}
+</delete>
+
 	<!--	 위에 세 쿼리 결과 매핑 -->
 	<resultMap id="boardWithUserMap" type="com.practice.setoka.dto.BoardWithUserDto">
 		<id property="boardNum" column="num" />
@@ -188,6 +200,7 @@ SELECT * FROM boardReport WHERE boardNum = #{boardNum} AND userNum = #{userNum}
 		<result property="commentCount" column="comments_Counts"/>
 		<result property="area" column="area"/>
 		<result property="registerDate" column="registerDate" jdbcType="TIMESTAMP" />
+		<result property="Image_paths" column="Image_paths"/>
 	</resultMap>
 	
 </mapper>

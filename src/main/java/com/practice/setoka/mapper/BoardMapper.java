@@ -8,8 +8,10 @@ import org.apache.ibatis.annotations.Param;
 
 import com.practice.setoka.dao.Board;
 import com.practice.setoka.dao.Report;
+import com.practice.setoka.dao.TempImage;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
+import com.practice.setoka.dto.TempImageDto;
 
 @Mapper
 public interface BoardMapper {
@@ -39,7 +41,7 @@ public interface BoardMapper {
 	List<BoardWithUserDto> findBoardsByUserId(String id);
 	
 	//	제목으로 검색
-	List<BoardWithUserDto> findBoardsByTitle(String title);
+	List<BoardWithUserDto> findBoardsByTitle(@Param("title")String title);
 	
 	//	내용으로 검색
 	List<BoardWithUserDto> findBoardsByContent(String content);
@@ -58,4 +60,10 @@ public interface BoardMapper {
 	
 	// 인기 게시글
 	List<BoardWithUserDto> popularPosts(int type);
+	
+	void insertTempImage(TempImageDto dto);
+	
+	List<TempImage> selectTempImageAllToUsersNum(@Param("userNum") int userNum);
+	
+	void deleteTempImage(@Param("userNum") int userNum);
 }

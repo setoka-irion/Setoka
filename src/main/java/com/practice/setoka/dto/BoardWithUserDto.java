@@ -23,6 +23,7 @@ public class BoardWithUserDto {
 	private int price;
 	private String area;
 	private LocalDateTime registerDate;
+	private String Image_paths;
 	//인기 게시글용 댓글 수 
 	private int commentCount;
 	
@@ -118,6 +119,12 @@ public class BoardWithUserDto {
 		this.registerDate = registerDate;
 	}	
 	
+	public String getImage_paths() {
+		return Image_paths;
+	}
+	public void setImage_paths(String image_paths) {
+		Image_paths = image_paths;
+	}
 	public String getFormattedRegistDate() {
 		if (registerDate == null)
 			return "";
