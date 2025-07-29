@@ -3,18 +3,19 @@
 
 <head>
 	<title>Home</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
-	<div style="text-align: center;">
+	<!--<div style="text-align: center;">
 		<button onclick="location.href='/MessageList'">쪽지</button>
 		<button onclick="location.href='/PetPlaces'">반려동물 동반시설</button>
 		<button onclick="location.href='/Adopt'">입양게시판</button>
 		<button onclick="location.href='/RPS'">가위바위보</button>
 		<button th:if="${loginUser != null and loginUser.privileges.name() == '관리자'}" onclick="location.href='/AllUsers'">모든 사용자 목록</button>
-	</div>
+	</div>-->
 
 </body>
 

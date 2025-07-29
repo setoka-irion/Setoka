@@ -3,19 +3,20 @@
 
 <head>
 	<title>프로필사진 수정</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
-	
+
 	<h1>프로필사진 수정</h1>
 
 	<form th:action="@{/EditProfilePhoto}" method="post" enctype="multipart/form-data">
 		<input type="file" id="profile" name="profile" multiple />
 
-	<div class="buttons-container">
-		<button type="submit">수정</button>
-	</div>
+		<div class="buttons-container">
+			<button type="submit">수정</button>
+		</div>
 	</form>
 
 </body>
