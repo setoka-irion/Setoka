@@ -1,5 +1,6 @@
 package com.practice.setoka.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +105,7 @@ public class BoardService {
 		return boardMapper.popularPosts(type);
 	}
 	
+<<<<<<< HEAD
 	public void insertTempImage(TempImageDto dto)
 	{
 		boardMapper.insertTempImage(dto);
@@ -117,5 +119,30 @@ public class BoardService {
 	public void DeleteTempImage(int userNum)
 	{
 		boardMapper.deleteTempImage(userNum);
+=======
+	//페이지 자르는 메소드						시작점		몇개를 자를건지		전체 리스트
+	public List<BoardWithUserDto> cutPage (int offset, int limit, List<BoardWithUserDto>cutPage){
+		//리턴해줄 리스트 생성 (지금은 비어있음)
+		List<BoardWithUserDto> result = new ArrayList<BoardWithUserDto>();
+		//시작점이 전체 리스트보다 큰 경우 (시작점이 40인데 리스트에 30개 밖에 없는 경우)
+		if ( offset > cutPage.size())
+		{
+			//만들어둔 리스트 리턴 (지금 시점에는 비어있음)
+			return result;
+		}
+		
+		//반복문 (시작점애서 + limit 까지)
+		for (int i = offset; i < offset + limit; i++) {
+			//현재 넣어야 할 위치가 전체 리스트 보다 커짐 (30에서 시작해서 36번째 넣으러는데 전체 리스트가 35개인 경우)
+			if (cutPage.size() <= i)
+				//현재 까지 넣은 리스트 리턴
+				return result;
+			//리스트에 현재 페이지 추가
+			result.add(cutPage.get(i));
+		}
+		
+		//리스트 리턴
+		return result;  
+>>>>>>> 712fbd415b37f0b36bb96202ffacc8aa81b7469c
 	}
 }

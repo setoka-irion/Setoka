@@ -162,10 +162,10 @@
 
 <body>
 	<a th:href="@{/}" class="button-link">홈으로</a>
-	<a th:herf="@{/Adopt}" class="button=link">입양 게시판</a>
+	<a th:href="@{/Adopt}" class="button-link">입양 메인 페이지</a>
 	<h1>입양 게시판</h1>
 	<!-- 총 게시글 수 -->
-	<p>총 게시글 수: <span th:text="${countBoards}">0</span></p>
+	<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
 
 	<!-- 검색 폼 -->
 	<form th:action="@{/Adopt}" method="get" class="search-box">
@@ -207,6 +207,7 @@
 			<!-- 테이블 넓이 조절-->
 			<colgroup>
 				<col style="width: 5%;" /> <!-- 번호 -->
+				<col style="width: 15%;" /> <!-- 미리보기 -->
 				<col style="width: 15%;" /> <!-- 작성자 -->
 				<col style="width: 40%;" /> <!-- 제목: 넓게 -->
 				<col style="width: 10%;" /> <!-- 분양가 -->
@@ -220,6 +221,7 @@
 				<!-- 테이블 제목 행-->
 				<tr>
 					<th>번호</th>
+					<th>미리보기</th>
 					<th>작성자</th>
 					<th>제목</th>
 					<th>분양가</th>
@@ -234,6 +236,9 @@
 				<!-- 반복문 -->
 				<tr th:each="board, iterStat : ${mainList}" th:if ="${iterStat.index <15}"><!-- 15개 보여줌-->
 					<td th:text="${board.boardNum}">1</td>
+					<td>
+						<img th:src="@{'/images/' + ${board.Image_paths}}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;" alt="이미지" />
+					</td>
 					<td th:text="${board.nickName}"></td>
 					<td>
 						<!-- 제목 클릭 시 상세보기 -->
