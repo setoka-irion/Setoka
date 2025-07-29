@@ -16,6 +16,7 @@ public class BoardDto {
 	private Integer type;
 	private int price;
 	private String area;
+	private String Image_paths;
 	
 	
 	public int getUserNum() {
@@ -53,6 +54,15 @@ public class BoardDto {
 	}
 	public void setArea(String area) {
 		this.area = area;
+	}
+	public String getImage_paths() {
+		return Image_paths;
+	}
+	public void setImage_paths(String image_paths) {
+		Image_paths = image_paths;
+	}
+	public void setType(Integer type) {
+		this.type = type;
 	}
 	
 }
