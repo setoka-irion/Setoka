@@ -39,7 +39,7 @@ public interface BoardMapper {
 	List<BoardWithUserDto> findBoardsByUserId(String id);
 	
 	//	제목으로 검색
-	List<BoardWithUserDto> findBoardsByTitle(String title);
+	List<BoardWithUserDto> findBoardsByTitle(@Param("title")String title);
 	
 	//	내용으로 검색
 	List<BoardWithUserDto> findBoardsByContent(String content);

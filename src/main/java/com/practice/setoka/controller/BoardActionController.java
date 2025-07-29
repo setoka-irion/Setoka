@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.diagnostics.analyzer.BeanNotOfRequiredTypeFailureAnalyzer;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -76,14 +77,16 @@ public class BoardActionController {
 			@RequestParam(value = "page", defaultValue = "1") int page) {
 
 		// 페이지 네이션 기능
-		int limit = 15;
-		int offset = (page - 1) * limit;
+		int limit = 15; //한페이지당 게시글수
+		int offset = (page - 1) * limit; 
+		int totalCount;
 		
 		// 입양 게시판 내부 검색
 		List<BoardWithUserDto> searchResult;
 		if (keyword == null || keyword.isEmpty()) {
 			// 검색 값 안넣었을 경우 전체 게시판 리스트 출력
 			searchResult = boardService.findBoardsByType(1, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
+			totalCount = boardService.countBoards(1);
 		} else {
 			switch (field) {
 			case "title":
@@ -98,28 +101,37 @@ public class BoardActionController {
 			default:
 				searchResult = boardService.searchAll(keyword.trim());
 			}
+			totalCount = searchResult.size(); //결색결과 갯수
 		}
 		
-		// 페이지네이션 기능용
-		int totalCount = boardService.countBoards(1);
-		
-		// 인기게시글
+		// Adopt 인기게시글
 		List<BoardWithUserDto> popularPosts = boardService.popularPosts(1);
+		searchResult = boardService.cutPage(offset, limit, searchResult);
+		// 페이지네이션 기능용
+
 		
-		int totalPages = (int) Math.ceil((double) totalCount / limit);
+		int totalPages = (int) Math.ceil((double) totalCount / limit);	// 총게시글수/페이지당 갯수
 		model.addAttribute("totalPages", totalPages);
 
-		// 메인 리스트 출력
-		model.addAttribute("mainList", searchResult);
-		model.addAttribute("currentPage", page);
-		model.addAttribute("totalCount", totalCount);
-		model.addAttribute("limit", limit);
+		for(var dto : searchResult)
+		{
+			if(dto.getImage_paths() == null)
+			{
+				dto.setImage_paths("default.jpg");
+			}
+		}
+		
+		//인기글
 		model.addAttribute("popularPosts", popularPosts);
+		// 메인 리스트 출력 + 페이지 네이션 기능
+		model.addAttribute("mainList", searchResult);
+		model.addAttribute("limit", limit);
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("currentPage", page);
 		
 		// 검색값 유지 (검색창 value 유지용)
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("field", field);
-
 		return "Board/Adopt";
 	}
 
@@ -133,22 +145,9 @@ public class BoardActionController {
 
 		// 상세 내용 보여줌
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
-		String content = upload.fileLoad(detail.getContent());
-		detail.setContent(content);
-//		Map<String, Object> map = null;
-//		try {
-//			map = JsonFileWriter.readJsonFileToMap("C:/board/" + Detail.getContent());
-//		} catch (Exception e) {
-//
-//		}
-
-//		if (map != null) {
-//			Detail.setContent(map.get("text").toString());
-//			String s = map.get("imagePath").toString();
-//			System.out.println(s);
-//			model.addAttribute("image", s);
-//		}
-
+		
+		
+		
 		model.addAttribute("detail", detail);
 
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
@@ -205,7 +204,7 @@ public class BoardActionController {
 	public String adoptRegistSubmit(
 			// 오류 검증
 			@Valid BoardDto boardDto,
-			/* @RequestParam("images") List<MultipartFile> images, */ BindingResult bindingResult,
+			@RequestParam("images") List<MultipartFile> images, BindingResult bindingResult,
 			Model model) {
 
 		if (bindingResult.hasErrors()) {
@@ -213,7 +212,11 @@ public class BoardActionController {
 		}
 		
 		String fileName = upload.fileUpload(boardDto.getContent());
+		String thumnailName = null;
+		if(images != null && images.size() > 0)
+			thumnailName = upload.imageFileUpload(images.get(0));
 		boardDto.setContent(fileName);
+		boardDto.setImage_paths(thumnailName);
 		boardService.insertBoard(boardDto);
 		return "redirect:/Adopt";
 	}
