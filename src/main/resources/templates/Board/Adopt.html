@@ -119,6 +119,44 @@
 		    background-color: #1a5fb4;
 		    box-shadow: 0 4px 8px rgba(26, 95, 180, 0.6);
 		}
+		
+		/* 페이지 네이션*/
+		.pagination {
+		    text-align: center;
+		    margin-top: 30px;
+		}
+
+		.pagination ul {
+		    list-style: none;
+		    padding: 0;
+		    margin: 0 auto;
+		    display: inline-flex; /* 가로 정렬 */
+		    gap: 8px; /* 페이지 번호 간격 */
+		}
+
+		.pagination ul li {
+		    border: 1px solid #ccc;
+		    border-radius: 4px;
+		    padding: 6px 12px;
+		}
+
+		.pagination ul li.active {
+		    background-color: #2a7ae2;
+		    color: white;
+		    font-weight: 700;
+		    border-color: #2a7ae2;
+		}
+
+		.pagination ul li a {
+		    color: inherit;
+		    text-decoration: none;
+		    display: block;
+		}
+
+		.pagination ul li a:hover {
+		    text-decoration: underline;
+		    color: #1a5fb4;
+		}
 	</style>
 </head>
 
@@ -194,7 +232,7 @@
 
 			<tbody>
 				<!-- 반복문 -->
-				<tr th:each="board, iterStat : ${mainList}" th:if ="${iterStat.index <15}">
+				<tr th:each="board, iterStat : ${mainList}" th:if ="${iterStat.index <15}"><!-- 15개 보여줌-->
 					<td th:text="${board.boardNum}">1</td>
 					<td th:text="${board.nickName}"></td>
 					<td>
@@ -214,7 +252,24 @@
 			</tbody>
 		</table>
 	</div>
+	<!-- 페이지네이션-->
+	<div class="pagination">
+	  <ul>
+	    <li th:if="${currentPage > 1}">
+	      <a th:href="@{/Adopt(page=${currentPage - 1}, keyword=${keyword}, field=${field})}">◀ 이전</a>
+	    </li>
 
+	    <li th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+	        th:classappend="${pageNum == currentPage} ? 'active'">
+	      <a th:href="@{/Adopt(page=${pageNum}, keyword=${keyword}, field=${field})}"
+	         th:text="${pageNum}">1</a>
+	    </li>
+
+	    <li th:if="${currentPage < totalPages}">
+	      <a th:href="@{/Adopt(page=${currentPage + 1}, keyword=${keyword}, field=${field})}">다음 ▶</a>
+	    </li>
+	  </ul>
+	</div>
 </body>
 
 </html>

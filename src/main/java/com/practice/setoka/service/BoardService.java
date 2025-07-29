@@ -1,6 +1,8 @@
 package com.practice.setoka.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +31,13 @@ public class BoardService {
 	}
 	
 	//	특정 게시판 전체 리스트
-	public List<BoardWithUserDto> findBoardsByType(int type){
-		return boardMapper.findBoardsByType(type);
+	
+	public List<BoardWithUserDto> findBoardsByType(int type, int offset, int limit) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("type", type);
+	    params.put("offset", offset);
+	    params.put("limit", limit);
+	    return boardMapper.findBoardsByType(params);
 	}
 	
 	// 	특정 게시글 내용 게시글 넘버로 찾기
