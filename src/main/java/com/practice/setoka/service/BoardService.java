@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.practice.setoka.dao.Board;
 import com.practice.setoka.dao.Report;
+import com.practice.setoka.dao.TempImage;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
+import com.practice.setoka.dto.TempImageDto;
 import com.practice.setoka.mapper.BoardMapper;
 
 @Service
@@ -100,5 +102,20 @@ public class BoardService {
 	// 인기 게시글
 	public List<BoardWithUserDto> popularPosts(int type){
 		return boardMapper.popularPosts(type);
+	}
+	
+	public void insertTempImage(TempImageDto dto)
+	{
+		boardMapper.insertTempImage(dto);
+	}
+	
+	public List<TempImage> selectTempImageAllToUsersNum(int userNum)
+	{
+		return boardMapper.selectTempImageAllToUsersNum(userNum);
+	}
+	
+	public void DeleteTempImage(int userNum)
+	{
+		boardMapper.deleteTempImage(userNum);
 	}
 }

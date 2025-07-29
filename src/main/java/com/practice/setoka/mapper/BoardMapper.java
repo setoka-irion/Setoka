@@ -8,8 +8,10 @@ import org.apache.ibatis.annotations.Param;
 
 import com.practice.setoka.dao.Board;
 import com.practice.setoka.dao.Report;
+import com.practice.setoka.dao.TempImage;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
+import com.practice.setoka.dto.TempImageDto;
 
 @Mapper
 public interface BoardMapper {
@@ -58,4 +60,10 @@ public interface BoardMapper {
 	
 	// 인기 게시글
 	List<BoardWithUserDto> popularPosts(int type);
+	
+	void insertTempImage(TempImageDto dto);
+	
+	List<TempImage> selectTempImageAllToUsersNum(@Param("userNum") int userNum);
+	
+	void deleteTempImage(@Param("userNum") int userNum);
 }

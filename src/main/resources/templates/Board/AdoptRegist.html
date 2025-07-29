@@ -76,7 +76,9 @@
         function uploadImage(file) {
             const formData = new FormData();
             formData.append("file", file);
-
+			const userNum = document.querySelector('input[name="userNum"]').value;
+			formData.append("userNum", userNum);     // 사용자 번호 추가
+				
             $.ajax({
                 url: '/upload/image', // 이미지 업로드용 컨트롤러
                 method: 'POST',
