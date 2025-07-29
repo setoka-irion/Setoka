@@ -7,35 +7,35 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class BoardController 
 {
 	// 게시판
-	@GetMapping(value = "Board")
+	@GetMapping(value = "BoardPage")
 	public String board()
 	{
 		return "Board";
 	}
 	
 	//애견자랑
-	@GetMapping(value = "AnimalPride")
+	@GetMapping(value = "AnimalPridePage")
 	public String animalPride()
 	{
 		return "AnimalPride";
 	}
 	
 	//산책로 추천
-	@GetMapping(value = "WalkTrail")
+	@GetMapping(value = "WalkTrailPage")
 	public String walkTrail()
 	{
 		return "WalkTrail";
 	}
 	
 	//중고물품
-	@GetMapping(value = "UsedGoods")
+	@GetMapping(value = "UsedGoodsPage")
 	public String usedGoods()
 	{
 		return "UsedGoods";
 	}
 	
 	//노하우
-	@GetMapping(value = "KnowHow")
+	@GetMapping(value = "KnowHowPage")
 	public String knowHow()
 	{
 		return "KnowHow";

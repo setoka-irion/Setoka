@@ -119,11 +119,50 @@
 		    background-color: #1a5fb4;
 		    box-shadow: 0 4px 8px rgba(26, 95, 180, 0.6);
 		}
+		
+		/* 페이지 네이션*/
+		.pagination {
+		    text-align: center;
+		    margin-top: 30px;
+		}
+
+		.pagination ul {
+		    list-style: none;
+		    padding: 0;
+		    margin: 0 auto;
+		    display: inline-flex; /* 가로 정렬 */
+		    gap: 8px; /* 페이지 번호 간격 */
+		}
+
+		.pagination ul li {
+		    border: 1px solid #ccc;
+		    border-radius: 4px;
+		    padding: 6px 12px;
+		}
+
+		.pagination ul li.active {
+		    background-color: #2a7ae2;
+		    color: white;
+		    font-weight: 700;
+		    border-color: #2a7ae2;
+		}
+
+		.pagination ul li a {
+		    color: inherit;
+		    text-decoration: none;
+		    display: block;
+		}
+
+		.pagination ul li a:hover {
+		    text-decoration: underline;
+		    color: #1a5fb4;
+		}
 	</style>
 </head>
 
 <body>
 	<a th:href="@{/}" class="button-link">홈으로</a>
+	<a th:herf="@{/Adopt}" class="button=link">입양 게시판</a>
 	<h1>입양 게시판</h1>
 	<!-- 총 게시글 수 -->
 	<p>총 게시글 수: <span th:text="${countBoards}">0</span></p>
@@ -148,14 +187,32 @@
 		<p class="right-top-button">
 			<a th:href="@{/AdoptRegist}" class="button-link">새 글 등록하기</a>
 		</p>
+		
+		<div>
+		    <h3>🔥 인기글</h3>
+		    <div th:each="post : ${popularPosts}">
+		        <a th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum})}">
+		            <strong th:text="${post.title}">제목</strong>
+		        </a>
+		        <span th:text="'작성자: ' + ${post.nickName}">작성자</span>
+		        <span th:text="'좋아요: ' + ${post.likes}">좋아요</span>
+				<span th:text="'댓글 수: ' + ${post.commentCount}">댓글 수</span>
+				<span th:text="'작성일: ' + ${post.formattedRegistDate}">작성일</span>
+		        <hr>
+		    </div>
+		</div>
+		
+		<!-- 본문 내용-->
 		<table>
 			<!-- 테이블 넓이 조절-->
 			<colgroup>
 				<col style="width: 5%;" /> <!-- 번호 -->
-				<col style="width: 40%;" /> <!-- 제목: 넓게 -->
 				<col style="width: 15%;" /> <!-- 작성자 -->
-				<col style="width: 10%;" /> <!-- 조회수 -->
-				<col style="width: 10%;" /> <!-- 좋아요 -->
+				<col style="width: 40%;" /> <!-- 제목: 넓게 -->
+				<col style="width: 10%;" /> <!-- 분양가 -->
+				<col style="width: 5%;" /> <!-- 조회수 -->
+				<col style="width: 5%;" /> <!-- 댓글 수 -->
+				<col style="width: 5%;" /> <!-- 좋아요 -->
 				<col style="width: 20%;" /> <!-- 작성일 -->
 			</colgroup>
 
@@ -163,10 +220,11 @@
 				<!-- 테이블 제목 행-->
 				<tr>
 					<th>번호</th>
+					<th>작성자</th>
 					<th>제목</th>
 					<th>분양가</th>
-					<th>작성자</th>
 					<th>조회수</th>
+					<th>댓글 수</th>
 					<th>좋아요</th>
 					<th>작성일</th>
 				</tr>
@@ -174,17 +232,18 @@
 
 			<tbody>
 				<!-- 반복문 -->
-				<tr th:each="board : ${mainList}">
+				<tr th:each="board, iterStat : ${mainList}" th:if ="${iterStat.index <15}"><!-- 15개 보여줌-->
 					<td th:text="${board.boardNum}">1</td>
+					<td th:text="${board.nickName}"></td>
 					<td>
 						<!-- 제목 클릭 시 상세보기 -->
-						<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" th:text="${board.title}">제목</a>
+						<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" th:text="${board.title + '(' + board.commentCount + ')'}">제목</a>
 					</td>
 					<td th:text="${board.price}"></td>
-					<td th:text="${board.nickName}"></td>
 					<td th:text="${board.views}"></td>
+					<td th:text="${board.commentCount}"></td>
 					<td th:text="${board.likes}"></td>
-					<td th:text="${board.registerDate}"></td>
+					<td th:text="${board.formattedRegistDate}"></td>
 				</tr>
 				<!-- 게시글 없는 경우 -->
 				<tr th:if="${mainList.size() == 0}">
@@ -193,7 +252,24 @@
 			</tbody>
 		</table>
 	</div>
+	<!-- 페이지네이션-->
+	<div class="pagination">
+	  <ul>
+	    <li th:if="${currentPage > 1}">
+	      <a th:href="@{/Adopt(page=${currentPage - 1}, keyword=${keyword}, field=${field})}">◀ 이전</a>
+	    </li>
 
+	    <li th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+	        th:classappend="${pageNum == currentPage} ? 'active'">
+	      <a th:href="@{/Adopt(page=${pageNum}, keyword=${keyword}, field=${field})}"
+	         th:text="${pageNum}">1</a>
+	    </li>
+
+	    <li th:if="${currentPage < totalPages}">
+	      <a th:href="@{/Adopt(page=${currentPage + 1}, keyword=${keyword}, field=${field})}">다음 ▶</a>
+	    </li>
+	  </ul>
+	</div>
 </body>
 
 </html>

@@ -17,6 +17,7 @@ public class Board {
 	private String area;
 	private LocalDateTime registerDate;
 	
+	
 	public int getNum() {
 		return num;
 	}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.setoka.mapper.LikeMapper">
+
+<!-- 게시글 좋아요 중복검사용 liked-->
+	<select id="existLike" parameterType="com.practice.setoka.dto.LikeDto">
+		SELECT COUNT(*) from liked WHERE userNum = #{userNum} AND boardNum = #{boardNum}
+	</select> 
+	
+	<!-- 게시글 좋아요 증가기능 검사용 -->
+	<insert id="insertLike" parameterType="com.practice.setoka.dto.LikeDto">
+	INSERT INTO liked (userNum, boardNum) VALUES (#{userNum}, #{boardNum}) 
+	</insert>
+	
+	<!-- 게시글 좋아요 취소기능 검사용-->
+	<delete id="disLike" parameterType="com.practice.setoka.dto.LikeDto">
+	DELETE FROM liked WHERE userNum = #{userNum} AND boardNum = #{boardNum} 
+	</delete>
+	
+	<!-- 게시글	좋아용 실질적 증가 -->
+	<update id="increaseLikesBoard" parameterType="com.practice.setoka.dto.LikeDto">
+		UPDATE board SET likes = likes + 1 WHERE num = #{boardNum}
+	</update>	
+	
+	<!-- 게시글 좋아용취소 실질적 감소-->
+	<update id="cancelLikesBoard" parameterType="com.practice.setoka.dto.LikeDto">
+		UPDATE board SET likes = likes - 1 WHERE num = #{boardNum}
+	</update>
+	
+</mapper>

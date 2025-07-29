@@ -1,6 +1,5 @@
 package com.practice.setoka.mapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.practice.setoka.dao.Board;
+import com.practice.setoka.dao.Report;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
 
@@ -18,7 +18,7 @@ public interface BoardMapper {
 	int countBoards(int num);
 	
 	//	특정 게시판 전체리스트
-	List<BoardWithUserDto> findBoardsByType(int type);
+	List<BoardWithUserDto> findBoardsByType(Map<String, Object> params);
 	
 	// 	특정 게시글 내용 게시글 넘버로 찾기(리스트 아님)
 	BoardWithUserDto findBoardByNum(@Param("num") int num);
@@ -35,9 +35,6 @@ public interface BoardMapper {
 	//	조회수 증가 
 	void increaseViewsBoard(int num);
 	
-	//	좋아요
-	void increaseLikesBoard(int num); 
-	
 	//	유저 아이디로 검색
 	List<BoardWithUserDto> findBoardsByUserId(String id);
 	
@@ -48,5 +45,17 @@ public interface BoardMapper {
 	List<BoardWithUserDto> findBoardsByContent(String content);
 	
 	//	통합 검색
-	List<BoardWithUserDto> searchAll(Map<String, Object> params);
+	List<BoardWithUserDto> searchAll(String keyword);
+	
+	// 신고 
+	void reportBoard(@Param("boardNum")int boardNum,@Param("userNum") int userNum);
+	
+//	// 신고 내용
+//	List<Report> findReportByBoardNum(@Param("boardNum") int boardNum);
+//	
+	// 게시글 신고 유저내용
+	Report findReportByBC(@Param("boardNum")int boardNum,@Param("userNum") int userNum);
+	
+	// 인기 게시글
+	List<BoardWithUserDto> popularPosts(int type);
 }

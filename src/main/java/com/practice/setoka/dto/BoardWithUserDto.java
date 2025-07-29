@@ -1,6 +1,8 @@
 package com.practice.setoka.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class BoardWithUserDto {
 	
@@ -21,8 +23,16 @@ public class BoardWithUserDto {
 	private int price;
 	private String area;
 	private LocalDateTime registerDate;
+	//인기 게시글용 댓글 수 
+	private int commentCount;
 	
 	
+	public int getCommentCount() {
+		return commentCount;
+	}
+	public void setCommentCount(int commentCount) {
+		this.commentCount = commentCount;
+	}
 	public int getBoardNum() {
 		return boardNum;
 	}
@@ -108,6 +118,24 @@ public class BoardWithUserDto {
 		this.registerDate = registerDate;
 	}	
 	
-	
+	public String getFormattedRegistDate() {
+		if (registerDate == null)
+			return "";
+		LocalDate registLocalDate = registerDate.toLocalDate();
+		LocalDate today = LocalDate.now();
+
+		if (registLocalDate.equals(today)) {
+			return registerDate.format(DateTimeFormatter.ofPattern("HH:mm"));
+		} else {
+			return registerDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+		}
+	}
+
+	public String getFormattedRegistDateOne() {
+		if (registerDate == null)
+			return "";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+		return registerDate.format(formatter);
+	}
 
 }

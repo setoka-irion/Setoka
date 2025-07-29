@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>중고거래 글 등록</title>
+    <style>
+        label { display: block; margin: 10px 0 5px; }
+        input, textarea { width: 100%; padding: 8px; margin-bottom: 10px; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <h1>중고장터 글 등록</h1>
+	
+    <!-- boardDto에서 변수 가져옴 *{}안에 있는것들.--> 
+    <form th:action="@{/UsedGoodsRegist}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
+        
+		<!-- 유효성 검사 오류 메시지 -->
+        <div th:if="${#fields.hasErrors('*')}">
+            <p th:each="err : ${#fields.errors('*')}" th:text="${err}" style="color:red;"></p>
+        </div>
+
+        <input type="hidden" th:field="*{userNum}" />
+		<input type="hidden" th:field="*{type}" value="2"/>
+		
+        <label for="title">제목</label>
+        <input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요" required />
+
+        <label for="content">내용</label>
+        <textarea id="content" th:field="*{content}" rows="10" placeholder="내용을 입력하세요" required></textarea>
+
+        <label for="area">지역</label>
+        <input type="text" id="area" th:field="*{area}" placeholder="예: 서울, 경기 등" required />
+
+		<!-- ✅ 이미지 파일 업로드 -->
+		    <label for="images">사진 업로드 (여러 장 가능)</label>
+		    <input type="file" name="images" multiple accept="image/*" />
+        <button type="submit">등록</button>
+    </form>
+
+    <p><a th:href="@{/UsedGoods}">목록으로 돌아가기</a></p>
+</body>
+</html>

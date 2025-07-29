@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.practice.setoka.Redirect;
-import com.practice.setoka.Enum.Grade;
 import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.service.UserService;
@@ -24,14 +23,7 @@ public class HomeController {
 	UserService userService;
 	// 홈화면
 	@GetMapping(value = "/")
-	public String home(HttpSession session, Model model, @AuthenticationPrincipal CustomUserDetails authUser) {
-		if (authUser != null) {
-			Users loginData = authUser.getUser();
-			if (loginData != null) {
-				model.addAttribute("grade", loginData.getGrade());
-			}
-		}
-
+	public String home(HttpSession session, Model model) {
 		return "home";
 	}
 

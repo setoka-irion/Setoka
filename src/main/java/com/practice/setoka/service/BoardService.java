@@ -1,6 +1,5 @@
 package com.practice.setoka.service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.practice.setoka.dao.Board;
+import com.practice.setoka.dao.Report;
 import com.practice.setoka.dto.BoardDto;
 import com.practice.setoka.dto.BoardWithUserDto;
 import com.practice.setoka.mapper.BoardMapper;
@@ -31,8 +31,13 @@ public class BoardService {
 	}
 	
 	//	특정 게시판 전체 리스트
-	public List<BoardWithUserDto> findBoardsByType(int type){
-		return boardMapper.findBoardsByType(type);
+	
+	public List<BoardWithUserDto> findBoardsByType(int type, int offset, int limit) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("type", type);
+	    params.put("offset", offset);
+	    params.put("limit", limit);
+	    return boardMapper.findBoardsByType(params);
 	}
 	
 	// 	특정 게시글 내용 게시글 넘버로 찾기
@@ -60,11 +65,6 @@ public class BoardService {
 	    boardMapper.increaseViewsBoard(num);
 	}
 
-	// 좋아요 증가
-	public void increaseLikesBoard(int num) {
-	    boardMapper.increaseLikesBoard(num);
-	}
-
 	// 유저 ID로 검색
 	public List<BoardWithUserDto> findBoardsByUserId(String id) {
 	    return boardMapper.findBoardsByUserId(id);
@@ -81,7 +81,24 @@ public class BoardService {
 	}
 
 	// 통합 검색
-	public List<BoardWithUserDto> searchAll(Map<String, Object> params) {
-	    return boardMapper.searchAll(params);
+	public List<BoardWithUserDto> searchAll(String keyword) {
+	    return boardMapper.searchAll(keyword);
+	}
+	
+	//신고 
+	public void reportBoard(int boardNum, int userNum) {
+		boardMapper.reportBoard(boardNum, userNum);
+	}
+	
+	// 신고 
+	
+	// 게시판 신고 유저 내용
+	public Report findReportByBC (int boardNum, int userNum) {
+		return boardMapper.findReportByBC(boardNum, userNum);
+	}
+	
+	// 인기 게시글
+	public List<BoardWithUserDto> popularPosts(int type){
+		return boardMapper.popularPosts(type);
 	}
 }

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>산책로 게시판</title>
+	<style>
+		/* 전체 컨테이너: 화면 중앙 정렬 및 적당한 너비 */
+		.table-wrapper {
+		    width: 80%;            /* 테이블과 버튼이 들어갈 영역 크기 */
+		    margin: 20px auto;     /* 위아래 공간 + 좌우 가운데 정렬 */
+		    position: relative;    /* 버튼 절대위치 기준 */
+		    background-color: #fff;
+		    padding: 15px 20px;
+		    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+		    border-radius: 6px;
+		}
+
+		/* 오른쪽 위 버튼 위치 */
+		.right-top-button {
+		    position: absolute;
+		    top: 15px;
+		    right: 20px;
+		}
+
+		/* 버튼 기본 스타일 */
+		.button-link {
+		    display: inline-block;
+		    padding: 8px 16px;
+		    background-color: #2a7ae2;
+		    color: white;
+		    border-radius: 4px;
+		    font-weight: 600;
+		    text-decoration: none;
+		    transition: background-color 0.3s ease;
+		    box-shadow: 0 2px 5px rgba(42, 122, 226, 0.4);
+		}
+
+		/* 버튼 호버 효과 */
+		.button-link:hover {
+		    background-color: #1a5fb4;
+		    box-shadow: 0 4px 8px rgba(26, 95, 180, 0.6);
+		}
+
+		/* 테이블 스타일 */
+		table {
+		    border-collapse: collapse;
+		    width: 100%;           /* 부모 너비에 꽉 차게 */
+		    margin-top: 50px;      /* 버튼과 간격 확보 */
+		    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		    font-size: 14px;
+		}
+
+		/* 테이블 헤더 셀 */
+		th {
+		    background-color: #f8f9fb;
+		    color: #333;
+		    font-weight: 700;
+		    padding: 12px 10px;
+		    border-bottom: 2px solid #ddd;
+		}
+
+		/* 테이블 일반 셀 */
+		td {
+		    border: 1px solid #ddd;
+		    padding: 10px 8px;
+		    text-align: center;
+		    color: #555;
+		}
+
+		/* 링크 스타일 */
+		a {
+		    color: #2a7ae2;
+		    text-decoration: none;
+		    transition: color 0.3s ease;
+		}
+
+		a:hover {
+		    text-decoration: underline;
+		    color: #1a5fb4;
+		}
+
+		/* 검색 박스 스타일 */
+		.search-box {
+		    margin-bottom: 20px;
+		}
+
+		.search-box input,
+		.search-box select {
+		    padding: 8px 10px;
+		    font-size: 14px;
+		    border: 1px solid #ccc;
+		    border-radius: 4px;
+		    margin-right: 10px;
+		    transition: border-color 0.3s ease;
+		}
+
+		.search-box input:focus,
+		.search-box select:focus {
+		    outline: none;
+		    border-color: #2a7ae2;
+		}
+
+		/* 검색 버튼 */
+		.search-box button {
+		    padding: 8px 18px;
+		    font-size: 14px;
+		    cursor: pointer;
+		    background-color: #2a7ae2;
+		    color: white;
+		    border: none;
+		    border-radius: 4px;
+		    font-weight: 600;
+		    box-shadow: 0 2px 5px rgba(42, 122, 226, 0.4);
+		    transition: background-color 0.3s ease;
+		}
+
+		.search-box button:hover {
+		    background-color: #1a5fb4;
+		    box-shadow: 0 4px 8px rgba(26, 95, 180, 0.6);
+		}
+	</style>
+</head>
+
+<body>
+	<a th:href="@{/}" class="button-link">홈으로</a>
+	<a th:herf="@{/WalkTrail}" class="button=link">산책로 게시판</a>
+	<h1>산책로 게시판</h1>
+	<!-- 총 게시글 수 -->
+	<p>총 게시글 수: <span th:text="${countBoards}">0</span></p>
+
+	<!-- 검색 폼 -->
+	<form th:action="@{/WalkTrail}" method="get" class="search-box">
+
+		<!-- 검색 조건 고르는 박스-->
+		<select name="field" th:value="${field}">
+			<option value="title" th:selected="${field == 'title'}">제목</option>
+			<option value="content" th:selected="${field == 'content'}">내용</option>
+			<option value="nickname" th:selected="${field == 'nickname'}">작성자</option>
+			<option value="" th:selected="${field == ''}">통합 검색</option>
+		</select>
+
+		<!--placeholder, 키워드 입력창-->
+		<input type="text" name="keyword" placeholder="검색어 입력" th:value="${keyword}" />
+		<button type="submit">검색</button>
+	</form>
+
+	<div class="table-wrapper">
+		<p class="right-top-button">
+			<a th:href="@{/WalkTrailRegist}" class="button-link">새 글 등록하기</a>
+		</p>
+		<table>
+			<!-- 테이블 넓이 조절-->
+			<colgroup>
+				<col style="width: 5%;" /> <!-- 번호 -->
+				<col style="width: 40%;" /> <!-- 제목: 넓게 -->
+				<col style="width: 15%;" /> <!-- 작성자 -->
+				<col style="width: 10%;" /> <!-- 조회수 -->
+				<col style="width: 10%;" /> <!-- 좋아요 -->
+				<col style="width: 20%;" /> <!-- 작성일 -->
+			</colgroup>
+
+			<thead>
+				<!-- 테이블 제목 행-->
+				<tr>
+					<th>번호</th>
+					<th>제목</th>
+					<th>작성자</th>
+					<th>조회수</th>
+					<th>좋아요</th>
+					<th>작성일</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<!-- 반복문 -->
+				<tr th:each="board : ${mainList}">
+					<td th:text="${board.boardNum}">1</td>
+					<td>
+						<!-- 제목 클릭 시 상세보기 -->
+						<a th:href="@{'/WalkTrailDetail/{num}'(num=${board.boardNum})}" th:text="${board.title}">제목</a>
+					</td>
+					<td th:text="${board.nickName}"></td>
+					<td th:text="${board.views}"></td>
+					<td th:text="${board.likes}"></td>
+					<td th:text="${board.registerDate}"></td>
+				</tr>
+				<!-- 게시글 없는 경우 -->
+				<tr th:if="${mainList.size() == 0}">
+					<td colspan="7">등록된 게시글이 없습니다.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</body>
+
+</html>
