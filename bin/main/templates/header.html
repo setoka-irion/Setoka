@@ -11,7 +11,8 @@
 <body>
 	<div th:fragment="siteHeader">
 		<header class="header">
-			<h1 style="text-align:left;" onclick="location.href='/'">이리온!</h1>
+			<!--<h1 class="logo" onclick="location.href='/'">이리온!</h1>-->
+			<img class="logo" src="/images/profile.png" alt="로고" onclick="location.href='/'">
 
 			<nav class="main-nav">
 				<ul>
@@ -41,19 +42,17 @@
 					</li>
 				</ul>
 			</nav>
-			
-			<nav style="text-align:right;">
+
+			<nav class="UserLogin">
 				<span th:if="${loginUser != null}">
 					<img th:src="@{'/images/' + ${loginUser.profilePath}}"
 						style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" alt="이미지" />
-					로그인ID: <a href="/MyPage"><strong th:text="${loginUser.nickName}"></strong></a>
-					| 등급: <span th:text="${loginUser.grade}"></span>
+					<a href="/MyPage"><strong th:text="${loginUser.nickName}"></strong></a>
 				</span>
-				<a th:if="${loginUser == null}" href="/Login">로그인</a>
-				<a th:if="${loginUser != null}" href="/Logout">로그아웃</a>
+				<button th:if="${loginUser == null}" onclick="location.href='/Login'">로그인</button>
+				<button th:if="${loginUser != null}" onclick="location.href='/Logout'">로그아웃</button>
 			</nav>
 		</header>
-		<hr />
 	</div>
 
 	<script>

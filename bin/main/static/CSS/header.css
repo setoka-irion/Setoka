@@ -1,64 +1,159 @@
-.header .main-nav {
-	text-align: center;
-}
-
-.header .main-nav ul {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display: inline-flex;
-}
-
-.header .menu-item {
-	position: relative;
-	margin-right: 20px;
-}
-
-.header .menu-item a {
-	display: block;
-	padding: 10px;
-	background-color: #90EE90;
-	color: white;
-	text-decoration: none;
-}
-
-header.header nav.main-nav li.menu-item ul.submenu {
-	position: absolute;
-	top: 100%;
-	left: 0;
-	background-color: #444;
-
-
-	display: none;
-	flex-direction: row;
-}
-
-header.header nav.main-nav li.menu-item:hover ul.submenu {
-	display: flex;
-}
-
-.header .submenu li {
-	margin-right: 20px;
-}
-
-.header .submenu li:last-child {
-	margin-right: 0;
-}
-
-.header .submenu li a {
-	padding: 10px;
-	display: block;
-	color: white;
-
-	white-space: nowrap;
-	width: auto;
+body, html {
+  margin: 0;
+  padding: 0;
 }
 
 .header {
-	background-color: rgb(255, 255, 255);
-	padding: 10px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  height: 100px;
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+  z-index: 10000; /* 다른 요소보다 위에 나오게 */
+}
+
+.header .logo {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  cursor: pointer;
+  
+}
+
+.header .UserLogin {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center; /* 수직 중앙 정렬 */
+  white-space: nowrap;
+  font-size: 14px;
+  gap: 20px; /* 닉네임과 로그아웃 버튼 간격 */
+}
+
+.header .UserLogin span {
+  display: flex;
+  align-items: center; /* 프로필 사진과 닉네임 수직 중앙 맞춤 */
+  gap: 10px; /* 사진과 닉네임 사이 간격 */
+}
+
+.header .UserLogin img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  display: block;
+}
+
+.header .UserLogin a strong {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 50px; /* 사진 높이에 맞춰서 텍스트 중앙 정렬 */
+}
+
+.header .UserLogin button {
+  padding: 8px 12px;
+  background-color: #8b5e3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  font-size: 13px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.header .UserLogin button:hover {
+  background-color: rgb(255, 128, 0);
+  transform: translateY(-1px);
+}
+
+.header .main-nav {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.header .main-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.header .menu-item {
+  position: relative;
+  margin-right: 20px;
+}
+
+.header .menu-item:last-child {
+  margin-right: 0;
+}
+
+.header .menu-item > a {
+  display: block;
+  padding: 10px 15px;
+  background-color: #8b5e3c;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.2s;
+  white-space: nowrap;
+}
+
+.header .menu-item > a:hover {
+  background-color: rgb(255, 128, 0);
+  transform: translateY(-2px);
+}
+
+.header .menu-item ul.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  flex-direction: column;
+  min-width: 160px;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+.header .menu-item:hover ul.submenu {
+  display: flex;
+}
+
+.header .submenu li {
+  margin: 0;
+}
+
+.header .submenu li a {
+  padding: 10px 15px;
+  display: block;
+  color: #333;
+  background-color: white;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.header .submenu li a:hover {
+  background-color: #f0f0f0;
+  color: #000;
 }
