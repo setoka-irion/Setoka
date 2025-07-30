@@ -30,7 +30,7 @@ public class MessageController {
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
 		System.out.println(authUser.getUser().getPoint());
-		return "CreateLetter";
+		return "Message/CreateLetter";
 	}
 	
 	@PostMapping(value = "SendMessage")
@@ -66,7 +66,7 @@ public class MessageController {
 	{
 		List<Message> list = messageService.receiverSelect(authUser.getUser().getId());
 		model.addAttribute("messageList", list);
-		return "messageList";
+		return "Message/messageList";
 	}
 	
 	@GetMapping(value = "GettingGift")

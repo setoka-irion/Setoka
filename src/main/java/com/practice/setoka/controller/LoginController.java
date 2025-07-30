@@ -33,7 +33,7 @@ public class LoginController {
 		if(expired!=null) {
 			model.addAttribute("error", "다른 위치에서 로그인되어 세션이 종료되었습니다.");
 		}
-		return "Login";
+		return "User/Login";
 	}
 	
 	// 회원가입 페이지로
@@ -88,7 +88,7 @@ public class LoginController {
 	@GetMapping(value = "/passwordFind")
 	public String passwordFindForm(Model model)
 	{
-		return "passwordFind";
+		return "User/passwordFind";
 	}
 
 	@PostMapping(value = "/sendPasswordFind")
@@ -112,7 +112,7 @@ public class LoginController {
 		
 		model.addAttribute("email", email);
 		//다시 폼으로 보내기
-		return "passwordFind";
+		return "User/passwordFind";
 	}
 	
 	

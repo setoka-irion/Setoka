@@ -7,7 +7,6 @@
 	padding: 0;
 	margin: 0;
 	display: inline-flex;
-	;
 }
 
 .header .menu-item {
@@ -18,7 +17,7 @@
 .header .menu-item a {
 	display: block;
 	padding: 10px;
-	background-color: #333;
+	background-color: #90EE90;
 	color: white;
 	text-decoration: none;
 }
@@ -39,11 +38,11 @@ header.header nav.main-nav li.menu-item:hover ul.submenu {
 }
 
 .header .submenu li {
-	margin-right: 20px;	/* 원하는 간격으로 조절 */
+	margin-right: 20px;
 }
 
 .header .submenu li:last-child {
-  margin-right: 0;
+	margin-right: 0;
 }
 
 .header .submenu li a {
@@ -53,4 +52,13 @@ header.header nav.main-nav li.menu-item:hover ul.submenu {
 
 	white-space: nowrap;
 	width: auto;
+}
+
+.header {
+	background-color: rgb(255, 255, 255);
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 20px;
 }

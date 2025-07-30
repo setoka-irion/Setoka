@@ -10,8 +10,8 @@ public class Redirect
 	public static final String withdrawal = "redirect:/Withdrawal";
 	public static final String attendcheck = "redirect:/attendcheck";
 	public static final String MyPage = "redirect:/MyPage";
-	public static final String loginSession = "LoginSession";
 	public static final String passwordFindForm = "redirect:/passwordFind";
-	public static final String SignUp = "SignUp";
+	public static final String loginSession = "LoginSession";
+	public static final String SignUp = "User/SignUp";
 	public static final String passwordInvalidPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 }
