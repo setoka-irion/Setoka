@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.practice.setoka.Enum.Item;
 import com.practice.setoka.dao.Message;
@@ -25,8 +26,13 @@ public class MessageController {
 	private UserService userService;
 	
 	@GetMapping(value = "CreateLetter")
-	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser)
+	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser, RedirectAttributes redirectAttributes)
 	{
+		String email = (String)redirectAttributes.getAttribute("email"); 
+		if(email != null)
+		{
+			model.addAttribute("receiver", email);
+		}
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
 		System.out.println(authUser.getUser().getPoint());
