@@ -104,7 +104,6 @@ public class BoardService {
 		return boardMapper.popularPosts(type);
 	}
 
-
 	public void insertTempImage(TempImageDto dto)
 	{
 		boardMapper.insertTempImage(dto);
@@ -119,7 +118,7 @@ public class BoardService {
 	{
 		boardMapper.deleteTempImage(userNum);
 	}
-
+	
 	//페이지 자르는 메소드						시작점		몇개를 자를건지		전체 리스트
 	public List<BoardWithUserDto> cutPage (int offset, int limit, List<BoardWithUserDto>cutPage){
 		//리턴해줄 리스트 생성 (지금은 비어있음)

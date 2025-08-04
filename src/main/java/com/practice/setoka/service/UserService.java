@@ -100,6 +100,13 @@ public class UserService
 		
 		return true;
 	}
+	public boolean insertProfilephotoDefalut(String id)
+	{
+		String fileName = "/imagesDefault/defaultProfile.png";
+		userMapper.updateProfilephotoPath(fileName, id);
+		
+		return true;
+	}
 	
 	//유저의 프로필 사진 경로를 가져오기
 	public String selectProfilePath(UsersDto dto)
