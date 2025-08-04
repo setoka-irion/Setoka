@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 public class BoardDto {
 	
+	private int num;
     @NotNull(message = "작성자 정보가 누락되었습니다.")
 	private int userNum;
 	@NotBlank(message = "제목은 필수입니다.")
@@ -19,6 +20,12 @@ public class BoardDto {
 	private String Image_paths;
 	
 	
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
+	}
 	public int getUserNum() {
 		return userNum;
 	}

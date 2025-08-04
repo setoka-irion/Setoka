@@ -383,6 +383,7 @@
             <a th:href="@{/}" class="button-link">홈으로</a>
         </div>
 
+		
         <!-- 상단 정보 테이블 -->
         <table class="header-table">
             <thead>
@@ -401,6 +402,12 @@
             </tbody>
         </table>
 
+		<!-- 현재 썸네일-->
+		<div class="form-group" th:if="${detail.image_paths != null and !#strings.isEmpty(detail.image_paths)}">
+					<img th:src="@{'/images/' + ${detail.image_paths}}" alt="썸네일"
+						style="max-width: 400px; display: block; margin-bottom: 10px;" />
+				</div>				
+		
         <!-- 수정/삭제/신고 버튼 -->
 		<div class="action-buttons" style="float: right;">
 		    
@@ -452,6 +459,7 @@
             </tbody>
         </table>
 
+		
         <!-- 좋아요 섹션 -->
         <div class="like-section">
             <span th:text="${detail.likes}">0</span> ❤️
@@ -460,6 +468,7 @@
             </form>
         </div>
 
+		
         <!-- 댓글 목록 -->
         <h4>댓글</h4>
         <table class="comments-table">
@@ -488,7 +497,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="comment, iterStat : ${comments}">
+                <tr th:each="comment, iterStat : ${comments}" th:attr="id='comment-' + ${comment.num}"> <!--redirect되도 좋아요 누를때 그자리에 있게해줌-->
                     <td th:text="${iterStat.index + 1}">1</td>
                     <td th:text="${comment.nickname}">작성자</td>
                     <td class="content-cell">
@@ -514,7 +523,8 @@
                     </td>
                     <td>
 						
-                        <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post">
+                        <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
+							onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');">
                             <input type="hidden" name="commentNum" th:value="${comment.num}" />
                             <button type="submit" class="delete-btn">삭제</button>
                         </form>

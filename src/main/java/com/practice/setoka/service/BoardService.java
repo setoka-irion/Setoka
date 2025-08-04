@@ -34,7 +34,6 @@ public class BoardService {
 	}
 	
 	//	특정 게시판 전체 리스트
-	
 	public List<BoardWithUserDto> findBoardsByType(int type, int offset, int limit) {
 	    Map<String, Object> params = new HashMap<>();
 	    params.put("type", type);
@@ -54,8 +53,8 @@ public class BoardService {
 	}
 
 	// 수정
-	public void updateBoard(Board board) {	
-	    boardMapper.updateBoard(board);
+	public void updateBoard(BoardDto boardDto, int num) {	
+	    boardMapper.updateBoard(boardDto, num);
 	}
 
 	// 삭제

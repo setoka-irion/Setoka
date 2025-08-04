@@ -21,8 +21,8 @@
 	<update id="updateBoard" parameterType="com.practice.setoka.dto.BoardDto">
 		UPDATE board
 		SET 
-		title = #{title}, content = #{content}, 
-		price = #{price}, area = #{area}
+		title = #{board.title}, content = #{board.content}, num = #{board.num},
+		price = #{board.price}, area = #{board.area}, Image_paths = #{board.Image_paths}
 		WHERE num = #{num}
 	</update>
 	
@@ -104,7 +104,7 @@
 		SELECT 	u.id, 
     	u.num AS userNum, u.nickname, u.realname, u.grade,
    	 	b.num, b.userNum, b.title, b.content, b.type, b.likes, 
-   	 	b.views, b.price, b.area, b.registerDate
+   	 	b.views, b.price, b.area, b.registerDate, b.Image_paths
   		FROM board b
   		JOIN users u ON b.userNum = u.num
   		WHERE b.num = #{num}

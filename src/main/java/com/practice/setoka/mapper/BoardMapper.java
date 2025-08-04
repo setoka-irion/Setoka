@@ -29,7 +29,7 @@ public interface BoardMapper {
 	void insertBoard(BoardDto boardDto);
 	
 	//	수정 
-	void updateBoard(Board board);
+	void updateBoard(@Param("board")BoardDto boardDto, @Param("num")int num);
 	
 	//	삭제
 	void deleteBoard(int num);
