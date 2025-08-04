@@ -97,7 +97,7 @@
 			<tr>
 				<!--<td rowspan="4"><a href="/EditProfilePhoto"><img th:src="@{'/images/' + ${loginUser.profilePath}}"
 						style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;" alt="이미지" /></a></td>-->
-				<td rowspan="4" style="padding: 0;">
+				<td rowspan="5" style="padding: 0;">
 					<a href="/EditProfilePhoto">
 						<img th:src="@{'/images/' + ${loginUser.profilePath}}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="이미지" />
 					</a>
@@ -107,7 +107,11 @@
 			</tr>
 			<tr>
 				<td>실명</td>
-				<td th:text="${loginUser.realName}">포인트</td>
+				<td th:text="${loginUser.realName}">실명</td>
+			</tr>
+			<tr>
+				<td>등급</td>
+				<td th:text="${loginUser.grade}">등급</td>
 			</tr>
 			<tr>
 				<td>포인트</td>
