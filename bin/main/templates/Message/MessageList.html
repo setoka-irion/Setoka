@@ -7,61 +7,92 @@
 	<link rel="stylesheet" th:href="@{/CSS/message-list.css}">
 </head>
 
+
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
 	<div class="message-list">
-	<h1>쪽지함</h1>
-	<table id="usersTable">
-		<thead>
-			<tr>
-				<th>보낸사람</th>
-				<th>제목</th>
-				<!--<th>내용</th>
-				<th>아이템종류</th>
-				<th>양</th>-->
-				<th>받기</th>
-			</tr>
-		</thead>
-		<tbody>
-			<!-- 사용자 데이터가 여기에 추가됩니다 -->
-			<tr th:each="message : ${messageList}" th:if="${message.messageStatus.name() != 'DELETE'}">
+		<h1>쪽지함</h1>
 
-				<table>
-					<tr onclick="toggleDetail(this)">
-						<td th:text="${message.sender}"></td>
-						<td th:text="${message.title}"></td>
-					</tr>
-					<tr class="detail-row" style="display: none;">
-						<td colspan="3">
-							<strong>내용:</strong> <span th:text="${message.content}"></span><br>
-							<strong>아이템 종류:</strong> <span th:text="${message.item_Type}"></span><br>
-							<strong>아이템 값:</strong> <span th:text="${message.item_Value}"></span>
-							<a th:href="@{/GettingGift(messageNum=${message.num})}" class="btn" th:if="${message.messageStatus.name() != 'TAKE' 
-							          and message.item_Type == 'NONE'
-							          and message.item_Value != 0}">
-								받기
-							</a>
-						</td>
-					</tr>
-				</table>
-			</tr>
-		</tbody>
-	</table>
-	<button onclick="location.href='/CreateLetter'">쪽지작성</button>
+		<div class="message-card"
+		     th:each="message : ${messageList}"
+		     th:if="${message.messageStatus.name() != 'DELETE'}"
+			 th:attr="data-message-num=${message.num}">
+			
+			<div class="message-summary" onclick="toggleDetail(this)">
+				<div class="sender" th:text="${message.sender}">보낸사람</div>
+				<div class="title" th:text="${message.title}">제목</div>
+				<div class="status" th:text="${message.messageStatus}">상태</div>
+				<div class="date" th:text="${#temporals.format(message.sendTime, 'yyyy-MM-dd HH:mm')}">보낸 시간</div>
+			</div>
+
+			<div class="message-detail" style="display: none;">
+			    <div class="detail-item content-box">
+			        <strong>내용</strong>
+			        <span th:text="${message.content}">내용</span>
+			    </div>
+
+			    <div class="item-info">
+			        <div class="detail-item">
+			            <strong>아이템 종류</strong>
+			            <span th:text="${message.item_Type}">아이템종류</span>
+			        </div>
+			        <div class="detail-item">
+			            <strong>아이템 값</strong>
+			            <span th:text="${message.item_Value}">값</span>
+			        </div>
+			    </div>
+
+			    <a class="btn"
+			       th:href="@{/GettingGift(messageNum=${message.num})}"
+			       th:if="${message.messageStatus.name() != 'TAKE' 
+			               and message.item_Type != 'NONE'
+			               and message.item_Value != 0}">
+			        받기
+			    </a>
+			</div>
+		</div>
+
+		<button onclick="location.href='/CreateLetter'">쪽지작성</button>
 	</div>
-	
+
+
 </body>
 
 </html>
 
 <script>
-	function toggleDetail(row) {
-		const detailRow = row.nextElementSibling;
-		if (detailRow.style.display === "none") {
-			detailRow.style.display = "table-row";
-		} else {
-			detailRow.style.display = "none";
-		}
+	function toggleDetail(element) {
+	    const detail = element.nextElementSibling;
+	    if (detail.style.display === "none") {
+	        detail.style.display = "block";
+
+	        // 상태 영역 찾기 (예: 바로 위 형제에서 .status)
+	        const card = element.parentElement;
+	        const statusEl = element.querySelector('.status');
+	        if (statusEl && statusEl.textContent.trim() === 'UNREAD') {
+	           const messageNum = card.getAttribute('data-message-num');
+	            // AJAX 요청으로 상태 변경 요청
+	            fetch(`/message/read/${messageNum}`, {
+	                method: 'POST',
+	                headers: {
+	                    'Content-Type': 'application/json',
+	                    'X-Requested-With': 'XMLHttpRequest'
+	                }
+	            })
+	            .then(response => {
+	                if (response.ok) {
+	                    // 상태 텍스트를 READ로 변경
+	                    statusEl.textContent = 'READ';
+	                } else {
+	                    console.error('상태 변경 실패');
+	                }
+	            })
+	            .catch(console.error);
+	        }
+	    } else {
+	        detail.style.display = "none";
+	    }
 	}
+
 </script>
