@@ -4,11 +4,14 @@
 <head>
 	<title>편지 작성 폼</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/message-box.css}">
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
+	<div class = "message-box">
+		
 	<form th:action="@{/SendMessage}" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="id" />
 
@@ -35,7 +38,8 @@
 
 		<button type="submit">전송</button>
 	</form>
-
+	
+	</div>
 </body>
 
 </html>
