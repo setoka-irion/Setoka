@@ -265,7 +265,7 @@
 				<tr th:each="board, iterStat : ${mainList}" th:if="${iterStat.index < 15}">
 					<td th:text="${board.boardNum}">1</td>
 					<td>
-						<img class="thumb-image" th:src="@{'/images/' + ${board.Image_paths}}" style="width: 80px; height: 80px; border-radius: 50%;" alt="이미지" />
+						<img class="thumb-image" th:src="@{${board.Image_paths != null} ? '/images/' + ${board.Image_paths} : '/imagesDefault/defaultBoard.png'}" style="width: 80px; height: 80px; border-radius: 50%;" alt="이미지" />
 					</td>
 					<td th:text="${board.nickName}"></td>
 					<td>

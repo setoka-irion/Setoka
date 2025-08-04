@@ -111,16 +111,7 @@ public class BoardActionController {
 		// 페이지네이션 기능용
 		int totalPages = (int) Math.ceil((double) totalCount / limit);	// 총게시글수/페이지당 갯수
 		model.addAttribute("totalPages", totalPages);
-		
-		// 썸네일 이미지 없으면 기본 이미지 적용
-		for(var dto : searchResult)
-		{
-			if(dto.getImage_paths() == null)
-			{
-				dto.setImage_paths("default.jpg");
-			}
-		}
-		
+				
 		//인기글
 		model.addAttribute("popularPosts", popularPosts);
 		// 메인 리스트 출력 + 페이지 네이션 기능

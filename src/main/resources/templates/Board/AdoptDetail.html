@@ -403,8 +403,8 @@
         </table>
 
 		<!-- 현재 썸네일-->
-		<div class="form-group" th:if="${detail.image_paths != null and !#strings.isEmpty(detail.image_paths)}">
-					<img th:src="@{'/images/' + ${detail.image_paths}}" alt="썸네일"
+		<div class="form-group">
+					<img th:src="@{${detail.image_paths != null} ? '/images/' + ${detail.image_paths} : '/imagesDefault/defaultBoard.png'}" alt="썸네일"
 						style="max-width: 400px; display: block; margin-bottom: 10px;" />
 				</div>				
 		
