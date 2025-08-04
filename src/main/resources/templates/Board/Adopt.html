@@ -146,13 +146,28 @@
 		}
 
 		/* ====== 링크 ====== */
-		a {
+		/* 일반 본문 링크 */
+		.link-default {
 		    color: #8b5e3c;
 		    text-decoration: none;
 		    transition: color 0.3s ease;
 		}
 
-		a:hover {
+		.link-default:hover {
+		    text-decoration: underline;
+		    color: #8b5e3c;
+		}
+
+		/* 카드 제목, 강조 텍스트 링크 */
+		.link-title {
+		    font-weight: bold;
+		    font-size: 18px;
+		    color: #8b5e3c;
+		    text-decoration: none;
+		    transition: color 0.3s ease;
+		}
+
+		.link-title:hover {
 		    text-decoration: underline;
 		    color: #8b5e3c;
 		}
@@ -220,9 +235,10 @@
 		<h3>🔥 인기글</h3>
 		<div class="popular-section">
 			<div class="card-popular" th:each="post : ${popularPosts}">
-				<a th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum})}">
+				<a  th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum})}" class="link-title">
 					<strong th:text="${post.title}">제목</strong>
 				</a>
+				<!-- 인기글 썸네일-->
 				<a th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum})}">
 					<img class="thumb-image" th:src="@{${post.Image_paths != null} ? '/images/' + ${post.Image_paths} : '/imagesDefault/defaultBoard.png'}">
 				</a>
@@ -269,7 +285,7 @@
 					</td>
 					<td th:text="${board.nickName}"></td>
 					<td>
-						<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" th:text="${board.title + '(' + board.commentCount + ')'}">제목</a>
+						<a  th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title" th:text="${board.title + '(' + board.commentCount + ')'}">제목</a>
 					</td>
 					<td th:text="${board.price}"></td>
 					<td th:text="${board.views}"></td>
