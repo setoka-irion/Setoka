@@ -107,9 +107,8 @@ public class BoardActionController {
 		// Adopt 인기게시글
 		List<BoardWithUserDto> popularPosts = boardService.popularPosts(1);
 		searchResult = boardService.cutPage(offset, limit, searchResult);
-		// 페이지네이션 기능용
-
 		
+		// 페이지네이션 기능용
 		int totalPages = (int) Math.ceil((double) totalCount / limit);	// 총게시글수/페이지당 갯수
 		model.addAttribute("totalPages", totalPages);
 		
@@ -136,20 +135,20 @@ public class BoardActionController {
 		return "Board/Adopt";
 	}
 
+	
+	
 	// 입양 상세 페이지 (조회수증가)
 	@GetMapping(value = "/AdoptDetail/{num}")
 	public String adoptDetail(@PathVariable("num") int num,
 			@RequestParam(value = "editCommentNum", required = false) Integer editCommentNum,
 			@AuthenticationPrincipal CustomUserDetails authUser, HttpSession session, Model model) {
 
-		// 수정 삭제버튼 감추기용
-
 		// 상세 내용 보여줌
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
 		String content = upload.fileLoad(detail.getContent());
 		detail.setContent(content);
 		
-		
+		//상세내용 detail에 담음
 		model.addAttribute("detail", detail);
 
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
