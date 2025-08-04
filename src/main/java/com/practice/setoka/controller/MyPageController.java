@@ -115,13 +115,15 @@ public class MyPageController {
 			@AuthenticationPrincipal CustomUserDetails authUser) {
 		Users user = (Users) authUser.getUser();
 
-		if (files == null && files.length == 0) {
-			System.out.println("파일이 없음");
-		} else {
-			System.out.println("파일의 이름 : " + files[0].getOriginalFilename());
+		if (files == null || files.length == 0 || files[0].isEmpty()) 
+		{
+			userService.insertProfilephotoDefalut(user.getId());
+		} 
+		else 
+		{
+			userService.insertProfilephoto(files[0], new UsersDto(user));
 		}
-
-		userService.insertProfilephoto(files[0], new UsersDto(user));
+		
 		UserDetails updatedUser = userDetailsService.loadUserByUsername(user.getId());
 		UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedUser,
 				updatedUser.getPassword(), updatedUser.getAuthorities());
