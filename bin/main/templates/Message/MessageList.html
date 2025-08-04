@@ -4,11 +4,13 @@
 <head>
 	<title>편지 확인 폼</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/message-list.css}">
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
+	<div class="message-list">
 	<h1>쪽지함</h1>
 	<table id="usersTable">
 		<thead>
@@ -47,7 +49,8 @@
 		</tbody>
 	</table>
 	<button onclick="location.href='/CreateLetter'">쪽지작성</button>
-
+	</div>
+	
 </body>
 
 </html>

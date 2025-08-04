@@ -1,0 +1,42 @@
+.message-box {
+    border: 2px solid #ccc;
+    padding: 20px;
+    margin: 30px auto;
+    width: 600px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+.message-box label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+}
+
+.message-box input,
+.message-box textarea,
+.message-box select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.message-box button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.message-box button:hover {
+    background-color: #45a049;
+}
