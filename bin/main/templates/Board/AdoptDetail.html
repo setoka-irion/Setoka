@@ -403,6 +403,22 @@
 					<td th:text="${detail.title}">제목</td>
 					<td th:text="${detail.nickName}">작성자</td>
 					<td th:text="${detail.formattedRegistDate}">2025-07-24</td>
+					
+					<!-- 수정/삭제/신고 -->
+					<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+					<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
+						<button type="submit" class="btn btn-success">수정</button>
+					</form>
+					<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post" 
+					onsubmit="return confirm('정말 삭제하시겠습니까?');">
+						<button type="submit" class="btn btn-danger">삭제</button>
+					</form>
+					<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
+						<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
+						<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
+					</form>
+				</div>
+				
 				</tr>
 			</tbody>
 		</table>
@@ -411,23 +427,6 @@
 		<div class="form-group" style="text-align: center;">
 			<img th:src="@{${detail.image_paths != null} ? '/images/' + ${detail.image_paths} : '/imagesDefault/defaultBoard.png'}"
 				alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
-		</div>
-
-		<!-- 수정/삭제/신고 -->
-		<div class="action-buttons">
-			<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
-				<button type="submit" class="btn btn-success">수정</button>
-			</form>
-			<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
-				onsubmit="return confirm('정말 삭제하시겠습니까?');">
-				<button type="submit" class="btn btn-danger">삭제</button>
-			</form>
-			<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
-				<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
-				<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
-			</form>
-			<div th:if="${reportSuccess}" class="message success" th:text="${reportSuccess}"
-				style="display:inline-block; margin-left:10px;"></div>
 		</div>
 
 		<!-- 본문 -->
