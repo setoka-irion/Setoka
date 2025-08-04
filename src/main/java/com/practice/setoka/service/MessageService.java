@@ -58,4 +58,9 @@ public class MessageService {
 		}
 		messageMapper.updateMessageStatus(num, MessageStatus.TAKE);
 	}
+	
+	public boolean markMessageAsRead(int num, MessageStatus status)
+	{
+		return messageMapper.updateMessageStatus(num, status) > 0;
+	}
 }
