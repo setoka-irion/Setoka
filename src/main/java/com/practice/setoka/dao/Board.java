@@ -18,6 +18,7 @@ public class Board {
 	private LocalDateTime registerDate;
 	
 	
+	
 	public int getNum() {
 		return num;
 	}

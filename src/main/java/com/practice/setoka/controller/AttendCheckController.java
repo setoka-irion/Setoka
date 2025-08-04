@@ -74,7 +74,7 @@ public class AttendCheckController {
 		List<Animal> animals = animalService.getAnimalsByUserNum(userNum);
 		model.addAttribute("animals", animals);
 
-		return "AttendCheck";
+		return "MyPage/AttendCheck";
 	}
 
 	@PostMapping("/point")

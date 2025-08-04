@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.practice.setoka.Redirect;
 import com.practice.setoka.Upload;
 import com.practice.setoka.dao.Animal;
 import com.practice.setoka.dao.Memo;
@@ -43,7 +42,7 @@ public class MyAnimalPageController {
         List<Animal> animals = animalService.getAnimalsByUserNumNormal(userNum);
         model.addAttribute("animalList", animals);
 
-        return "MyAnimalPage";
+        return "MyPage/MyAnimalPage";
     }
     
     // 애견 추가
@@ -158,7 +157,7 @@ public class MyAnimalPageController {
         List<Memo> memos = memoService.memoSelectByAnimalNum(animalNum);
         model.addAttribute("memos", memos);
         
-        return "AnimalDetails";
+        return "MyPage/AnimalDetails";
     }
 
 

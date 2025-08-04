@@ -22,8 +22,10 @@
 <body>
 	<h1>입양 게시글 수정</h1>
 
-	<form th:action="@{/AdoptUpdate/{num}(num=${board.boardNum})}" method="post" th:object="${board}">
-
+	<form th:action="@{/AdoptUpdate/{num}(num=${board.boardNum})}" method="post" th:object="${board}"enctype="multipart/form-data">
+		<input type="hidden" name="userNum" th:value="${board.userNum}">
+		<input type="hidden" name="type" th:value="${board.type}" /> <!-- 어떤게시판인지 알려줘야함-->
+		
 		<!-- 유효성 검사 오류 메시지 -->
 		<div th:if="${#fields.hasErrors('*')}">
 			<p th:each="err : ${#fields.errors('*')}" th:text="${err}" style="color:red;"></p>
@@ -34,7 +36,31 @@
 
 		<label for="content">내용</label><br />
 		<textarea id="content" th:utext="*{content}" name="content" required></textarea><br /><br />
-
+		
+		<!-- 썸네일 기존 이미지 있으면 보여주고 삭제 체크박스 -->
+		<div class="form-group" th:if="${board.image_paths != null and !#strings.isEmpty(board.image_paths)}">
+			<label>현재 썸네일</label><br />
+			<img th:src="@{'/images/' + ${board.image_paths}}" alt="썸네일"
+				style="max-width: 200px; display: block; margin-bottom: 10px;" />
+			<div class="form-check">
+				<input type="checkbox" id="deleteThumbnail" name="deleteThumbnail" value="true" class="form-check-input" />
+				<label for="deleteThumbnail" class="form-check-label">썸네일 삭제</label>
+			</div>
+		</div>
+		
+		<!-- 썸네일 새로 업로드 가능 -->
+		<div class="form-group">
+			<label for="images">썸네일 업로드</label>
+			<input type="file" id="images" name="images" class="form-control-file" />
+		</div>
+		
+<!--		<div th:if="${board.image_paths}">-->
+<!--		    <img th:src="@{'/images/' + ${board.image_paths}}" alt="썸네일" style="max-width: 200px; display:block; margin-bottom:10px;">-->
+<!--		    <label>-->
+<!--		        <input type="checkbox" name="deleteThumbnail" value="true"> 썸네일 삭제-->
+<!--		    </label>-->
+<!--		</div>-->
+				
 		<label for="area">지역</label><br />
 		<input type="text" id="area" th:field="*{area}" placeholder="예: 서울, 경기 등" required /><br /><br />
 
@@ -46,6 +72,7 @@
 
 	<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
 </body>
+
 <script>
 	$(document).ready(function () {
 		$('#content').summernote({
@@ -67,7 +94,9 @@
 		function uploadImage(file) {
 			const formData = new FormData();
 			formData.append("file", file);
-
+			const userNum = document.querySelector('input[name="userNum"]').value;
+						formData.append("userNum", userNum);     // 사용자 번호 추가
+						
 			$.ajax({
 				url: '/upload/image', // 이미지 업로드용 컨트롤러
 				method: 'POST',
