@@ -26,7 +26,17 @@ public class SecurityConfig {
 			.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(auth -> auth
 				//로그인 하지않아도 접근 가능
-			    .requestMatchers("/CSS/**", "/", "/Login", "/SignUp", "/Adopt", "/AdoptDetail/{num}","/WalkTrail", "/sendSingUpCode", "/loginUser", "/images/**").permitAll()
+			    .requestMatchers("/CSS/**",
+					    		"/",
+					    		"/Login",
+					    		"/SignUp",
+					    		"/Adopt",
+					    		"/AdoptDetail/{num}",
+					    		"/WalkTrail",
+					    		"/sendSingUpCode",
+					    		"/loginUser",
+					    		"/images/**"
+					    		).permitAll()
 			    //hasRole 관리자 권한을 가진 계정만 접근 가능
 			    //.requestMatchers("/AllUsers").hasRole("관리자")
 			    .anyRequest().authenticated()

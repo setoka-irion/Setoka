@@ -375,13 +375,15 @@
         <!-- 에러/성공 메시지 -->
         <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
         <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
-
+		<div th:if="${deleteSuccess}" class="message success" th:text="${deleteSuccess}"></div>
+		
         <!-- 상단 버튼 -->
         <div class="top-buttons" style="text-align: left;">
             <a th:href="@{/Adopt}" class="button-link">입양 메인 페이지</a>
             <a th:href="@{/}" class="button-link">홈으로</a>
         </div>
 
+		
         <!-- 상단 정보 테이블 -->
         <table class="header-table">
             <thead>
@@ -400,6 +402,12 @@
             </tbody>
         </table>
 
+		<!-- 현재 썸네일-->
+		<div class="form-group" th:if="${detail.image_paths != null and !#strings.isEmpty(detail.image_paths)}">
+					<img th:src="@{'/images/' + ${detail.image_paths}}" alt="썸네일"
+						style="max-width: 400px; display: block; margin-bottom: 10px;" />
+				</div>				
+		
         <!-- 수정/삭제/신고 버튼 -->
 		<div class="action-buttons" style="float: right;">
 		    
@@ -412,12 +420,24 @@
 		              onsubmit="return confirm('정말 삭제하시겠습니까?');">
 		            <button type="submit" class="delete-btn">삭제</button>
 		        </form>
+				
 		   
 
-		    <!-- ✅ 신고는 누구나 가능 -->
-		    <form th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
-		        <button type="submit" class="report-btn">신고</button>
-		    </form>
+		<!--✅ 신고 -->
+		<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post"
+			style="display:inline;">
+			<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
+			<button type="button" onclick="confirmReport()">🚨 신고</button>
+		</form>
+			<script>
+			  function confirmReport() {
+			    if (confirm("정말 이 게시글을 신고하시겠습니까?")) {
+			      document.getElementById("reportForm").submit(); // 폼 제출
+			    }
+			  }
+			</script>
+		<!-- 신고 완료 메시지 (있을 때만 보여줌) -->
+			<div th:if="${reportSuccess}" class="message success" th:text="${reportSuccess}"></div>
 
 		</div>
         <!-- 본문 테이블 -->
@@ -439,6 +459,7 @@
             </tbody>
         </table>
 
+		
         <!-- 좋아요 섹션 -->
         <div class="like-section">
             <span th:text="${detail.likes}">0</span> ❤️
@@ -447,6 +468,7 @@
             </form>
         </div>
 
+		
         <!-- 댓글 목록 -->
         <h4>댓글</h4>
         <table class="comments-table">
@@ -475,7 +497,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="comment, iterStat : ${comments}">
+                <tr th:each="comment, iterStat : ${comments}" th:attr="id='comment-' + ${comment.num}"> <!--redirect되도 좋아요 누를때 그자리에 있게해줌-->
                     <td th:text="${iterStat.index + 1}">1</td>
                     <td th:text="${comment.nickname}">작성자</td>
                     <td class="content-cell">
@@ -501,7 +523,8 @@
                     </td>
                     <td>
 						
-                        <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post">
+                        <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
+							onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');">
                             <input type="hidden" name="commentNum" th:value="${comment.num}" />
                             <button type="submit" class="delete-btn">삭제</button>
                         </form>

@@ -4,9 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -85,13 +83,13 @@ public class MyPageController {
 
 		List<Animal> animals = animalService.getAnimalsByUserNum(userNum);
 		model.addAttribute("animals", animals);
-		return "MyPage";
+		return "MyPage/MyPage";
 	}
 
 	// 비밀번호 재확인
 	@GetMapping(value = "PasswordConfirm")
 	public String passwordConfirmForm() {
-		return "PasswordConfirm";
+		return "MyPage/PasswordConfirm";
 	}
 
 	@PostMapping(value = "PasswordConfirm")
@@ -109,7 +107,7 @@ public class MyPageController {
 	// 프로필사진수정
 	@GetMapping(value = "/EditProfilePhoto")
 	public String EditProfilePhoto() {
-		return "EditProfilePhoto";
+		return "MyPage/EditProfilePhoto";
 	}
 
 	@PostMapping(value = "/EditProfilePhoto")
@@ -148,7 +146,7 @@ public class MyPageController {
 		// html을 꾸며줄 클래스 넣기
 		model.addAttribute("UsersDto", dto);
 		// 수정 페이지로 이동
-		return "ModifyUser";
+		return "Mypage/ModifyUser";
 	}
 
 	@PostMapping(value = "ModifyUser")
@@ -171,7 +169,7 @@ public class MyPageController {
 		}
 		session.removeAttribute("PasswordConfirmed");
 
-		return "ChangePassword";
+		return "MyPage/ChangePassword";
 	}
 
 	@PostMapping(value = "ChangePassword")
@@ -189,28 +187,10 @@ public class MyPageController {
 		return Redirect.changePassword;
 	}
 
-	// 동물프로필
-	@GetMapping(value = "AnimalProfile")
-	public String animalProfile() {
-		return "AnimalProfile";
-	}
-
-	// 프로필 추가
-	@GetMapping(value = "AddProfile")
-	public String addProfile() {
-		return "AddProfile";
-	}
-
-	// 다마
-	@GetMapping(value = "Damagochi")
-	public String damagochi() {
-		return "Damagochi";
-	}
-
 	// 탈퇴
 	@GetMapping(value = "Withdrawal")
 	public String withdrawal() {
-		return "Withdrawal";
+		return "MyPage/Withdrawal";
 	}
 
 	@PostMapping(value = "Withdrawal")

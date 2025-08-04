@@ -8,6 +8,23 @@
 		SELECT COUNT(*) FROM board WHERE type = #{type}
 	</select>
 	
+	<!--인기 게시글-->
+	<select id="popularPosts" resultMap="boardWithUserMap">
+	SELECT b.*, u.nickname,
+       COALESCE(c.comments_counts, 0) AS comments_counts,
+       ((b.views * 0.5 + b.likes * 1.5 + COALESCE(c.comments_counts, 0) * 1.0) 
+       / POW(DATEDIFF(NOW(), b.registerDate) + 1, 1.5)) 
+       AS popularity_score
+	FROM board b
+	LEFT JOIN (
+    SELECT boardNum, COUNT(*) AS comments_counts
+    FROM comments GROUP BY boardNum
+	) c ON b.num = c.boardNum
+	JOIN users u ON b.userNum = u.num
+	WHERE b.type = #{type}
+	ORDER BY popularity_score DESC
+	LIMIT 10
+	</select>
 	
 	
 	
@@ -21,8 +38,8 @@
 	<update id="updateBoard" parameterType="com.practice.setoka.dto.BoardDto">
 		UPDATE board
 		SET 
-		title = #{title}, content = #{content}, 
-		price = #{price}, area = #{area}
+		title = #{board.title}, content = #{board.content}, num = #{board.num},
+		price = #{board.price}, area = #{board.area}, Image_paths = #{board.Image_paths}
 		WHERE num = #{num}
 	</update>
 	
@@ -49,6 +66,7 @@
 		SELECT b.*, 	u.nickName
 		FROM board b JOIN users u ON b.userNum = u.num 
 		WHERE u.id = #{id} AND type !=0
+		ORDER BY b.registerDate DESC
 	</select>
 
 <!--	 게시글 제목으로 검색 -->
@@ -59,6 +77,7 @@
     	FROM board b JOIN users u 
     	ON b.userNum = u.num 
 		WHERE b.title LIKE CONCAT('%', #{title}, '%') AND type !=0
+		ORDER BY b.registerDate DESC
 	</select>
 
 <!--	 게시글 내용으로 검색 -->
@@ -69,6 +88,7 @@
     	FROM board b JOIN users u 
     	ON b.userNum = u.num 
 		WHERE b.content LIKE CONCAT('%', #{content}, '%') AND type !=0
+		ORDER BY b.registerDate DESC
 	</select>
 	
 <!--	 통합 검색 -->
@@ -101,7 +121,7 @@
 		SELECT 	u.id, 
     	u.num AS userNum, u.nickname, u.realname, u.grade,
    	 	b.num, b.userNum, b.title, b.content, b.type, b.likes, 
-   	 	b.views, b.price, b.area, b.registerDate
+   	 	b.views, b.price, b.area, b.registerDate, b.Image_paths
   		FROM board b
   		JOIN users u ON b.userNum = u.num
   		WHERE b.num = #{num}
@@ -135,38 +155,25 @@
 		ON u.num = b.userNum
 	</select>
 
-	<!--인기 게시글-->
-	<select id="popularPosts" resultMap="boardWithUserMap">
-	SELECT b.*, u.nickname,
-       COALESCE(c.comments_counts, 0) AS comments_counts,
-       ((b.views * 0.5 + b.likes * 1.5 + COALESCE(c.comments_counts, 0) * 1.0) 
-       / POW(DATEDIFF(NOW(), b.registerDate) + 1, 1.5)) 
-       AS popularity_score
-	FROM board b
-	LEFT JOIN (
-    SELECT boardNum, COUNT(*) AS comments_counts
-    FROM comments
-    GROUP BY boardNum
-	) c ON b.num = c.boardNum
-	JOIN users u ON b.userNum = u.num
-	WHERE b.type = #{type}
-	ORDER BY popularity_score DESC
-	LIMIT 10
-	</select>
+	
 
 
 	<!-- 신고 -->
-<insert id="reportBoard" parameterType="int">
-INSERT INTO boardReport (boardNum,userNum) VALUES(#{boardNum}, #{userNum})
-</insert>
+	<insert id="reportBoard" parameterType="int">
+		INSERT INTO boardReport (boardNum,userNum) 
+		VALUES(#{boardNum},	#{userNum})
+	</insert>
 
-<select id="findReportByBoardNum" parameterType="int" resultType="com.practice.setoka.dao.Report">
-SELECT * FROM boardReport WHERE boardNum = #{boardNum}
-</select>
+	<select id="findReportByBoardNum" parameterType="int"
+		resultType="com.practice.setoka.dao.Report">
+		SELECT * FROM boardReport WHERE boardNum = #{boardNum}
+	</select>
 	<!-- 게시판 신고 유저내용-->
-<select id="findReportByBC" parameterType="int" resultType="com.practice.setoka.dao.Report">
-SELECT * FROM boardReport WHERE boardNum = #{boardNum} AND userNum = #{userNum}
-</select>
+	<select id="findReportByBC" parameterType="int"
+		resultType="com.practice.setoka.dao.Report">
+		SELECT * FROM boardReport 
+		WHERE boardNum = #{boardNum} AND userNum = #{userNum}
+	</select>
 
 
 <insert id="insertTempImage" parameterType="com.practice.setoka.dto.TempImageDto">
