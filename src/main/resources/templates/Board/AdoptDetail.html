@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>입양 상세 페이지</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         /* reset & 기본 */
@@ -12,7 +13,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7fb;
             margin: 0;
-            padding: 40px 10px;
             color: #333;
             text-align: center;
         }
@@ -333,18 +333,17 @@
 </head>
 
 <body>
+	<div th:replace="~{header :: siteHeader}"></div>
+	
+	
+	<br>
+	
     <div class="container">
 
         <!-- 메시지 -->
         <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
         <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
         <div th:if="${deleteSuccess}" class="message success" th:text="${deleteSuccess}"></div>
-
-        <!-- 상단 버튼 -->
-        <div class="top-buttons">
-            <a th:href="@{/Adopt}" class="btn btn-primary">입양 메인 페이지</a>
-            <a th:href="@{/}" class="btn btn-primary">홈으로</a>
-        </div>
 
         <!-- 상단 정보 -->
         <table class="header-table">
@@ -365,8 +364,8 @@
         </table>
 
         <!-- 썸네일 -->
-        <div class="form-group" th:if="${detail.image_paths != null and !#strings.isEmpty(detail.image_paths)}">
-            <img th:src="@{'/images/' + ${detail.image_paths}}" alt="썸네일"
+        <div class="form-group">
+            <img th:src="@{${detail.image_paths != null} ? '/images/' + ${detail.image_paths} : '/imagesDefault/defaultBoard.png'}" alt="썸네일"
                  style="max-width: 400px; display: block; margin-bottom: 10px;" />
         </div>
 
