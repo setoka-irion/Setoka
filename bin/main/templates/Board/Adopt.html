@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8" />
 	<title>입양 게시판</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<style>
 		/* ====== 컨테이너 ====== */
 		.container-board {
@@ -208,9 +209,10 @@
 </head>
 
 <body>
+	
+	<div th:replace="~{header :: siteHeader}"></div>
+	
 	<!-- 윗단 아이콘 -->
-	<a th:href="@{/}" class="btn-primary">홈으로</a>
-	<a th:href="@{/Adopt}" class="btn-primary">입양 메인 페이지</a>
 	<h1>입양 게시판</h1>
 	<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
 
