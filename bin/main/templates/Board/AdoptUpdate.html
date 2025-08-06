@@ -177,7 +177,6 @@
 	<div class="container">
 		<form th:action="@{/AdoptUpdate/{num}(num=${board.boardNum})}" method="post" th:object="${board}"
 			enctype="multipart/form-data">
-			<input type="hidden" th:field="*{num}" />
 			<input type="hidden" name="userNum" th:value="${board.userNum}">
 			<input type="hidden" name="type" th:value="${board.type}" /> <!-- 어떤게시판인지 알려줘야함-->
 

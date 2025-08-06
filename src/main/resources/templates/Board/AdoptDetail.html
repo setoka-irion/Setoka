@@ -49,6 +49,25 @@
 			background-color: #d4edda;
 			border: 1px solid #c3e6cb;
 		}
+		
+		.back-button a{
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #8b5e3c;
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+			font-weight: bold;
+			transition: background-color 0.3s ease;
+			border: none;
+			cursor: pointer;
+		}
+
+		.back-button a:hover {
+			background-color: #8b5e3c;
+			/* 호버 시 조금 더 진한 녹색 */
+		}
+
 
 		/* 버튼 공통 */
 		.btn {
@@ -378,12 +397,11 @@
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
-
-
 	<br>
-
 	<div class="container">
-
+		<div class="back-button">
+			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
+		</div>
 		<!-- 메시지 -->
 		<div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
 		<div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
@@ -403,22 +421,23 @@
 					<td th:text="${detail.title}">제목</td>
 					<td th:text="${detail.nickName}">작성자</td>
 					<td th:text="${detail.formattedRegistDate}">2025-07-24</td>
-					
+
 					<!-- 수정/삭제/신고 -->
 					<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
-					<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
-						<button type="submit" class="btn btn-success">수정</button>
-					</form>
-					<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post" 
-					onsubmit="return confirm('정말 삭제하시겠습니까?');">
-						<button type="submit" class="btn btn-danger">삭제</button>
-					</form>
-					<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
-						<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
-						<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
-					</form>
-				</div>
-				
+						<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
+							<button type="submit" class="btn btn-success">수정</button>
+						</form>
+						<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
+							onsubmit="return confirm('정말 삭제하시겠습니까?');">
+							<button type="submit" class="btn btn-danger">삭제</button>
+						</form>
+						<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}"
+							method="post">
+							<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
+							<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
+						</form>
+					</div>
+
 				</tr>
 			</tbody>
 		</table>

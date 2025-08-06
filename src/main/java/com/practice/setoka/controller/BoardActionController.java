@@ -268,15 +268,13 @@ public class BoardActionController {
 
 	// 입양 게시글 수정
 	@PostMapping(value = "/AdoptUpdate/{num}")
-	public String adoptUpdateSubmit(
-			@Valid BoardDto boardDto, BindingResult bindingResult, 
-			@PathVariable("num") int num, Model model, 
-			@AuthenticationPrincipal CustomUserDetails authUser,
+	public String adoptUpdateSubmit(@Valid BoardDto boardDto, BindingResult bindingResult, @PathVariable("num") int num,
+			Model model, @AuthenticationPrincipal CustomUserDetails authUser,
 			@RequestParam("images") List<MultipartFile> images,
 			@RequestParam(value = "deleteThumbnail", required = false) String deleteThumbnail,
 			RedirectAttributes redirectAttributes) {
-		
-			redirectAttributes.addAttribute("num", num);
+
+		redirectAttributes.addAttribute("num", num);
 
 		// 유저 검증
 		Users user = (Users) authUser.getUser();
@@ -288,58 +286,66 @@ public class BoardActionController {
 
 		if (!isAuthor && !isAdmin) {
 			redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
-			return "redirect:/AdoptDetial" + num;
+			return "redirect:/AdoptDetail" + num;
 		}
 
 		// 오류 발생시 다시 수정페이지로
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("board", boardDto); // 반드시 넣어줘야 함
 
-			return "/Board/AdoptUpdate";
+			return "Board/AdoptUpdate";
 		}
 
-		   // 본문 내용 이미지 처리
+		// 본문 내용 이미지 처리
 //	    String fileName = upload.fileUpload(boardDto.getContent());
 //	    boardDto.setContent(fileName);
-		
+
+		// 1. 본문 이미지 경로 정리
 		String original = boardDto.getContent().replaceAll("images/temp/", "images/");
 		boardDto.setContent(original);
-		
 		String fileName = upload.fileUpload(boardDto.getContent());
-		String thumnailName = null;
-		if(images != null && images.size() > 0)
-			thumnailName = upload.imageFileUpload(images.get(0));
 		boardDto.setContent(fileName);
-		boardDto.setImage_paths(thumnailName);
-		boardService.insertBoard(boardDto);
 
+		// 2. 썸네일 처리
+		if ("true".equals(deleteThumbnail)) {
+		    // 👉 삭제 체크된 경우: 썸네일 null로 처리
+		    boardDto.setImage_paths(null);
+		} else if (images != null && images.size() > 0 && !images.get(0).isEmpty()) {
+		    // 👉 새 썸네일 업로드된 경우: 새 썸네일 등록
+		    String thumbnailName = upload.imageFileUpload(images.get(0));
+		    boardDto.setImage_paths(thumbnailName);
+		} else {
+		    // 👉 삭제도 안 했고 새 업로드도 없으면: 기존 썸네일 유지
+		    boardDto.setImage_paths(boardService.findBoardByNum(boardDto.getNum()).getImage_paths());
+		}
+		
 		// 예비 db에서 가져오기
-				List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
-				// 제대로 된 db로 옮기기
-				for (TempImage l : list) {
-					TempImage tempImage = l;
-					
-					// 원본 파일 경로
-					Path sourcePath = Paths.get("C:/images/temp/" + tempImage.getImageName());
+		List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
+		// 제대로 된 db로 옮기기
+		for (TempImage l : list) {
+			TempImage tempImage = l;
 
-					// 이동할 대상 경로
-					Path targetPath = Paths.get("C:/images/" + tempImage.getImageName());
+			// 원본 파일 경로
+			Path sourcePath = Paths.get("C:/images/temp/" + tempImage.getImageName());
 
-					try {
-						// 파일 이동 (이미 존재하면 덮어쓰기)
-						Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-						System.out.println("파일이 성공적으로 이동되었습니다!");
-					} catch (Exception e) {
-						System.err.println("파일 이동 중 오류 발생: " + e.getMessage());
-					}
-				}
-				
-	    // 썸네일 처리
-	    //String thumbnail = existing.getImage_paths(); // 기본은 유지
-	    // 삭제기능
-	    //upload.imageFileDelete(existing.getImage_paths());
+			// 이동할 대상 경로
+			Path targetPath = Paths.get("C:/images/" + tempImage.getImageName());
 
-	    // 삭제 체크박스가 체크된 경우
+			try {
+				// 파일 이동 (이미 존재하면 덮어쓰기)
+				Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+				System.out.println("파일이 성공적으로 이동되었습니다!");
+			} catch (Exception e) {
+				System.err.println("파일 이동 중 오류 발생: " + e.getMessage());
+			}
+		}
+
+		// 썸네일 처리
+		// String thumbnail = existing.getImage_paths(); // 기본은 유지
+		// 삭제기능
+		// upload.imageFileDelete(existing.getImage_paths());
+
+		// 삭제 체크박스가 체크된 경우
 //	    if ("true".equals(deleteThumbnail)) {
 //	        thumbnail = null;
 //	    } else if (images != null && !images.isEmpty() && !images.get(0).isEmpty()) {
@@ -347,10 +353,10 @@ public class BoardActionController {
 //	    }
 //
 //	    boardDto.setImage_paths(thumbnail);
-	    boardService.updateBoard(boardDto, num);
-	  //예비 db 비우기
-	  		boardService.DeleteTempImage(user.getNum());
-	    return "redirect:/AdoptDetail/" + num;
+		boardService.updateBoard(boardDto, num);
+		// 예비 db 비우기
+		boardService.DeleteTempImage(user.getNum());
+		return "redirect:/AdoptDetail/" + num;
 	}
 	//원래 있던 수정 코드
 //	String thumnailName = null;

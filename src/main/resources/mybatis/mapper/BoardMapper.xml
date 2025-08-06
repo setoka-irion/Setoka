@@ -38,7 +38,7 @@
 	<update id="updateBoard" parameterType="com.practice.setoka.dto.BoardDto">
 		UPDATE board
 		SET 
-		title = #{board.title}, content = #{board.content}, num = #{board.num},
+		title = #{board.title}, content = #{board.content}, 
 		price = #{board.price}, area = #{board.area}, Image_paths = #{board.Image_paths}
 		WHERE num = #{num}
 	</update>
