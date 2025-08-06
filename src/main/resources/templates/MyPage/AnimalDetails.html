@@ -234,6 +234,7 @@
 			<p><strong>애견 이름:</strong> <span id="detailAnimalName"></span></p>
 			<div style="margin-top: 15px;">
 				<button id="detailAddBtn" style="margin-left:10px;">메모 추가</button>
+				<button id="detailBackToListBtn" class="btn" style="display: none;">목록</button>
 				<button id="detailEditBtn">수정</button>
 				<button id="detailDeleteBtn" style="background-color:#f44336; color:#fff;">삭제</button>
 			</div>
@@ -248,6 +249,9 @@
 	</script>
 
 	<script>
+		let selectedDateStr = null;
+		let lastMemoList = [];
+
 		document.addEventListener('DOMContentLoaded', () => {
 			const modal = document.getElementById('memoModal');
 			const modalClose = document.getElementById('memoModalClose');
@@ -285,29 +289,29 @@
 			// ✅ 해당 애견만 등록
 
 
+			// 1. 동물 목록 먼저 불러오기
 			fetch(`/animals`)
 				.then(res => res.json())
 				.then(animals => {
 					animals.forEach(animal => {
 						animalMap.set(animal.num, animal.animalName);
 
-						// 체크박스 input 생성
 						const label = document.createElement('label');
-						label.style.display = 'block'; // 줄바꿈
+						label.style.display = 'block';
 
 						const checkbox = document.createElement('input');
 						checkbox.type = 'checkbox';
-						checkbox.name = 'animalNum'; // 혹은 배열로 받으려면 name='animalNum[]'
+						checkbox.name = 'animalNum';
 						checkbox.value = animal.num;
 
 						label.appendChild(checkbox);
 						label.appendChild(document.createTextNode(' ' + animal.animalName));
 						animalCheckboxContainer.appendChild(label);
 					});
-				});
 
-			// ✅ 메모 가져오기
-			fetch(`/memos?year=${year}&month=${month < 10 ? '0' + month : month}`)
+					// ✅ 2. 동물 다 처리한 다음에 메모 불러오기
+					return fetch(`/memos?year=${year}&month=${month < 10 ? '0' + month : month}`);
+				})
 				.then(res => res.json())
 				.then(memos => {
 					const filteredMemos = memos.filter(memo => {return memo.intAnimalNum != null && memo.intAnimalNum.includes(Number(animalNum));});
@@ -343,6 +347,7 @@
 					document.querySelectorAll('#calendar td').forEach(td => {
 						td.addEventListener('click', () => {
 							const dateStr = td.getAttribute('data-date');
+							selectedDateStr = dateStr;
 							if (!dateStr) return;
 
 							const memoListStr = td.dataset.memoList;
@@ -384,6 +389,9 @@
 
 									li.addEventListener('click', () => {
 										memoListModal.style.display = 'none';
+
+										lastMemoList = memoList;
+
 										showDetailModal(memo, dateStr);
 									});
 
@@ -403,6 +411,18 @@
 				detailTitleText.textContent = memo.title;
 				detailContent.textContent = memo.content;
 				detailAnimalName.textContent = memo.animalName || '알 수 없음';
+
+				const backToListBtn = document.getElementById('detailBackToListBtn');
+				if (lastMemoList.length > 1) {
+					backToListBtn.style.display = 'inline-block';
+				} else {
+					backToListBtn.style.display = 'none';
+				}
+
+				backToListBtn.onclick = () => {
+					detailModal.style.display = 'none';
+					document.getElementById('memoListModal').style.display = 'block';
+				};
 
 				detailEditBtn.onclick = () => {
 					detailModal.style.display = 'none';
@@ -450,7 +470,7 @@
 					scheduleDateInput.value = dateStr;
 					titleInput.value = '';
 					contentInput.value = '';
-					animalSelect.value = '';
+					//					animalSelect.value = '';
 					modal.style.display = "block";
 				};
 
@@ -465,10 +485,10 @@
 				modalTitle.textContent = "메모 작성";
 				saveBtn.textContent = "저장";
 				memoNumInput.value = '';
-				scheduleDateInput.value = '';
+				scheduleDateInput.value = selectedDateStr;
 				titleInput.value = '';
 				contentInput.value = '';
-				animalSelect.value = '';
+				//				animalSelect.value = '';
 				modal.style.display = "block";
 			};
 

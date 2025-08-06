@@ -11,7 +11,6 @@
 	<link rel="stylesheet" th:href="@{/CSS/memo-list.css}">
 
 	<style>
-		
 		#memoModal {
 			display: none;
 			position: fixed;
@@ -172,7 +171,7 @@
 			<span id="memoListClose" class="modal-close">&times;</span>
 			<h2 class="modal-title">메모 리스트</h2>
 			<ul id="memoListContainer" style="list-style:none; padding:0; margin:0;"></ul>
-			
+
 			<div class="modal-buttons">
 				<button id="memoListAddBtn" class="btn">메모 추가</button>
 			</div>
@@ -210,6 +209,7 @@
 
 			<div class="modal-buttons">
 				<button id="detailAddBtn" class="btn">메모 추가</button>
+				<button id="detailBackToListBtn" class="btn" style="display: none;">목록</button>
 				<button id="detailEditBtn" class="btn">수정</button>
 				<button id="detailDeleteBtn" class="btn btn-danger">삭제</button>
 			</div>
@@ -221,6 +221,9 @@
 		// 1. 유저의 애니멀 리스트를 받아 animalNum → animalName 매핑 생성
 		let animalMap = new Map();
 		let currentDetailMemoNum;
+		
+		let selectedDateStr = null;
+		let lastMemoList = [];
 
 		document.addEventListener('DOMContentLoaded', () => {
 			const modal = document.getElementById('memoModal');
@@ -316,6 +319,7 @@
 					document.querySelectorAll('#calendar td').forEach(td => {
 						td.addEventListener('click', () => {
 							const dateStr = td.getAttribute('data-date');
+							selectedDateStr = dateStr;
 							if (!dateStr) return;
 
 							const memoListStr = td.dataset.memoList;
@@ -369,6 +373,8 @@
 									li.addEventListener('click', () => {
 										memoListModal.style.display = 'none';
 
+										lastMemoList = memoList;
+										
 										showDetailModal(memo, dateStr);
 									});
 
@@ -391,7 +397,6 @@
 									scheduleDateInput.value = dateStr;
 									titleInput.value = '';
 									contentInput.value = '';
-									animalSelect.value = '';
 
 									modal.style.display = "block";
 								};
@@ -411,6 +416,18 @@
 				detailContent.textContent = memo.content;
 				detailAnimalName.textContent = memo.animalName || '알 수 없음';
 
+				const backToListBtn = document.getElementById('detailBackToListBtn');
+				if (lastMemoList.length > 1) {
+					backToListBtn.style.display = 'inline-block';  // 보여줌
+				} else {
+					backToListBtn.style.display = 'none';  // 숨김
+				}
+
+				backToListBtn.onclick = () => {
+					detailModal.style.display = 'none';
+					document.getElementById('memoListModal').style.display = 'block';
+				};
+				
 				detailEditBtn.onclick = () => {
 					detailModal.style.display = 'none';
 					modalTitle.textContent = "메모 수정";
@@ -461,10 +478,9 @@
 					saveBtn.textContent = "저장";
 
 					memoNumInput.value = '';
-					scheduleDateInput.value = dateStr;
+					scheduleDateInput.value = selectedDateStr;
 					titleInput.value = '';
 					contentInput.value = '';
-					animalSelect.value = '';
 					modal.style.display = "block";
 				};
 
