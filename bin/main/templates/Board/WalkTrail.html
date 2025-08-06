@@ -4,194 +4,555 @@
 <head>
 	<meta charset="UTF-8" />
 	<title>산책로 게시판</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<style>
-		/* 전체 컨테이너: 화면 중앙 정렬 및 적당한 너비 */
-		.table-wrapper {
-		    width: 80%;            /* 테이블과 버튼이 들어갈 영역 크기 */
-		    margin: 20px auto;     /* 위아래 공간 + 좌우 가운데 정렬 */
-		    position: relative;    /* 버튼 절대위치 기준 */
-		    background-color: #fff;
-		    padding: 15px 20px;
-		    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-		    border-radius: 6px;
+		/* ====== 컨테이너 ====== */
+		.container-board {
+			width: 85%;
+			margin: 20px auto;
+			position: relative;
+			background-color: #fff;
+			padding: 15px 20px;
+			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+			border-radius: 6px;
 		}
 
-		/* 오른쪽 위 버튼 위치 */
-		.right-top-button {
-		    position: absolute;
-		    top: 15px;
-		    right: 20px;
+		/*==== 현재 게시판 정보 ====*/
+		.board-header h1 {
+			margin: 0;
+			font-size: 30px;
+			/* 필요 시 크기 조절 */
+			margin-top: 15px;
+			align-items: center;
+			width: 85%;
+			/* 인기글 영역과 동일 */
+			margin: 20px auto 20px auto;
+			/* 좌우 중앙 정렬 */
+
 		}
 
-		/* 버튼 기본 스타일 */
-		.button-link {
-		    display: inline-block;
-		    padding: 8px 16px;
-		    background-color: #2a7ae2;
-		    color: white;
-		    border-radius: 4px;
-		    font-weight: 600;
-		    text-decoration: none;
-		    transition: background-color 0.3s ease;
-		    box-shadow: 0 2px 5px rgba(42, 122, 226, 0.4);
+		.board-header p {
+			font-size: 14px;
+			color: #555;
+			align-items: center;
+			width: 85%;
+			/* 인기글 영역과 동일 */
+			margin: 20px auto 20px auto;
+			/* 좌우 중앙 정렬 */
+
 		}
 
-		/* 버튼 호버 효과 */
-		.button-link:hover {
-		    background-color: #1a5fb4;
-		    box-shadow: 0 4px 8px rgba(26, 95, 180, 0.6);
+		/* ====== 검색박스 ====== */
+		.search-regist-button {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 85%;
+			/* 인기글 영역과 동일 */
+			margin: 20px auto 20px auto;
+			/* 좌우 중앙 정렬 */
 		}
 
-		/* 테이블 스타일 */
-		table {
-		    border-collapse: collapse;
-		    width: 100%;           /* 부모 너비에 꽉 차게 */
-		    margin-top: 50px;      /* 버튼과 간격 확보 */
-		    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-		    font-size: 14px;
-		}
-
-		/* 테이블 헤더 셀 */
-		th {
-		    background-color: #f8f9fb;
-		    color: #333;
-		    font-weight: 700;
-		    padding: 12px 10px;
-		    border-bottom: 2px solid #ddd;
-		}
-
-		/* 테이블 일반 셀 */
-		td {
-		    border: 1px solid #ddd;
-		    padding: 10px 8px;
-		    text-align: center;
-		    color: #555;
-		}
-
-		/* 링크 스타일 */
-		a {
-		    color: #2a7ae2;
-		    text-decoration: none;
-		    transition: color 0.3s ease;
-		}
-
-		a:hover {
-		    text-decoration: underline;
-		    color: #1a5fb4;
-		}
-
-		/* 검색 박스 스타일 */
 		.search-box {
-		    margin-bottom: 20px;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			gap: 10px;
+			/* 아이템 간 간격 */
+			flex-grow: 1;
+			/* 가로공간 최대한 활용 */
 		}
 
-		.search-box input,
-		.search-box select {
-		    padding: 8px 10px;
-		    font-size: 14px;
-		    border: 1px solid #ccc;
-		    border-radius: 4px;
-		    margin-right: 10px;
-		    transition: border-color 0.3s ease;
+		.search-input,
+		.search-select {
+			padding: 8px 10px;
+			font-size: 14px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			transition: border-color 0.3s ease;
 		}
 
-		.search-box input:focus,
-		.search-box select:focus {
-		    outline: none;
-		    border-color: #2a7ae2;
+		.search-input:focus,
+		.search-select:focus {
+			outline: none;
+			border-color: #8b5e3c;
 		}
 
-		/* 검색 버튼 */
-		.search-box button {
-		    padding: 8px 18px;
-		    font-size: 14px;
-		    cursor: pointer;
-		    background-color: #2a7ae2;
-		    color: white;
-		    border: none;
-		    border-radius: 4px;
-		    font-weight: 600;
-		    box-shadow: 0 2px 5px rgba(42, 122, 226, 0.4);
-		    transition: background-color 0.3s ease;
+		/*== 글 등록 버튼==*/
+		.regist-button {
+			/* position: absolute 제거 */
+			/* 위치 조정 필요하면 margin-left 등으로 조절 */
+			margin-left: 20px;
 		}
 
-		.search-box button:hover {
-		    background-color: #1a5fb4;
-		    box-shadow: 0 4px 8px rgba(26, 95, 180, 0.6);
+		/* 글 등록 버튼  */
+		.btn-primary {
+			display: inline-block;
+			padding: 8px 16px;
+			background-color: #8b5e3c;
+			color: white;
+			border-radius: 4px;
+			font-weight: 600;
+			text-decoration: none;
+			transition: background-color 0.3s ease;
+			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
+		}
+
+		.btn-primary:hover {
+			background-color: #8b5e3c;
+			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
+		}
+
+		/*==검색 버튼==*/
+		.btn-search {
+			padding: 8px 18px;
+			font-size: 14px;
+			cursor: pointer;
+			background-color: #8b5e3c;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			font-weight: 600;
+			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
+			transition: background-color 0.3s ease;
+		}
+
+		.btn-search:hover {
+			background-color: #8b5e3c;
+			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
+		}
+
+
+
+		/* ==== 보기 방식전환 ==== */
+		.toggle-switch {
+			display: inline-flex;
+			border: 1px solid #8b5e3c;
+			border-radius: 8px;
+			overflow: hidden;
+			cursor: pointer;
+			user-select: none;
+			font-weight: 600;
+			font-size: 16px;
+			color: #8b5e3c;
+			background: white;
+			margin-right: 20px;
+		}
+
+		.toggle-switch input[type="radio"] {
+			display: none;
+			/* 기본 라디오 숨기기 */
+		}
+
+		.toggle-switch label {
+			padding: 8px 10px; /*세로, 가로*/
+			transition: background-color 0.3s, color 0.3s;
+			user-select: none;
+			text-align: center;
+			flex: 1;
+			/* 균등 폭 */
+			white-space: nowrap;
+		}
+
+		.toggle-switch label:hover {
+			background-color: #f0e8db;
+		}
+
+		.toggle-switch input[type="radio"]:checked+label {
+			background-color: #8b5e3c;
+			color: white;
+		}
+
+
+		/* ====== 인기글 영역 윗단 ====== */
+		.popular-section {
+			/* 기존 스타일 유지 */
+			width: 85%;
+			margin: 20px auto 40px;
+			background: #fff;
+			padding: 15px 20px;
+			border-radius: 6px;
+			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+
+			/* 인기글 카드들 배치 분리 */
+			flex-direction: column;
+			/* flex-wrap: wrap 대신 column으로 변경 */
+			display: flex;
+		}
+
+		.popular-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
+			/* toggle-switch 기본 스타일 그대로 둠 */
+		}
+
+		.here {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px;
+			justify-content: center;
+		}
+
+		/* ====== 인기글 영역 ====== */
+		.card-popular {
+			width: 300px;
+			border: 1px solid #ddd;
+			border-radius: 10px;
+			overflow: hidden;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+			padding: 10px;
+			background: #fff;
+		}
+
+		/* 인기글 썸네일 조정*/
+		.thumb-image {
+			width: 300px;
+			height: 240px;
+			object-fit: cover;
+			border-radius: 10px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+		}
+
+		.card-popular strong {
+			font-size: 18px;
+			display: block;
+			margin-bottom: 5px;
+		}
+
+		.card-popular span {
+			display: block;
+			font-size: 14px;
+			color: #555;
+			margin-bottom: 3px;
+		}
+
+		/* ====본문 형식 지정 ====*/
+		.card-list-view {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px;
+			margin-top: 20px;
+			justify-content: center;
+		}
+
+		/* ====== 테이블 ====== */
+		.table-posts {
+			border-collapse: collapse;
+			width: 100%;
+			margin-top: 50px;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			font-size: 14px;
+		}
+
+		.table-posts th {
+			background-color: #f8f9fb;
+			color: #333;
+			font-weight: 700;
+			padding: 12px 10px;
+			border-bottom: 2px solid #ddd;
+		}
+
+		.table-posts td {
+			border: 1px solid #ddd;
+			padding: 10px 8px;
+			text-align: center;
+			color: #555;
+		}
+
+
+
+		/* ====== 링크 ====== */
+		/* 일반 본문 링크 */
+		.link-default {
+			color: #8b5e3c;
+			text-decoration: none;
+			transition: color 0.3s ease;
+		}
+
+		.link-default:hover {
+			text-decoration: underline;
+			color: #8b5e3c;
+		}
+
+		/* 카드 제목, 강조 텍스트 링크 */
+		.link-title {
+			font-weight: bold;
+			font-size: 18px;
+			color: #8b5e3c;
+			text-decoration: none;
+			transition: color 0.3s ease;
+		}
+
+		.link-title:hover {
+			text-decoration: underline;
+			color: #8b5e3c;
+		}
+
+		/* 카드 리스트 항목 스타일 */
+		.card-list-item {
+			border: 1px solid #ddd;
+			padding: 15px;
+			margin-bottom: 15px;
+			border-radius: 8px;
+			background: #fff;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+		}
+
+		.card-list-item img.thumb-image {
+			width: 180px;
+			height: 130px;
+			object-fit: cover;
+			border-radius: 10px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+			display: block;
+			margin-bottom: 10px;
+		}
+
+
+
+
+		/* ====== 페이지네이션 ====== */
+		.pagination {
+			text-align: center;
+			margin-top: 30px;
+			margin-bottom: 80px;
+		}
+
+		.pagination-list {
+			list-style: none;
+			padding: 0;
+			margin: 0 auto;
+			display: inline-flex;
+			gap: 8px;
+		}
+
+		.pagination-item {
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			padding: 6px 12px;
+		}
+
+		.pagination-item.active {
+			background-color: #8b5e3c;
+			color: white;
+			font-weight: 700;
+			border-color: #8b5e3c;
+		}
+
+		.pagination-link {
+			color: inherit;
+			text-decoration: none;
+			display: block;
+		}
+
+		/* 숨김 클래스 */
+		.hidden {
+			display: none !important;
 		}
 	</style>
 </head>
 
 <body>
-	<a th:href="@{/}" class="button-link">홈으로</a>
-	<a th:herf="@{/WalkTrail}" class="button=link">산책로 게시판</a>
-	<h1>산책로 게시판</h1>
-	<!-- 총 게시글 수 -->
-	<p>총 게시글 수: <span th:text="${countBoards}">0</span></p>
+	<!-- 헤더 -->
+	<div th:replace="~{header :: siteHeader}"></div>
 
-	<!-- 검색 폼 -->
-	<form th:action="@{/WalkTrail}" method="get" class="search-box">
+	<!-- 컨테이너 -->
+	<div class="container-board">
+		<!-- 윗단 아이콘 -->
+		<div class="board-header">
+			<h1>산책로 게시판</h1>
+			<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
+		</div>
 
-		<!-- 검색 조건 고르는 박스-->
-		<select name="field" th:value="${field}">
-			<option value="title" th:selected="${field == 'title'}">제목</option>
-			<option value="content" th:selected="${field == 'content'}">내용</option>
-			<option value="nickname" th:selected="${field == 'nickname'}">작성자</option>
-			<option value="" th:selected="${field == ''}">통합 검색</option>
-		</select>
+		<!-- 검색 -->
+		<div class="search-regist-button">
+			<form th:action="@{/WalkTrail}" method="get" class="search-box">
+				<select name="field" class="search-select" th:value="${field}">
+					<option value="title" th:selected="${field == 'title'}">제목</option>
+					<option value="content" th:selected="${field == 'content'}">내용</option>
+					<option value="nickname" th:selected="${field == 'nickname'}">작성자</option>
+					<option value="" th:selected="${field == ''}">통합 검색</option>
+				</select>
+				<input type="text" name="keyword" class="search-input" placeholder="검색어 입력" th:value="${keyword}" />
+				<button type="submit" class="btn-search">검색</button>
+			</form>
+			<!-- 새 글 등록 버튼-->
+			<p class="regist-button">
+				<a th:href="@{/WalkTrailRegist}" class="btn-primary">새 글 등록하기</a>
+			</p>
+		</div>
 
-		<!--placeholder, 키워드 입력창-->
-		<input type="text" name="keyword" placeholder="검색어 입력" th:value="${keyword}" />
-		<button type="submit">검색</button>
-	</form>
 
-	<div class="table-wrapper">
-		<p class="right-top-button">
-			<a th:href="@{/WalkTrailRegist}" class="button-link">새 글 등록하기</a>
-		</p>
-		<table>
-			<!-- 테이블 넓이 조절-->
+		<!-- 인기글 (기존) -->
+		<div class="popular-section">
+			<div class="popular-header" style="display:flex; justify-content:space-between; align-items:center;">
+				<h3>🔥 인기글</h3>
+				<div class="view-select toggle-switch">
+					<input type="radio" id="viewCard" name="viewType" value="card" checked />
+					<label for="viewCard">카드형</label>
+					<input type="radio" id="viewList" name="viewType" value="list" />
+					<label for="viewList">리스트형</label>
+				</div>
+			</div>
+
+			<div class="here">
+				<div th:each="post, iterStat : ${popularPosts}" th:if="${iterStat.index < 8}" class="card-popular">
+					<a th:href="@{'/WalkTrailDetail/{num}'(num=${post.boardNum})}" class="link-title">
+						<strong th:text="${post.title}">제목</strong>
+					</a>
+					<a th:href="@{'/WalkTrailDetail/{num}'(num=${post.boardNum})}">
+						<img class="thumb-image"
+							th:src="@{${post.Image_paths != null} ? '/images/' + ${post.Image_paths} : '/imagesDefault/defaultBoard.png'}">
+					</a>
+					<span th:text="'작성자: ' + ${post.nickName}">작성자</span>
+					<span th:text="'좋아요: ' + ${post.likes}">좋아요</span>
+					<span th:text="'댓글 수: ' + ${post.commentCount}">댓글 수</span>
+					<span th:text="'작성일: ' + ${post.formattedRegistDate}">작성일</span>
+					<hr>
+				</div>
+			</div>
+		</div>
+
+		<h3>전체 글</h3>
+		<!-- 카드형 본문 (mainList 반복) -->
+		<div class="card-list-view">
+			<div class="card-popular" th:each="board, iterStat : ${mainList}" th:if="${iterStat.index < 15}">
+				<a th:href="@{'/WalkTrailDetail/{num}'(num=${board.boardNum})}" class="link-title">
+					<strong th:text="${board.title}">제목</strong>
+				</a>
+				<a th:href="@{'/WalkTrailDetail/{num}'(num=${board.boardNum})}">
+					<img class="thumb-image"
+						th:src="@{${board.Image_paths != null} ? '/images/' + ${board.Image_paths} : '/imagesDefault/defaultBoard.png'}"
+						alt="썸네일" />
+				</a>
+				<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
+				<span th:text="'분양가: ' + ${board.price}">분양가</span>
+				<span th:text="'조회수: ' + ${board.views}">조회수</span>
+				<span th:text="'댓글 수: ' + ${board.commentCount}">댓글 수</span>
+				<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
+				<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
+				<hr />
+			</div>
+			<div th:if="${mainList.size() == 0}">등록된 게시글이 없습니다.</div>
+		</div>
+
+
+		<!-- 리스트형 본문 (기존 테이블) -->
+		<table class="table-posts">
 			<colgroup>
-				<col style="width: 5%;" /> <!-- 번호 -->
-				<col style="width: 40%;" /> <!-- 제목: 넓게 -->
-				<col style="width: 15%;" /> <!-- 작성자 -->
-				<col style="width: 10%;" /> <!-- 조회수 -->
-				<col style="width: 10%;" /> <!-- 좋아요 -->
-				<col style="width: 20%;" /> <!-- 작성일 -->
+				<col style="width: 5%;" />
+				<col style="width: 15%;" />
+				<col style="width: 15%;" />
+				<col style="width: 40%;" />
+				<col style="width: 10%;" />
+				<col style="width: 5%;" />
+				<col style="width: 5%;" />
+				<col style="width: 5%;" />
+				<col style="width: 20%;" />
 			</colgroup>
-
 			<thead>
-				<!-- 테이블 제목 행-->
 				<tr>
 					<th>번호</th>
-					<th>제목</th>
+					<th>미리보기</th>
 					<th>작성자</th>
+					<th>제목</th>
+					<th>분양가</th>
 					<th>조회수</th>
+					<th>댓글 수</th>
 					<th>좋아요</th>
 					<th>작성일</th>
 				</tr>
 			</thead>
 
+			<!-- 본문 코드 -->
 			<tbody>
-				<!-- 반복문 -->
-				<tr th:each="board : ${mainList}">
+				<tr th:each="board, iterStat : ${mainList}" th:if="${iterStat.index < 15}">
 					<td th:text="${board.boardNum}">1</td>
+					<!-- 썸넬 보이게-->
 					<td>
-						<!-- 제목 클릭 시 상세보기 -->
-						<a th:href="@{'/WalkTrailDetail/{num}'(num=${board.boardNum})}" th:text="${board.title}">제목</a>
+						<img class="thumb-image"
+							th:src="@{${board.Image_paths != null} ? '/images/' + ${board.Image_paths} : '/imagesDefault/defaultBoard.png'}"
+							alt="이미지" />
 					</td>
 					<td th:text="${board.nickName}"></td>
+					<td>
+						<a th:href="@{'/WalkTrailDetail/{num}'(num=${board.boardNum})}" class="link-title"
+							th:text="${board.title + '(' + board.commentCount + ')'}">제목</a>
+					</td>
+					<td th:text="${board.price}"></td>
 					<td th:text="${board.views}"></td>
+					<td th:text="${board.commentCount}"></td>
 					<td th:text="${board.likes}"></td>
-					<td th:text="${board.registerDate}"></td>
+					<td th:text="${board.formattedRegistDate}"></td>
 				</tr>
-				<!-- 게시글 없는 경우 -->
 				<tr th:if="${mainList.size() == 0}">
-					<td colspan="7">등록된 게시글이 없습니다.</td>
+					<td colspan="9">등록된 게시글이 없습니다.</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
+
+	<!-- 페이지 네이션-->
+	<div class="pagination">
+		<ul class="pagination-list">
+			<li class="pagination-item" th:if="${currentPage > 1}">
+				<a class="pagination-link"
+					th:href="@{/WalkTrail(page=${currentPage - 1}, keyword=${keyword}, field=${field})}">◀ 이전</a>
+			</li>
+
+			<li class="pagination-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+				th:classappend="${pageNum == currentPage} ? 'active'">
+				<a class="pagination-link" th:href="@{/WalkTrail(page=${pageNum}, keyword=${keyword}, field=${field})}"
+					th:text="${pageNum}">1</a>
+			</li>
+
+			<li class="pagination-item" th:if="${currentPage < totalPages}">
+				<a class="pagination-link"
+					th:href="@{/WalkTrail(page=${currentPage + 1}, keyword=${keyword}, field=${field})}">다음 ▶</a>
+			</li>
+		</ul>
+	</div>
+
+	<script>
+		// 페이지 로드 시, URL에서 viewType 파라미터 읽어서 라디오 체크와 화면 표시 결정
+		function getQueryParam(param) {
+			const urlParams = new URLSearchParams(window.location.search);
+			return urlParams.get(param);
+		}
+
+		function setViewType(viewType) {
+			const cardView = document.querySelector('.card-list-view');
+			const listView = document.querySelector('.table-posts');
+			const radios = document.querySelectorAll('input[name="viewType"]');
+
+			if (viewType === 'list') {
+				cardView.classList.add('hidden');
+				listView.classList.remove('hidden');
+				radios.forEach(r => r.checked = (r.value === 'list'));
+			} else {
+				cardView.classList.remove('hidden');
+				listView.classList.add('hidden');
+				radios.forEach(r => r.checked = (r.value === 'card'));
+			}
+		}
+
+		window.addEventListener('DOMContentLoaded', () => {
+			let viewType = getQueryParam('viewType') || 'card';
+			setViewType(viewType);
+
+			// 라디오 변경 시, 페이지 새로고침하면서 viewType 파라미터 유지
+			document.querySelectorAll('input[name="viewType"]').forEach(radio => {
+				radio.addEventListener('change', (e) => {
+					const params = new URLSearchParams(window.location.search);
+					params.set('viewType', e.target.value);
+					// 다른 검색 파라미터 유지한 채로 새로고침
+					window.location.search = params.toString();
+				});
+			});
+		});
+	</script>
 
 </body>
 
