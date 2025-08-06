@@ -117,3 +117,49 @@ hr {
 	border-top: 1px solid #eee;
 	margin: 12px 0;
 }
+
+/* 입력 폼 그룹 정돈 */
+.form-group {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 15px;
+}
+
+.form-group label {
+	font-weight: 600;
+	color: #555;
+	margin-bottom: 6px;
+	font-size: 14px;
+}
+
+/* input/textarea 공통 스타일 */
+.form-group input[type="text"],
+.form-group input[type="hidden"],
+.form-group input[type="number"],
+.form-group textarea {
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	font-size: 14px;
+	font-family: 'Segoe UI', sans-serif;
+}
+
+/* 내용 입력창 박스 스타일 (상세보기 박스와 통일) */
+.content-box {
+	background-color: #f7f7f7;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 12px;
+	font-size: 14px;
+	color: #444;
+	resize: vertical;
+	min-height: 100px;
+}
+
+/* hr 구분선 */
+.modal-content hr {
+	border: none;
+	border-top: 1px solid #eee;
+	margin: 12px 0;
+}
+
