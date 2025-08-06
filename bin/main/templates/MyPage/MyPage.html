@@ -8,6 +8,7 @@
 	<link rel="stylesheet" th:href="@{/CSS/modal.css}">
 	<link rel="stylesheet" th:href="@{/CSS/calandar.css}">
 	<link rel="stylesheet" th:href="@{/CSS/nav-buttons.css}">
+	<link rel="stylesheet" th:href="@{/CSS/memo-list.css}">
 
 	<style>
 		
@@ -65,28 +66,28 @@
 
 	<div class="user-card">
 		<div class="user-card-left">
-				<a href="/EditProfilePhoto">
-					<img th:src="@{${loginUser.profilePath}}" alt="프로필 이미지" class="profile-image">
-				</a>
-			</div>
-			<div class="user-card-right">
+			<a href="/EditProfilePhoto">
+				<img th:src="@{${loginUser.profilePath}}" alt="프로필 이미지" class="profile-image">
+			</a>
+		</div>
+		<div class="user-card-right">
 			<ul class="user-info-list">
-						<li><strong>닉네임</strong> <span th:text="${loginUser.nickName}">닉네임</span></li>
-						<li><strong>실명</strong> <span th:text="${loginUser.realName}">실명</span></li>
-						<li><strong>등급</strong> <span th:text="${loginUser.grade}">등급</span></li>
-						<li><strong>포인트</strong> <span th:text="${loginUser.point}">포인트</span></li>
-						<li><strong>경험치</strong> <span th:text="${loginUser.exp}">경험치</span></li>
-					</ul>
-					<div class="user-buttons">
-							<button onclick="location.href='/ModifyUser'">개인정보 수정</button>
-							<button onclick="location.href='/ChangePassword'">비밀번호 변경</button>
-							<button onclick="location.href='/Withdrawal'">탈퇴</button>
-						</div>
-					</div>
-				</div>
+				<li><strong>닉네임</strong> <span th:text="${loginUser.nickName}">닉네임</span></li>
+				<li><strong>실명</strong> <span th:text="${loginUser.realName}">실명</span></li>
+				<li><strong>등급</strong> <span th:text="${loginUser.grade}">등급</span></li>
+				<li><strong>포인트</strong> <span th:text="${loginUser.point}">포인트</span></li>
+				<li><strong>경험치</strong> <span th:text="${loginUser.exp}">경험치</span></li>
+			</ul>
+			<div class="user-buttons">
+				<button onclick="location.href='/ModifyUser'">개인정보 수정</button>
+				<button onclick="location.href='/ChangePassword'">비밀번호 변경</button>
+				<button onclick="location.href='/Withdrawal'">탈퇴</button>
+			</div>
+		</div>
+	</div>
 
 	<!--일정 달력-->
-	<div class="nav-buttons"style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+	<div class="nav-buttons" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
 		<form th:action="@{/MyPage}" method="get" style="display:inline;">
 			<input type="hidden" name="year" th:value="${month == 1} ? ${year - 1} : ${year}" />
 			<input type="hidden" name="month" th:value="${month == 1} ? 12 : ${month - 1}" />
@@ -166,16 +167,14 @@
 	</div>
 
 	<!-- 리스트 모달 -->
-	<div id="memoListModal"
-		style="display:none; position:fixed; z-index:250; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.4);">
-		<div
-			style="background:white; margin:10% auto; padding:20px; width:360px; border-radius:5px; position:relative; max-height: 60vh; overflow-y: auto;">
-			<span id="memoListClose"
-				style="position:absolute; right:10px; top:10px; cursor:pointer; font-weight:bold; font-size:18px;">&times;</span>
-			<h2>메모 리스트</h2>
+	<div id="memoListModal" class="modal-overlay">
+		<div class="modal-content">
+			<span id="memoListClose" class="modal-close">&times;</span>
+			<h2 class="modal-title">메모 리스트</h2>
 			<ul id="memoListContainer" style="list-style:none; padding:0; margin:0;"></ul>
-			<div class="nav-buttons" style="margin-top: 20px;">
-			<button id="memoListAddBtn" style="margin-top: 15px;">메모 추가</button>
+			
+			<div class="modal-buttons">
+				<button id="memoListAddBtn" class="btn">메모 추가</button>
 			</div>
 		</div>
 	</div>
@@ -184,21 +183,40 @@
 	<div id="memoDetailModal" class="modal-overlay">
 		<div class="modal-content">
 			<span id="memoDetailClose" class="modal-close">&times;</span>
-			<h2>메모 상세보기</h2>
-			<p><strong>작성일:</strong> <span id="detailDate"></span></p>
-			<p><strong>애견 이름:</strong> <span id="detailAnimalName"></span></p>
-			<p><strong>제목:</strong> <span id="detailTitleText"></span></p>
-			<p><strong>내용:</strong> <span id="detailContent"></span></p>
+			<h2 class="modal-title">메모 상세보기</h2>
 
-			<div class="nav-buttons" style="margin-top: 20px;">
-				<button id="detailAddBtn">메모 추가</button>
-				<button id="detailEditBtn">수정</button>
-				<button id="detailDeleteBtn" class="danger">삭제</button>
+			<div class="detail-row">
+				<span class="label">작성일</span>
+				<span id="detailDate" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">애견 이름</span>
+				<span id="detailAnimalName" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">제목</span>
+				<span id="detailTitleText" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">내용</span>
+				<div id="detailContent" class="content-box"></div>
+			</div>
+
+			<div class="modal-buttons">
+				<button id="detailAddBtn" class="btn">메모 추가</button>
+				<button id="detailEditBtn" class="btn">수정</button>
+				<button id="detailDeleteBtn" class="btn btn-danger">삭제</button>
 			</div>
 		</div>
 	</div>
 
-	
+
 	<script>
 		// 1. 유저의 애니멀 리스트를 받아 animalNum → animalName 매핑 생성
 		let animalMap = new Map();
@@ -341,7 +359,12 @@
 									li.style.padding = '5px 0';
 									li.style.borderBottom = '1px solid #ddd';
 
-									li.textContent = `제목: ${memo.title} | 이름: ${memo.animalName || '애견없음'}`;
+									li.innerHTML = `
+										<div class="memo-list-item">
+											<div class="memo-title">${memo.title}</div>
+											<div class="memo-animal">🐾 ${memo.animalName || '애견없음'}</div>
+										</div>
+									`;
 
 									li.addEventListener('click', () => {
 										memoListModal.style.display = 'none';
