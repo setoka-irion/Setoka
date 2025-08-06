@@ -287,6 +287,6 @@ public class MyPageController {
 	@ResponseBody
 	public List<Animal> getAnimalsByUserNum(@AuthenticationPrincipal CustomUserDetails authUser) {
 		Users user = (Users) authUser.getUser();
-		return animalService.getAnimalsByUserNum(user.getNum());
+		return animalService.getAnimalsByUserNumNormal(user.getNum());
 	}
 }

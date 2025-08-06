@@ -59,7 +59,7 @@
 
 .animalPage .emptycard button:hover {
 	background-color: rgb(192, 192, 192);
-} 
+}
 
 .animalPage form button {
 	background-color: #e74c3c;
@@ -72,7 +72,7 @@
 .animalPage .modal {
 	display: none;
 	position: fixed;
-	top: 50%;
+	top: 55%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	background-color: white;
@@ -81,10 +81,17 @@
 	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 	z-index: 999;
 	width: 400px;
-	
+
 	/* 추가된 부분 */
-		max-height: 70vh; /* 화면 높이의 80% */
-		overflow-y: auto; /* 넘치는 경우 스크롤 */
+	max-height: 70vh;
+	/* 화면 높이의 80% */
+	overflow-y: auto;
+	/* 넘치는 경우 스크롤 */
+}
+
+.animalPage .modal h2 {
+	margin-top: 0px;
+	margin-bottom: 20px;
 }
 
 .animalPage .modal.active {
@@ -136,7 +143,7 @@
 .animalPage .emptycard button {
 	background-color: #f5f5f5;
 	color: #aaa;
-	font-size: 100px; 
-	width: 100%; 
+	font-size: 100px;
+	width: 100%;
 	height: 100%;
-} 
+}
