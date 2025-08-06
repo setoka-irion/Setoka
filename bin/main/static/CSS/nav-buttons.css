@@ -1,0 +1,32 @@
+
+.nav-buttons {
+	display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+		margin: 20px 0;
+	
+}
+.nav-buttons button {
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 16px;
+	transition: background-color 0.3s ease;
+}
+.nav-buttons button:hover {
+	background-color: #388e3c;
+}
+
+/* danger 버튼 (삭제 전용) */
+button.danger {
+	background-color: #f44336;
+	color: #fff;
+}
+
+button.danger:hover {
+	background-color: #d32f2f;
+}
