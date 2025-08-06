@@ -4,42 +4,13 @@
 <head>
 	<title>MyPage</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/user.css}">
+	<link rel="stylesheet" th:href="@{/CSS/modal.css}">
+	<link rel="stylesheet" th:href="@{/CSS/calandar.css}">
+	<link rel="stylesheet" th:href="@{/CSS/nav-buttons.css}">
+	<link rel="stylesheet" th:href="@{/CSS/memo-list.css}">
+
 	<style>
-		#calendar {
-			width: 350px;
-			margin: 20px auto;
-			border-collapse: collapse;
-		}
-
-		#calendar th,
-		#calendar td {
-			border: 1px solid #ccc;
-			width: 14.28%;
-			height: 80px;
-			vertical-align: top;
-			padding: 5px;
-			cursor: pointer;
-		}
-
-		#calendar th {
-			background: #eee;
-		}
-
-		.memo-title {
-			font-size: 0.75em;
-			color: #007bff;
-			margin-top: 5px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			display: block;
-		}
-
-		.nav-buttons {
-			text-align: center;
-			margin: 10px 0;
-		}
-
 		#memoModal {
 			display: none;
 			position: fixed;
@@ -92,43 +63,30 @@
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
-	<div class="UserInfo" style="text-align: center;">
-		<table border="1" style="margin: 0 auto;">
-			<tr>
-				<!--<td rowspan="4"><a href="/EditProfilePhoto"><img th:src="@{'/images/' + ${loginUser.profilePath}}"
-						style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;" alt="이미지" /></a></td>-->
-				<td rowspan="5" style="padding: 0;">
-					<a href="/EditProfilePhoto">
-						<img th:src="@{${loginUser.profilePath}}" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="이미지" />
-					</a>
-				</td>
-				<td>닉네임</td>
-				<td th:text="${loginUser.nickName}">닉네임</td>
-			</tr>
-			<tr>
-				<td>실명</td>
-				<td th:text="${loginUser.realName}">실명</td>
-			</tr>
-			<tr>
-				<td>등급</td>
-				<td th:text="${loginUser.grade}">등급</td>
-			</tr>
-			<tr>
-				<td>포인트</td>
-				<td th:text="${loginUser.point}">포인트</td>
-			</tr>
-			<tr>
-				<td>경험치</td>
-				<td th:text="${loginUser.exp}">경험치</td>
-			</tr>
-		</table>
-		<button onclick="location.href='/ModifyUser'">개인정보수정</button>
-		<button onclick="location.href='/ChangePassword'">비밀번호변경</button>
-		<button onclick="location.href='/Withdrawal'">탈퇴</button>
+	<div class="user-card">
+		<div class="user-card-left">
+			<a href="/EditProfilePhoto">
+				<img th:src="@{${loginUser.profilePath}}" alt="프로필 이미지" class="profile-image">
+			</a>
+		</div>
+		<div class="user-card-right">
+			<ul class="user-info-list">
+				<li><strong>닉네임</strong> <span th:text="${loginUser.nickName}">닉네임</span></li>
+				<li><strong>실명</strong> <span th:text="${loginUser.realName}">실명</span></li>
+				<li><strong>등급</strong> <span th:text="${loginUser.grade}">등급</span></li>
+				<li><strong>포인트</strong> <span th:text="${loginUser.point}">포인트</span></li>
+				<li><strong>경험치</strong> <span th:text="${loginUser.exp}">경험치</span></li>
+			</ul>
+			<div class="user-buttons">
+				<button onclick="location.href='/ModifyUser'">개인정보 수정</button>
+				<button onclick="location.href='/ChangePassword'">비밀번호 변경</button>
+				<button onclick="location.href='/Withdrawal'">탈퇴</button>
+			</div>
+		</div>
 	</div>
 
 	<!--일정 달력-->
-	<div class="nav-buttons">
+	<div class="nav-buttons" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
 		<form th:action="@{/MyPage}" method="get" style="display:inline;">
 			<input type="hidden" name="year" th:value="${month == 1} ? ${year - 1} : ${year}" />
 			<input type="hidden" name="month" th:value="${month == 1} ? 12 : ${month - 1}" />
@@ -200,7 +158,7 @@
 				<label for="content">내용</label>
 				<textarea id="content" name="content" rows="5" required></textarea>
 
-				<div style="margin-top: 15px;">
+				<div class="nav-buttons">
 					<button type="submit" id="saveBtn">저장</button>
 				</div>
 			</form>
@@ -208,42 +166,64 @@
 	</div>
 
 	<!-- 리스트 모달 -->
-	<div id="memoListModal"
-		style="display:none; position:fixed; z-index:250; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.4);">
-		<div
-			style="background:white; margin:10% auto; padding:20px; width:360px; border-radius:5px; position:relative; max-height: 60vh; overflow-y: auto;">
-			<span id="memoListClose"
-				style="position:absolute; right:10px; top:10px; cursor:pointer; font-weight:bold; font-size:18px;">&times;</span>
-			<h2>메모 리스트</h2>
+	<div id="memoListModal" class="modal-overlay">
+		<div class="modal-content">
+			<span id="memoListClose" class="modal-close">&times;</span>
+			<h2 class="modal-title">메모 리스트</h2>
 			<ul id="memoListContainer" style="list-style:none; padding:0; margin:0;"></ul>
-			<button id="memoListAddBtn" style="margin-top: 15px;">메모 추가</button>
+
+			<div class="modal-buttons">
+				<button id="memoListAddBtn" class="btn">메모 추가</button>
+			</div>
 		</div>
 	</div>
 
 	<!-- 상세보기 모달 -->
-	<div id="memoDetailModal"
-		style="display:none; position:fixed; z-index:200; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.4);">
-		<div
-			style="background:white; margin:10% auto; padding:20px; width:350px; border-radius:5px; position:relative;">
-			<span id="memoDetailClose"
-				style="position:absolute; right:10px; top:10px; cursor:pointer; font-weight:bold; font-size:18px;">&times;</span>
-			<h2>메모 상세보기</h2>
-			<p><strong>작성일:</strong> <span id="detailDate"></span></p>
-			<p><strong>애견 이름:</strong> <span id="detailAnimalName"></span></p>
-			<p><strong>제목:</strong> <span id="detailTitleText"></span></p>
-			<p><strong>내용:</strong> <span id="detailContent"></span></p>
-			<div style="margin-top: 15px;">
-				<button id="detailAddBtn" style="margin-left:10px;">메모 추가</button>
-				<button id="detailEditBtn">수정</button>
-				<button id="detailDeleteBtn" style="background-color:#f44336; color:#fff;">삭제</button>
+	<div id="memoDetailModal" class="modal-overlay">
+		<div class="modal-content">
+			<span id="memoDetailClose" class="modal-close">&times;</span>
+			<h2 class="modal-title">메모 상세보기</h2>
+
+			<div class="detail-row">
+				<span class="label">작성일</span>
+				<span id="detailDate" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">애견 이름</span>
+				<span id="detailAnimalName" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">제목</span>
+				<span id="detailTitleText" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">내용</span>
+				<div id="detailContent" class="content-box"></div>
+			</div>
+
+			<div class="modal-buttons">
+				<button id="detailAddBtn" class="btn">메모 추가</button>
+				<button id="detailBackToListBtn" class="btn" style="display: none;">목록</button>
+				<button id="detailEditBtn" class="btn">수정</button>
+				<button id="detailDeleteBtn" class="btn btn-danger">삭제</button>
 			</div>
 		</div>
 	</div>
+
 
 	<script>
 		// 1. 유저의 애니멀 리스트를 받아 animalNum → animalName 매핑 생성
 		let animalMap = new Map();
 		let currentDetailMemoNum;
+		
+		let selectedDateStr = null;
+		let lastMemoList = [];
 
 		document.addEventListener('DOMContentLoaded', () => {
 			const modal = document.getElementById('memoModal');
@@ -339,6 +319,7 @@
 					document.querySelectorAll('#calendar td').forEach(td => {
 						td.addEventListener('click', () => {
 							const dateStr = td.getAttribute('data-date');
+							selectedDateStr = dateStr;
 							if (!dateStr) return;
 
 							const memoListStr = td.dataset.memoList;
@@ -382,11 +363,18 @@
 									li.style.padding = '5px 0';
 									li.style.borderBottom = '1px solid #ddd';
 
-									li.textContent = `제목: ${memo.title} | 이름: ${memo.animalName || '애견없음'}`;
+									li.innerHTML = `
+										<div class="memo-list-item">
+											<div class="memo-title">${memo.title}</div>
+											<div class="memo-animal">🐾 ${memo.animalName || '애견없음'}</div>
+										</div>
+									`;
 
 									li.addEventListener('click', () => {
 										memoListModal.style.display = 'none';
 
+										lastMemoList = memoList;
+										
 										showDetailModal(memo, dateStr);
 									});
 
@@ -409,7 +397,6 @@
 									scheduleDateInput.value = dateStr;
 									titleInput.value = '';
 									contentInput.value = '';
-									animalSelect.value = '';
 
 									modal.style.display = "block";
 								};
@@ -429,6 +416,18 @@
 				detailContent.textContent = memo.content;
 				detailAnimalName.textContent = memo.animalName || '알 수 없음';
 
+				const backToListBtn = document.getElementById('detailBackToListBtn');
+				if (lastMemoList.length > 1) {
+					backToListBtn.style.display = 'inline-block';  // 보여줌
+				} else {
+					backToListBtn.style.display = 'none';  // 숨김
+				}
+
+				backToListBtn.onclick = () => {
+					detailModal.style.display = 'none';
+					document.getElementById('memoListModal').style.display = 'block';
+				};
+				
 				detailEditBtn.onclick = () => {
 					detailModal.style.display = 'none';
 					modalTitle.textContent = "메모 수정";
@@ -479,10 +478,9 @@
 					saveBtn.textContent = "저장";
 
 					memoNumInput.value = '';
-					scheduleDateInput.value = dateStr;
+					scheduleDateInput.value = selectedDateStr;
 					titleInput.value = '';
 					contentInput.value = '';
-					animalSelect.value = '';
 					modal.style.display = "block";
 				};
 

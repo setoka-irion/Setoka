@@ -1,0 +1,51 @@
+#calendar {
+		width: 100%;
+		max-width: 1000px;
+		margin: 0 auto;
+		border-collapse: separate;
+		border-spacing: 10px;
+		background-color: #fff;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		border-radius: 12px;
+		overflow: hidden;
+		font-family: 'Segoe UI', sans-serif;
+		table-layout: fixed;
+	}
+
+	#calendar thead th {
+		background-color: #f0f0f0;
+		color: #333;
+		padding: 12px 0;
+		font-size: 1rem;
+		border-bottom: 2px solid #ddd;
+	}
+
+	#calendar tbody td {
+		height: 100px;
+		vertical-align: top;
+		background-color: #fafafa;
+		border-radius: 10px;
+		padding: 8px;
+		transition: background-color 0.2s ease;
+		position: relative;
+		cursor: pointer;
+	}
+
+	#calendar tbody td:hover {
+		background-color: #e6f7ff;
+	}
+
+	#calendar .today {
+		background-color: #d0f0c0 !important;
+		border: 2px solid #4caf50;
+	}
+
+	#calendar .memo-title {
+		display: block;
+		font-size: 0.75em;
+		color: #007bff;
+		margin-top: 5px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
