@@ -8,9 +8,9 @@
 	
 }
 .nav-buttons button {
-	background-color: #4CAF50;
-	color: white;
-	border: none;
+	color: #8b5e3c;
+	background-color: white;
+	border:none;
 	padding: 8px 16px;
 	border-radius: 8px;
 	cursor: pointer;
@@ -18,7 +18,7 @@
 	transition: background-color 0.3s ease;
 }
 .nav-buttons button:hover {
-	background-color: #388e3c;
+	background-color: rgb(255, 220, 185);
 }
 
 /* danger 버튼 (삭제 전용) */

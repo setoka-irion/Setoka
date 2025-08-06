@@ -5,28 +5,13 @@
 	<meta charset="UTF-8" />
 	<title>애견 상세보기 + 달력</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/user.css}">
+	<link rel="stylesheet" th:href="@{/CSS/modal.css}">
+	<link rel="stylesheet" th:href="@{/CSS/calendar.css}">
+	<link rel="stylesheet" th:href="@{/CSS/nav-buttons.css}">
+	<link rel="stylesheet" th:href="@{/CSS/memo-list.css}">
+
 	<style>
-		/* 기본 스타일 */
-		table {
-			width: 350px;
-			margin: 20px auto;
-			border-collapse: collapse;
-		}
-
-		th,
-		td {
-			border: 1px solid #ccc;
-			width: 14.28%;
-			height: 80px;
-			vertical-align: top;
-			padding: 5px;
-			cursor: pointer;
-		}
-
-		th {
-			background: #eee;
-		}
-
 		.memo-title {
 			font-size: 0.75em;
 			color: #007bff;
@@ -37,10 +22,6 @@
 			display: block;
 		}
 
-		.nav-buttons {
-			text-align: center;
-			margin: 10px 0;
-		}
 
 		button {
 			margin: 0 10px;
@@ -105,40 +86,32 @@
 	<div th:replace="~{header :: siteHeader}"></div>
 
 	<!-- 애견 상세정보 -->
-	<div style="text-align: center;">
-		<h1 th:text="${CurrentAnimal.animalName} + ' 상세정보'">애견 이름 상세정보</h1>
+	<h1 th:text="${CurrentAnimal.animalName} + ' 상세정보'" style="text-align: center;">애견 이름 상세정보</h1>
 
+	<div class="user-card">
+		<div class="user-card-left">
+			<img th:if="${CurrentAnimal.profilePath != null and CurrentAnimal.profilePath != ''}"
+				th:src="@{/images/{filename}(filename=${CurrentAnimal.profilePath})}" alt="프로필 사진"
+				class="profile-image" />
 
-		<img th:if="${CurrentAnimal.profilePath != null and CurrentAnimal.profilePath != ''}"
-			th:src="@{/images/{filename}(filename=${CurrentAnimal.profilePath})}" alt="프로필 사진"
-			style="width:150px; height:150px; object-fit:cover; border-radius:50%;" />
-		<p th:if="${CurrentAnimal.profilePath == null or CurrentAnimal.profilePath == ''}">프로필 사진이 없습니다.</p>
-		<br>
-		<button onclick="location.href='/myanimal'">목록으로</button>
+			<p th:if="${CurrentAnimal.profilePath == null or CurrentAnimal.profilePath == ''}">프로필 사진이 없습니다.</p>
+
+		</div>
+
+		<div class="user-card-right">
+			<ul class="user-info-list">
+				
+				<li><strong>이름</strong> <span th:text="${CurrentAnimal.animalName}">이름</span></li>
+				<li><strong>종</strong> <span th:text="${CurrentAnimal.species}">종</span></li>
+				<li><strong>나이</strong> <span th:text="${CurrentAnimal.age}">나이</span></li>
+				<li><strong>함께한 날</strong> <span th:text="${CurrentAnimal.togetherDateLong}">함께한 날</span></li>
+				<li><strong>성별</strong> <span th:text="${CurrentAnimal.gender}">성별</span></li>
+			</ul>
+			<div class="animal-buttons">
+				<button onclick="location.href='/myanimal'">목록으로</button>
+			</div>
+		</div>
 	</div>
-
-	<table border="1" style="width:350px; margin:0 auto 30px;">
-		<tr>
-			<th>이름</th>
-			<td th:text="${CurrentAnimal.animalName}"></td>
-		</tr>
-		<tr>
-			<th>종</th>
-			<td th:text="${CurrentAnimal.species}"></td>
-		</tr>
-		<tr>
-			<th>나이</th>
-			<td th:text="${CurrentAnimal.age}"></td>
-		</tr>
-		<tr>
-			<th>함께한 날</th>
-			<td th:text="${CurrentAnimal.togetherDateLong}"></td>
-		</tr>
-		<tr>
-			<th>성별</th>
-			<td th:text="${CurrentAnimal.gender}"></td>
-		</tr>
-	</table>
 
 
 
@@ -148,7 +121,7 @@
 			<input type="hidden" name="animalNum" th:value="${CurrentAnimal.num}" />
 			<input type="hidden" name="year" th:value="${month == 1} ? ${year - 1} : ${year}" />
 			<input type="hidden" name="month" th:value="${month == 1} ? 12 : ${month - 1}" />
-			<button type="submit">◀ 이전달</button>
+			<button type="submit">◀</button>
 		</form>
 
 		<span id="yearMonth" th:attr="data-year=${year}, data-month=${month}"
@@ -158,7 +131,7 @@
 			<input type="hidden" name="animalNum" th:value="${CurrentAnimal.num}" />
 			<input type="hidden" name="year" th:value="${month == 12} ? ${year + 1} : ${year}" />
 			<input type="hidden" name="month" th:value="${month == 12} ? 1 : ${month + 1}" />
-			<button type="submit">다음달 ▶</button>
+			<button type="submit">▶</button>
 		</form>
 	</div>
 
@@ -193,50 +166,94 @@
 	<div id="memoModal">
 		<div id="memoModalContent">
 			<span id="memoModalClose">&times;</span>
-			<h2 id="modalTitle">메모 작성</h2>
+			<h2 id="modalTitle" class="modal-title">메모 작성</h2>
+
 			<form id="memoForm" method="post" th:action="@{/memo/add}">
+
 				<input type="hidden" name="userNum" th:value="${userNum}" />
+				<!-- 기존 animalNum 히든 필드 제거 -->
 				<input type="hidden" id="memoNum" name="num" value="" />
-				<label for="scheduleDate">날짜</label>
-				<input type="text" id="scheduleDate" name="scheduleDateStr" readonly />
-				<label for="animalSelect">애견</label>
-				<div id="animalCheckboxContainer"></div>
-				<input type="hidden" id="animalNumStr" name="animalNumStr" />
-				<label for="title">제목</label>
-				<input type="text" id="title" name="title" required />
-				<label for="content">내용</label>
-				<textarea id="content" name="content" rows="5" required></textarea>
-				<div style="margin-top: 15px;">
-					<button type="submit" id="saveBtn">저장</button>
+
+				<div class="form-group">
+					<label for="scheduleDate">작성일</label>
+					<input type="text" id="scheduleDate" name="scheduleDateStr" readonly />
+				</div>
+				<hr />
+
+				<div class="form-group">
+					<label for="animalSelect">애견 선택</label>
+					<div id="animalCheckboxContainer"></div>
+					<input type="hidden" id="animalNumStr" name="animalNumStr" />
+				</div>
+				<hr />
+
+				<div class="form-group">
+					<label for="title">제목</label>
+					<input type="text" id="title" name="title" required />
+				</div>
+				<hr />
+
+				<div class="form-group">
+					<label for="content">내용</label>
+					<textarea id="content" name="content" rows="5" required></textarea>
+				</div>
+				<hr />
+
+				<div class="modal-buttons">
+					<button type="submit" id="saveBtn" class="btn">저장</button>
 				</div>
 			</form>
 		</div>
 	</div>
 
 	<!-- 리스트 모달 -->
-	<div id="memoListModal">
-		<div>
-			<span id="memoListClose">&times;</span>
-			<h2>메모 리스트</h2>
+
+	<div id="memoListModal" class="modal-overlay">
+		<div class="modal-content">
+			<span id="memoListClose" class="modal-close">&times;</span>
+			<h2 class="modal-title">메모 리스트</h2>
 			<ul id="memoListContainer" style="list-style:none; padding:0; margin:0;"></ul>
-			<button id="memoListAddBtn" style="margin-top: 15px;">메모 추가</button>
+
+			<div class="modal-buttons">
+				<button id="memoListAddBtn" class="btn">메모 추가</button>
+			</div>
 		</div>
 	</div>
-
 	<!-- 상세보기 모달 -->
-	<div id="memoDetailModal">
-		<div>
-			<span id="memoDetailClose">&times;</span>
-			<h2>메모 상세보기</h2>
-			<p><strong>작성일:</strong> <span id="detailDate"></span></p>
-			<p><strong>제목:</strong> <span id="detailTitleText"></span></p>
-			<p><strong>내용:</strong> <span id="detailContent"></span></p>
-			<p><strong>애견 이름:</strong> <span id="detailAnimalName"></span></p>
-			<div style="margin-top: 15px;">
-				<button id="detailAddBtn" style="margin-left:10px;">메모 추가</button>
+
+	<div id="memoDetailModal" class="modal-overlay">
+		<div class="modal-content">
+			<span id="memoDetailClose" class="modal-close">&times;</span>
+			<h2 class="modal-title">메모 상세보기</h2>
+
+			<div class="detail-row">
+				<span class="label">날짜</span>
+				<span id="detailDate" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">애견 이름</span>
+				<span id="detailAnimalName" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">제목</span>
+				<span id="detailTitleText" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">내용</span>
+				<div id="detailContent" class="content-box"></div>
+			</div>
+
+			<div class="modal-buttons">
+				<button id="detailAddBtn" class="btn">추가</button>
 				<button id="detailBackToListBtn" class="btn" style="display: none;">목록</button>
-				<button id="detailEditBtn">수정</button>
-				<button id="detailDeleteBtn" style="background-color:#f44336; color:#fff;">삭제</button>
+				<button id="detailEditBtn" class="btn">수정</button>
+				<button id="detailDeleteBtn" class="btn btn-danger">삭제</button>
 			</div>
 		</div>
 	</div>
@@ -385,8 +402,12 @@
 									li.style.padding = '5px 0';
 									li.style.borderBottom = '1px solid #ddd';
 
-									li.textContent = `제목: ${memo.title} | 이름: ${memo.animalName || '애견없음'}`;
-
+									li.innerHTML = `
+																			<div class="memo-list-item">
+																				<div class="memo-title">${memo.title}</div>
+																				<div class="memo-animal">🐾 ${memo.animalName || '애견없음'}</div>
+																			</div>
+																		`;
 									li.addEventListener('click', () => {
 										memoListModal.style.display = 'none';
 
