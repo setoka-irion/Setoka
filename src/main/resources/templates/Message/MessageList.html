@@ -22,7 +22,7 @@
 			<div class="message-summary" onclick="toggleDetail(this)">
 				<div class="sender" th:text="${message.sender}">보낸사람</div>
 				<div class="title" th:text="${message.title}">제목</div>
-				<div class="status" th:text="${message.messageStatus}">상태</div>
+				<div class="status" th:text="${message.messageStatus.displayName}">상태</div>
 				<div class="date" th:text="${#temporals.format(message.sendTime, 'yyyy-MM-dd HH:mm')}">보낸 시간</div>
 			</div>
 
@@ -70,7 +70,7 @@
 	        // 상태 영역 찾기 (예: 바로 위 형제에서 .status)
 	        const card = element.parentElement;
 	        const statusEl = element.querySelector('.status');
-	        if (statusEl && statusEl.textContent.trim() === 'UNREAD') {
+	        if (statusEl && statusEl.textContent.trim() === '안읽음') {
 	           const messageNum = card.getAttribute('data-message-num');
 	            // AJAX 요청으로 상태 변경 요청
 	            fetch(`/message/read/${messageNum}`, {
@@ -83,7 +83,7 @@
 	            .then(response => {
 	                if (response.ok) {
 	                    // 상태 텍스트를 READ로 변경
-	                    statusEl.textContent = 'READ';
+	                    statusEl.textContent = '읽음';
 	                } else {
 	                    console.error('상태 변경 실패');
 	                }
