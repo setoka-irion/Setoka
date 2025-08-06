@@ -55,7 +55,7 @@
 					<div
 						style="text-align: center; margin-bottom: 10px; width: 280px; height: 300px; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: center; border-radius: 10%; background-color: rgb(255, 255, 255);">
 						<img th:if="${animal.profilePath != null}"
-							th:src="@{/images/{filename}(filename=${animal.profilePath})}" alt="프로필"
+							th:src="@{{filename}(filename=${animal.profilePath})}" alt="프로필"
 							style="width: 280px; height: 300px; object-fit: cover; border-radius: 10%;" />
 					</div>
 	

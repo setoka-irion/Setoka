@@ -27,14 +27,22 @@ public class AnimalService {
     
     // DTO를 받아 새 애견 등록
     public boolean insertAnimal(AnimalDto animalDto) {
+
     	if(animalDto.getProfilePath() == null)
-    		return animalMapper.insertAnimal2(animalDto);
+    		animalDto.setProfilePath("/imagesDefault/defaultAnimal.png");
+    	else
+    		animalDto.setProfilePath("/images/" + animalDto.getProfilePath());
     	
         return animalMapper.insertAnimal(animalDto);
     }
 
     // DTO를 받아 애견 정보 수정
     public boolean updateAnimal(int num, AnimalDto animalDto) {
+    	if(animalDto.getProfilePath() == null)
+    		animalDto.setProfilePath("/imagesDefault/defaultAnimal.png");
+    	else
+    		animalDto.setProfilePath("/images/" + animalDto.getProfilePath());
+    	
         return animalMapper.updateAnimal(animalDto, num);
     }
 
