@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
@@ -163,14 +164,20 @@ public class MyPageController {
 
 	// 비밀번호 변경
 	@GetMapping(value = "ChangePassword")
-	public String changePassword(HttpSession session) {
-		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
-		if (passwordConfirm == null) {
-			SessionUrlHandler.save(session, "ChangePassword");
-			return Redirect.passwordConfirm;
-		}
-		session.removeAttribute("PasswordConfirmed");
+	public String changePassword(Model model, HttpSession session) {
+		//비밀번호 재확인 여부 확인
+//		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
+//		if (passwordConfirm == null) {
+//			SessionUrlHandler.save(session, "ChangePassword");
+//			//비밀번호 확인하러 이동
+//			return Redirect.passwordConfirm;
+//		}
+//		session.removeAttribute("PasswordConfirmed");
+		String error = (String)session.getAttribute("errorMessage");
+		if(error != null)
+			model.addAttribute("errorMessage", error);
 
+		//비밀번호 변경 페이지로 이동
 		return "MyPage/ChangePassword";
 	}
 
@@ -178,15 +185,33 @@ public class MyPageController {
 	public String changePasswordsubmit(@RequestParam("password") String password,
 			@RequestParam("passwordCon") String passwordCon, HttpSession session,
 			@AuthenticationPrincipal CustomUserDetails authUser) {
+		
+		if(!password.equals(passwordCon))
+		{
+			session.setAttribute("errorMessage", "비밀번호 확인이 다릅니다.");
+			return Redirect.changePassword;
+		}
+			
+		if(!userService.passwordInvalid(password))
+		{
+			session.setAttribute("errorMessage", "대소문자 특수문자 포함 8자 이상");
+			return Redirect.changePassword;
+		}
+		
 		Users user = (Users) authUser.getUser();
 		String encordPassowrd = Encryption.Encoder(password);
-		if (Encryption.Decoder(encordPassowrd, passwordCon) && !Encryption.Decoder(user.getPassword(), passwordCon)) {
-			UsersDto dto = new UsersDto(user);
-			dto.setPassword(encordPassowrd);
-			userService.updateUserDto(dto);
-			return Redirect.Logout;
+		
+		//	비밀번호와 확인이 같은면서 이전 비밀번호와 다른경우
+		if (Encryption.Decoder(user.getPassword(), password)) 
+		{
+			session.setAttribute("errorMessage", "이전 비밀번호와 같습니다.");
+			return Redirect.changePassword;
 		}
-		return Redirect.changePassword;
+		
+		UsersDto dto = new UsersDto(user);
+		dto.setPassword(encordPassowrd);
+		userService.updateUserDto(dto);
+		return Redirect.Logout;
 	}
 
 	// 탈퇴
