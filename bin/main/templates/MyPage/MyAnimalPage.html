@@ -29,7 +29,7 @@
 			<div class="scroll-container" style="display: flex; overflow-x: auto; gap: 16px; padding: 10px; justify-content: flex-start;">
 				<div th:each="animal : ${animalList}" th:attr="onclick='location.href=\'/animal/detail?animalNum=' + ${animal.num} + '\''" style="min-width: 300px; flex-shrink: 0; border: 1px solid rgb(255, 255, 255);
 					 border-radius: 8px; padding: 12px; box-shadow: 0 0 5px rgba(0,0,0,0.1);
-					 background-color: rgb(198, 184, 166);">
+					 background-color: rgb(198, 184, 166); cursor: pointer;">
 	
 					<div
 						style="text-align: center; margin-bottom: 10px; width: 280px; height: 300px; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: center; border-radius: 10%; background-color: rgb(255, 255, 255);">
