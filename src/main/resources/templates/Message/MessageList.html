@@ -10,7 +10,32 @@
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
+	
+	<!-- 안읽음을 읽음으로 변화시키는 조건 (내가 받은 메세지를 볼때) -->
+	<input type="hidden" id="messageBoxType" th:value="${messageBoxType}" />
 
+	<!-- 왼쪽 메뉴 -->
+	<div class="messageBoxType">
+	  <h3>메뉴</h3>
+	  <ul style="list-style-type: none; padding-left: 0;">
+	    <li>
+	      <form action="/MessageList" method="get">
+	        <button type="submit" class="menu-link">받은 쪽지함</button>
+	      </form>
+	    </li>
+	    <li>
+	      <form action="/sent" method="get">
+	        <button type="submit" class="menu-link">보낸 쪽지함</button>
+	      </form>
+	    </li>
+	    <li>
+	      <form action="/CreateLetter" method="post">
+	        <button type="submit" class="menu-link">쪽지 보내기</button>
+	      </form>
+	    </li>
+	  </ul>
+	</div>
+	
 	<div class="message-list">
 		<h1>쪽지함</h1>
 
@@ -24,6 +49,10 @@
 				<div class="title" th:text="${message.title}">제목</div>
 				<div class="status" th:text="${message.messageStatus.displayName}">상태</div>
 				<div class="date" th:text="${#temporals.format(message.sendTime, 'yyyy-MM-dd HH:mm')}">보낸 시간</div>
+				<form th:action="@{/CreateLetter}" method="post" th:object="${message}" onsubmit="event.stopPropagation();">
+				  <input type="hidden" name="receiver" th:value="${message.sender}" />
+				  <button type="submit" class="button">답장</button>
+				</form>
 			</div>
 
 			<div class="message-detail" style="display: none;">
@@ -52,8 +81,6 @@
 			    </a>
 			</div>
 		</div>
-
-		<button onclick="location.href='/CreateLetter'">쪽지작성</button>
 	</div>
 
 
@@ -64,13 +91,16 @@
 <script>
 	function toggleDetail(element) {
 	    const detail = element.nextElementSibling;
+		const boxType = document.getElementById('messageBoxType')?.value;
+		
 	    if (detail.style.display === "none") {
 	        detail.style.display = "block";
 
 	        // 상태 영역 찾기 (예: 바로 위 형제에서 .status)
 	        const card = element.parentElement;
 	        const statusEl = element.querySelector('.status');
-	        if (statusEl && statusEl.textContent.trim() === '안읽음') {
+			
+	        if (boxType === 'RECEIVED' && statusEl && statusEl.textContent.trim() === '안읽음') {
 	           const messageNum = card.getAttribute('data-message-num');
 	            // AJAX 요청으로 상태 변경 요청
 	            fetch(`/message/read/${messageNum}`, {

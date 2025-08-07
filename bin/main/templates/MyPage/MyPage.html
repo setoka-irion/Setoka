@@ -78,6 +78,9 @@
 				<li><strong>경험치</strong> <span th:text="${loginUser.exp}">경험치</span></li>
 			</ul>
 			<div class="user-buttons">
+				<form action="/MessageList" method="get" style="display:inline;">
+				  <button type="submit" class="menu-button">쪽지함</button>
+				</form>
 				<button onclick="location.href='/ModifyUser'">개인정보 수정</button>
 				<button onclick="location.href='/ChangePassword'">비밀번호 변경</button>
 				<button onclick="location.href='/Withdrawal'">탈퇴</button>
