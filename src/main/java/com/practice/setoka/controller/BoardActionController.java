@@ -71,13 +71,15 @@ public class BoardActionController {
 
 	// 입양 메인페이지
 	@GetMapping(value = "/Adopt")
-	public String adoptMain(Model model, 
+	public String adoptMain(
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "field", required = false) String field, 
-			@RequestParam(value = "page", defaultValue = "1") int page) {
-
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "viewType", required = false) String viewType,
+			Model model, HttpSession session){
+		
 		// 페이지 네이션 기능
-		int limit = 15; //한페이지당 게시글수
+		int limit = 16; //한페이지당 게시글수
 		int offset = (page - 1) * limit; 
 		int totalCount;
 		
@@ -107,6 +109,16 @@ public class BoardActionController {
 		// Adopt 인기게시글
 		List<BoardWithUserDto> popularPosts = boardService.popularPosts(1);
 		searchResult = boardService.cutPage(offset, limit, searchResult);
+		
+		// 뷰 타입 세션 저장 또는 불러오기
+		if (viewType != null && !viewType.isEmpty()) {
+			session.setAttribute("viewType", viewType); // URL로 선택했으면 저장
+		} else if (session.getAttribute("viewType") != null) {
+			viewType = (String) session.getAttribute("viewType"); // 이전 값 불러오기
+		} else {
+			viewType = "card"; // 초기 기본값
+		}
+		model.addAttribute("viewType", viewType); // 뷰로 전달
 		
 		// 페이지네이션 기능용
 		int totalPages = (int) Math.ceil((double) totalCount / limit);	// 총게시글수/페이지당 갯수
