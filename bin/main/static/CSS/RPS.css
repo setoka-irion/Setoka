@@ -1,0 +1,75 @@
+/* 메인 컨테이너 */
+.rps-container {
+  max-width: 500px;
+  margin: 40px auto;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 30px 40px;
+  text-align: center;
+}
+
+/* 제목 */
+.rps-container h1 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: rgb(0, 0, 0);
+}
+
+/* 결과 출력 */
+.rps-container p {
+  font-weight: bold;
+  font-size: 18px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+/* 라벨 */
+.rps-container label {
+  font-weight: 600;
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* 포인트 입력 */
+.rps-container input[type="number"] {
+  padding: 8px 12px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* 라디오 버튼 그룹 */
+.rps-container input[type="radio"] {
+  margin-right: 8px;
+  transform: scale(1.2);
+}
+
+.rps-container label[for="rock"],
+.rps-container label[for="paper"],
+.rps-container label[for="scissors"] {
+  display: inline-block;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+/* 버튼 */
+.rps-container button[type="submit"] {
+  margin-top: 25px;
+  background-color: #8b5e3c;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.rps-container button[type="submit"]:hover {
+  background-color: rgb(255, 128, 0);
+}
