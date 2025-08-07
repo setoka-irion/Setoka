@@ -166,17 +166,20 @@ public class MyPageController {
 	@GetMapping(value = "ChangePassword")
 	public String changePassword(Model model, HttpSession session) {
 		//비밀번호 재확인 여부 확인
-//		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
-//		if (passwordConfirm == null) {
-//			SessionUrlHandler.save(session, "ChangePassword");
-//			//비밀번호 확인하러 이동
-//			return Redirect.passwordConfirm;
-//		}
-//		session.removeAttribute("PasswordConfirmed");
+		String passwordConfirm = (String) session.getAttribute("PasswordConfirmed");
+		if (passwordConfirm == null) {
+			SessionUrlHandler.save(session, "ChangePassword");
+			//비밀번호 확인하러 이동
+			return Redirect.passwordConfirm;
+		}
+		
 		String error = (String)session.getAttribute("errorMessage");
 		if(error != null)
+		{
 			model.addAttribute("errorMessage", error);
+		}
 
+		session.removeAttribute("errorMessage");
 		//비밀번호 변경 페이지로 이동
 		return "MyPage/ChangePassword";
 	}
