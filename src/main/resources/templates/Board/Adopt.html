@@ -6,6 +6,16 @@
 	<title>입양 게시판</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<style>
+		.container-all {
+			width: 85%;
+			margin: 20px auto;
+			position: relative;
+			background-color: #fff;
+			padding: 15px 0px;
+			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+			border-radius: 6px;
+		}
+
 		/* ====== 컨테이너 ====== */
 		.container-board {
 			width: 85%;
@@ -78,6 +88,25 @@
 			border-color: #8b5e3c;
 		}
 
+		/*==검색 버튼==*/
+		.btn-search {
+			padding: 8px 18px;
+			font-size: 14px;
+			cursor: pointer;
+			background-color: #8b5e3c;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			font-weight: 600;
+			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
+			transition: background-color 0.3s ease;
+		}
+
+		.btn-search:hover {
+			background-color: #8b5e3c;
+			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
+		}
+
 		/*== 글 등록 버튼==*/
 		.regist-button {
 			/* position: absolute 제거 */
@@ -102,27 +131,6 @@
 			background-color: #8b5e3c;
 			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
 		}
-
-		/*==검색 버튼==*/
-		.btn-search {
-			padding: 8px 18px;
-			font-size: 14px;
-			cursor: pointer;
-			background-color: #8b5e3c;
-			color: white;
-			border: none;
-			border-radius: 4px;
-			font-weight: 600;
-			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
-			transition: background-color 0.3s ease;
-		}
-
-		.btn-search:hover {
-			background-color: #8b5e3c;
-			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
-		}
-
-
 
 		/* ==== 보기 방식전환 ==== */
 		.toggle-switch {
@@ -181,6 +189,7 @@
 			display: flex;
 		}
 
+		/*=== 인기글 타이틀 ===*/
 		.popular-header {
 			display: flex;
 			justify-content: space-between;
@@ -194,6 +203,16 @@
 			flex-wrap: wrap;
 			gap: 20px;
 			justify-content: center;
+		}
+
+		.popular-wrapper {
+			width: 85%;
+			margin: 20px auto;
+			position: relative;
+			background-color: #fff;
+			padding: 15px 0px;
+			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+			border-radius: 6px;
 		}
 
 		/* ====== 인기글 영역 ====== */
@@ -269,12 +288,12 @@
 		.main-title {
 			margin: 0;
 			margin: 30px;
-			margin-bottom: 5px;   
+			margin-bottom: 5px;
 			font-size: 20px;
 			width: auto;
-			text-align: left;   
+			text-align: left;
 			padding-left: 0px;
-			
+
 		}
 
 		/* ====== 링크 ====== */
@@ -364,64 +383,62 @@
 </head>
 
 <body>
+
 	<!-- 헤더 -->
 	<div th:replace="~{header :: siteHeader}"></div>
-
-	<!-- 컨테이너 -->
-	<div class="container-board">
-		<!-- 윗단 아이콘 -->
-		<div class="board-header">
-			<h1>입양 게시판</h1>
-			<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
-		</div>
-
-		<!-- 검색 -->
-		<div class="search-regist-button">
-			<form th:action="@{/Adopt}" method="get" class="search-box">
-				<select name="field" class="search-select" th:value="${field}">
-					<option value="title" th:selected="${field == 'title'}">제목</option>
-					<option value="content" th:selected="${field == 'content'}">내용</option>
-					<option value="nickname" th:selected="${field == 'nickname'}">작성자</option>
-					<option value="" th:selected="${field == ''}">통합 검색</option>
-				</select>
-				<input type="text" name="keyword" class="search-input" placeholder="검색어 입력" th:value="${keyword}" />
-				<button type="submit" class="btn-search">검색</button>
-			</form>
-			<!-- 새 글 등록 버튼-->
-			<p class="regist-button">
-				<a th:href="@{/AdoptRegist}" class="btn-primary">새 글 등록하기</a>
-			</p>
-		</div>
-
-
-
-		<!-- 인기글 (기존) -->
-		<div class="popular-section">
-			<div class="popular-header" style="display:flex; justify-content:space-between; align-items:center;">
-				<h3>🔥 인기글</h3>
-
-				<!-- 오른쪽: 보기형식 + 접기버튼 -->
-				<div style="display: flex; align-items: center; gap: 10px;">
-					<!-- 보기형식 스위치 -->
-					<div class="view-select toggle-switch">
-						<input type="radio" id="viewCard" name="viewType" value="card"
-							th:checked="${viewType == 'card'}" />
-						<label for="viewCard">카드형</label>
-
-						<input type="radio" id="viewList" name="viewType" value="list"
-							th:checked="${viewType == 'list'}" />
-						<label for="viewList">리스트형</label>
-					</div>
-					<!-- 접기/펼치기 버튼 -->
-					<button id="togglePopularBtn" onclick="togglePopular()"
-						style="font-size:13px; padding:5px 8px; cursor:pointer;">
-						👁️ 인기글 접기
-					</button>
-				</div>
+	<div class="container-all">
+		<!-- 컨테이너 -->
+		<div class="container-board">
+			<!-- 윗단 아이콘 -->
+			<div class="board-header">
+				<h1>입양 게시판</h1>
+				<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
 			</div>
 
+			<!-- 검색 -->
+			<div class="search-regist-button">
+				<form th:action="@{/Adopt}" method="get" class="search-box">
+					<select name="field" class="search-select" th:value="${field}">
+						<option value="title" th:selected="${field == 'title'}">제목</option>
+						<option value="content" th:selected="${field == 'content'}">내용</option>
+						<option value="nickname" th:selected="${field == 'nickname'}">작성자</option>
+						<option value="" th:selected="${field == ''}">통합 검색</option>
+					</select>
+					<input type="text" name="keyword" class="search-input" placeholder="검색어 입력" th:value="${keyword}" />
+					<button type="submit" class="btn-search">검색</button>
+				</form>
+				<!-- 새 글 등록 버튼-->
+				<p class="regist-button">
+					<a th:href="@{/AdoptRegist}" class="btn-primary">새 글 등록하기</a>
+				</p>
+			</div>
+		</div>
+		<!-- 인기글 타이틀 -->
+		<div class="popular-header" style="display:flex; justify-content:space-between; align-items:center;">
+			<h3>🔥 인기글</h3>
+		</div>
+
+		<!-- 오른쪽: 보기형식 + 접기버튼 -->
+		<div style="display: flex; align-items: center; gap: 10px;">
+			<!-- 보기형식 스위치 -->
+			<div class="view-select toggle-switch">
+				<input type="radio" id="viewCard" name="viewType" value="card" th:checked="${viewType == 'card'}" />
+				<label for="viewCard">카드형</label>
+				<input type="radio" id="viewList" name="viewType" value="list" th:checked="${viewType == 'list'}" />
+				<label for="viewList">리스트형</label>
+			</div>
+			<!-- 접기/펼치기 버튼 -->
+			<button id="togglePopularBtn" onclick="togglePopular()"
+				style="font-size:13px; padding:5px 8px; cursor:pointer;">
+				👁️ 인기글 접기
+			</button>
+		</div>
+
+		<!-- =============================================================== 이 감싼거 수정해야함!!!-->
+		<div class="popular-wrapper">
 			<!-- 인기글  -->
-			<div id="popularContent" class="here" style="visibility: visible; height: auto; overflow: hidden; transition: all 0.3s;">
+			<div id="popularContent" class="here"
+				style="visibility: visible; height: auto; overflow: hidden; transition: all 0.3s;">
 				<div th:each="post, iterStat : ${popularPosts}" th:if="${iterStat.index < 8}" class="card-popular">
 					<a th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum})}" class="link-title">
 						<strong th:text="|${post.title} 💬(${post.commentCount})|">제목</strong>
@@ -438,188 +455,188 @@
 				</div>
 				</divid="popularContent">
 			</div>
-			
-			<!-- 전체 글-->
-			<div class="main-title">
-				<h3>📋전체 글</h3>
-			</div>
-			<!-- 카드형 (mainList 반복) -->
-			<div class="card-list-view">
-				<div class="card-popular" th:each="board, iterStat : ${mainList}" th:if="${iterStat.index < 15}">
-					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title">
-						<strong th:text="${board.title + ' 💬(' + board.commentCount + ')'}">제목</strong>
-					</a>
-					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}">
-						<img class="thumb-image"
-							th:src="@{${board.Image_paths != null} ? '/images/' + ${board.Image_paths} : '/imagesDefault/defaultBoard.png'}"
-							alt="썸네일" />
-					</a>
-					<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
-					<span th:text="'분양가: ' + ${board.price}">분양가</span>
-					<span th:text="'조회수: ' + ${board.views}">조회수</span>
-					<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
-					<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
-					<hr />
-				</div>
-				<div th:if="${mainList.size() == 0}">등록된 게시글이 없습니다.</div>
-			</div>
-
-
-				<!-- 리스트형 (기존 테이블) -->
-				<table class="table-posts">
-					<colgroup>
-						<col style="width: 5%;" />
-						<col style="width: 10%;" />
-						<col style="width: 43%;" />
-						<col style="width: 10%;" />
-						<col style="width: 10%;" />
-						<col style="width: 6%;" />
-						<col style="width: 6%;" />
-						<col style="width: 10%;" />
-					</colgroup>
-					<thead>
-						<tr>
-							<th>번호</th>
-							<th>작성자</th>
-							<th>제목</th>
-							<th>분양가</th>
-							<th>지역</th>
-							<th>조회수</th>
-							<th>좋아요</th>
-							<th>작성일</th>
-						</tr>
-					</thead>
-
-					<!-- 본문 코드 -->
-					<tbody>
-						<tr th:each="board, iterStat : ${mainList}">
-							<td th:text="${board.boardNum}">1</td>
-							<!-- 썸넬 보이게-->
-
-							<td th:text="${board.nickName}"></td>
-							<td>
-								<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title"
-									th:text="${board.title + '🗨️(' + board.commentCount + ')'}">제목</a>
-							</td>
-							<td th:text="${board.price}"></td>
-							<td th:text="${board.area}"></td>
-							<td th:text="${board.views}"></td>
-							<td th:text="${board.likes}"></td>
-							<td th:text="${board.formattedRegistDate}"></td>
-						</tr>
-						<tr th:if="${mainList.size() == 0}">
-							<td colspan="9">등록된 게시글이 없습니다.</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
 		</div>
-
-		<!-- 페이지 네이션-->
-		<div class="pagination">
-
-			<!-- 이전 페이지 -->
-			<a class="pagination-link" th:if="${currentPage > 1}"
-				th:href="@{/Adopt(page=${currentPage - 1}, keyword=${keyword}, field=${field}, viewType=${viewType})}">
-				◀ 이전
-			</a>
-
-			<!-- 숫자 페이지 -->
-			<span th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
-				<a class="pagination-link"
-					th:href="@{/Adopt(page=${pageNum}, keyword=${keyword}, field=${field}, viewType=${viewType})}"
-					th:text="${pageNum}" th:classappend="${pageNum == currentPage} ? 'active'">
+		<!-- 전체 글-->
+		<div class="main-title">
+			<h3>📋전체 글</h3>
+		</div>
+		<!-- 카드형 (mainList 반복) -->
+		<div class="card-list-view">
+			<div class="card-popular" th:each="board, iterStat : ${mainList}" th:if="${iterStat.index < 15}">
+				<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title">
+					<strong th:text="${board.title + ' 💬(' + board.commentCount + ')'}">제목</strong>
 				</a>
-			</span>
-
-			<!-- 다음 페이지 버튼 -->
-			<a th:if="${currentPage < totalPages}"
-				th:href="@{/Adopt(page=${currentPage + 1}, keyword=${keyword}, field=${field}, viewType=${viewType})}">
-				다음 ▶
-			</a>
-
+				<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}">
+					<img class="thumb-image"
+						th:src="@{${board.Image_paths != null} ? '/images/' + ${board.Image_paths} : '/imagesDefault/defaultBoard.png'}"
+						alt="썸네일" />
+				</a>
+				<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
+				<span th:text="'분양가: ' + ${board.price}">분양가</span>
+				<span th:text="'조회수: ' + ${board.views}">조회수</span>
+				<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
+				<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
+				<hr />
+			</div>
+			<div th:if="${mainList.size() == 0}">등록된 게시글이 없습니다.</div>
 		</div>
 
-		<script>
-			function togglePopular() {
-					const section = document.getElementById('popularContent');
-					const button = document.getElementById('togglePopularBtn');
 
-					// 현재 상태 확인
-					const isHidden = section.style.visibility === 'hidden';
+		<!-- 리스트형 (기존 테이블) -->
+		<table class="table-posts">
+			<colgroup>
+				<col style="width: 5%;" />
+				<col style="width: 10%;" />
+				<col style="width: 43%;" />
+				<col style="width: 10%;" />
+				<col style="width: 10%;" />
+				<col style="width: 6%;" />
+				<col style="width: 6%;" />
+				<col style="width: 10%;" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>번호</th>
+					<th>작성자</th>
+					<th>제목</th>
+					<th>분양가</th>
+					<th>지역</th>
+					<th>조회수</th>
+					<th>좋아요</th>
+					<th>작성일</th>
+				</tr>
+			</thead>
 
-					if (isHidden) {
-						// 펼치기
-						section.style.visibility = 'visible';
-						section.style.height = 'auto';
-						button.innerText = '👁️ 인기글 접기';
-						sessionStorage.setItem('popularCollapsed', 'false'); // 상태 저장
-					} else {
-						// 접기
-						section.style.visibility = 'hidden';
-						section.style.height = '0px';
-						button.innerText = '👁️ 인기글 펼치기';
-						sessionStorage.setItem('popularCollapsed', 'true'); // 상태 저장
-					}
-				}
+			<!-- 본문 코드 -->
+			<tbody>
+				<tr th:each="board, iterStat : ${mainList}">
+					<td th:text="${board.boardNum}">1</td>
+					<!-- 썸넬 보이게-->
 
-				// 페이지 로드 시 상태 복원
-				window.addEventListener('DOMContentLoaded', () => {
-					const section = document.getElementById('popularContent');
-					const button = document.getElementById('togglePopularBtn');
-					const collapsed = sessionStorage.getItem('popularCollapsed');
+					<td th:text="${board.nickName}"></td>
+					<td>
+						<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title"
+							th:text="${board.title + '🗨️(' + board.commentCount + ')'}">제목</a>
+					</td>
+					<td th:text="${board.price}"></td>
+					<td th:text="${board.area}"></td>
+					<td th:text="${board.views}"></td>
+					<td th:text="${board.likes}"></td>
+					<td th:text="${board.formattedRegistDate}"></td>
+				</tr>
+				<tr th:if="${mainList.size() == 0}">
+					<td colspan="9">등록된 게시글이 없습니다.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</div>
 
-					if (collapsed === 'true') {
-						// 접힌 상태로 복원
-						section.style.visibility = 'hidden';
-						section.style.height = '0px';
-						button.innerText = '👁️ 인기글 펼치기';
-					} else {
-						// 펼친 상태로 복원
-						section.style.visibility = 'visible';
-						section.style.height = 'auto';
-						button.innerText = '👁️ 인기글 접기';
-					}
-				});
+	<!-- 페이지 네이션-->
+	<div class="pagination">
 
+		<!-- 이전 페이지 -->
+		<a class="pagination-link" th:if="${currentPage > 1}"
+			th:href="@{/Adopt(page=${currentPage - 1}, keyword=${keyword}, field=${field}, viewType=${viewType})}">
+			◀ 이전
+		</a>
 
-			// 페이지 로드 시, URL에서 viewType 파라미터 읽어서 라디오 체크와 화면 표시 결정
-			function getQueryParam(param) {
-				const urlParams = new URLSearchParams(window.location.search);
-				return urlParams.get(param);
+		<!-- 숫자 페이지 -->
+		<span th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
+			<a class="pagination-link"
+				th:href="@{/Adopt(page=${pageNum}, keyword=${keyword}, field=${field}, viewType=${viewType})}"
+				th:text="${pageNum}" th:classappend="${pageNum == currentPage} ? 'active'">
+			</a>
+		</span>
+
+		<!-- 다음 페이지 버튼 -->
+		<a th:if="${currentPage < totalPages}"
+			th:href="@{/Adopt(page=${currentPage + 1}, keyword=${keyword}, field=${field}, viewType=${viewType})}">
+			다음 ▶
+		</a>
+
+	</div>
+	</div>
+	<script>
+		function togglePopular() {
+			const section = document.getElementById('popularContent');
+			const button = document.getElementById('togglePopularBtn');
+
+			// 현재 상태 확인
+			const isHidden = section.style.visibility === 'hidden';
+
+			if (isHidden) {
+				// 펼치기
+				section.style.visibility = 'visible';
+				section.style.height = 'auto';
+				button.innerText = '👁️ 인기글 접기';
+				sessionStorage.setItem('popularCollapsed', 'false'); // 상태 저장
+			} else {
+				// 접기
+				section.style.visibility = 'hidden';
+				section.style.height = '0px';
+				button.innerText = '👁️ 인기글 펼치기';
+				sessionStorage.setItem('popularCollapsed', 'true'); // 상태 저장
 			}
+		}
 
-			function setViewType(viewType) {
-				const cardView = document.querySelector('.card-list-view');
-				const listView = document.querySelector('.table-posts');
-				const radios = document.querySelectorAll('input[name="viewType"]');
+		// 페이지 로드 시 상태 복원
+		window.addEventListener('DOMContentLoaded', () => {
+			const section = document.getElementById('popularContent');
+			const button = document.getElementById('togglePopularBtn');
+			const collapsed = sessionStorage.getItem('popularCollapsed');
 
-				if (viewType === 'list') {
-					cardView.classList.add('hidden');
-					listView.classList.remove('hidden');
-					radios.forEach(r => r.checked = (r.value === 'list'));
-				} else {
-					cardView.classList.remove('hidden');
-					listView.classList.add('hidden');
-					radios.forEach(r => r.checked = (r.value === 'card'));
-				}
+			if (collapsed === 'true') {
+				// 접힌 상태로 복원
+				section.style.visibility = 'hidden';
+				section.style.height = '0px';
+				button.innerText = '👁️ 인기글 펼치기';
+			} else {
+				// 펼친 상태로 복원
+				section.style.visibility = 'visible';
+				section.style.height = 'auto';
+				button.innerText = '👁️ 인기글 접기';
 			}
+		});
 
-			window.addEventListener('DOMContentLoaded', () => {
-				let viewType = getQueryParam('viewType') || 'card';
-				setViewType(viewType);
 
-				// 라디오 변경 시, 페이지 새로고침하면서 viewType 파라미터 유지
-				document.querySelectorAll('input[name="viewType"]').forEach(radio => {
-					radio.addEventListener('change', (e) => {
-						const params = new URLSearchParams(window.location.search);
-						params.set('viewType', e.target.value);
-						// 다른 검색 파라미터 유지한 채로 새로고침
-						window.location.search = params.toString();
-					});
+		// 페이지 로드 시, URL에서 viewType 파라미터 읽어서 라디오 체크와 화면 표시 결정
+		function getQueryParam(param) {
+			const urlParams = new URLSearchParams(window.location.search);
+			return urlParams.get(param);
+		}
+
+		function setViewType(viewType) {
+			const cardView = document.querySelector('.card-list-view');
+			const listView = document.querySelector('.table-posts');
+			const radios = document.querySelectorAll('input[name="viewType"]');
+
+			if (viewType === 'list') {
+				cardView.classList.add('hidden');
+				listView.classList.remove('hidden');
+				radios.forEach(r => r.checked = (r.value === 'list'));
+			} else {
+				cardView.classList.remove('hidden');
+				listView.classList.add('hidden');
+				radios.forEach(r => r.checked = (r.value === 'card'));
+			}
+		}
+
+		window.addEventListener('DOMContentLoaded', () => {
+			let viewType = getQueryParam('viewType') || 'card';
+			setViewType(viewType);
+
+			// 라디오 변경 시, 페이지 새로고침하면서 viewType 파라미터 유지
+			document.querySelectorAll('input[name="viewType"]').forEach(radio => {
+				radio.addEventListener('change', (e) => {
+					const params = new URLSearchParams(window.location.search);
+					params.set('viewType', e.target.value);
+					// 다른 검색 파라미터 유지한 채로 새로고침
+					window.location.search = params.toString();
 				});
 			});
-		</script>
+		});
+	</script>
 
 </body>
 
