@@ -231,6 +231,7 @@ public class MyPageController {
 			UsersDto dto = new UsersDto(user);
 			dto.setStatus(Status.삭제);
 			userService.updateUserDto(dto);
+			//authUser.
 			return Redirect.Logout;
 		}
 		return Redirect.withdrawal;

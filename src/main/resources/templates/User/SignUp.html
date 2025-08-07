@@ -17,10 +17,11 @@
 			<input type="email" id="email" th:field="*{id}" placeholder="이메일 아이디" required />
 			<button type="button" onclick="sendCode()" class="sub-buttons">인증번호 보내기</button>
 			<div id="codeBox" class="hidden">
-				<input type="text" id="code" placeholder="인증번호 입력">
+				<input type="text" id="code" placeholder="인증번호 입력" style="flex: 1;">
 				<button type="button" onclick="verifyCode()" class="sub-buttons">인증 확인</button>
 			</div>
 			<input type="password" th:field="*{password}" placeholder="비밀번호" required /><br />
+			<input type="password" name="passwordCom" placeholder="비밀번호 확인" required/> <br/>
 			<input type="text" th:field="*{nickName}" placeholder="닉네임" required /><br />
 			<input type="text" th:field="*{realName}" placeholder="실명" required /><br />
 			<input type="text" th:field="*{phoneNumber}" placeholder="전화번호" required /><br />
@@ -37,7 +38,6 @@
 <script>
 
 	function sendCode() {
-		console.log("sdga");
 		const email = document.getElementById('email').value;
 		if (!email.includes('@')) {
 			alert('유효한 이메일을 입력하세요.');
@@ -52,7 +52,7 @@
 			.then(response => response.text().then(text => {
 				if (response.ok) {
 					alert('인증번호가 이메일로 전송되었습니다.');
-					document.getElementById('codeBox').style.display = 'block';
+					document.getElementById('codeBox').style.display = 'flex';
 				} else {
 					alert(text);
 				}
