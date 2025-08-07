@@ -83,7 +83,6 @@ public class LoginController {
 		{
 			//회원가입 실패
 			model.addAttribute("errorMessage", "알수없는 오류");
-			System.out.println("회원가입 실패");
 			return Redirect.SignUp;
 		}
 
@@ -100,7 +99,6 @@ public class LoginController {
 	@PostMapping(value = "/sendPasswordFind")
 	public String sendPasswordFind(@RequestParam("email") String email, Model model)
 	{
-		System.out.println(email);
 		if(userService.selectByID(email) == null)
 		{
 			//없는 메일인 경우
@@ -129,7 +127,6 @@ public class LoginController {
 	@PostMapping("/sendSingUpCode")
 	public ResponseEntity<String> sendSingUpCode(@RequestBody Map<String, String> request)
 	{
-		System.out.println("send code");
 		String email = request.get("email");
 		
 		//아이디 중복 검사
@@ -140,12 +137,12 @@ public class LoginController {
 		
 		//db 저장
 		int code = emailService.GetCode();
-
-		if(emailService.SendMessageVerifyCode(code, email))
-		{
-			return ResponseEntity.ok("인증번호 전송");
-		}
-		return ResponseEntity.badRequest().body("인증번호 전송 실패");
+		emailService.SendMessageVerifyCode(code, email);
+//		if()
+//		{
+//			return ResponseEntity.ok("인증번호 전송");
+//		}
+		return ResponseEntity.ok("인증번호 전송");// ResponseEntity.badRequest().body("인증번호 전송 실패");
 	}
 	
 	@PostMapping("/verifySingUpCode")

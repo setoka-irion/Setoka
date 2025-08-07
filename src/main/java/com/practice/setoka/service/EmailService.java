@@ -63,34 +63,32 @@ public class EmailService
 	
 	//이메일 인증 코드를 db에 넣고 메일을 보내줌
 	@Async
-	public boolean SendMessageVerifyCode(int code, String email)
+	public void SendMessageVerifyCode(int code, String email)
 	{
 		//이미 있는 메일인지 체크
 		VerifyCode verifyCode = selectByEmail(email);
 		//없는 메일이면 
 		if(verifyCode == null)
 		{
-			System.out.println("추가");
 			//새로 추가
 			if(!mailMapper.insertCode(email, code))
 			{
-				return false;
+				return;// false;
 			}
 		}		
 		//있는 경우
 		else
 		{
-			System.out.println("수정");
 			//코드와 시기를 수정함
 			if(!mailMapper.updateVerifyCode(email, code))
 			{
-				return false;
+				return;// false;
 			}
 		}
 			
 		//메일 보내기
 		SendSimpleMessage(email, "인증번호", "인증번호 : " + code);
-		return true;
+		return;// true;
 	}
 	
 	//코드가 db에 있는 데이터와 같은지 대조해서 리턴해줌
