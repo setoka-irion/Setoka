@@ -14,54 +14,32 @@
 	<h1 style="text-align:center;">내 동물 목록</h1>
 
 	<div class="animalPage">
-	<!-- 동물이 없으면 추가 폼만 보여줌 -->
-	<div th:if="${#lists.isEmpty(animalList)}" style="width: 400px; margin: auto;">
-		<h3>등록된 동물이 없습니다. 동물을 추가하세요.</h3>
-		<form th:action="@{/myanimal/add}" method="post" enctype="multipart/form-data">
-			<label>프로필 사진: <input type="file" name="profileImage" accept="image/*" /></label><br /><br />
-			<label>이름: <input type="text" name="animalName" required /></label><br /><br />
-			<label>종: <input type="text" name="species" required /></label><br /><br />
-			<label>나이: <input type="number" name="age" min="0" required /></label><br /><br />
-			<label>성별:</label><br />
-			<label>
-				<input type="radio" name="gender" value="수컷" id="editMale" /> 수컷
-			</label>
-			<label>
-				<input type="radio" name="gender" value="암컷" id="editFemale" /> 암컷
-			</label><br /><br />
-			<input type="hidden" name="status" value="정상" id="editStatus">
-			<label>입양일: <input type="date" name="togetherDateStr" required /></label><br /><br />
-			<button type="submit">추가하기</button>
-		</form>
-	</div>
-
+	
 	<div style="text-align: center;">
 		<!-- 동물이 있는 경우 -->
-		<div th:if="${!#lists.isEmpty(animalList)}" 
-			style="display: inline-flex; max-width: 1800px;
+		<div style="display: inline-flex; max-width: 100%;
 			 margin: auto; 
-			 border-radius: 1%; 
+			 border-radius: 10px; 
 			 border: 1px solid rgb(0, 0, 0);
 			  box-shadow: 0 0 5px #333;
 			  align-items: center;
 			   overflow-x: auto;">
 	
 			<!--  -->
-			<div style="display: flex; overflow-x: auto; gap: 16px; padding: 10px; justify-content: flex-start;">
-				<div th:each="animal : ${animalList}" style="min-width: 300px; flex-shrink: 0; border: 1px solid rgb(255, 255, 255);
+			<div class="scroll-container" style="display: flex; overflow-x: auto; gap: 16px; padding: 10px; justify-content: flex-start;">
+				<div th:each="animal : ${animalList}" th:attr="onclick='location.href=\'/animal/detail?animalNum=' + ${animal.num} + '\''" style="min-width: 300px; flex-shrink: 0; border: 1px solid rgb(255, 255, 255);
 					 border-radius: 8px; padding: 12px; box-shadow: 0 0 5px rgba(0,0,0,0.1);
 					 background-color: rgb(198, 184, 166);">
 	
 					<div
 						style="text-align: center; margin-bottom: 10px; width: 280px; height: 300px; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: center; border-radius: 10%; background-color: rgb(255, 255, 255);">
 						<img th:if="${animal.profilePath != null}"
-							th:src="@{/images/{filename}(filename=${animal.profilePath})}" alt="프로필"
+							th:src="@{{filename}(filename=${animal.profilePath})}" alt="프로필"
 							style="width: 280px; height: 300px; object-fit: cover; border-radius: 10%;" />
 					</div>
 	
 					<div style="font-weight: bold; font-size: 1.1em; margin-bottom: 6px;">
-						<a th:href="@{/animal/detail(animalNum=${animal.num})}" th:text="${animal.animalName}"
-							style="color: #333; text-decoration: none;"></a>
+						<span th:text="${animal.animalName}"></span>
 					</div>
 	
 					<div><strong>종:</strong> <span th:text="${animal.species}"></span></div>
@@ -70,19 +48,19 @@
 					<div><strong>함께한 날:</strong> <span th:text="${animal.togetherDateLong}"></span></div>
 	
 					<div style="margin-top: 10px; display: flex; justify-content: space-between;">
-						<button type="button" th:onclick="'openEditModal(' + ${animal.num} + ')'"
+						<button type="button" th:onclick="'event.stopPropagation(); openEditModal(' + ${animal.num} + ')'"
 							style="padding: 4px 8px;">수정</button>
 	
-						<form th:action="@{/myanimal/delete}" method="post" onsubmit="return confirm('삭제하시겠습니까?');"
+						<form th:action="@{/myanimal/delete}" method="post" onsubmit="event.stopPropagation(); return confirm('삭제하시겠습니까?');"
 							style="margin:0;">
 							<input type="hidden" name="animalNum" th:value="${animal.num}" />
-							<button type="submit" style="padding: 4px 8px;">삭제</button>
+							<button type="submit" onclick="event.stopPropagation();" style="padding: 4px 8px;">삭제</button>
 						</form>
 					</div>
 				</div>
 				
 				<!-- 빈 카드 추가 -->
-				<div class="emptycard" style="min-width: 300px; flex-shrink: 0; border: 1px dashed gray; 
+				<div class="emptycard" style="height: 470px; min-width: 300px; flex-shrink: 0; border: 1px dashed gray; 
 				border-radius: 8px; padding: 12px; box-shadow: 0 0 5px rgba(0,0,0,0.05);
 				 background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
 				    <!-- 빈 카드 안에 들어갈 내용 예: 아이콘이나 텍스트 -->
@@ -125,24 +103,24 @@
 			<input type="hidden" name="animalNum" id="editAnimalNum" />
 			<input type="hidden" name="existingProfilePath" id="editExistingProfilePath" />
 			<label>프로필 사진: <input type="file" name="profileImage" id="editProfileImage"
-					accept="image/*" /></label><br /><br />
-			<label>이름: <input type="text" name="animalName" id="editAnimalName" required /></label><br /><br />
-			<label>종: <input type="text" name="species" id="editSpecies" required /></label><br /><br />
-			<label>나이: <input type="number" name="age" id="editAge" min="0" required /></label><br /><br />
-			<label>성별:</label><br />
+					accept="image/*" /></label>
+			<label>이름: <input type="text" name="animalName" id="editAnimalName" required /></label>
+			<label>종: <input type="text" name="species" id="editSpecies" required /></label>
+			<label>나이: <input type="number" name="age" id="editAge" min="0" required /></label>
+			<label>성별:</label>
 			<label>
 				<input type="radio" name="gender" value="수컷" id="editMale" /> 수컷
 			</label>
 			<label>
 				<input type="radio" name="gender" value="암컷" id="editFemale" /> 암컷
-			</label><br /><br />
+			</label>
 			<label>상태:
 				<select name="status" id="editStatus" required>
 					<option value="정상">정상</option>
 					<option value="사망">사망</option>
 				</select>
-			</label><br /><br />
-			<label>입양일: <input type="date" name="togetherDateStr" id="editTogetherDate" required /></label><br /><br />
+			</label>
+			<label>입양일: <input type="date" name="togetherDateStr" id="editTogetherDate" required /></label>
 			<button type="button" onclick="submitEdit()">수정하기</button>
 			<button type="button" onclick="closeModal()">취소</button>
 		</form>
@@ -207,6 +185,17 @@
 				})
 				.catch(() => alert('서버 오류'));
 		}
+	</script>
+	
+	<script>
+		const scrollContainer = document.querySelector('.scroll-container');
+
+		scrollContainer.addEventListener('wheel', function (e) {
+			if (e.deltaY !== 0) {
+				e.preventDefault();
+				this.scrollLeft += e.deltaY;
+			}
+		}, { passive: false });
 	</script>
 
 </body>
