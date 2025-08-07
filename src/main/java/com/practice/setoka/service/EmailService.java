@@ -62,6 +62,7 @@ public class EmailService
 	}
 	
 	//이메일 인증 코드를 db에 넣고 메일을 보내줌
+	@Async
 	public boolean SendMessageVerifyCode(int code, String email)
 	{
 		//이미 있는 메일인지 체크

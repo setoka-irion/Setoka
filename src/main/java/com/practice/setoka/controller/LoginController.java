@@ -46,7 +46,7 @@ public class LoginController {
 
 	// 회원가입 완료
 	@PostMapping(value = "SignUp")
-	public String SingupSubmit(Model model, UsersDto dto) {
+	public String SingupSubmit(Model model, UsersDto dto, @RequestParam("passwordCom") String passwordCom) {
 		//비밀번호 검증
 		if(!userService.passwordInvalid(dto.getPassword()))
 		{
@@ -57,6 +57,12 @@ public class LoginController {
 			return Redirect.SignUp;
 		}
 		
+		if(!dto.getPassword().equals(passwordCom)) 
+		{
+			model.addAttribute("errorMessage", "비밀번호 확인이 일치하지 않음");
+			model.addAttribute("Users", dto);
+			return Redirect.SignUp;
+		}
 
 		//아이디 중복 검사 (삭제된 경우는 없는걸로 침) user가 없거나 있어도 삭제면 false가 리턴된다는 뜻
 		if(userService.existsByName(dto.getId()))
