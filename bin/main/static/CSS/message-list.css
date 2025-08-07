@@ -1,3 +1,17 @@
+.messageBoxType{
+	width: fit-content;
+	border-right: 1px solid rgb(0, 0, 0); 
+	padding: 10px;
+}
+
+.messageBoxType button {
+	width: auto;
+	margin: 2px;
+	border-radius: 5px;
+	background: rgb(255, 255, 255);
+	color: rgb(0, 0, 0);
+}
+
 .message-list {
 	max-width: 800px;
 	margin: 40px auto;
@@ -73,6 +87,25 @@
     text-align: right;
     max-width: 25%;
 }
+
+.message-summary .button {
+	padding: 0px 16px;        /* 위아래 패딩으로 높이 조절 */
+	  line-height: 32px; /* 텍스트 수직 중앙 정렬 */
+	  border-radius: 5px;
+	  background: #8b5e3c;
+	  color: #fff;
+	  font-weight: 700;
+	  border: none;
+	  cursor: pointer;
+	  flex-shrink: 0;
+	  margin: 0;
+	  font-size: 14px;
+}
+
+.message-summary .button:hover {
+	background-color: rgb(64, 0, 0);
+}
+
 
 .message-detail {
     /* 기존 그대로 유지 */

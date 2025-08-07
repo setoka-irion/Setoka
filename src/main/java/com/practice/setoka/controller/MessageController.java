@@ -30,9 +30,14 @@ public class MessageController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping(value = "CreateLetter")
-	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser, RedirectAttributes redirectAttributes)
+	@PostMapping(value = "CreateLetter")
+	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser,
+			RedirectAttributes redirectAttributes,
+			@RequestParam(value = "receiver", required = false) String receiver)
 	{
+		if(receiver != null)
+			model.addAttribute("receiver", receiver);
+		
 		String email = (String)redirectAttributes.getAttribute("email"); 
 		if(email != null)
 		{
@@ -40,7 +45,6 @@ public class MessageController {
 		}
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
-		System.out.println(authUser.getUser().getPoint());
 		return "Message/CreateLetter";
 	}
 	
@@ -59,13 +63,16 @@ public class MessageController {
 		
 		if(messageService.sendMessage(dto))
 		{
-			switch(dto.getItem_Type())
+			if(dto.getItem_Type() != null)
 			{
-			case POINT:
-				int newPoint = authUser.getUser().getPoint() - dto.getItem_Value();
-				userService.userPointUpdate(dto.getSender(), newPoint);
-				authUser.getUser().setPoint(newPoint);
-				break;
+				switch(dto.getItem_Type())
+				{
+				case POINT:
+					int newPoint = authUser.getUser().getPoint() - dto.getItem_Value();
+					userService.userPointUpdate(dto.getSender(), newPoint);
+					authUser.getUser().setPoint(newPoint);
+					break;
+				}
 			}
 		}
 		
@@ -75,10 +82,27 @@ public class MessageController {
 	@GetMapping(value = "MessageList")
 	public String messageList(Model model, @AuthenticationPrincipal CustomUserDetails authUser)
 	{
+		//모든 받은 메세지를 보여주기
 		List<Message> list = messageService.receiverSelect(authUser.getUser().getId());
 		model.addAttribute("messageList", list);
+		model.addAttribute("messageBoxType", "RECEIVED");
+
 		return "Message/messageList";
 	}
+	
+	@GetMapping(value = "sent")
+	public String messageReceived(Model model, @AuthenticationPrincipal CustomUserDetails authUser)
+	{
+		//모든 보낸 메세지를 보여주기
+		List<Message> list = messageService.sendSelect(authUser.getUser().getId());
+		model.addAttribute("messageList", list);
+		model.addAttribute("messageBoxType", "SENT");
+
+		return "Message/messageList";
+	}
+	
+	
+	
 	
 	@GetMapping(value = "GettingGift")
 	public String GettingGift(@RequestParam("messageNum") int num, @AuthenticationPrincipal CustomUserDetails authUser)
@@ -86,8 +110,6 @@ public class MessageController {
 		messageService.GettingMessage(num, authUser.getUser());
 		return "redirect:/MessageList";
 	}
-	
-	
 	
 	@PostMapping("/message/read/{messageNum}")
 	@ResponseBody
