@@ -4,29 +4,31 @@
 <head>
 	<title>회원가입 폼</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/signUp.css}">
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
-	<div style="text-align: center;">
-		<form th:action="@{/SignUp}" th:object="${Users}" method="post">
+	<div class="signUp-container">
+		<h1>회원가입</h1>
+		<form th:action="@{/SignUp}" th:object="${Users}" method="post" class="signUp-form">
 			<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
 			<input type="email" id="email" th:field="*{id}" placeholder="이메일 아이디" required />
-			<button type="button" onclick="sendCode()">인증번호 보내기</button>
-			<br />
-			<div id="codeBox" style="display:none;">
+			<button type="button" onclick="sendCode()" class="sub-buttons">인증번호 보내기</button>
+			<div id="codeBox" class="hidden">
 				<input type="text" id="code" placeholder="인증번호 입력">
-				<button type="button" onclick="verifyCode()">인증 확인</button>
+				<button type="button" onclick="verifyCode()" class="sub-buttons">인증 확인</button>
 			</div>
 			<input type="password" th:field="*{password}" placeholder="비밀번호" required /><br />
 			<input type="text" th:field="*{nickName}" placeholder="닉네임" required /><br />
 			<input type="text" th:field="*{realName}" placeholder="실명" required /><br />
 			<input type="text" th:field="*{phoneNumber}" placeholder="전화번호" required /><br />
 
-			<button id="sub" style="display: none;" type="submit">회원가입</button>
+			<button id="sub" class="sub-buttons hidden" type="submit">회원가입</button>
 		</form>
 	</div>
+	
 </body>
 
 </html>
