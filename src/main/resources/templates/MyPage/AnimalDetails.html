@@ -88,7 +88,7 @@
 	<!-- 애견 상세정보 -->
 	<h1 th:text="${CurrentAnimal.animalName} + ' 상세정보'" style="text-align: center;">애견 이름 상세정보</h1>
 
-	<div class="user-card">
+	<div class="animal-card">
 		<div class="user-card-left">
 			<img th:if="${CurrentAnimal.profilePath != null and CurrentAnimal.profilePath != ''}"
 				th:src="@{/images/{filename}(filename=${CurrentAnimal.profilePath})}" alt="프로필 사진"
@@ -108,7 +108,7 @@
 				<li><strong>성별</strong> <span th:text="${CurrentAnimal.gender}">성별</span></li>
 			</ul>
 			<div class="animal-buttons">
-				<button onclick="location.href='/myanimal'">목록으로</button>
+				<button onclick="location.href='/myanimal'">애견 목록으로</button>
 			</div>
 		</div>
 	</div>
