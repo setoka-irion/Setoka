@@ -64,25 +64,30 @@
 	<div th:replace="~{header :: siteHeader}"></div>
 
 	<div class="user-card">
-		<div class="user-card-left">
-			<a href="/EditProfilePhoto">
-				<img th:src="@{${loginUser.profilePath}}" alt="프로필 이미지" class="profile-image">
-			</a>
-		</div>
-		<div class="user-card-right">
-			<ul class="user-info-list">
-				<li><strong>닉네임</strong> <span th:text="${loginUser.nickName}">닉네임</span></li>
-				<li><strong>실명</strong> <span th:text="${loginUser.realName}">실명</span></li>
-				<li><strong>등급</strong> <span th:text="${loginUser.grade}">등급</span></li>
-				<li><strong>포인트</strong> <span th:text="${loginUser.point}">포인트</span></li>
-				<li><strong>경험치</strong> <span th:text="${loginUser.exp}">경험치</span></li>
-			</ul>
-			<div class="user-buttons">
-				<button onclick="location.href='/ModifyUser'">개인정보 수정</button>
-				<button onclick="location.href='/ChangePassword'">비밀번호 변경</button>
-				<button onclick="location.href='/Withdrawal'">탈퇴</button>
+		<div class="user-buttons">
+		   <button onclick="location.href='/MessageList'">쪽지함</button>
+		   <button onclick="location.href='/ModifyUser'">개인정보 수정</button>
+		   <button onclick="location.href='/ChangePassword'">비밀번호 변경</button>
+		   <button onclick="location.href='/Withdrawal'">회원탈퇴</button>
+		 </div>
+		
+		<div class="user-card-container">
+			<div class="user-card-left">
+				<a href="/EditProfilePhoto">
+					<img th:src="@{${loginUser.profilePath}}" alt="프로필 이미지" class="profile-image">
+				</a>
+			</div>
+			<div class="user-card-right">
+				<ul class="user-info-list">
+					<li><strong>닉네임</strong> <span th:text="${loginUser.nickName}">닉네임</span></li>
+					<li><strong>실명</strong> <span th:text="${loginUser.realName}">실명</span></li>
+					<li><strong>등급</strong> <span th:text="${loginUser.grade}">등급</span></li>
+					<li><strong>포인트</strong> <span th:text="${loginUser.point}">포인트</span></li>
+					<li><strong>경험치</strong> <span th:text="${loginUser.exp}">경험치</span></li>
+				</ul>
 			</div>
 		</div>
+		
 	</div>
 
 	<!--일정 달력-->

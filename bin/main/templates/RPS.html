@@ -4,34 +4,36 @@
 <head>
 	<title>가위바위보</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/RPS.css}">
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
-
-	<div style="text-align: center;">
-		<h1>가위바위보 게임</h1>
-
-		<p th:if="${result != null}" th:text="${result}"></p>
-
-		<form th:action="@{/playRps}" method="post">
-			<!-- 포인트 입력 -->
-			<label for="point">배팅할 포인트 (최대 [[${user.point}]])</label><br>
-			<input type="number" id="point" name="point" min="10" th:attr="max=${user.point}" required /><br><br>
-
-			<!-- 선택지 -->
-			<label>가위바위보 선택:</label><br>
-			<input type="radio" id="rock" name="choice" value="ROCK" required>
-			<label for="rock">✊ 바위</label><br>
-
-			<input type="radio" id="paper" name="choice" value="PAPER">
-			<label for="paper">✋ 보</label><br>
-
-			<input type="radio" id="scissors" name="choice" value="SCISSORS">
-			<label for="scissors">✌ 가위</label><br><br>
-
-			<button type="submit">게임 시작</button>
-		</form>
+	<div class="rps-container">
+		<div style="text-align: center;">
+			<h1>가위바위보 게임</h1>
+	
+			<p th:if="${result != null}" th:text="${result}"></p>
+	
+			<form th:action="@{/playRps}" method="post">
+				<!-- 포인트 입력 -->
+				<label for="point">배팅할 포인트 (최대 [[${user.point}]])</label><br>
+				<input type="number" id="point" name="point" min="10" th:attr="max=${user.point}" required /><br><br>
+	
+				<!-- 선택지 -->
+				<label>가위바위보 선택:</label>
+				<input type="radio" id="rock" name="choice" value="ROCK" required>
+				<label for="rock">✊ 바위</label><br>
+	
+				<input type="radio" id="paper" name="choice" value="PAPER">
+				<label for="paper">✋ 보</label><br>
+	
+				<input type="radio" id="scissors" name="choice" value="SCISSORS">
+				<label for="scissors">✌ 가위</label><br><br>
+	
+				<button type="submit">게임 시작</button>
+			</form>
+		</div>
 	</div>
 </body>
 
