@@ -16,18 +16,15 @@
 			border-radius: 6px;
 		}
 
-		/* ====== 컨테이너 ====== */
-		.container-board {
-			width: 85%;
-			margin: 20px auto;
-			position: relative;
-			background-color: #fff;
-			padding: 15px 0px;
-			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-			border-radius: 6px;
-		}
-
+		/*북쪽 컨테이너*/
+/*============================================================================*/
+		
 		/*==== 현재 게시판 정보 ====*/
+		.board-header {
+		    text-align: center; /* 텍스트 가운데 정렬 */
+		    margin-bottom: 10px; /* 아래 여백 */
+		}
+		
 		.board-header h1 {
 			margin: 0;
 			font-size: 30px;
@@ -52,34 +49,100 @@
 
 		}
 
-		/* ====== 검색박스 ====== */
-		.search-regist-button {
+		/*=== 윗단의 한줄 정렬용 wrapper ===*/
+		.action-row {
 			display: flex;
 			justify-content: space-between;
+			/* 좌측, 중앙, 우측 배치 */
 			align-items: center;
 			width: 85%;
-			/* 인기글 영역과 동일 */
-			margin: 20px auto 20px auto;
-			/* 좌우 중앙 정렬 */
+			max-width: 1600px;
+			margin: 0 auto 0px;
+			padding: 0 0px;
+			box-sizing: border-box;
+			flex-wrap: wrap; /* 좁아지면 줄바꿈 허용 */
+			gap: 20px;       /* 줄바꿈 시 간격 */
+		}
+		
+		/*--왼쪽 섹션--*/
+		.left-section {
+			flex: 0 1 auto;			/* 내용 크기만큼 */
+			white-space: nowrap;			/* 버튼 줄바꿈 방지 */
+			min-width: 150px; /* 최소 너비 지정, 필요시 조절 */
+		}
+		/*== 글 등록 버튼==*/
+		.regist-button {
+			/* 위치 조정 필요하면 margin-left 등으로 조절 */
+			margin-left: 20px;
+			white-space: nowrap;
+			/* 버튼 줄바꿈 방지 */
 		}
 
+		/* 글 등록 버튼  */
+		.btn-primary {
+			display: inline-block;
+			padding: 8px 16px;
+			background-color: #8b5e3c;
+			color: white;
+			border-radius: 4px;
+			font-weight: 600;
+			text-decoration: none;
+			transition: background-color 0.3s ease;
+			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
+		}
+
+		.btn-primary:hover {
+			background-color: #8b5e3c;
+			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
+		}
+
+		/*--- 가운데 섹션 ---*/
+		.center-section{
+			flex: 1 1 300px; /* 남는 공간 최대한 차지 */
+			display: flex;
+			justify-content: center; /* 가운데 정렬 */
+			align-items: center;
+			min-width: 200px; /* 최소 너비 지정, 필요시 조절 */
+		}
+			
+		/* ====== 검색박스 ====== */
+		.search-button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			flex-grow: 1; /* 가능한 공간 다 차지 */
+			margin: 20px 0; /* 위아래 마진 */
+			gap: 6px; /* 선택박스-입력창-버튼 사이 간격 */
+		}
+		/*검색박스 폼*/
 		.search-box {
 			display: flex;
-			justify-content: flex-start;
+			justify-content: center;
 			align-items: center;
-			gap: 10px;
-			/* 아이템 간 간격 */
-			flex-grow: 1;
-			/* 가로공간 최대한 활용 */
+			width: 100%;
+			margin: 20px 0;
+			flex-grow: 1;	 /* 가로공간 최대한 활용 */
+			max-width: 10px; /* 검색창 전체 최대 넓이 */
 		}
-
-		.search-input,
+		/*검색 입력창 및 선택 박스*/
+		.search-input{
+			padding: 8px 10px;
+			font-size: 14px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			transition: border-color 0.3s ease;
+			width: 400px;
+			min-width: 200px; /* 너무 작아지는 것 방지 */
+		}
+		
 		.search-select {
 			padding: 8px 10px;
 			font-size: 14px;
 			border: 1px solid #ccc;
 			border-radius: 4px;
 			transition: border-color 0.3s ease;
+			width: 120px;
 		}
 
 		.search-input:focus,
@@ -100,6 +163,7 @@
 			font-weight: 600;
 			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
 			transition: background-color 0.3s ease;
+			white-space: nowrap;
 		}
 
 		.btn-search:hover {
@@ -107,29 +171,14 @@
 			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
 		}
 
-		/*== 글 등록 버튼==*/
-		.regist-button {
-			/* position: absolute 제거 */
-			/* 위치 조정 필요하면 margin-left 등으로 조절 */
-			margin-left: 20px;
-		}
-
-		/* 글 등록 버튼  */
-		.btn-primary {
-			display: inline-block;
-			padding: 8px 16px;
-			background-color: #8b5e3c;
-			color: white;
-			border-radius: 4px;
-			font-weight: 600;
-			text-decoration: none;
-			transition: background-color 0.3s ease;
-			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
-		}
-
-		.btn-primary:hover {
-			background-color: #8b5e3c;
-			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
+		/*--- 오른쪽 섹션 ---*/
+		.right-section {
+			display: flex;
+			justify-content: flex-start;	/* 또는 원하는 정렬 */
+			align-items: center;
+			flex: 0 0 auto; 		/* 내용 크기만큼 */
+			gap: 10px; 				/* 버튼 사이 간격 */
+			min-width: 150px; /* 최소 너비 지정 */
 		}
 
 		/* ==== 보기 방식전환 ==== */
@@ -158,8 +207,7 @@
 			transition: background-color 0.3s, color 0.3s;
 			user-select: none;
 			text-align: center;
-			flex: 1;
-			/* 균등 폭 */
+			flex: 1;			/* 균등 폭 */
 			white-space: nowrap;
 		}
 
@@ -171,23 +219,37 @@
 			background-color: #8b5e3c;
 			color: white;
 		}
-
-
-		/* ====== 인기글 영역 윗단 ====== */
-		.popular-section {
-			/* 기존 스타일 유지 */
-			width: 85%;
-			margin: 20px auto 40px;
-			background: #fff;
-			padding: 15px 20px;
-			border-radius: 6px;
-			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-
-			/* 인기글 카드들 배치 분리 */
-			flex-direction: column;
-			/* flex-wrap: wrap 대신 column으로 변경 */
-			display: flex;
+		
+		
+		@media (max-width: 900px) {
+		  .action-row {
+		    flex-direction: column;
+		    align-items: stretch;
+		  }
+		  
+		  .left-section, .center-section, .right-section {
+		    flex: none;
+		    min-width: auto;
+		    width: 100%;
+		    text-align: center; /* 가운데 정렬 */
+		    margin-bottom: 10px;
+		  }
+		  
+		  .center-section {
+		    justify-content: center;
+		  }
+		  
+		  .right-section {
+		    justify-content: center;
+		    gap: 5px;
+		  }
 		}
+		
+		
+
+		/*남북 분단선*/
+/*================================================================================*/
+
 
 		/*=== 인기글 타이틀 ===*/
 		.popular-header {
@@ -248,6 +310,16 @@
 			margin-bottom: 3px;
 		}
 
+		.main-wrapper {
+			width: 85%;
+			margin: 20px auto;
+			position: relative;
+			background-color: #fff;
+			padding: 15px 0px;
+			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+			border-radius: 6px;
+		}
+
 		/* ====본문 보기형식 지정 ====*/
 		.card-list-view {
 			display: flex;
@@ -283,17 +355,25 @@
 			color: #555;
 		}
 
-
-		/*전체 글 위치 조정*/
+		/*전체 글 섹션*/
+/*======================================================================================*/
+		/*전체 글 wrapper*/
+		.main-container {
+			 width: 85%;
+			  max-width: 1000px;
+			  margin: 0 auto; /* 가운데 정렬 */
+			}
+		
+		/*전체글 위치조정용 */
 		.main-title {
 			margin: 0;
 			margin: 30px;
 			margin-bottom: 5px;
 			font-size: 20px;
-			width: auto;
+			width: 85%;
+			max-width: 1000px;
 			text-align: left;
 			padding-left: 0px;
-
 		}
 
 		/* ====== 링크 ====== */
@@ -386,56 +466,67 @@
 
 	<!-- 헤더 -->
 	<div th:replace="~{header :: siteHeader}"></div>
+
+	<!-- 컨테이너 -->
 	<div class="container-all">
-		<!-- 컨테이너 -->
-		<div class="container-board">
-			<!-- 윗단 아이콘 -->
-			<div class="board-header">
-				<h1>입양 게시판</h1>
-				<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
-			</div>
-
-			<!-- 검색 -->
-			<div class="search-regist-button">
-				<form th:action="@{/Adopt}" method="get" class="search-box">
-					<select name="field" class="search-select" th:value="${field}">
-						<option value="title" th:selected="${field == 'title'}">제목</option>
-						<option value="content" th:selected="${field == 'content'}">내용</option>
-						<option value="nickname" th:selected="${field == 'nickname'}">작성자</option>
-						<option value="" th:selected="${field == ''}">통합 검색</option>
-					</select>
-					<input type="text" name="keyword" class="search-input" placeholder="검색어 입력" th:value="${keyword}" />
-					<button type="submit" class="btn-search">검색</button>
-				</form>
-				<!-- 새 글 등록 버튼-->
-				<p class="regist-button">
-					<a th:href="@{/AdoptRegist}" class="btn-primary">새 글 등록하기</a>
-				</p>
-			</div>
-		</div>
-		<!-- 인기글 타이틀 -->
-		<div class="popular-header" style="display:flex; justify-content:space-between; align-items:center;">
-			<h3>🔥 인기글</h3>
+		<!-- 윗단 아이콘 -->
+		<div class="board-header">
+			<h1>입양 게시판</h1>
+			<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
 		</div>
 
-		<!-- 오른쪽: 보기형식 + 접기버튼 -->
-		<div style="display: flex; align-items: center; gap: 10px;">
-			<!-- 보기형식 스위치 -->
-			<div class="view-select toggle-switch">
-				<input type="radio" id="viewCard" name="viewType" value="card" th:checked="${viewType == 'card'}" />
-				<label for="viewCard">카드형</label>
-				<input type="radio" id="viewList" name="viewType" value="list" th:checked="${viewType == 'list'}" />
-				<label for="viewList">리스트형</label>
+		<div class="action-row"> <!-- 밑줄 정리용 전체 wrapper -->
+				<!-- 왼쪽 글 등록 버튼 wrapper-->
+				<div class="left-section">
+					<p class="regist-button">
+						<a th:href="@{/AdoptRegist}" class="btn-primary">새 글 등록하기</a>
+					</p>
+				</div>
+
+				<!-- 검색 wrapper-->
+				<div class="center-section">
+					<div class="search-button">
+						<form th:action="@{/Adopt}" method="get" class="search-box">
+							<select name="field" class="search-select" th:value="${field}">
+								<option value="title" th:selected="${field == 'title'}">제목</option>
+								<option value="content" th:selected="${field == 'content'}">내용</option>
+								<option value="nickname" th:selected="${field == 'nickname'}">작성자</option>
+								<option value="" th:selected="${field == ''}">통합 검색</option>
+							</select>
+							<input type="text" name="keyword" class="search-input" placeholder="검색어 입력"
+								th:value="${keyword}" />
+							<button type="submit" class="btn-search">검색</button>
+						</form>
+					</div>
+				</div>
+
+				<!-- 오른쪽 버튼 wrapper -->
+				<div class="right-section">
+					<!-- 보기형식 스위치 -->
+					<div class="toggle-switch">
+						<input type="radio" id="viewCard" name="viewType" value="card"
+							th:checked="${viewType == 'card'}" />
+						<label for="viewCard">카드형</label>
+						<input type="radio" id="viewList" name="viewType" value="list"
+							th:checked="${viewType == 'list'}" />
+						<label for="viewList">리스트형</label>
+					</div>
+					<!-- 접기/펼치기 버튼 -->
+					<button id="togglePopularBtn" onclick="togglePopular()"
+						style="font-size:13px; padding:5px 8px; cursor:pointer;">
+						👁️ 인기글 접기
+					</button>
+				</div>
 			</div>
-			<!-- 접기/펼치기 버튼 -->
-			<button id="togglePopularBtn" onclick="togglePopular()"
-				style="font-size:13px; padding:5px 8px; cursor:pointer;">
-				👁️ 인기글 접기
-			</button>
-		</div>
+		
+
 
 		<!-- =============================================================== 이 감싼거 수정해야함!!!-->
-		<div class="popular-wrapper">
+		<div class="main-wrapper">
+			<!-- 인기글 타이틀 -->
+			<div class="popular-header" style="display:flex; justify-content:space-between; align-items:center;">
+				<h3>🔥 인기글</h3>
+			</div>
 			<!-- 인기글  -->
 			<div id="popularContent" class="here"
 				style="visibility: visible; height: auto; overflow: hidden; transition: all 0.3s;">
@@ -453,85 +544,84 @@
 					<span th:text="'작성일: ' + ${post.formattedRegistDate}">작성일</span>
 					<hr>
 				</div>
-				</divid="popularContent">
 			</div>
 		</div>
-		<!-- 전체 글-->
-		<div class="main-title">
-			<h3>📋전체 글</h3>
-		</div>
-		<!-- 카드형 (mainList 반복) -->
-		<div class="card-list-view">
-			<div class="card-popular" th:each="board, iterStat : ${mainList}" th:if="${iterStat.index < 15}">
-				<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title">
-					<strong th:text="${board.title + ' 💬(' + board.commentCount + ')'}">제목</strong>
-				</a>
-				<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}">
-					<img class="thumb-image"
-						th:src="@{${board.Image_paths != null} ? '/images/' + ${board.Image_paths} : '/imagesDefault/defaultBoard.png'}"
-						alt="썸네일" />
-				</a>
-				<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
-				<span th:text="'분양가: ' + ${board.price}">분양가</span>
-				<span th:text="'조회수: ' + ${board.views}">조회수</span>
-				<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
-				<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
-				<hr />
+
+			<!-- 전체 글-->
+			<div class="main-title">
+				<h3>📋전체 글</h3>
 			</div>
-			<div th:if="${mainList.size() == 0}">등록된 게시글이 없습니다.</div>
+			<!-- 카드형 (mainList 반복) -->
+			<div class="card-list-view">
+				<div class="card-popular" th:each="board, iterStat : ${mainList}" th:if="${iterStat.index < 15}">
+					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title">
+						<strong th:text="${board.title + ' 💬(' + board.commentCount + ')'}">제목</strong>
+					</a>
+					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}">
+						<img class="thumb-image"
+							th:src="@{${board.Image_paths != null} ? '/images/' + ${board.Image_paths} : '/imagesDefault/defaultBoard.png'}"
+							alt="썸네일" />
+					</a>
+					<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
+					<span th:text="'분양가: ' + ${board.price}">분양가</span>
+					<span th:text="'조회수: ' + ${board.views}">조회수</span>
+					<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
+					<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
+					<hr />
+				</div>
+				<div th:if="${mainList.size() == 0}">등록된 게시글이 없습니다.</div>
+			</div>
+
+
+			<!-- 리스트형 (기존 테이블) -->
+			<table class="table-posts">
+				<colgroup>
+					<col style="width: 5%;" />
+					<col style="width: 10%;" />
+					<col style="width: 43%;" />
+					<col style="width: 10%;" />
+					<col style="width: 10%;" />
+					<col style="width: 6%;" />
+					<col style="width: 6%;" />
+					<col style="width: 10%;" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>번호</th>
+						<th>작성자</th>
+						<th>제목</th>
+						<th>분양가</th>
+						<th>지역</th>
+						<th>조회수</th>
+						<th>좋아요</th>
+						<th>작성일</th>
+					</tr>
+				</thead>
+
+				<!-- 본문 코드 -->
+				<tbody>
+					<tr th:each="board, iterStat : ${mainList}">
+						<td th:text="${board.boardNum}">1</td>
+						<!-- 썸넬 보이게-->
+
+						<td th:text="${board.nickName}"></td>
+						<td>
+							<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title"
+								th:text="${board.title + '🗨️(' + board.commentCount + ')'}">제목</a>
+						</td>
+						<td th:text="${board.price}"></td>
+						<td th:text="${board.area}"></td>
+						<td th:text="${board.views}"></td>
+						<td th:text="${board.likes}"></td>
+						<td th:text="${board.formattedRegistDate}"></td>
+					</tr>
+					<tr th:if="${mainList.size() == 0}">
+						<td colspan="9">등록된 게시글이 없습니다.</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
-
-
-		<!-- 리스트형 (기존 테이블) -->
-		<table class="table-posts">
-			<colgroup>
-				<col style="width: 5%;" />
-				<col style="width: 10%;" />
-				<col style="width: 43%;" />
-				<col style="width: 10%;" />
-				<col style="width: 10%;" />
-				<col style="width: 6%;" />
-				<col style="width: 6%;" />
-				<col style="width: 10%;" />
-			</colgroup>
-			<thead>
-				<tr>
-					<th>번호</th>
-					<th>작성자</th>
-					<th>제목</th>
-					<th>분양가</th>
-					<th>지역</th>
-					<th>조회수</th>
-					<th>좋아요</th>
-					<th>작성일</th>
-				</tr>
-			</thead>
-
-			<!-- 본문 코드 -->
-			<tbody>
-				<tr th:each="board, iterStat : ${mainList}">
-					<td th:text="${board.boardNum}">1</td>
-					<!-- 썸넬 보이게-->
-
-					<td th:text="${board.nickName}"></td>
-					<td>
-						<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title"
-							th:text="${board.title + '🗨️(' + board.commentCount + ')'}">제목</a>
-					</td>
-					<td th:text="${board.price}"></td>
-					<td th:text="${board.area}"></td>
-					<td th:text="${board.views}"></td>
-					<td th:text="${board.likes}"></td>
-					<td th:text="${board.formattedRegistDate}"></td>
-				</tr>
-				<tr th:if="${mainList.size() == 0}">
-					<td colspan="9">등록된 게시글이 없습니다.</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	</div>
-
+	
 	<!-- 페이지 네이션-->
 	<div class="pagination">
 
