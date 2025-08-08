@@ -114,6 +114,18 @@
 	background-color: rgb(255, 128, 0);
 }
 
+.animal-card {
+	display: flex;
+	justify-content: center;
+	 width: 100%;
+	 max-width: 100%;
+	 margin: 40px auto;
+	 padding: 32px;
+	 background-color: #fff;
+	 border-radius: 12px;
+	 gap: 40px;
+}
+
 .animal-buttons {
 	display: flex;
 	flex-wrap: wrap;
