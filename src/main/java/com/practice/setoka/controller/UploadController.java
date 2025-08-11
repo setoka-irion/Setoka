@@ -22,9 +22,8 @@ public class UploadController {
 	@PostMapping("/upload/image")
 	public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,
 			@RequestParam("userNum") int userNum){
-		System.out.println(file.getOriginalFilename());
 		String fileName = upload.tempImageUpload(file);;
-		String imageUrl = "/images/temp/" + fileName;
+		String imageUrl = fileName;
 		//db에 저장
 		boardService.insertTempImage(new TempImageDto(userNum, fileName));
 		System.out.println(userNum);
