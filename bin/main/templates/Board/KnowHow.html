@@ -18,31 +18,34 @@
 		}
 
 		/*==== 현재 게시판 정보 ====*/
+		.board-header{
+			text-align: left;
+			margin-left:0;
+			padding-left:0;
+			
+		}
 		.board-header h1 {
 			margin: 0;
 			font-size: 30px;
 			/* 필요 시 크기 조절 */
 			margin-top: 15px;
-			align-items: center;
+			text-align: left;
 			width: 85%;
-			/* 인기글 영역과 동일 */
-			margin: 20px auto 20px auto;
-			/* 좌우 중앙 정렬 */
-
+			margin: 20px 0 20px 0;
+			margin-left:0;
 		}
 
 		.board-header p {
 			font-size: 14px;
 			color: #555;
-			align-items: center;
+			text-align: left;
 			width: 85%;
 			/* 인기글 영역과 동일 */
-			margin: 20px auto 20px auto;
 			/* 좌우 중앙 정렬 */
 
 		}
 
-		/* ====== 검색박스 ====== */
+		/* --- 검색박스 --- */
 		.search-regist-button {
 			display: flex;
 			justify-content: space-between;
@@ -436,7 +439,6 @@
 					<span th:text="'작성일: ' + ${post.formattedRegistDate}">작성일</span>
 					<hr>
 				</div>
-				</divid="popularContent">
 			</div>
 			
 			<!-- 전체 글-->
@@ -461,7 +463,7 @@
 					<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
 					<hr />
 				</div>
-				<div th:if="${mainList.size() == 0}">등록된 게시글이 없습니다.</div>
+				<div th:if="${#lists.isEmpty(mainList)}">등록된 게시글이 없습니다.</div>
 			</div>
 
 
@@ -507,7 +509,7 @@
 							<td th:text="${board.likes}"></td>
 							<td th:text="${board.formattedRegistDate}"></td>
 						</tr>
-						<tr th:if="${mainList.size() == 0}">
+						<tr th:if="${#lists.isEmpty(mainList)}">
 							<td colspan="9">등록된 게시글이 없습니다.</td>
 						</tr>
 					</tbody>

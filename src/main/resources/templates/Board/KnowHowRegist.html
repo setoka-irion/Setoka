@@ -18,7 +18,7 @@
 	<!-- 한국어 번역 (선택) -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-ko-KR.min.js"></script>
 
-	<title>입양 글 등록</title>
+	<title>글 등록</title>
 	<style>
 		body {
 			background-color: #f8f8f8;
@@ -140,13 +140,13 @@
 	</div>
 
 	<div class="container">
-	  <form th:action="@{/AdoptRegist}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
+	  <form th:action="@{/KnowHowRegist}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
 	    <div class="error-message" th:if="${#fields.hasErrors('*')}">
 	      <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
 	    </div>
 
 			<input type="hidden" th:field="*{userNum}" />
-			<input type="hidden" th:field="*{type}" value="1" />
+			<input type="hidden" th:field="*{type}" value="5" />
 
 			<label for="title">제목</label>
 			<input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요" required />
@@ -170,7 +170,7 @@
 		</form>
 
 		<div class="back-button">
-			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
+			<p><a th:href="@{/KnowHow}">목록으로 돌아가기</a></p>
 		</div>
 	</div>
 </body>

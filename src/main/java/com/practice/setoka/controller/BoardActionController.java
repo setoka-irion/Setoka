@@ -86,29 +86,30 @@ public class BoardActionController {
 		// 입양 게시판 내부 검색
 		List<BoardWithUserDto> searchResult;
 		if (keyword == null || keyword.isEmpty()) {
-			// 검색 값 안넣었을 경우 전체 게시판 리스트 출력
-			searchResult = boardService.findBoardsByType(1, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
-			totalCount = boardService.countBoards(1);
+		    // 검색 값 안넣었을 경우 전체 게시판 리스트 출력
+		    searchResult = boardService.findBoardsByType(1, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
+		    totalCount = boardService.countBoards(1);
 		} else {
-			switch (field) {
-			case "title":
-				searchResult = boardService.findBoardsByTitle(keyword.trim());
-				break;
-			case "content":
-				searchResult = boardService.findBoardsByContent(keyword.trim());
-				break;
-			case "nickname":
-				searchResult = boardService.findBoardsByUserId(keyword.trim());
-				break;
-			default:
-				searchResult = boardService.searchAll(keyword.trim());
-			}
-			totalCount = searchResult.size(); //결색결과 갯수
+		    switch (field) {
+		    case "title":
+		        searchResult = boardService.findBoardsByTitle(keyword.trim());
+		        break;
+		    case "content":
+		        searchResult = boardService.findBoardsByContent(keyword.trim());
+		        break;
+		    case "nickname":
+		        searchResult = boardService.findBoardsByUserId(keyword.trim());
+		        break;
+		    default:
+		        searchResult = boardService.searchAll(keyword.trim());
+		    }
+		    totalCount = searchResult.size(); //검색결과 갯수
+		    searchResult = boardService.cutPage(offset, limit, searchResult);
 		}
-		
+
 		// Adopt 인기게시글
 		List<BoardWithUserDto> popularPosts = boardService.popularPosts(1);
-		searchResult = boardService.cutPage(offset, limit, searchResult);
+		System.out.println(viewType);
 		
 		// 뷰 타입 세션 저장 또는 불러오기
 		if (viewType != null && !viewType.isEmpty()) {
@@ -117,6 +118,7 @@ public class BoardActionController {
 			viewType = (String) session.getAttribute("viewType"); // 이전 값 불러오기
 		} else {
 			viewType = "card"; // 초기 기본값
+			session.setAttribute("viewType", viewType);
 		}
 		model.addAttribute("viewType", viewType); // 뷰로 전달
 		

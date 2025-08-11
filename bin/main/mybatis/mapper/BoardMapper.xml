@@ -143,7 +143,7 @@
 		) c ON b.num = c.boardNum
 		WHERE b.type = #{type}
 		ORDER BY b.registerDate DESC
-		<!--LIMIT #{offset}, #{limit} 시작위치, 제한갯수-->
+		LIMIT #{offset}, #{limit} 
 	</select>
 
 	<!-- 	 유저 고유번호 이용 특정 유저의 게시글 목록 조회 -->
