@@ -7,7 +7,7 @@
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<style>
 		.container-all {
-			width: 85%;
+			width: 78%;
 			margin: 40px auto;
 			position: relative;
 			background-color: #fff;
@@ -17,21 +17,23 @@
 		}
 
 		/*북쪽 컨테이너*/
-/*============================================================================*/
-		
+		/*============================================================================*/
+
 		/*==== 현재 게시판 정보 ====*/
 		.board-header {
-		    text-align: center; /* 텍스트 가운데 정렬 */
-		    margin-bottom: 10px; /* 아래 여백 */
+			text-align: center;
+			/* 텍스트 가운데 정렬 */
+			margin-bottom: 5px;
+			/* 아래 여백 */
 		}
-		
+
 		.board-header h1 {
 			margin: 0;
-			font-size: 30px;
+			font-size: 35px;
 			/* 필요 시 크기 조절 */
 			margin-top: 15px;
-			align-items: center;
-			width: 85%;
+			text-align: left;
+			width: 90%;
 			/* 인기글 영역과 동일 */
 			margin: 20px auto 20px auto;
 			/* 좌우 중앙 정렬 */
@@ -39,12 +41,12 @@
 		}
 
 		.board-header p {
-			font-size: 14px;
+			font-size: 17px;
 			color: #555;
-			align-items: center;
-			width: 85%;
+			width: 90%;
+			text-align: left;
 			/* 인기글 영역과 동일 */
-			margin: 20px auto 20px auto;
+			margin: 20px auto 0px auto;
 			/* 좌우 중앙 정렬 */
 
 		}
@@ -52,29 +54,199 @@
 		/*=== 윗단의 한줄 정렬용 wrapper ===*/
 		.action-row {
 			display: flex;
-			justify-content: space-between;
-			/* 좌측, 중앙, 우측 배치 */
+			grid-template-columns: 1fr auto; /* 왼쪽(검색창) / 오른쪽(버튼들) */
 			align-items: center;
-			width: 85%;
+			width: 90%;
 			max-width: 1600px;
 			margin: 0 auto 0px;
+			margin-top: 0;
 			padding: 0 0px;
 			box-sizing: border-box;
-			flex-wrap: wrap; /* 좁아지면 줄바꿈 허용 */
-			gap: 20px;       /* 줄바꿈 시 간격 */
+			gap: 20px; /* 줄바꿈 시 간격 */
+		}
+
+		/*=== 검색 섹션 ===*/
+		.center-section {
+			flex: 1;
+			display: flex;
+			justify-content: center; /* 가운데 정렬 */
+			align-items: center;
+			width: 100%;
+			min-width: 100px;
+			/* 최소 너비 지정, 필요시 조절 */
+			order: 1
+		}
+
+		/*====  오른쪽 섹션 ====*/
+		.right-section {
+			display: flex;
+			justify-content: flex-end; /* 또는 원하는 정렬 */
+			align-items: center;
+			flex: 0 0 auto; /* 내용 크기만큼 */
+			gap: 5px;	/* 버튼 사이 간격 */
+			max-width: 1000px;
+			min-width: 0px;	/* 최소 너비 지정 */
+			order: 2;
 		}
 		
-		/*--왼쪽 섹션--*/
-		.left-section {
-			flex: 0 1 auto;			/* 내용 크기만큼 */
-			white-space: nowrap;			/* 버튼 줄바꿈 방지 */
-			min-width: 150px; /* 최소 너비 지정, 필요시 조절 */
+		/*=== 인기글 접기 섹션 ===*/
+		.popular-section {
+			display: flex;
+			justify-content: flex-end; 
+			width: 90%;
+			margin: 0 auto;
 		}
+		
+		/*==== 접었을때 ====*/
+		@media (max-width: 900px) {
+			.action-row {
+				flex-direction: column; /* 세로 방향 정렬 */
+					align-items: stretch;
+			}
+
+
+			.center-section {
+				justify-content: center;
+				order:1;
+			}
+
+			.right-section {
+				justify-content: center;
+				gap: 5px;
+				order:2;
+			}
+			
+			.popular-section{
+				justify-content: center;
+			}
+		}
+
+		/* ====== 검색박스 ====== */
+		.search-button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			flex-grow: 1;
+			/* 가능한 공간 다 차지 */
+			margin: 20px 0;
+			/* 위아래 마진 */
+			gap: 6px;
+			/* 선택박스-입력창-버튼 사이 간격 */
+		}
+
+		/*검색박스 폼*/
+		.search-box {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			flex-grow: 1;
+			/* 가로공간 최대한 활용 */
+			max-width: 600px;
+			/* 검색창 전체 최대 넓이 */
+			margin: 0 auto;
+		}
+
+		/*검색 입력창 및 선택 박스*/
+		.search-input {
+			padding: 8px 10px;
+			font-size: 14px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			transition: border-color 0.3s ease;
+			width: 100%;
+			min-width: 120px;
+			max-width: 600px;
+			/* 너무 작아지는 것 방지 */
+			box-sizing: border-box;
+		}
+
+		.search-select {
+			padding: 8px 10px;
+			font-size: 14px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			transition: border-color 0.3s ease;
+			width: 120px;
+		}
+
+		.search-input:focus,
+		.search-select:focus {
+			outline: none;
+			border-color: #8b5e3c;
+		}
+
+		/*--검색 버튼--*/
+		.btn-search {
+			padding: 8px 18px;
+			font-size: 14px;
+			cursor: pointer;
+			background-color: #8b5e3c;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			font-weight: 600;
+			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
+			transition: background-color 0.3s ease;
+			white-space: nowrap;
+		}
+
+		.btn-search:hover {
+			background-color: #8b5e3c;
+			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
+		}
+
+
+		/* --- 보기 방식전환 --- */
+		.toggle-switch {
+			display: flex;
+			border: 1px solid #8b5e3c;
+			border-radius: 8px;
+			overflow: hidden;
+			cursor: pointer;
+			user-select: none;
+			font-weight: 600;
+			font-size: 16px;
+			color: #8b5e3c;
+			background: white;
+			margin-right: 20px;
+			min-width: 145px; /* 최소 너비 지정: 너무 작아지는 것 방지 */
+		}
+
+		.toggle-switch input[type="radio"] {
+			display: none;
+			/* 기본 라디오 숨기기 */
+		}
+
+		.toggle-switch label {
+			padding: 8px 10px;
+			/*세로, 가로*/
+			transition: background-color 0.3s, color 0.3s;
+			user-select: none;
+			text-align: center;
+			flex: 1;
+			/* 균등 폭 */
+			white-space: nowrap;
+		}
+
+		.toggle-switch label:hover {
+			background-color: #f0e8db;
+		}
+
+		.toggle-switch input[type="radio"]:checked+label {
+			background-color: #8b5e3c;
+			color: white;
+		}
+
 		/*== 글 등록 버튼==*/
 		.regist-button {
 			/* 위치 조정 필요하면 margin-left 등으로 조절 */
-			margin-left: 20px;
+			text-align: right;
+			width: 100%;
+			margin-right: 0px;
 			white-space: nowrap;
+			margin-top: 0;
 			/* 버튼 줄바꿈 방지 */
 		}
 
@@ -96,186 +268,40 @@
 			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
 		}
 
-		/*--- 가운데 섹션 ---*/
-		.center-section{
-			flex: 1 1 300px; /* 남는 공간 최대한 차지 */
-			display: flex;
-			justify-content: center; /* 가운데 정렬 */
-			align-items: center;
-			min-width: 200px; /* 최소 너비 지정, 필요시 조절 */
-		}
-			
-		/* ====== 검색박스 ====== */
-		.search-button {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			width: 100%;
-			flex-grow: 1; /* 가능한 공간 다 차지 */
-			margin: 20px 0; /* 위아래 마진 */
-			gap: 6px; /* 선택박스-입력창-버튼 사이 간격 */
-		}
-		/*검색박스 폼*/
-		.search-box {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			width: 100%;
-			margin: 20px 0;
-			flex-grow: 1;	 /* 가로공간 최대한 활용 */
-			max-width: 600px; /* 검색창 전체 최대 넓이 */
-		}
-		/*검색 입력창 및 선택 박스*/
-		.search-input{
-			padding: 8px 10px;
-			font-size: 14px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			transition: border-color 0.3s ease;
-			width: 800px ;
-			min-width: 200px; /* 너무 작아지는 것 방지 */
-		}
-		
-		.search-select {
-			padding: 8px 10px;
-			font-size: 14px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			transition: border-color 0.3s ease;
-			width: 120px;
-		}
 
-		.search-input:focus,
-		.search-select:focus {
-			outline: none;
-			border-color: #8b5e3c;
-		}
 
-		/*==검색 버튼==*/
-		.btn-search {
-			padding: 8px 18px;
-			font-size: 14px;
-			cursor: pointer;
+		/*=== 접기버튼 ===*/
+		#togglePopularBtn {
+			padding: 8px 16px;
 			background-color: #8b5e3c;
 			color: white;
 			border: none;
 			border-radius: 4px;
 			font-weight: 600;
-			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
+			font-size: 13px;
+			cursor: pointer;
 			transition: background-color 0.3s ease;
+			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
 			white-space: nowrap;
+			margin-bottom: 5px;
 		}
 
-		.btn-search:hover {
+		#togglePopularBtn:hover {
 			background-color: #8b5e3c;
 			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
 		}
 
-		/*--- 오른쪽 섹션 ---*/
-		.right-section {
-			display: flex;
-			justify-content: flex-start;	/* 또는 원하는 정렬 */
-			align-items: center;
-			flex: 0 0 auto; 		/* 내용 크기만큼 */
-			gap: 10px; 				/* 버튼 사이 간격 */
-			min-width: 150px; /* 최소 너비 지정 */
-		}
 
-		/* ==== 보기 방식전환 ==== */
-		.toggle-switch {
-			display: inline-flex;
-			border: 1px solid #8b5e3c;
-			border-radius: 8px;
-			overflow: hidden;
-			cursor: pointer;
-			user-select: none;
-			font-weight: 600;
-			font-size: 16px;
-			color: #8b5e3c;
-			background: white;
-			margin-right: 20px;
-		}
 
-		.toggle-switch input[type="radio"] {
-			display: none;
-			/* 기본 라디오 숨기기 */
-		}
-
-		.toggle-switch label {
-			padding: 8px 10px;
-			/*세로, 가로*/
-			transition: background-color 0.3s, color 0.3s;
-			user-select: none;
-			text-align: center;
-			flex: 1;			/* 균등 폭 */
-			white-space: nowrap;
-		}
-
-		.toggle-switch label:hover {
-			background-color: #f0e8db;
-		}
-
-		.toggle-switch input[type="radio"]:checked+label {
-			background-color: #8b5e3c;
-			color: white;
-		}
-		
-		#togglePopularBtn {
-		    padding: 8px 16px;
-		    background-color: #8b5e3c;
-		    color: white;
-		    border: none;
-		    border-radius: 4px;
-		    font-weight: 600;
-		    font-size: 13px;
-		    cursor: pointer;
-		    transition: background-color 0.3s ease;
-		    box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
-		    white-space: nowrap;
-		}
-
-		#togglePopularBtn:hover {
-		    background-color: #8b5e3c;
-		    box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
-		}
-		
-		
-		
-		@media (max-width: 900px) {
-		  .action-row {
-		    flex-direction: column;
-		    align-items: stretch;
-		  }
-		  
-		  .left-section, .center-section, .right-section {
-		    flex: none;
-		    min-width: auto;
-		    width: 100%;
-		    text-align: center; /* 가운데 정렬 */
-		    margin-bottom: 10px;
-		  }
-		  
-		  .center-section {
-		    justify-content: center;
-		  }
-		  
-		  .right-section {
-		    justify-content: center;
-		    gap: 5px;
-		  }
-		}
-		
-		
-
-		/*남북 분단선*/
-/*================================================================================*/
+		/*인기, 전체글 분단선*/
+		/*================================================================================*/
 
 		.main-wrapper {
-			width: 85%;
-			margin: 20px auto;
+			width: 92%;
+			margin: 0 auto 80px auto;
 			position: relative;
 			background-color: #fff;
-			padding: 15px 0px;
+			padding: 10px 0px;
 			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 			border-radius: 6px;
 		}
@@ -376,14 +402,15 @@
 		}
 
 		/*전체 글 섹션*/
-/*======================================================================================*/
+		/*======================================================================================*/
 		/*전체 글 wrapper*/
 		.main-container {
-			 width: 85%;
-			  max-width: auto;
-			  margin: 0 auto; /* 가운데 정렬 */
-			}
-		
+			width: 100%;
+			max-width: auto;
+			margin: 0 auto;
+			/* 가운데 정렬 */
+		}
+
 		/*전체글 위치조정용 */
 		.main-title {
 			margin: 0;
@@ -483,7 +510,6 @@
 </head>
 
 <body>
-
 	<!-- 헤더 -->
 	<div th:replace="~{header :: siteHeader}"></div>
 
@@ -495,49 +521,50 @@
 			<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
 		</div>
 
-		<div class="action-row"> <!-- 밑줄 정리용 전체 wrapper -->
-				<!-- 왼쪽 글 등록 버튼 wrapper-->
-				<div class="left-section">
-					<p class="regist-button">
-						<a th:href="@{/AdoptRegist}" class="btn-primary">새 글 등록하기</a>
-					</p>
-				</div>
-
-				<!-- 검색 wrapper-->
-				<div class="center-section">
-					<div class="search-button">
-						<form th:action="@{/Adopt}" method="get" class="search-box">
-							<select name="field" class="search-select" th:value="${field}">
-								<option value="title" th:selected="${field == 'title'}">제목</option>
-								<option value="content" th:selected="${field == 'content'}">내용</option>
-								<option value="nickname" th:selected="${field == 'nickname'}">작성자</option>
-								<option value="" th:selected="${field == ''}">통합 검색</option>
-							</select>
-							<input type="text" name="keyword" class="search-input" placeholder="검색어 입력"
-								th:value="${keyword}" />
-							<button type="submit" class="btn-search">검색</button>
-						</form>
-					</div>
-				</div>
-
-				<!-- 오른쪽 버튼 wrapper -->
-				<div class="right-section">
-					<!-- 보기형식 스위치 -->
-					<div class="toggle-switch">
-						<input type="radio" id="viewCard" name="viewType" value="card"
-							th:checked="${viewType == 'card'}" />
-						<label for="viewCard">카드형</label>
-						<input type="radio" id="viewList" name="viewType" value="list"
-							th:checked="${viewType == 'list'}" />
-						<label for="viewList">리스트형</label>
-					</div>
-					<!-- 접기/펼치기 버튼 -->
-					<button id="togglePopularBtn" onclick="togglePopular()">
-						👁️ 인기글 접기
-					</button>
+		<!-- 윗단 전체 wrapper -->
+		<div class="action-row">
+			<!-- 검색 wrapper-->
+			<div class="center-section">
+				<div class="search-button">
+					<form th:action="@{/Adopt}" method="get" class="search-box">
+						<select name="field" class="search-select" th:value="${field}">
+							<option value="title" th:selected="${field == 'title'}">제목</option>
+							<option value="content" th:selected="${field == 'content'}">내용</option>
+							<option value="nickname" th:selected="${field == 'nickname'}">작성자</option>
+							<option value="" th:selected="${field == ''}">통합 검색</option>
+						</select>
+						<input type="text" name="keyword" class="search-input" placeholder="검색어 입력"
+							th:value="${keyword}" />
+						<button type="submit" class="btn-search">검색</button>
+					</form>
 				</div>
 			</div>
-		
+
+			<!-- 오른쪽 버튼 wrapper -->
+			<div class="right-section">
+				<!-- 보기형식 스위치 -->
+				<div class="toggle-switch">
+					<input type="radio" id="viewCard" name="viewType" value="card" th:checked="${viewType == 'card'}" />
+					<label for="viewCard">카드형</label>
+					<input type="radio" id="viewList" name="viewType" value="list" th:checked="${viewType == 'list'}" />
+					<label for="viewList">리스트형</label>
+				</div>
+				<!-- 글 등록 버튼 -->
+				<p class="regist-button">
+					<a th:href="@{/AdoptRegist}" class="btn-primary">새 글 등록하기</a>
+				</p>
+			</div>
+		</div>
+
+		<!-- 한줄 버튼 wrapper-->
+		<div class="popular-section">
+			<!-- 접기/펼치기 버튼 -->
+			<button id="togglePopularBtn" onclick="togglePopular()">
+				👁️ 인기글 접기
+			</button>
+		</div>
+
+		<!--------------------------------------------------------------------------------------------------------------------------->
 
 		<!-- 인기글 타이틀 조정용 wrapper -->
 		<div class="main-wrapper">
@@ -564,7 +591,9 @@
 				</div>
 			</div>
 		</div>
-			
+
+		<!--------------------------------------------------------------------------------------------------------------------------->
+
 		<div class="main-container">
 			<!-- 전체 글-->
 			<div class="main-title">
@@ -572,7 +601,7 @@
 			</div>
 			<!-- 카드형 (mainList 반복) -->
 			<div class="card-list-view">
-				<div class="card-popular" th:each="board, iterStat : ${mainList}" th:if="${iterStat.index < 15}">
+				<div class="card-popular" th:each="board, iterStat : ${mainList}">
 					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title">
 						<strong th:text="${board.title + ' 💬(' + board.commentCount + ')'}">제목</strong>
 					</a>
@@ -588,7 +617,7 @@
 					<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
 					<hr />
 				</div>
-				<div th:if="${mainList.size() == 0}">등록된 게시글이 없습니다.</div>
+				<div th:if="${#lists.isEmpty(mainList)}">등록된 게시글이 없습니다.</div>
 			</div>
 
 
@@ -634,17 +663,18 @@
 						<td th:text="${board.likes}"></td>
 						<td th:text="${board.formattedRegistDate}"></td>
 					</tr>
-					<tr th:if="${mainList.size() == 0}">
+					<tr th:if="${#lists.isEmpty(mainList)}">
 						<td colspan="9">등록된 게시글이 없습니다.</td>
 					</tr>
 				</tbody>
 			</table>
-			</div>
 		</div>
-	
+	</div>
+
+	<!--------------------------------------------------------------------------------------------------------------------------->
+
 	<!-- 페이지 네이션-->
 	<div class="pagination">
-
 		<!-- 이전 페이지 -->
 		<a class="pagination-link" th:if="${currentPage > 1}"
 			th:href="@{/Adopt(page=${currentPage - 1}, keyword=${keyword}, field=${field}, viewType=${viewType})}">
@@ -664,9 +694,10 @@
 			th:href="@{/Adopt(page=${currentPage + 1}, keyword=${keyword}, field=${field}, viewType=${viewType})}">
 			다음 ▶
 		</a>
+	</div>
 
 	</div>
-	</div>
+
 	<script>
 		function togglePopular() {
 			const section = document.getElementById('popularContent');
@@ -733,7 +764,12 @@
 		}
 
 		window.addEventListener('DOMContentLoaded', () => {
-			let viewType = getQueryParam('viewType') || 'card';
+			const serverViewType = document.querySelector('input[name="viewType"]:checked')?.value;
+			console.log("서버에서 체크된 라디오 값:", serverViewType);
+
+			let viewType = serverViewType || getQueryParam('viewType') || 'card';
+			console.log("최종 선택된 viewType:", viewType);
+
 			setViewType(viewType);
 
 			// 라디오 변경 시, 페이지 새로고침하면서 viewType 파라미터 유지
