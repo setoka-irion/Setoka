@@ -83,6 +83,18 @@
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 	cursor: pointer;
 }
+
+.message-card .box-icon {
+    display: inline-block;
+    margin-left: 10px;
+    max-width: 30px; /* 고정 너비 설정으로 정렬 보정 */
+    text-align: center;
+}
+
+.message-card .box-icon.hidden {
+    visibility: hidden; /* 공간은 유지하되 보이지 않게 */
+}
+
 .message-summary {
     display: flex;
     justify-content: space-between;

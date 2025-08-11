@@ -29,6 +29,21 @@ public class MessageController {
 	private MessageService messageService;
 	@Autowired
 	private UserService userService;
+
+	
+	@GetMapping(value = "CreateLetter")
+	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser,
+			RedirectAttributes redirectAttributes)
+	{
+		String email = (String)redirectAttributes.getAttribute("email"); 
+		if(email != null)
+		{
+			model.addAttribute("receiver", email);
+		}
+		model.addAttribute("itemTypes", Item.values());
+		model.addAttribute("max", authUser.getUser().getPoint());
+		return "Message/CreateLetter";
+	}
 	
 	@PostMapping(value = "CreateLetter")
 	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser,
@@ -57,22 +72,16 @@ public class MessageController {
 		
 		dto.setSender(authUser.getUser().getId());
 		
-		//아이템이 없는 경우
-		if(dto.getItem_Type() == null)
+		if(dto.getItem_Type() == Item.NONE)
 			dto.setItem_Value(0);
 		
 		if(messageService.sendMessage(dto))
 		{
-			if(dto.getItem_Type() != null)
+			if(dto.getItem_Type() == Item.POINT)
 			{
-				switch(dto.getItem_Type())
-				{
-				case POINT:
-					int newPoint = authUser.getUser().getPoint() - dto.getItem_Value();
-					userService.userPointUpdate(dto.getSender(), newPoint);
-					authUser.getUser().setPoint(newPoint);
-					break;
-				}
+				int newPoint = authUser.getUser().getPoint() - dto.getItem_Value();
+				userService.userPointUpdate(dto.getSender(), newPoint);
+				authUser.getUser().setPoint(newPoint);
 			}
 		}
 		
