@@ -119,6 +119,12 @@ public class MessageController {
 		messageService.GettingMessage(num, authUser.getUser());
 		return "redirect:/MessageList";
 	}
+	@GetMapping(value = "DeleteMessage")
+	public String DeleteMessage(@RequestParam("messageNum") int num)
+	{
+		messageService.markMessageAsRead(num, MessageStatus.DELETE);
+		return "redirect:/MessageList";
+	}
 	
 	@PostMapping("/message/read/{messageNum}")
 	@ResponseBody
