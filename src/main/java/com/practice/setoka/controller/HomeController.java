@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.practice.setoka.Redirect;
+import com.practice.setoka.Upload;
 import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.service.UserService;
@@ -21,9 +22,14 @@ public class HomeController {
 	
 	@Autowired
 	UserService userService;
+	@Autowired
+	Upload upload;
 	// 홈화면
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model) {
+		//"/imagesDefault/mainlogo.png"
+//		System.out.println(upload.defaultPath);
+//	    model.addAttribute("defaultPath", upload.defaultPath + "/mainlogo.png");
 		return "home";
 	}
 

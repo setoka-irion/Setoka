@@ -150,7 +150,7 @@ public class BoardActionController {
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
 		String content = upload.fileLoad(detail.getContent());
 		detail.setContent(content);
-		
+
 		model.addAttribute("detail", detail);
 
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
@@ -181,7 +181,6 @@ public class BoardActionController {
 			CommentInfoDto commentToEdit = commentsService.findCommentByNum(editCommentNum);
 			model.addAttribute("commentToEdit", commentToEdit);
 		}
-
 		return "Board/AdoptDetail";
 	}
 
@@ -217,7 +216,7 @@ public class BoardActionController {
 			return "Board/AdoptRegist";
 		}
 		
-		String original = boardDto.getContent().replaceAll("images/temp/", "images/");
+		String original = boardDto.getContent().replaceAll(upload.tempPath, upload.imagePath);
 		boardDto.setContent(original);
 		
 		String fileName = upload.fileUpload(boardDto.getContent());
@@ -235,10 +234,12 @@ public class BoardActionController {
 			TempImage tempImage = l;
 			
 			// 원본 파일 경로
-			Path sourcePath = Paths.get("C:/images/temp/" + tempImage.getImageName());
-
+			Path sourcePath = Paths.get(upload.BaseUploadPath() + tempImage.getImageName());
+			
+			String newPath = upload.BaseUploadPath() + tempImage.getImageName().replace("temp/", "");
+			
 			// 이동할 대상 경로
-			Path targetPath = Paths.get("C:/images/" + tempImage.getImageName());
+			Path targetPath = Paths.get(newPath);
 
 			try {
 				// 파일 이동 (이미 존재하면 덮어쓰기)
@@ -313,7 +314,7 @@ public class BoardActionController {
 //	    boardDto.setContent(fileName);
 
 		// 1. 본문 이미지 경로 정리
-		String original = boardDto.getContent().replaceAll("images/temp/", "images/");
+		String original = boardDto.getContent().replaceAll(upload.tempPath, upload.imagePath);
 		boardDto.setContent(original);
 		String fileName = upload.fileUpload(boardDto.getContent());
 		boardDto.setContent(fileName);
@@ -338,11 +339,13 @@ public class BoardActionController {
 			TempImage tempImage = l;
 
 			// 원본 파일 경로
-			Path sourcePath = Paths.get("C:/images/temp/" + tempImage.getImageName());
+			Path sourcePath = Paths.get(upload.BaseUploadPath() + tempImage.getImageName());
+			
+			String newPath = upload.BaseUploadPath() + tempImage.getImageName().replace("temp/", "");
 
 			// 이동할 대상 경로
-			Path targetPath = Paths.get("C:/images/" + tempImage.getImageName());
-
+			Path targetPath = Paths.get(newPath);
+			
 			try {
 				// 파일 이동 (이미 존재하면 덮어쓰기)
 				Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);

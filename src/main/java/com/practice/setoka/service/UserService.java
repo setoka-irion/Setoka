@@ -96,13 +96,13 @@ public class UserService
 	public boolean insertProfilephoto(MultipartFile file, String id)
 	{
 		String fileName = upload.imageFileUpload(file);
-		userMapper.updateProfilephotoPath(upload.imagePath + fileName, id);
+		userMapper.updateProfilephotoPath(fileName, id);
 		
 		return true;
 	}
 	public boolean insertProfilephotoDefalut(String id)
 	{
-		String fileName = upload.ImagesDefault() + "/defaultProfile.png";
+		String fileName = upload.ImagesDefault() + "defaultProfile.png";
 		userMapper.updateProfilephotoPath(fileName, id);
 		
 		return true;

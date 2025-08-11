@@ -15,11 +15,12 @@ public class Upload {
 
     @Value("${upload.path}")
     private String baseUploadPath;
-    public final String imagePath = "/images/";
-    public final String boardPath = "/board/";
-    public final String tempPath = "/images/temp/";
-    public final String defaultPath = "/imagesDefault/";
+    public final String imagePath = "images/";
+    public final String boardPath = "board/";
+    public final String tempPath = "images/temp/";
+    public final String defaultPath = "imagesDefault/";
     
+    public String BaseUploadPath() { return baseUploadPath; }
 	public String SavePath() { return baseUploadPath + imagePath; }	
 	public String TxtSavePath() { return baseUploadPath + boardPath; }
 	public String TempImagePath() { return baseUploadPath + tempPath; }
@@ -50,7 +51,7 @@ public class Upload {
 				e.printStackTrace();
 			}
 		}
-		return path;
+		return imagePath + path;
 	}
 	
 	public boolean imageFileDelete(String fileName)
@@ -86,7 +87,7 @@ public class Upload {
 				e.printStackTrace();
 			}
 		}
-		return path;
+		return tempPath + path;
 	}
 	
 	
@@ -102,13 +103,12 @@ public class Upload {
 		try(FileWriter writer = new FileWriter(file))
 		{
 			writer.write(txt);
-			System.out.println("파일 저장 완료");
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
-		return fileName;
+		return boardPath + fileName;
 	}
 	
 	public String fileLoad(String fileName)
