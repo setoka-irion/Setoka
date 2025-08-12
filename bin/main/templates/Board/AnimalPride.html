@@ -415,7 +415,7 @@
 		/*======================================================================================*/
 		/*전체 글 wrapper*/
 		.main-container {
-			width: 100%;
+			width: 92%;
 			max-width: auto;
 			margin: 0 auto;
 			/* 가운데 정렬 */
@@ -594,7 +594,6 @@
 					</a>
 					<span th:text="'작성자: ' + ${post.nickName}">작성자</span>
 					<span th:text="'좋아요: ' + ${post.likes}">좋아요</span>
-					<span th:text="'지역: ' + ${post.area}">지역</span>
 					<span th:text="'작성일: ' + ${post.formattedRegistDate}">작성일</span>
 					<hr>
 				</div>
@@ -618,7 +617,6 @@
 						<img class="thumb-image" th:src="${board.Image_paths}" alt="썸네일" />
 					</a>
 					<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
-					<span th:text="'분양가: ' + ${board.price}">분양가</span>
 					<span th:text="'조회수: ' + ${board.views}">조회수</span>
 					<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
 					<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
@@ -634,8 +632,6 @@
 					<col style="width: 5%;" />
 					<col style="width: 10%;" />
 					<col style="width: 43%;" />
-					<col style="width: 10%;" />
-					<col style="width: 10%;" />
 					<col style="width: 6%;" />
 					<col style="width: 6%;" />
 					<col style="width: 10%;" />
@@ -645,8 +641,6 @@
 						<th>번호</th>
 						<th>작성자</th>
 						<th>제목</th>
-						<th>분양가</th>
-						<th>지역</th>
 						<th>조회수</th>
 						<th>좋아요</th>
 						<th>작성일</th>
@@ -664,8 +658,6 @@
 							<a th:href="@{'/AnimalPrideDetail/{num}'(num=${board.boardNum})}" class="link-title"
 								th:text="${board.title + '🗨️(' + board.commentCount + ')'}">제목</a>
 						</td>
-						<td th:text="${board.price}"></td>
-						<td th:text="${board.area}"></td>
 						<td th:text="${board.views}"></td>
 						<td th:text="${board.likes}"></td>
 						<td th:text="${board.formattedRegistDate}"></td>
