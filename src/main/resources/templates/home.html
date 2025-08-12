@@ -1,63 +1,76 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Home</title>
-	<link rel="stylesheet" th:href="@{/CSS/header.css}">
-	<link rel="stylesheet" th:href="@{/CSS/home-popular-post.css}"/>
+  <meta charset="UTF-8">
+  <title>Home</title>
+  <link rel="stylesheet" th:href="@{/CSS/header.css}">
+  <link rel="stylesheet" th:href="@{/CSS/home-popular-post.css}">
 </head>
 
 <body>
-	<div th:replace="~{header :: siteHeader}"></div>
+  <!-- 헤더 -->
+  <div th:replace="~{header :: siteHeader}"></div>
 
-	<!-- 본문 영역에서 인기글 표시 -->
-		<section class="home-popular-post" style="margin-top: 30px; text-align: center;">
-			<h2>🔥 인기 글</h2>
-		
-			<a th:if="${Adopt != null}" th:href="@{/AdoptDetail/{id}(id=${Adopt.boardNum})}">
-				<div>
-					<img th:src="${Adopt.Image_paths}" alt="썸네일"  />
-					<h3 th:text="${Adopt.title}">게시글 제목</h3>
-					<p th:text="'작성자: ' + ${Adopt.nickName}">작성자</p>
-				</div>
-			</a>
-			
-			<a th:if="${AnimalPride != null}" th:href="@{/AnimalPrideDetail/{id}(id=${AnimalPride.boardNum})}">
-				<div>
-					<img th:src="${AnimalPride.Image_paths}" alt="썸네일"  />
-					<h3 th:text="${AnimalPride.title}">게시글 제목</h3>
-					<p th:text="'작성자: ' + ${AnimalPride.nickName}">작성자</p>
-				</div>
-			</a>
-			
-			<a th:href="@{/WalkTrailDetail/{id}(id=${WalkTrail.boardNum})}">
-				<div>
-					<img th:src="${WalkTrail.Image_paths}" alt="썸네일"  />
-					<h3 th:text="${WalkTrail.title}">게시글 제목</h3>
-					<p th:text="'작성자: ' + ${WalkTrail.nickName}">작성자</p>
-				</div>
-			</a>
-						
-			<a th:href="@{/KnowHowDetail/{id}(id=${Knowhow.boardNum})}">
-				<div>
-					<img th:src="${Knowhow.Image_paths}" alt="썸네일"  />
-					<h3 th:text="${Knowhow.title}">게시글 제목</h3>
-					<p th:text="'작성자: ' + ${Knowhow.nickName}">작성자</p>
-				</div>
-			</a>
-		
-			<a th:href="@{/UsedGoodsDetail/{id}(id=${UsedGoods.boardNum})}">
-				<div>
-					<img th:src="${UsedGoods.Image_paths}" alt="썸네일"  />
-					<h3 th:text="${UsedGoods.title}">게시글 제목</h3>
-					<p th:text="'작성자: ' + ${UsedGoods.nickName}">작성자</p>
-				</div>
-			</a>
-		
-			
-		</section>
+  <!-- 인기글 섹션 -->
+  <section class="home-popular-post">
+    <h2>추천 게시판</h2>
+
+    <!-- 입양 게시판 -->
+    <h3 class="board-title">입양 게시판</h3>
+    <div class="card-grid">
+      <a th:each="post : ${Adopt}" th:href="@{/AdoptDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+        </div>
+      </a>
+    </div>
+
+    <!-- 자랑 게시판 -->
+    <h3 class="board-title">동물 자랑</h3>
+    <div class="card-grid">
+      <a th:each="post : ${AnimalPride}" th:href="@{/AnimalPrideDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+        </div>
+      </a>
+    </div>
+
+    <!-- 산책 게시판 -->
+    <h3 class="board-title">산책로 추천</h3>
+    <div class="card-grid">
+      <a th:each="post : ${WalkTrail}" th:href="@{/WalkTrailDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+        </div>
+      </a>
+    </div>
+
+    <!-- 중고거래 -->
+    <h3 class="board-title">중고 용품</h3>
+    <div class="card-grid">
+      <a th:each="post : ${UsedGoods}" th:href="@{/UsedGoodsDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+        </div>
+      </a>
+    </div>
+
+    <!-- 꿀팁 게시판 -->
+    <h3 class="board-title">반려 꿀팁</h3>
+    <div class="card-grid">
+      <a th:each="post : ${Knowhow}" th:href="@{/KnowHowDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+          <p th:text="'작성자: ' + ${post.nickName}">작성자</p>
+        </div>
+      </a>
+    </div>
+
+  </section>
 </body>
-
-
-
 </html>

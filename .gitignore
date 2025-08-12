@@ -1,3 +1,6 @@
+# gradle wrapper jar 는 제외 x
+!gradle/wrapper/gradle-wrapper.jar
+
 # Gradle 빌드 폴더
 .gradle/
 build/
