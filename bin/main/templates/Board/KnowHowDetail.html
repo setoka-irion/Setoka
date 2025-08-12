@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>집사 생활백서 상세 페이지</title>
+	<title>집사 노하우 상세 페이지</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<style>
@@ -444,7 +444,7 @@
 
 		<!-- 썸네일 -->
 		<div class="form-group" style="text-align: center;">
-			<img th:src="@{${detail.image_paths != null} ? '/images/' + ${detail.image_paths} : '/imagesDefault/defaultBoard.png'}"
+			<img th:src="@{${detail.Image_paths}}"
 				alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
 		</div>
 

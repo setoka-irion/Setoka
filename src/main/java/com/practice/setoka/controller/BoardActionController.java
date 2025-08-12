@@ -69,7 +69,7 @@ public class BoardActionController {
 //		return "";
 //	}
 
-	// 입양 메인페이지
+	// 메인페이지
 	@GetMapping(value = "/Adopt")
 	public String adoptMain(
 			@RequestParam(value = "keyword", required = false) String keyword,
@@ -83,7 +83,7 @@ public class BoardActionController {
 		int offset = (page - 1) * limit; 
 		int totalCount;
 		
-		// 입양 게시판 내부 검색
+		// 게시판 내부 검색
 		List<BoardWithUserDto> searchResult;
 		if (keyword == null || keyword.isEmpty()) {
 		    // 검색 값 안넣었을 경우 전체 게시판 리스트 출력
@@ -107,7 +107,7 @@ public class BoardActionController {
 		    searchResult = boardService.cutPage(offset, limit, searchResult);
 		}
 
-		// Adopt 인기게시글
+		// 인기게시글
 		List<BoardWithUserDto> popularPosts = boardService.popularPosts(1);
 		System.out.println(viewType);
 		
@@ -142,7 +142,7 @@ public class BoardActionController {
 
 	
 	
-	// 입양 상세 페이지 (조회수증가)
+	// 상세 페이지 (조회수증가)
 	@GetMapping(value = "/AdoptDetail/{num}")
 	public String adoptDetail(@PathVariable("num") int num,
 			@RequestParam(value = "editCommentNum", required = false) Integer editCommentNum,
@@ -186,7 +186,7 @@ public class BoardActionController {
 		return "Board/AdoptDetail";
 	}
 
-	// 입양 게시글 등록
+	// 게시글 등록
 	@GetMapping(value = "/AdoptRegist")
 	public String adoptRegistForm(@AuthenticationPrincipal CustomUserDetails authUser, Model model) {
 		// 로그인 검증
@@ -206,7 +206,7 @@ public class BoardActionController {
 		return "Board/AdoptRegist";
 	}
 
-	// 입양 게시글 등록
+	// 게시글 등록
 	@PostMapping(value = "/AdoptRegist")
 	public String adoptRegistSubmit(
 			// 오류 검증
@@ -261,7 +261,7 @@ public class BoardActionController {
 		return "redirect:/Adopt";
 	}
 
-	// 입양 게시글 수정
+	// 게시글 수정
 	@GetMapping(value = "/AdoptUpdate/{num}")
 	public String adoptUpdateForm(@PathVariable("num") int num, Model model,
 			@AuthenticationPrincipal CustomUserDetails authUser, RedirectAttributes redirectAttributes) {
@@ -289,7 +289,7 @@ public class BoardActionController {
 		return "Board/AdoptUpdate";
 	}
 
-	// 입양 게시글 수정
+	// 게시글 수정
 	@PostMapping(value = "/AdoptUpdate/{num}")
 	public String adoptUpdateSubmit(@Valid BoardDto boardDto, BindingResult bindingResult, @PathVariable("num") int num,
 			Model model, @AuthenticationPrincipal CustomUserDetails authUser,

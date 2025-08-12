@@ -2,553 +2,574 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>중고물품 거래 상세 페이지</title>
-    <style>
-        /* Reset 및 기본 설정 */
-        * {
-            box-sizing: border-box;
-        }
+	<meta charset="UTF-8" />
+	<title>중고거래 상세 페이지</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style>
+		/* reset & 기본 */
+		* {
+			box-sizing: border-box;
+		}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7fb;
-            margin: 0;
-            padding: 40px 10px;
-            color: #333;
-            text-align: center;
-        }
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #f4f7fb;
+			margin: 0;
+			color: #333;
+			text-align: center;
+		}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            text-align: left;
-        }
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			background-color: #fff;
+			padding: 30px 40px;
+			border-radius: 12px;
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+			text-align: left;
+		}
 
-        /* 상단 버튼 그룹 */
-        .top-buttons {
-            margin-bottom: 30px;
-            text-align: right;
-        }
+		/* 메시지 */
+		.message {
+			font-weight: 600;
+			margin-bottom: 20px;
+			padding: 12px 15px;
+			border-radius: 8px;
+		}
 
-        a.button-link {
-            display: inline-block;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            margin-left: 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
+		.message.error {
+			color: #b32020;
+			background-color: #f8d7da;
+			border: 1px solid #f5c2c7;
+		}
 
-        a.button-link:hover {
-            background-color: #217dbb;
-        }
+		.message.success {
+			color: #216e21;
+			background-color: #d4edda;
+			border: 1px solid #c3e6cb;
+		}
+		
+		.back-button a{
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #8b5e3c;
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+			font-weight: bold;
+			transition: background-color 0.3s ease;
+			border: none;
+			cursor: pointer;
+		}
 
-        /* 메시지 스타일 */
-        .message {
-            font-weight: 600;
-            margin-bottom: 20px;
-            padding: 12px 15px;
-            border-radius: 8px;
-        }
+		.back-button a:hover {
+			background-color: #8b5e3c;
+			/* 호버 시 조금 더 진한 녹색 */
+		}
 
-        .message.error {
-            color: #b32020;
-            background-color: #f8d7da;
-            border: 1px solid #f5c2c7;
-        }
 
-        .message.success {
-            color: #216e21;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-        }
+		/* 버튼 공통 */
+		.btn {
+			display: inline-block;
+			padding: 10px 20px;
+			border-radius: 6px;
+			font-weight: 600;
+			cursor: pointer;
+			text-decoration: none;
+			border: none;
+			transition: background-color .3s ease, box-shadow .3s ease;
+		}
 
-        /* 제목 영역 */
-        .header-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 25px;
-        }
+		.btn-primary {
+			background-color: #8b5e3c;
+			color: #fff;
+			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
+		}
+
+		.btn-primary:hover {
+			background-color: #8b5e3c;
+			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
+		}
+
+		.btn-success {
+			background-color: #4caf50;
+			color: white;
+		}
+
+		.btn-success:hover {
+			background-color: #3a8e38;
+		}
+
+		.btn-danger {
+			background-color: #e74c3c;
+			color: white;
+		}
+
+		.btn-danger:hover {
+			background-color: #b62d20;
+		}
+
+		.btn-warning {
+			background-color: #f39c12;
+			color: white;
+		}
+
+		.btn-warning:hover {
+			background-color: #c67a0a;
+		}
+
+		/* 상단 버튼 그룹 */
+		.top-buttons {
+			margin-bottom: 30px;
+			text-align: right;
+		}
+
+		.top-buttons .btn+.btn {
+			margin-left: 12px;
+		}
+
+		/* 헤더 테이블 */
+		.header-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 25px;
+		}
 
 		.header-table th,
 		.header-table td {
-		    padding: 16px 20px; /* 기존 12px 15px에서 좀 더 넉넉하게 */
-		    border-bottom: 2px solid #e1e4e8;
-		    text-align: left;
-		    font-size: 1.1rem;
-		    color: #555;
+			padding: 12px 15px;
+			border-bottom: 2px solid #e1e4e8;
+			text-align: left;
+			font-size: 1.1rem;
+			color: #555;
 		}
 
-        .header-table th {
-            background-color: #f7f9fb;
-        }
+		.header-table th {
+			background-color: #f7f9fb;
+		}
 
-        /* 상단 수정/삭제/신고 버튼 */
+		/* 액션 버튼들 (수정/삭제/신고) */
 		.action-buttons {
-		    float: right;
-		    margin-top: -45px;
-		    display: flex;
-		    gap: 10px; /* 버튼들 사이 간격 통일 */
+			float: right;
+			margin-top: -45px;
 		}
 
-		.action-buttons form {
-		    margin: 0; /* form 태그 기본 마진 제거 */
-		}
-
+		.action-buttons form,
 		.action-buttons button {
-		    min-width: 80px; /* 버튼 최소 너비로 균일하게 */
-		    padding: 10px 16px;
-		    border: none;
-		    border-radius: 6px;
-		    font-weight: 600;
-		    cursor: pointer;
-		    transition: background-color 0.3s ease;
-		    color: white;
-		    font-size: 1rem;
-		    user-select: none;
+			display: inline-block;
+			margin-left: 10px;
 		}
 
-		/* 수정 버튼 */
-		.action-buttons button:nth-child(1) {
-		    background-color: #4caf50;
+		/* 본문 */
+		.content-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 30px;
 		}
 
-		.action-buttons button:nth-child(1):hover {
-		    background-color: #3a8e38;
+		.content-table th,
+		.content-table td {
+			border: 1px solid #ddd;
+			padding: 14px 15px;
+			font-size: 1rem;
+			vertical-align: top;
 		}
 
-		/* 삭제 버튼 */
-		.action-buttons button.delete-btn {
-		    background-color: #e74c3c;
+		.content-table th {
+			background-color: #f7f9fb;
+			text-align: center;
+			font-weight: 600;
 		}
 
-		.action-buttons button.delete-btn:hover {
-		    background-color: #b62d20;
+		.content-table td[colspan] {
+			text-align: left;
+			white-space: pre-wrap;
 		}
 
-		/* 신고 버튼 */
-		.action-buttons button.report-btn {
-		    background-color: #f39c12;
+		/* 좋아요 */
+		.like-section {
+			margin: 20px 0 40px;
+			font-size: 1.2rem;
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+			gap: 15px;
 		}
 
-		.action-buttons button.report-btn:hover {
-		    background-color: #c67a0a;
+		.like-section span {
+			color: #e74c3c;
+			user-select: none;
 		}
-        /* 본문 테이블 */
-        .content-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
 
-        .content-table th,
-        .content-table td {
-            border: 1px solid #ddd;
-            padding: 14px 15px;
-            font-size: 1rem;
-            vertical-align: top;
-        }
+		.like-section form button {
+			background-color: #e74c3c;
+			border: none;
+			padding: 8px 16px;
+			border-radius: 6px;
+			color: white;
+			font-weight: 600;
+			cursor: pointer;
+			transition: background-color .3s ease;
+		}
 
-        .content-table th {
-            background-color: #f7f9fb;
-            text-align: center;
-            font-weight: 600;
-        }
+		.like-section form button:hover {
+			background-color: #b62d20;
+		}
 
-        .content-table td[colspan] {
-            text-align: left;
-            white-space: pre-wrap; /* 줄바꿈 보존 */
-        }
+		/* 댓글 */
+		h4 {
+			margin-bottom: 15px;
+			font-weight: 700;
+			color: #222;
+		}
 
-        /* 좋아요 섹션 */
-        .like-section {
-            margin: 20px 0 40px 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+		.comments-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 40px;
+			table-layout: fixed;
+			word-wrap: break-word;
+		}
 
-        .like-section span {
-            color: #e74c3c;
-            user-select: none;
-        }
+		.comments-table th,
+		.comments-table td {
+			border: 1px solid #ddd;
+			padding: 10px 12px;
+			font-size: 0.9rem;
+			vertical-align: middle;
+			text-align: center;
+		}
 
-        .like-section form button {
-            background-color: #e74c3c;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+		.comments-table th {
+			background-color: #f7f9fb;
+			font-weight: 600;
+		}
 
-        .like-section form button:hover {
-            background-color: #b62d20;
-        }
+		.comments-table td.content-cell {
+			text-align: left;
+			word-break: break-word;
+		}
 
-        /* 댓글 영역 */
-        h4 {
-            margin-bottom: 15px;
-            font-weight: 700;
-            color: #222;
-        }
+		.comment-content {
+			display: block;
+			white-space: pre-wrap;
+			text-align: left;
+			padding-right: 5px;
+		}
 
-        .comments-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 40px;
-            table-layout: fixed;
-            word-wrap: break-word;
-        }
+		form.edit-form textarea {
+			width: 100%;
+			min-height: 70px;
+			padding: 8px 10px;
+			font-size: 0.95rem;
+			border-radius: 6px;
+			border: 1px solid #ccc;
+			resize: vertical;
+			font-family: inherit;
+		}
 
-        .comments-table th,
-        .comments-table td {
-            border: 1px solid #ddd;
-            padding: 10px 12px;
-            font-size: 0.9rem;
-            vertical-align: middle;
-            text-align: center;
-        }
+		form.edit-form button {
+			margin-top: 6px;
+			margin-right: 8px;
+			padding: 6px 14px;
+			border-radius: 6px;
+			border: none;
+			font-weight: 600;
+			cursor: pointer;
+			transition: background-color .3s ease;
+		}
 
-        .comments-table th {
-            background-color: #f7f9fb;
-            font-weight: 600;
-        }
+		form.edit-form button[type="submit"] {
+			background-color: #4caf50;
+			color: white;
+		}
 
-        .comments-table td.content-cell {
-            text-align: left;
-            word-break: break-word;
-        }
+		form.edit-form button[type="submit"]:hover {
+			background-color: #3a8e38;
+		}
 
-        /* 댓글 내용 및 수정 폼 */
-        .comment-content {
-            display: block;
-            white-space: pre-wrap;
-            text-align: left;
-            padding-right: 5px;
-        }
+		form.edit-form button[type="button"] {
+			background-color: #888;
+			color: white;
+		}
 
-        form.edit-form textarea {
-            width: 100%;
-            min-height: 70px;
-            padding: 8px 10px;
-            font-size: 0.95rem;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            resize: vertical;
-            font-family: inherit;
-        }
+		form.edit-form button[type="button"]:hover {
+			background-color: #555;
+		}
 
-        form.edit-form button {
-            margin-top: 6px;
-            margin-right: 8px;
-            padding: 6px 14px;
-            border-radius: 6px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+		.comments-table td button {
+			padding: 6px 10px;
+			font-size: 0.85rem;
+			border-radius: 6px;
+			border: none;
+			cursor: pointer;
+			font-weight: 600;
+			transition: background-color .3s ease;
+		}
 
-        form.edit-form button[type="submit"] {
-            background-color: #4caf50;
-            color: white;
-        }
+		.comments-table td button:hover {
+			filter: brightness(0.9);
+		}
 
-        form.edit-form button[type="submit"]:hover {
-            background-color: #3a8e38;
-        }
+		.comments-table td form {
+			display: inline-block;
+			margin: 0;
+		}
 
-        form.edit-form button[type="button"] {
-            background-color: #888;
-            color: white;
-        }
+		/* 댓글 작성 폼 */
+		.comment-form {
+			width: 100%;
+			margin-bottom: 40px;
+			text-align: left;
+		}
 
-        form.edit-form button[type="button"]:hover {
-            background-color: #555;
-        }
+		.comment-form textarea {
+			width: 100%;
+			min-height: 100px;
+			padding: 12px 15px;
+			font-size: 1rem;
+			border-radius: 10px;
+			border: 1px solid #ccc;
+			resize: vertical;
+			font-family: inherit;
+		}
 
-        /* 댓글 버튼들 */
-        .comments-table td button {
-            padding: 6px 10px;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
+		.comment-form button {
+			margin-top: 12px;
+			background-color: #8b5e3c;
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			font-weight: 700;
+			font-size: 1rem;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: background-color .3s ease;
+		}
 
-        .comments-table td button:hover {
-            filter: brightness(0.9);
-        }
+		.comment-form button:hover {
+			background-color: #8b5e3c;
+		}
 
-        .comments-table td form {
-            display: inline-block;
-            margin: 0;
-        }
+		/* 반응형 */
+		@media (max-width: 640px) {
+			.container {
+				padding: 20px 15px;
+			}
 
-        /* 댓글 작성 폼 */
-        .comment-form {
-            width: 100%;
-            margin-bottom: 40px;
-            text-align: left;
-        }
+			.header-table,
+			.content-table,
+			.comments-table {
+				font-size: 0.85rem;
+			}
 
-        .comment-form textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 12px 15px;
-            font-size: 1rem;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            resize: vertical;
-            font-family: inherit;
-        }
+			.action-buttons {
+				float: none;
+				margin-top: 15px;
+				text-align: center;
+			}
 
-        .comment-form button {
-            margin-top: 12px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-weight: 700;
-            font-size: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+			.top-buttons {
+				text-align: center;
+				margin-bottom: 25px;
+			}
 
-        .comment-form button:hover {
-            background-color: #217dbb;
-        }
+			.top-buttons .btn {
+				margin: 6px 6px;
+				padding: 8px 16px;
+				font-size: 0.9rem;
+			}
 
-        /* 반응형 */
-        @media (max-width: 640px) {
-            .container {
-                padding: 20px 15px;
-            }
+			.like-section {
+				justify-content: center;
+				font-size: 1rem;
+				gap: 10px;
+			}
 
-            .header-table,
-            .content-table,
-            .comments-table {
-                font-size: 0.85rem;
-            }
-
-            .action-buttons {
-                float: none;
-                margin-top: 15px;
-                text-align: center;
-            }
-
-            .top-buttons {
-                text-align: center;
-                margin-bottom: 25px;
-            }
-
-            a.button-link {
-                margin: 6px 6px;
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
-
-            .like-section {
-                justify-content: center;
-                font-size: 1rem;
-                gap: 10px;
-            }
-
-            .comments-table th,
-            .comments-table td {
-                padding: 8px 6px;
-            }
-        }
-    </style>
+			.comments-table th,
+			.comments-table td {
+				padding: 8px 6px;
+			}
+		}
+	</style>
 </head>
 
 <body>
-    <div class="container">
+	<div th:replace="~{header :: siteHeader}"></div>
+	<br>
+	<div class="container">
+		<div class="back-button">
+			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
+		</div>
+		<!-- 메시지 -->
+		<div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+		<div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
+		<div th:if="${deleteSuccess}" class="message success" th:text="${deleteSuccess}"></div>
 
-        <!-- 에러/성공 메시지 -->
-        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
-        <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
+		<!-- 상단 정보 -->
+		<table class="header-table">
+			<thead>
+				<tr>
+					<th>제목</th>
+					<th>작성자</th>
+					<th>작성일</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td th:text="${detail.title}">제목</td>
+					<td th:text="${detail.nickName}">작성자</td>
+					<td th:text="${detail.formattedRegistDate}">2025-07-24</td>
 
-        <!-- 상단 버튼 -->
-        <div class="top-buttons" style="text-align: left;">
-            <a th:href="@{/WalkTrail}" class="button-link">중고장터 메인 페이지</a>
-            <a th:href="@{/}" class="button-link">홈으로</a>
-        </div>
+					<!-- 수정/삭제/신고 -->
+					<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+						<form th:action="@{'/UsedGoodsUpdate/' + ${detail.boardNum}}" method="get">
+							<button type="submit" class="btn btn-success">수정</button>
+						</form>
+						<form th:action="@{'/UsedGoodsDelete/' + ${detail.boardNum}}" method="post"
+							onsubmit="return confirm('정말 삭제하시겠습니까?');">
+							<button type="submit" class="btn btn-danger">삭제</button>
+						</form>
+						<form id="reportForm" th:action="@{/UsedGoodsDetail/{num}/report(num=${detail.boardNum})}"
+							method="post">
+							<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
+							<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
+						</form>
+					</div>
 
-        <!-- 상단 정보 테이블 -->
-        <table class="header-table">
-            <thead>
-                <tr>
-                    <th>제목</th>
-                    <th>작성자</th>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- 썸네일 -->
+		<div class="form-group" style="text-align: center;">
+			<img th:src="@{${detail.Image_paths}}"
+				alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
+		</div>
+
+		<!-- 본문 -->
+		<table class="content-table">
+			<thead>
+				<tr>
+					<th>분양가</th>
+					<th>지역</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td th:text="${detail.price}">₩0</td>
+					<td th:text="${detail.area}">지역명</td>
+				</tr>
+				<tr>
+					<td colspan="2" th:utext="${detail.content}"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- 좋아요 -->
+		<div class="like-section">
+			<span th:text="${detail.likes}">0</span> ❤️
+			<form th:action="@{/UsedGoodsDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
+				<button type="submit" class="btn btn-danger">좋아요</button>
+			</form>
+		</div>
+
+		<!-- 댓글 -->
+		<h4>댓글</h4>
+		<table class="comments-table">
+			<colgroup>
+				<col style="width:6%;" />
+				<col style="width:10%;" />
+				<col style="width:42%;" />
+				<col style="width:10%;" />
+				<col style="width:8%;" />
+				<col style="width:14%;" />
+				<col style="width:10%;" />
+				<col style="width:10%;" />
+				<col style="width:10%;" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>번호</th>
+					<th>작성자</th>
+					<th>내용</th>
+					<th>등급</th>
 					<th>좋아요</th>
-                    <th>작성일</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td th:text="${detail.title}">제목</td>
-                    <td th:text="${detail.nickName}">작성자</td>
-					<td th:text="${detail.likes}">좋아요</td>
-                    <td th:text="${detail.formattedRegistDate}">2025-07-24</td>
-                </tr>
-            </tbody>
-        </table>
+					<th>작성일</th>
+					<th>수정</th>
+					<th>삭제</th>
+					<th>좋아요/신고</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="comment, iterStat : ${comments}" th:attr="id='comment-' + ${comment.num}">
+					<td th:text="${iterStat.index + 1}">1</td>
+					<td th:text="${comment.nickname}">작성자</td>
+					<td class="content-cell">
+						<span th:text="${comment.content}" class="comment-content"
+							th:attr="id=${'content-span-' + comment.num}">댓글 내용</span>
+						<form th:action="@{'/UsedGoodsDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
+							class="edit-form" th:attr="id=${'edit-form-' + comment.num}"
+							style="display:none; margin-top:5px;">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<textarea name="content" required th:text="${comment.content}"></textarea><br />
+							<button type="submit" class="btn btn-success">저장</button>
+							<button type="button" class="btn" th:onclick="|cancelEdit(${comment.num})|">취소</button>
+						</form>
+					</td>
+					<td th:text="${comment.userGrade}">등급</td>
+					<td th:text="${comment.likes}">0</td>
+					<td th:text="${comment.formattedRegistDate}">2025-07-24</td>
+					<td>
+						<button type="button" class="btn" th:onclick="|showEditForm(${comment.num})|">수정</button>
+					</td>
+					<td>
+						<form th:action="@{'/UsedGoodsDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
+							onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<button type="submit" class="btn btn-danger">삭제</button>
+						</form>
+					</td>
+					<td>
+						<form th:action="@{'/UsedGoodsDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
+							style="display:inline;">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<button type="submit" class="btn btn-danger">좋아요</button>
+						</form>
+						<form th:action="@{/UsedGoodsDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
+							style="display:inline; margin-left:6px;">
+							<button type="submit" class="btn btn-warning">신고</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
-        <!-- 수정/삭제/신고 버튼 -->
-        <div class="action-buttons" style="float: right;">
-            <form th:action="@{'/UsedGoodsUpdate/' + ${detail.boardNum}}" method="get">
-                <button type="submit">수정</button>
-            </form>
+		<!-- 댓글 작성 -->
+		<h4>댓글 작성</h4>
+		<form class="comment-form" th:action="@{/UsedGoodsDetail/{num}/comment(num=${detail.boardNum})}" method="post">
+			<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+			<br />
+			<button type="submit" class="btn btn-primary">댓글 등록</button>
+		</form>
+	</div>
 
-            <form th:action="@{'/UsedGoodsDelete/' + ${detail.boardNum}}" method="post"
-                onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                <button type="submit" class="delete-btn">삭제</button>
-            </form>
-
-            <form th:action="@{/UsedGoodsDetail/{num}/report(num=${detail.boardNum})}" method="post">
-                <button type="submit" class="report-btn">신고</button>
-            </form>
-        </div>
-
-        <!-- 본문 테이블 -->
-        <table class="content-table">
-            <thead>
-                <tr>
-					<th>가격</th>
-                    <th>지역</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td th:text="#{detail.price}">가격</td>
-                    <td th:text="${detail.area}">지역명</td>
-                </tr>
-                <tr>
-                    <td colspan="2" th:text="${detail.content}">본문 내용이 여기에 표시됩니다.</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- 좋아요 섹션 -->
-        <div class="like-section">
-            <span th:text="${detail.likes}">0</span> ❤️
-            <form th:action="@{/UsedGoodsDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
-                <button type="submit">좋아요</button>
-            </form>
-        </div>
-
-        <!-- 댓글 목록 -->
-        <h4>댓글</h4>
-        <table class="comments-table">
-            <colgroup>
-                <col style="width:6%;" /> <!-- 번호 -->
-                <col style="width:10%;" /> <!-- 작성자 -->
-                <col style="width:42%;" /> <!-- 내용 -->
-                <col style="width:10%;" /> <!-- 등급 -->
-                <col style="width:8%;" /> <!-- 좋아요 -->
-                <col style="width:14%;" /> <!-- 작성일 -->
-                <col style="width:10%;" /> <!-- 수정 -->
-                <col style="width:10%;" /> <!-- 삭제 -->
-                <col style="width:10%;" /> <!-- 좋아요, 신고 -->
-            </colgroup>
-            <thead>
-                <tr>
-                    <th>번호</th>
-                    <th>작성자</th>
-                    <th>내용</th>
-                    <th>등급</th>
-                    <th>좋아요</th>
-                    <th>작성일</th>
-                    <th>수정</th>
-                    <th>삭제</th>
-                    <th>좋아요/신고</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="comment, iterStat : ${comments}">
-                    <td th:text="${iterStat.index + 1}">1</td>
-                    <td th:text="${comment.nickname}">작성자</td>
-                    <td class="content-cell">
-                        <span th:text="${comment.content}" class="comment-content"
-                            th:attr="id=${'content-span-' + comment.num}">댓글 내용</span>
-
-                        <form th:action="@{'/UsedGoodsDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
-                            class="edit-form" th:attr="id=${'edit-form-' + comment.num}"
-                            style="display:none; margin-top:5px;">
-                            <input type="hidden" name="commentNum" th:value="${comment.num}" />
-                            <textarea name="content" required th:text="${comment.content}"></textarea><br />
-                            <button type="submit">저장</button>
-                            <button type="button" th:onclick="|cancelEdit(${comment.num})|">취소</button>
-                        </form>
-                    </td>
-                    <td th:text="${comment.userGrade}">등급</td>
-                    <td th:text="${comment.likes}">0</td>
-                    <td th:text="${comment.formattedRegistDate}">2025-07-24</td>
-                    <td>
-                        <button type="button" th:onclick="|showEditForm(${comment.num})|">수정</button>
-                    </td>
-                    <td>
-                        <form th:action="@{'/UsedGoodsDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post">
-                            <input type="hidden" name="commentNum" th:value="${comment.num}" />
-                            <button type="submit" class="delete-btn">삭제</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form th:action="@{'/UsedGoodsDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
-                            style="display:inline;">
-                            <input type="hidden" name="commentNum" th:value="${comment.num}" />
-                            <button type="submit" style="background:#e74c3c; color:#fff; border-radius:6px; border:none; padding:5px 10px; font-weight:600; cursor:pointer;">좋아요</button>
-                        </form>
-                        <form th:action="@{/UsedGoodsDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
-                            style="display:inline; margin-left:6px;">
-                            <button type="submit" style="background:#f39c12; color:#fff; border-radius:6px; border:none; padding:5px 10px; font-weight:600; cursor:pointer;">신고</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- 댓글 작성 -->
-        <h4>댓글 작성</h4>
-        <form class="comment-form" th:action="@{/UsedGoodsDetail/{num}/comment(num=${detail.boardNum})}" method="post">
-            <!--<input type="hidden" name="parentNum" value="0" /> 대댓글 기능-->
-            <textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
-            <br />
-            <button type="submit">댓글 등록</button>
-        </form>
-
-    </div>
-
-    <script>
-        // 수정 폼 보이기
-        function showEditForm(commentNum) {
-            document.getElementById('content-span-' + commentNum).style.display = 'none';
-            document.getElementById('edit-form-' + commentNum).style.display = 'block';
-        }
-
-        // 수정 취소
-        function cancelEdit(commentNum) {
-            document.getElementById('content-span-' + commentNum).style.display = 'inline';
-            document.getElementById('edit-form-' + commentNum).style.display = 'none';
-        }
-    </script>
+	<script>
+		function confirmReport() {
+			if (confirm("정말 이 게시글을 신고하시겠습니까?")) {
+				document.getElementById("reportForm").submit();
+			}
+		}
+		function showEditForm(commentNum) {
+			document.getElementById('content-span-' + commentNum).style.display = 'none';
+			document.getElementById('edit-form-' + commentNum).style.display = 'block';
+		}
+		function cancelEdit(commentNum) {
+			document.getElementById('content-span-' + commentNum).style.display = 'inline';
+			document.getElementById('edit-form-' + commentNum).style.display = 'none';
+		}
+	</script>
 </body>
 
 </html>

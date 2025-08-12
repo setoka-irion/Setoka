@@ -2,13 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<title>중고물품 거래 게시글 삭제</title>
+	<title>자랑 게시글 삭제</title>
 	<meta charset="UTF-8" />
 </head>
 
 <body>
-
-	<form th:action="@{/UsedGoodsDelete/{num}(num=${board.boardNum})}" method="post"
+	<form th:action="@{/AdoptDelete/{num}(num=${board.boardNum})}" method="post"
 		onsubmit="return confirm('정말 삭제하시겠습니까?')"> <!-- 창띄우기 -->
 		<button type="submit">삭제</button>
 	</form>

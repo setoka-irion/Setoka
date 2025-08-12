@@ -415,7 +415,7 @@
 		/*======================================================================================*/
 		/*전체 글 wrapper*/
 		.main-container {
-			width: 100%;
+			width: 92%;
 			max-width: auto;
 			margin: 0 auto;
 			/* 가운데 정렬 */
@@ -526,7 +526,7 @@
 	<div class="container-all">
 		<!-- 윗단 아이콘 -->
 		<div class="board-header">
-			<h1>입양 게시판</h1>
+			<h1>분양 게시판</h1>
 			<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
 		</div>
 
@@ -593,8 +593,9 @@
 							th:src="@{${post.Image_paths != null} ? '/images/' + ${post.Image_paths} : '/imagesDefault/defaultBoard.png'}">
 					</a>
 					<span th:text="'작성자: ' + ${post.nickName}">작성자</span>
-					<span th:text="'좋아요: ' + ${post.likes}">좋아요</span>
+					<span th:text="'비용: ' + ${post.price}">비용</span>
 					<span th:text="'지역: ' + ${post.area}">지역</span>
+					<span th:text="'좋아요: ' + ${post.likes}">좋아요</span>
 					<span th:text="'작성일: ' + ${post.formattedRegistDate}">작성일</span>
 					<hr>
 				</div>
@@ -618,7 +619,8 @@
 						<img class="thumb-image" th:src="${board.Image_paths}" alt="썸네일" />
 					</a>
 					<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
-					<span th:text="'분양가: ' + ${board.price}">분양가</span>
+					<span th:text="'비용: ' + ${board.price}">비용</span>
+					<span th:text="'지역: ' + ${board.area}">지역</span>
 					<span th:text="'조회수: ' + ${board.views}">조회수</span>
 					<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
 					<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
@@ -645,7 +647,7 @@
 						<th>번호</th>
 						<th>작성자</th>
 						<th>제목</th>
-						<th>분양가</th>
+						<th>비용</th>
 						<th>지역</th>
 						<th>조회수</th>
 						<th>좋아요</th>
