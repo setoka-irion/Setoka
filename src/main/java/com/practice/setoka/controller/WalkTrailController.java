@@ -87,8 +87,8 @@ public class WalkTrailController {
 		List<BoardWithUserDto> searchResult;
 		if (keyword == null || keyword.isEmpty()) {
 		    // 검색 값 안넣었을 경우 전체 게시판 리스트 출력
-		    searchResult = boardService.findBoardsByType(1, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
-		    totalCount = boardService.countBoards(1);
+		    searchResult = boardService.findBoardsByType(3, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
+		    totalCount = boardService.countBoards(3);
 		} else {
 		    switch (field) {
 		    case "title":
@@ -108,7 +108,7 @@ public class WalkTrailController {
 		}
 
 		// 인기게시글
-		List<BoardWithUserDto> popularPosts = boardService.popularPosts(1);
+		List<BoardWithUserDto> popularPosts = boardService.popularPosts(3);
 		System.out.println(viewType);
 		
 		// 뷰 타입 세션 저장 또는 불러오기
@@ -197,7 +197,7 @@ public class WalkTrailController {
 		// 글 등록시 유저번호 저장
 		BoardDto boardDto = new BoardDto();
 		boardDto.setUserNum(user.getNum());
-		boardDto.setType(1);
+		boardDto.setType(3);
 		model.addAttribute("boardDto", boardDto);
 		
 		//예비 db 비우기

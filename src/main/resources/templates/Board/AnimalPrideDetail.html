@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>입양 상세 페이지</title>
+	<title>반려동물 자랑 상세 페이지</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<style>
@@ -400,7 +400,7 @@
 	<br>
 	<div class="container">
 		<div class="back-button">
-			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
+			<p><a th:href="@{/AnimalPride}">목록으로 돌아가기</a></p>
 		</div>
 		<!-- 메시지 -->
 		<div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
@@ -424,14 +424,14 @@
 
 					<!-- 수정/삭제/신고 -->
 					<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
-						<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
+						<form th:action="@{'/AnimalPrideUpdate/' + ${detail.boardNum}}" method="get">
 							<button type="submit" class="btn btn-success">수정</button>
 						</form>
-						<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
+						<form th:action="@{'/AnimalPrideDelete/' + ${detail.boardNum}}" method="post"
 							onsubmit="return confirm('정말 삭제하시겠습니까?');">
 							<button type="submit" class="btn btn-danger">삭제</button>
 						</form>
-						<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}"
+						<form id="reportForm" th:action="@{/AnimalPrideDetail/{num}/report(num=${detail.boardNum})}"
 							method="post">
 							<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
 							<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
@@ -470,7 +470,7 @@
 		<!-- 좋아요 -->
 		<div class="like-section">
 			<span th:text="${detail.likes}">0</span> ❤️
-			<form th:action="@{/AdoptDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
+			<form th:action="@{/AnimalPrideDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
 				<button type="submit" class="btn btn-danger">좋아요</button>
 			</form>
 		</div>
@@ -509,7 +509,7 @@
 					<td class="content-cell">
 						<span th:text="${comment.content}" class="comment-content"
 							th:attr="id=${'content-span-' + comment.num}">댓글 내용</span>
-						<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
+						<form th:action="@{'/AnimalPrideDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
 							class="edit-form" th:attr="id=${'edit-form-' + comment.num}"
 							style="display:none; margin-top:5px;">
 							<input type="hidden" name="commentNum" th:value="${comment.num}" />
@@ -525,19 +525,19 @@
 						<button type="button" class="btn" th:onclick="|showEditForm(${comment.num})|">수정</button>
 					</td>
 					<td>
-						<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
+						<form th:action="@{'/AnimalPrideDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
 							onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');">
 							<input type="hidden" name="commentNum" th:value="${comment.num}" />
 							<button type="submit" class="btn btn-danger">삭제</button>
 						</form>
 					</td>
 					<td>
-						<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
+						<form th:action="@{'/AnimalPrideDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
 							style="display:inline;">
 							<input type="hidden" name="commentNum" th:value="${comment.num}" />
 							<button type="submit" class="btn btn-danger">좋아요</button>
 						</form>
-						<form th:action="@{/AdoptDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
+						<form th:action="@{/AnimalPrideDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
 							style="display:inline; margin-left:6px;">
 							<button type="submit" class="btn btn-warning">신고</button>
 						</form>
@@ -548,7 +548,7 @@
 
 		<!-- 댓글 작성 -->
 		<h4>댓글 작성</h4>
-		<form class="comment-form" th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post">
+		<form class="comment-form" th:action="@{/AnimalPrideDetail/{num}/comment(num=${detail.boardNum})}" method="post">
 			<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
 			<br />
 			<button type="submit" class="btn btn-primary">댓글 등록</button>

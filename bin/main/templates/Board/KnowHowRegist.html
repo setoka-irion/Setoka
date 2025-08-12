@@ -18,7 +18,7 @@
 	<!-- 한국어 번역 (선택) -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-ko-KR.min.js"></script>
 
-	<title>글 등록</title>
+	<title>집사 노하우 글 등록</title>
 	<style>
 		body {
 			background-color: #f8f8f8;
@@ -136,7 +136,7 @@
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 	<div class="main-title">
-		<h1>입양 글 등록</h1>
+		<h1>집사 노하우 글 등록</h1>
 	</div>
 
 	<div class="container">
@@ -146,7 +146,7 @@
 	    </div>
 
 			<input type="hidden" th:field="*{userNum}" />
-			<input type="hidden" th:field="*{type}" value="5" />
+			<input type="hidden" th:field="*{type}" value="1" />
 
 			<label for="title">제목</label>
 			<input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요" required />
