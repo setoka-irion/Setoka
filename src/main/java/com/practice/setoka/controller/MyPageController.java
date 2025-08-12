@@ -293,4 +293,10 @@ public class MyPageController {
 		Users user = (Users) authUser.getUser();
 		return animalService.getAnimalsByUserNumNormal(user.getNum());
 	}
+	
+	@GetMapping("/health")
+	@ResponseBody
+	public String health() {
+	    return "OK";
+	}
 }
