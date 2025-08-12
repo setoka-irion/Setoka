@@ -194,7 +194,7 @@
 			<!-- 썸네일 기존 이미지 있으면 보여주고 삭제 체크박스 -->
 			<div class="form-group" th:if="${board.image_paths != null and !#strings.isEmpty(board.image_paths)}">
 				<label>현재 썸네일</label><br />
-				<img th:src="@{'/' + ${board.image_paths}}" alt="썸네일"
+				<img th:src="@{${board.image_paths}}" alt="썸네일"
 					style="max-width: 200px; display: block; margin-bottom: 10px;" />
 				<div class="form-check">
 					<input type="checkbox" id="deleteThumbnail" name="deleteThumbnail" value="true"

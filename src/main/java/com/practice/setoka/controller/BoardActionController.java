@@ -219,7 +219,6 @@ public class BoardActionController {
 
 
 		String original = boardDto.getContent().replaceAll(upload.tempPath, upload.imagePath);
-		original = original.replaceAll("src=\"", "src=\"/");
 		boardDto.setContent(original);
 
 
