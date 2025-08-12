@@ -148,52 +148,33 @@
 		let map, geocoder;
 
 		function makeMap() {
-		  if (navigator.geolocation) {
-		    navigator.geolocation.getCurrentPosition(function(position) {
-				console.log("위치 정보 수신 성공!");
-				    console.log("위도:", position.coords.latitude);
-				    console.log("경도:", position.coords.longitude);
-		      const lat = position.coords.latitude;
-		      const lon = position.coords.longitude;
-		      const userLocation = new kakao.maps.LatLng(lat, lon);
+			const mapContainer = document.getElementById('map');
+			const mapOption = {
+				center: new kakao.maps.LatLng(37.5665, 126.9780), // 기본: 서울 시청
+				level: 3
+			};
 
-		      const mapOption = {
-		        center: userLocation,
-		        level: 3
-		      };
+			map = new kakao.maps.Map(mapContainer, mapOption);
+			geocoder = new kakao.maps.services.Geocoder();
 
-		      map = new kakao.maps.Map(document.getElementById('map'), mapOption);
+			// 위치 권한 요청
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function (position) {
+					const lat = position.coords.latitude;
+					const lon = position.coords.longitude;
 
-		      // 필요하면 마커 추가
-		      const marker = new kakao.maps.Marker({
-		        position: userLocation,
-		        map: map
-		      });
-		    }, function(error) {
-				switch (error.code) {
-				      case error.PERMISSION_DENIED:
-				        console.error("❌ 위치 권한이 거부되었습니다.");
-				        break;
-				      case error.POSITION_UNAVAILABLE:
-				        console.error("📡 위치 정보를 사용할 수 없습니다.");
-				        break;
-				      case error.TIMEOUT:
-				        console.error("⏱️ 위치 요청 시간이 초과되었습니다.");
-				        break;
-				      default:
-				        console.error("알 수 없는 오류:", error.message);
-				    }
-		      // 위치 못 불러오면 기본 위치 (서울 시청) 사용
-		      const defaultLocation = new kakao.maps.LatLng(37.5665, 126.9780);
-		      const mapOption = {
-		        center: defaultLocation,
-		        level: 3
-		      };
-		      map = new kakao.maps.Map(document.getElementById('map'), mapOption);
-		    });
-		  } else {
-		    alert('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
-		  }
+					const userPosition = new kakao.maps.LatLng(lat, lon);
+
+					// ✅ 화면만 현재 위치로 이동 (핀은 안 찍음)
+					map.setCenter(userPosition);
+					
+				}, function () {
+					console.warn("📡 위치 정보를 사용할 수 없습니다.");
+					// 실패 시 기본 위치로 유지
+				});
+			} else {
+				console.warn("🚫 이 브라우저는 위치 정보를 지원하지 않습니다.");
+			}
 		}
 
 		function displayMarker(address, callback) {

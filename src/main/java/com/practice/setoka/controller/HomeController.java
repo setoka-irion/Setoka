@@ -35,27 +35,27 @@ public class HomeController {
 
 		List<BoardWithUserDto> list = boardService.popularPosts(1);
 		if (!list.isEmpty()) {
-		    model.addAttribute("Adopt", list.get(0));
+		    model.addAttribute("Adopt", list.subList(0,  Math.min(list.size(), 3)));
 		}
 		
 		list = boardService.popularPosts(2);
 		if (!list.isEmpty()) {
-		    model.addAttribute("AnimalPride", list.get(0));
+		    model.addAttribute("AnimalPride", list.subList(0,  Math.min(list.size(), 3)));
 		}
 		
 		list = boardService.popularPosts(3);
 		if (!list.isEmpty()) {
-		    model.addAttribute("WalkTrail", list.get(0));
+		    model.addAttribute("WalkTrail", list.subList(0,  Math.min(list.size(), 3)));
 		}
 		
 		list = boardService.popularPosts(4);
 		if (!list.isEmpty()) {
-		    model.addAttribute("UsedGoods", list.get(0));
+		    model.addAttribute("UsedGoods", list.subList(0,  Math.min(list.size(), 3)));
 		}
 		
 		list = boardService.popularPosts(5);
 		if (!list.isEmpty()) {
-		    model.addAttribute("Knowhow", list.get(0));
+		    model.addAttribute("Knowhow", list.subList(0, Math.min(list.size(), 3)));
 		}
 		
 		return "home";
