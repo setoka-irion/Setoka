@@ -102,7 +102,7 @@ public class UserService
 	}
 	public boolean insertProfilephotoDefalut(String id)
 	{
-		String fileName = upload.ImagesDefault() + "defaultProfile.png";
+		String fileName = upload.defaultPath + "defaultProfile.png";
 		userMapper.updateProfilephotoPath(fileName, id);
 		
 		return true;

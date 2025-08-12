@@ -217,14 +217,20 @@ public class BoardActionController {
 		if (bindingResult.hasErrors()) {
 			return "Board/AdoptRegist";
 		}
-		
+
+
 		String original = boardDto.getContent().replaceAll(upload.tempPath, upload.imagePath);
+		original = original.replaceAll("src=\"", "src=\"/");
 		boardDto.setContent(original);
-		
+
+
 		String fileName = upload.fileUpload(boardDto.getContent());
 		String thumnailName = null;
-		if(images != null && images.size() > 0)
+		if(!images.get(0).isEmpty())
+		{
 			thumnailName = upload.imageFileUpload(images.get(0));
+		}
+			
 		boardDto.setContent(fileName);
 		boardDto.setImage_paths(thumnailName);
 		boardService.insertBoard(boardDto);
@@ -277,6 +283,8 @@ public class BoardActionController {
 		// 상세보기와 동일 코드
 		board.setContent(upload.fileLoad(board.getContent()));
 		model.addAttribute("board", board); // 수정 폼에서 기본값으로 사용
+		//예비 db 비우기
+		boardService.DeleteTempImage(user.getNum());
 
 		return "Board/AdoptUpdate";
 	}
@@ -325,7 +333,7 @@ public class BoardActionController {
 		if ("true".equals(deleteThumbnail)) {
 		    // 👉 삭제 체크된 경우: 썸네일 null로 처리
 		    boardDto.setImage_paths(null);
-		} else if (images != null && images.size() > 0 && !images.get(0).isEmpty()) {
+		} else if (!images.get(0).isEmpty()) {
 		    // 👉 새 썸네일 업로드된 경우: 새 썸네일 등록
 		    String thumbnailName = upload.imageFileUpload(images.get(0));
 		    boardDto.setImage_paths(thumbnailName);
