@@ -27,16 +27,20 @@
 	
 			<!--  -->
 			<div class="scroll-container" style="display: flex; overflow-x: auto; gap: 16px; padding: 10px; justify-content: flex-start;">
-				<div th:each="animal : ${animalList}" th:attr="onclick='location.href=\'/animal/detail?animalNum=' + ${animal.num} + '\''" style="min-width: 300px; flex-shrink: 0; border: 1px solid rgb(255, 255, 255);
+				<div th:each="animal : ${animalList}" th:attr="onclick='location.href=\'/animal/detail?animalNum=' + ${animal.num} + '\''" style="min-width: 300px; flex-shrink: 0; border: 2px solid #8CA59E;
 					 border-radius: 8px; padding: 12px; box-shadow: 0 0 5px rgba(0,0,0,0.1);
-					 background-color: rgb(198, 184, 166); cursor: pointer;">
+					 background-color: #E6EFE9; cursor: pointer;">
 	
-					<div
-						style="text-align: center; margin-bottom: 10px; width: 280px; height: 300px; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: center; border-radius: 10%; background-color: rgb(255, 255, 255);">
-						<img 
-							th:src="@{{filename}(filename=${animal.profilePath})}" alt="프로필"
-							style="width: 280px; height: 300px; object-fit: cover; border-radius: 10%;" />
-					</div>
+					 <div
+					 	style="text-align: center; margin-bottom: 10px; width: 280px; height: 300px; 
+					 		   margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: center; 
+					 		   border-radius: 10%; background-color: rgb(255, 255, 255); 
+					 		   border: 2px solid #8CA59E; 
+					 		   overflow: hidden;">
+					 	<img 
+					 		th:src="@{{filename}(filename=${animal.profilePath})}" alt="프로필"
+					 		style="width: 100%; height: 100%; object-fit: cover;" />
+					 </div>
 	
 					<div style="font-weight: bold; font-size: 1.1em; margin-bottom: 6px;">
 						<span th:text="${animal.animalName}"></span>
