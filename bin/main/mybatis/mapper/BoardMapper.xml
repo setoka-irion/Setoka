@@ -139,6 +139,7 @@
 		LEFT JOIN ( <!--댓글 수를 가져오기 위한 서브쿼리를 왼쪽 외부조인-->
 		SELECT boardNum, COUNT(*) AS comments_counts <!--comments 테이블에서 boardNum 별로 댓글 수(count) 세어줌-->
 		FROM comments
+		WHERE status = 0 <!-- 정상 댓글만 가져오게-->
 		GROUP BY boardNum
 		) c ON b.num = c.boardNum
 		WHERE b.type = #{type}
