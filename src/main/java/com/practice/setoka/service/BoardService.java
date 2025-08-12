@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.practice.setoka.dao.Board;
+import com.practice.setoka.Upload;
 import com.practice.setoka.dao.Report;
 import com.practice.setoka.dao.TempImage;
 import com.practice.setoka.dto.BoardDto;
@@ -23,6 +23,8 @@ public class BoardService {
 	
 	@Autowired
 	private  BoardMapper boardMapper;
+	@Autowired
+	private Upload upload;
 
 	public BoardService(BoardMapper boardMapper) {
 		this.boardMapper = boardMapper;
@@ -49,11 +51,20 @@ public class BoardService {
 	
 	// 등록
 	public void insertBoard(BoardDto boardDto) {
+		System.out.println(boardDto.getImage_paths());
+		if(boardDto.getImage_paths() == null || boardDto.getImage_paths().length() == 0)
+		{
+			boardDto.setImage_paths(upload.imagePath + "defaultBoard.png");
+		}
 	    boardMapper.insertBoard(boardDto);
 	}
 
 	// 수정
 	public void updateBoard(BoardDto boardDto, int num) {	
+		if(boardDto.getImage_paths() == null || boardDto.getImage_paths().length() == 0)
+		{
+			boardDto.setImage_paths(upload.imagePath + "defaultBoard.png");
+		}
 	    boardMapper.updateBoard(boardDto, num);
 	}
 
