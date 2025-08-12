@@ -69,44 +69,58 @@ public class WalkTrailController {
 //		return "";
 //	}
 
-	// 산책로 메인페이지
+	// 메인페이지
 	@GetMapping(value = "/WalkTrail")
-	public String walkTrailMain(Model model, 
+	public String walkTrailMain(
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "field", required = false) String field, 
-			@RequestParam(value = "page", defaultValue = "3") int page) {
-
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "viewType", required = false) String viewType,
+			Model model, HttpSession session){
+		
 		// 페이지 네이션 기능
-		int limit = 15; //한페이지당 게시글수
+		int limit = 16; //한페이지당 게시글수
 		int offset = (page - 1) * limit; 
 		int totalCount;
 		
-		// 입양 게시판 내부 검색
+		// 게시판 내부 검색
 		List<BoardWithUserDto> searchResult;
 		if (keyword == null || keyword.isEmpty()) {
-			// 검색 값 안넣었을 경우 전체 게시판 리스트 출력
-			searchResult = boardService.findBoardsByType(3, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
-			totalCount = boardService.countBoards(3);
+		    // 검색 값 안넣었을 경우 전체 게시판 리스트 출력
+		    searchResult = boardService.findBoardsByType(1, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
+		    totalCount = boardService.countBoards(1);
 		} else {
-			switch (field) {
-			case "title":
-				searchResult = boardService.findBoardsByTitle(keyword.trim());
-				break;
-			case "content":
-				searchResult = boardService.findBoardsByContent(keyword.trim());
-				break;
-			case "nickname":
-				searchResult = boardService.findBoardsByUserId(keyword.trim());
-				break;
-			default:
-				searchResult = boardService.searchAll(keyword.trim());
-			}
-			totalCount = searchResult.size(); //결색결과 갯수
+		    switch (field) {
+		    case "title":
+		        searchResult = boardService.findBoardsByTitle(keyword.trim());
+		        break;
+		    case "content":
+		        searchResult = boardService.findBoardsByContent(keyword.trim());
+		        break;
+		    case "nickname":
+		        searchResult = boardService.findBoardsByUserId(keyword.trim());
+		        break;
+		    default:
+		        searchResult = boardService.searchAll(keyword.trim());
+		    }
+		    totalCount = searchResult.size(); //검색결과 갯수
+		    searchResult = boardService.cutPage(offset, limit, searchResult);
 		}
+
+		// 인기게시글
+		List<BoardWithUserDto> popularPosts = boardService.popularPosts(1);
+		System.out.println(viewType);
 		
-		// WalkTrail 인기게시글
-		List<BoardWithUserDto> popularPosts = boardService.popularPosts(3);
-		searchResult = boardService.cutPage(offset, limit, searchResult);
+		// 뷰 타입 세션 저장 또는 불러오기
+		if (viewType != null && !viewType.isEmpty()) {
+			session.setAttribute("viewType", viewType); // URL로 선택했으면 저장
+		} else if (session.getAttribute("viewType") != null) {
+			viewType = (String) session.getAttribute("viewType"); // 이전 값 불러오기
+		} else {
+			viewType = "card"; // 초기 기본값
+			session.setAttribute("viewType", viewType);
+		}
+		model.addAttribute("viewType", viewType); // 뷰로 전달
 		
 		// 페이지네이션 기능용
 		int totalPages = (int) Math.ceil((double) totalCount / limit);	// 총게시글수/페이지당 갯수
@@ -128,7 +142,7 @@ public class WalkTrailController {
 
 	
 	
-	// WalkTrail 상세 페이지 (조회수증가)
+	// 상세 페이지 (조회수증가)
 	@GetMapping(value = "/WalkTrailDetail/{num}")
 	public String walkTrailDetail(@PathVariable("num") int num,
 			@RequestParam(value = "editCommentNum", required = false) Integer editCommentNum,
@@ -138,7 +152,7 @@ public class WalkTrailController {
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
 		String content = upload.fileLoad(detail.getContent());
 		detail.setContent(content);
-		
+
 		model.addAttribute("detail", detail);
 
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
@@ -169,11 +183,10 @@ public class WalkTrailController {
 			CommentInfoDto commentToEdit = commentsService.findCommentByNum(editCommentNum);
 			model.addAttribute("commentToEdit", commentToEdit);
 		}
-
 		return "Board/WalkTrailDetail";
 	}
 
-	// WalkTrail 게시글 등록
+	// 게시글 등록
 	@GetMapping(value = "/WalkTrailRegist")
 	public String walkTrailRegistForm(@AuthenticationPrincipal CustomUserDetails authUser, Model model) {
 		// 로그인 검증
@@ -184,7 +197,7 @@ public class WalkTrailController {
 		// 글 등록시 유저번호 저장
 		BoardDto boardDto = new BoardDto();
 		boardDto.setUserNum(user.getNum());
-		boardDto.setType(3);
+		boardDto.setType(1);
 		model.addAttribute("boardDto", boardDto);
 		
 		//예비 db 비우기
@@ -193,7 +206,7 @@ public class WalkTrailController {
 		return "Board/WalkTrailRegist";
 	}
 
-	// 입양 게시글 등록
+	// 게시글 등록
 	@PostMapping(value = "/WalkTrailRegist")
 	public String walkTrailRegistSubmit(
 			// 오류 검증
@@ -205,7 +218,7 @@ public class WalkTrailController {
 			return "Board/WalkTrailRegist";
 		}
 		
-		String original = boardDto.getContent().replaceAll("images/temp/", "images/");
+		String original = boardDto.getContent().replaceAll(upload.tempPath, upload.imagePath);
 		boardDto.setContent(original);
 		
 		String fileName = upload.fileUpload(boardDto.getContent());
@@ -223,10 +236,12 @@ public class WalkTrailController {
 			TempImage tempImage = l;
 			
 			// 원본 파일 경로
-			Path sourcePath = Paths.get("C:/images/temp/" + tempImage.getImageName());
-
+			Path sourcePath = Paths.get(upload.BaseUploadPath() + tempImage.getImageName());
+			
+			String newPath = upload.BaseUploadPath() + tempImage.getImageName().replace("temp/", "");
+			
 			// 이동할 대상 경로
-			Path targetPath = Paths.get("C:/images/" + tempImage.getImageName());
+			Path targetPath = Paths.get(newPath);
 
 			try {
 				// 파일 이동 (이미 존재하면 덮어쓰기)
@@ -240,7 +255,7 @@ public class WalkTrailController {
 		return "redirect:/WalkTrail";
 	}
 
-	// WalkTrail 게시글 수정
+	// 게시글 수정
 	@GetMapping(value = "/WalkTrailUpdate/{num}")
 	public String walkTrailUpdateForm(@PathVariable("num") int num, Model model,
 			@AuthenticationPrincipal CustomUserDetails authUser, RedirectAttributes redirectAttributes) {
@@ -266,17 +281,15 @@ public class WalkTrailController {
 		return "Board/WalkTrailUpdate";
 	}
 
-	// WalkTrail 게시글 수정
+	// 게시글 수정
 	@PostMapping(value = "/WalkTrailUpdate/{num}")
-	public String walkTrailUpdateSubmit(
-			@Valid BoardDto boardDto, BindingResult bindingResult, 
-			@PathVariable("num") int num, Model model, 
-			@AuthenticationPrincipal CustomUserDetails authUser,
+	public String walkTrailUpdateSubmit(@Valid BoardDto boardDto, BindingResult bindingResult, @PathVariable("num") int num,
+			Model model, @AuthenticationPrincipal CustomUserDetails authUser,
 			@RequestParam("images") List<MultipartFile> images,
 			@RequestParam(value = "deleteThumbnail", required = false) String deleteThumbnail,
 			RedirectAttributes redirectAttributes) {
-		
-			redirectAttributes.addAttribute("num", num);
+
+		redirectAttributes.addAttribute("num", num);
 
 		// 유저 검증
 		Users user = (Users) authUser.getUser();
@@ -288,58 +301,68 @@ public class WalkTrailController {
 
 		if (!isAuthor && !isAdmin) {
 			redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
-			return "redirect:/WalkTrailDetial" + num;
+			return "redirect:/WalkTrailDetail" + num;
 		}
 
 		// 오류 발생시 다시 수정페이지로
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("board", boardDto); // 반드시 넣어줘야 함
 
-			return "/Board/WalkTrailUpdate";
+			return "Board/WalkTrailUpdate";
 		}
 
-		   // 본문 내용 이미지 처리
+		// 본문 내용 이미지 처리
 //	    String fileName = upload.fileUpload(boardDto.getContent());
 //	    boardDto.setContent(fileName);
-		
-		String original = boardDto.getContent().replaceAll("images/temp/", "images/");
+
+		// 1. 본문 이미지 경로 정리
+		String original = boardDto.getContent().replaceAll(upload.tempPath, upload.imagePath);
 		boardDto.setContent(original);
-		
 		String fileName = upload.fileUpload(boardDto.getContent());
-		String thumnailName = null;
-		if(images != null && images.size() > 0)
-			thumnailName = upload.imageFileUpload(images.get(0));
 		boardDto.setContent(fileName);
-		boardDto.setImage_paths(thumnailName);
-		boardService.insertBoard(boardDto);
 
+		// 2. 썸네일 처리
+		if ("true".equals(deleteThumbnail)) {
+		    // 👉 삭제 체크된 경우: 썸네일 null로 처리
+		    boardDto.setImage_paths(null);
+		} else if (images != null && images.size() > 0 && !images.get(0).isEmpty()) {
+		    // 👉 새 썸네일 업로드된 경우: 새 썸네일 등록
+		    String thumbnailName = upload.imageFileUpload(images.get(0));
+		    boardDto.setImage_paths(thumbnailName);
+		} else {
+		    // 👉 삭제도 안 했고 새 업로드도 없으면: 기존 썸네일 유지
+		    boardDto.setImage_paths(boardService.findBoardByNum(boardDto.getNum()).getImage_paths());
+		}
+		
 		// 예비 db에서 가져오기
-				List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
-				// 제대로 된 db로 옮기기
-				for (TempImage l : list) {
-					TempImage tempImage = l;
-					
-					// 원본 파일 경로
-					Path sourcePath = Paths.get("C:/images/temp/" + tempImage.getImageName());
+		List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
+		// 제대로 된 db로 옮기기
+		for (TempImage l : list) {
+			TempImage tempImage = l;
 
-					// 이동할 대상 경로
-					Path targetPath = Paths.get("C:/images/" + tempImage.getImageName());
+			// 원본 파일 경로
+			Path sourcePath = Paths.get(upload.BaseUploadPath() + tempImage.getImageName());
+			
+			String newPath = upload.BaseUploadPath() + tempImage.getImageName().replace("temp/", "");
 
-					try {
-						// 파일 이동 (이미 존재하면 덮어쓰기)
-						Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-						System.out.println("파일이 성공적으로 이동되었습니다!");
-					} catch (Exception e) {
-						System.err.println("파일 이동 중 오류 발생: " + e.getMessage());
-					}
-				}
-				
-	    // 썸네일 처리
-	    //String thumbnail = existing.getImage_paths(); // 기본은 유지
-	    // 삭제기능
-	    //upload.imageFileDelete(existing.getImage_paths());
+			// 이동할 대상 경로
+			Path targetPath = Paths.get(newPath);
+			
+			try {
+				// 파일 이동 (이미 존재하면 덮어쓰기)
+				Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+				System.out.println("파일이 성공적으로 이동되었습니다!");
+			} catch (Exception e) {
+				System.err.println("파일 이동 중 오류 발생: " + e.getMessage());
+			}
+		}
 
-	    // 삭제 체크박스가 체크된 경우
+		// 썸네일 처리
+		// String thumbnail = existing.getImage_paths(); // 기본은 유지
+		// 삭제기능
+		// upload.imageFileDelete(existing.getImage_paths());
+
+		// 삭제 체크박스가 체크된 경우
 //	    if ("true".equals(deleteThumbnail)) {
 //	        thumbnail = null;
 //	    } else if (images != null && !images.isEmpty() && !images.get(0).isEmpty()) {
@@ -347,10 +370,10 @@ public class WalkTrailController {
 //	    }
 //
 //	    boardDto.setImage_paths(thumbnail);
-	    boardService.updateBoard(boardDto, num);
-	  //예비 db 비우기
-	  		boardService.DeleteTempImage(user.getNum());
-	    return "redirect:/WalkTrailDetail/" + num;
+		boardService.updateBoard(boardDto, num);
+		// 예비 db 비우기
+		boardService.DeleteTempImage(user.getNum());
+		return "redirect:/WalkTrailDetail/" + num;
 	}
 	//원래 있던 수정 코드
 //	String thumnailName = null;
@@ -384,7 +407,7 @@ public class WalkTrailController {
 
 		if (!isAuthur && !isAdmin) {
 			redirectAttributes.addFlashAttribute("errorMessage", "작성자만 삭제가능!");
-			return "redirect:/Adopt";
+			return "redirect:/WalkTrail";
 		}
 
 		
@@ -396,7 +419,7 @@ public class WalkTrailController {
 
 	// 신고기능
 	@PostMapping("/WalkTrailDetail/{num}/report")
-	public String WalkTrailReportBoard(
+	public String walkTrailReportBoard(
 			@PathVariable("num") int num, 
 			@AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes) {
@@ -414,7 +437,7 @@ public class WalkTrailController {
 
 	// 댓글 신고
 	@PostMapping("/WalkTrailDetail/{num}/report/comment")
-	public String WalkTrailReportComment(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser) {
+	public String walkTrailReportComment(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser) {
 
 		Users user = authUser.getUser();
 		if (user != null) {
@@ -428,7 +451,7 @@ public class WalkTrailController {
 
 	// 게시글 좋아요
 	@PostMapping("/WalkTrailDetail/{num}/like")
-	public String WalkTrailLikeBoard(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser) {
+	public String walkTrailLikeBoard(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser) {
 
 		if (authUser.getUser() != null)
 			likeService.likeBoard(new LikeDto(authUser.getUser().getNum(), num));
@@ -438,7 +461,7 @@ public class WalkTrailController {
 
 	// 댓글 등록
 	@PostMapping(value = "WalkTrailDetail/{num}/comment")
-	public String WalkTrailAddComment(@PathVariable("num") int boardNum, // 게시글 넘버
+	public String walkTrailAddComment(@PathVariable("num") int boardNum, // 게시글 넘버
 			@RequestParam("content") String content, // 댓글내용
 			@RequestParam(value = "parentNum", defaultValue = "0") int parentNum, // 대댓글 기능 없어도 됌
 			@AuthenticationPrincipal CustomUserDetails authUser, // 로그인 검증용
@@ -465,7 +488,7 @@ public class WalkTrailController {
 
 	// 댓글 수정
 	@PostMapping("/WalkTrailDetail/{num}/comment/update")
-	public String WalkTrailEditComment(@PathVariable("num") int boardNum, @RequestParam("commentNum") int commentNum,
+	public String walkTrailEditComment(@PathVariable("num") int boardNum, @RequestParam("commentNum") int commentNum,
 			@RequestParam("content") String content, @AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes) {
 
@@ -498,7 +521,7 @@ public class WalkTrailController {
 
 	// 댓글 삭제
 	@PostMapping("/WalkTrailDetail/{num}/comment/delete")
-	public String WalkTrailDeleteComment(@AuthenticationPrincipal CustomUserDetails authUser, @PathVariable("num") int boardNum,
+	public String walkTrailDeleteComment(@AuthenticationPrincipal CustomUserDetails authUser, @PathVariable("num") int boardNum,
 			@RequestParam("commentNum") int commentNum, RedirectAttributes redirectAttributes) {
 
 		// 현재 로그인한 유저 정보
@@ -521,7 +544,7 @@ public class WalkTrailController {
 
 	// 댓글 좋아요
 	@PostMapping("/WalkTrailDetail/{num}/comment/like")
-	public String WalkTrailLikeComment(@AuthenticationPrincipal CustomUserDetails authUser, @PathVariable("num") int boardNum,
+	public String walkTrailLikeComment(@AuthenticationPrincipal CustomUserDetails authUser, @PathVariable("num") int boardNum,
 			@RequestParam("commentNum") int commentNum) {
 
 		// 로그인 유저 확인
