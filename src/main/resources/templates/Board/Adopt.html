@@ -54,7 +54,8 @@
 		/*=== 윗단의 한줄 정렬용 wrapper ===*/
 		.action-row {
 			display: flex;
-			grid-template-columns: 1fr auto; /* 왼쪽(검색창) / 오른쪽(버튼들) */
+			grid-template-columns: 1fr auto;
+			/* 왼쪽(검색창) / 오른쪽(버튼들) */
 			align-items: center;
 			width: 90%;
 			max-width: 1600px;
@@ -62,15 +63,18 @@
 			margin-top: 0;
 			padding: 0 0px;
 			box-sizing: border-box;
-			gap: 20px; /* 줄바꿈 시 간격 */
+			gap: 20px;
+			/* 줄바꿈 시 간격 */
 		}
 
 		/*=== 검색 섹션 ===*/
 		.center-section {
 			flex: 1;
 			display: flex;
-			justify-content: center; /* 가운데 정렬 */
+			justify-content: center;
+			/* 가운데 정렬 */
 			align-items: center;
+			margin-left: 320px;
 			width: 100%;
 			min-width: 100px;
 			/* 최소 너비 지정, 필요시 조절 */
@@ -80,61 +84,53 @@
 		/*====  오른쪽 섹션 ====*/
 		.right-section {
 			display: flex;
-			justify-content: flex-end; /* 또는 원하는 정렬 */
+			justify-content: flex-end;
+			/* 또는 원하는 정렬 */
 			align-items: center;
-			flex: 0 0 auto; /* 내용 크기만큼 */
-			gap: 5px;	/* 버튼 사이 간격 */
+			flex: 0 0 auto;
+			/* 내용 크기만큼 */
+			gap: 5px;
+			/* 버튼 사이 간격 */
 			max-width: 1000px;
-			min-width: 0px;	/* 최소 너비 지정 */
+			min-width: 0px;
+			/* 최소 너비 지정 */
 			order: 2;
 		}
-		
+
 		/*=== 인기글 접기 섹션 ===*/
 		.popular-section {
 			display: flex;
-			justify-content: flex-end; 
+			justify-content: flex-end;
 			width: 90%;
 			margin: 0 auto;
 		}
-		
+
 		/*==== 접었을때 ====*/
 		@media (max-width: 900px) {
 			.action-row {
-				flex-direction: column; /* 세로 방향 정렬 */
-					align-items: stretch;
+				flex-direction: column;
+				/* 세로 방향 정렬 */
+				align-items: stretch;
 			}
 
 
 			.center-section {
 				justify-content: center;
-				order:1;
+				order: 1;
 			}
 
 			.right-section {
 				justify-content: center;
 				gap: 5px;
-				order:2;
+				order: 2;
 			}
-			
-			.popular-section{
+
+			.popular-section {
 				justify-content: center;
 			}
 		}
 
 		/* ====== 검색박스 ====== */
-		.search-button {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			width: 100%;
-			flex-grow: 1;
-			/* 가능한 공간 다 차지 */
-			margin: 20px 0;
-			/* 위아래 마진 */
-			gap: 6px;
-			/* 선택박스-입력창-버튼 사이 간격 */
-		}
-
 		/*검색박스 폼*/
 		.search-box {
 			display: flex;
@@ -177,6 +173,19 @@
 			border-color: #8b5e3c;
 		}
 
+		.search-button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			flex-grow: 1;
+			/* 가능한 공간 다 차지 */
+			margin: 20px 0;
+			/* 위아래 마진 */
+			gap: 6px;
+			/* 선택박스-입력창-버튼 사이 간격 */
+		}
+
 		/*--검색 버튼--*/
 		.btn-search {
 			padding: 8px 18px;
@@ -211,7 +220,8 @@
 			color: #8b5e3c;
 			background: white;
 			margin-right: 20px;
-			min-width: 145px; /* 최소 너비 지정: 너무 작아지는 것 방지 */
+			min-width: 145px;
+			/* 최소 너비 지정: 너무 작아지는 것 방지 */
 		}
 
 		.toggle-switch input[type="radio"] {
@@ -605,9 +615,7 @@
 						<strong th:text="${board.title + ' 💬(' + board.commentCount + ')'}">제목</strong>
 					</a>
 					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}">
-						<img class="thumb-image"
-							th:src="${board.Image_paths}"
-							alt="썸네일" />
+						<img class="thumb-image" th:src="${board.Image_paths}" alt="썸네일" />
 					</a>
 					<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
 					<span th:text="'분양가: ' + ${board.price}">분양가</span>
