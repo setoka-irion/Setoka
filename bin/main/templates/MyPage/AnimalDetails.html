@@ -91,7 +91,7 @@
 	<div class="animal-card">
 		<div class="user-card-left">
 			<img th:if="${CurrentAnimal.profilePath != null and CurrentAnimal.profilePath != ''}"
-				th:src="@{/images/{filename}(filename=${CurrentAnimal.profilePath})}" alt="프로필 사진"
+				th:src="@{{filename}(filename=${CurrentAnimal.profilePath})}" alt="프로필 사진"
 				class="profile-image" />
 
 			<p th:if="${CurrentAnimal.profilePath == null or CurrentAnimal.profilePath == ''}">프로필 사진이 없습니다.</p>

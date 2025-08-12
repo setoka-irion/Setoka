@@ -15,16 +15,14 @@ public class Upload {
 
     @Value("${upload.path}")
     private String baseUploadPath;
-    public final String imagePath = "images/";
-    public final String boardPath = "board/";
-    public final String tempPath = "images/temp/";
-    public final String defaultPath = "imagesDefault/";
+    public final String imagePath = "/images/";
+    public final String boardPath = "/board/";
+    public final String tempPath = "/images/temp/";
     
     public String BaseUploadPath() { return baseUploadPath; }
 	public String SavePath() { return baseUploadPath + imagePath; }	
 	public String TxtSavePath() { return baseUploadPath + boardPath; }
 	public String TempImagePath() { return baseUploadPath + tempPath; }
-	public String ImagesDefault() { return baseUploadPath + defaultPath; }
 	
 	//사진 서버 디렉토리에 저장, 저장된 파일명 반환
 	public String imageFileUpload(MultipartFile file)
