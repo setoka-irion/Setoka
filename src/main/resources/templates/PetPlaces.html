@@ -148,13 +148,52 @@
 		let map, geocoder;
 
 		function makeMap() {
-			const mapContainer = document.getElementById('map');
-			const mapOption = {
-				center: new kakao.maps.LatLng(37.5665, 126.9780),
-				level: 3
-			};
-			map = new kakao.maps.Map(mapContainer, mapOption);
-			geocoder = new kakao.maps.services.Geocoder();
+		  if (navigator.geolocation) {
+		    navigator.geolocation.getCurrentPosition(function(position) {
+				console.log("위치 정보 수신 성공!");
+				    console.log("위도:", position.coords.latitude);
+				    console.log("경도:", position.coords.longitude);
+		      const lat = position.coords.latitude;
+		      const lon = position.coords.longitude;
+		      const userLocation = new kakao.maps.LatLng(lat, lon);
+
+		      const mapOption = {
+		        center: userLocation,
+		        level: 3
+		      };
+
+		      map = new kakao.maps.Map(document.getElementById('map'), mapOption);
+
+		      // 필요하면 마커 추가
+		      const marker = new kakao.maps.Marker({
+		        position: userLocation,
+		        map: map
+		      });
+		    }, function(error) {
+				switch (error.code) {
+				      case error.PERMISSION_DENIED:
+				        console.error("❌ 위치 권한이 거부되었습니다.");
+				        break;
+				      case error.POSITION_UNAVAILABLE:
+				        console.error("📡 위치 정보를 사용할 수 없습니다.");
+				        break;
+				      case error.TIMEOUT:
+				        console.error("⏱️ 위치 요청 시간이 초과되었습니다.");
+				        break;
+				      default:
+				        console.error("알 수 없는 오류:", error.message);
+				    }
+		      // 위치 못 불러오면 기본 위치 (서울 시청) 사용
+		      const defaultLocation = new kakao.maps.LatLng(37.5665, 126.9780);
+		      const mapOption = {
+		        center: defaultLocation,
+		        level: 3
+		      };
+		      map = new kakao.maps.Map(document.getElementById('map'), mapOption);
+		    });
+		  } else {
+		    alert('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
+		  }
 		}
 
 		function displayMarker(address, callback) {
