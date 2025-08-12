@@ -593,6 +593,7 @@
 							th:src="@{${post.Image_paths != null} ? '/images/' + ${post.Image_paths} : '/imagesDefault/defaultBoard.png'}">
 					</a>
 					<span th:text="'작성자: ' + ${post.nickName}">작성자</span>
+					<span th:text="'조회수: ' + ${post.views}">조회수</span>
 					<span th:text="'좋아요: ' + ${post.likes}">좋아요</span>
 					<span th:text="'가격: ' + ${post.price}">가격</span>
 					<span th:text="'지역: ' + ${post.area}">지역</span>
