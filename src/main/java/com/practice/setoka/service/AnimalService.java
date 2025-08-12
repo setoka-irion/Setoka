@@ -33,7 +33,7 @@ public class AnimalService {
     public boolean insertAnimal(AnimalDto animalDto) {
 
     	if(animalDto.getProfilePath() == null)
-    		animalDto.setProfilePath(upload.defaultPath + "defaultAnimal.png");
+    		animalDto.setProfilePath(upload.imagePath + "defaultAnimal.png");
     	
         return animalMapper.insertAnimal(animalDto);
     }
@@ -41,7 +41,7 @@ public class AnimalService {
     // DTO를 받아 애견 정보 수정
     public boolean updateAnimal(int num, AnimalDto animalDto) {
     	if(animalDto.getProfilePath() == null)
-    		animalDto.setProfilePath(upload.defaultPath +"defaultAnimal.png");
+    		animalDto.setProfilePath(upload.imagePath +"defaultAnimal.png");
     	else
     		animalDto.setProfilePath(animalDto.getProfilePath());
     	

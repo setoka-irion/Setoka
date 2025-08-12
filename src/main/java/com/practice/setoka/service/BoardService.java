@@ -54,7 +54,7 @@ public class BoardService {
 		System.out.println(boardDto.getImage_paths());
 		if(boardDto.getImage_paths() == null || boardDto.getImage_paths().length() == 0)
 		{
-			boardDto.setImage_paths(upload.defaultPath + "defaultBoard.png");
+			boardDto.setImage_paths(upload.imagePath + "defaultBoard.png");
 		}
 	    boardMapper.insertBoard(boardDto);
 	}
@@ -63,7 +63,7 @@ public class BoardService {
 	public void updateBoard(BoardDto boardDto, int num) {	
 		if(boardDto.getImage_paths() == null || boardDto.getImage_paths().length() == 0)
 		{
-			boardDto.setImage_paths(upload.defaultPath + "defaultBoard.png");
+			boardDto.setImage_paths(upload.imagePath + "defaultBoard.png");
 		}
 	    boardMapper.updateBoard(boardDto, num);
 	}
