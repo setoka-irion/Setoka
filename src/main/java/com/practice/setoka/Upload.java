@@ -98,7 +98,7 @@ public class Upload {
 		File uploadDir = new File(TxtSavePath());
 		if(!uploadDir.exists())
 			uploadDir.mkdir();
-		
+
 		File file = new File(TxtSavePath() + fileName);
 		try(FileWriter writer = new FileWriter(file))
 		{
@@ -113,7 +113,7 @@ public class Upload {
 	
 	public String fileLoad(String fileName)
 	{
-		File file = new File(TxtSavePath() + fileName);
+		File file = new File(baseUploadPath + fileName);
 		if(!file.exists())
 			return null;
 
@@ -121,7 +121,7 @@ public class Upload {
 		
 		try
 		{
-			text = Files.readString(Paths.get(TxtSavePath() + fileName));
+			text = Files.readString(Paths.get(baseUploadPath + fileName));
 		}
 		catch(Exception e)
 		{
