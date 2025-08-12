@@ -4,19 +4,58 @@
 <head>
 	<title>Home</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/home-popular-post.css}"/>
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
-	<!--<div style="text-align: center;">
-		<button onclick="location.href='/MessageList'">쪽지</button>
-		<button onclick="location.href='/PetPlaces'">반려동물 동반시설</button>
-		<button onclick="location.href='/Adopt'">입양게시판</button>
-		<button onclick="location.href='/RPS'">가위바위보</button>
-		<button th:if="${loginUser != null and loginUser.privileges.name() == '관리자'}" onclick="location.href='/AllUsers'">모든 사용자 목록</button>
-	</div>-->
-
+	<!-- 본문 영역에서 인기글 표시 -->
+		<section class="home-popular-post" style="margin-top: 30px; text-align: center;">
+			<h2>🔥 인기 글</h2>
+		
+			<a th:if="${Adopt != null}" th:href="@{/AdoptDetail/{id}(id=${Adopt.boardNum})}">
+				<div>
+					<img th:src="${Adopt.Image_paths}" alt="썸네일"  />
+					<h3 th:text="${Adopt.title}">게시글 제목</h3>
+					<p th:text="'작성자: ' + ${Adopt.nickName}">작성자</p>
+				</div>
+			</a>
+			
+			<a th:if="${AnimalPride != null}" th:href="@{/AnimalPrideDetail/{id}(id=${AnimalPride.boardNum})}">
+				<div>
+					<img th:src="${AnimalPride.Image_paths}" alt="썸네일"  />
+					<h3 th:text="${AnimalPride.title}">게시글 제목</h3>
+					<p th:text="'작성자: ' + ${AnimalPride.nickName}">작성자</p>
+				</div>
+			</a>
+			
+			<a th:href="@{/WalkTrailDetail/{id}(id=${WalkTrail.boardNum})}">
+				<div>
+					<img th:src="${WalkTrail.Image_paths}" alt="썸네일"  />
+					<h3 th:text="${WalkTrail.title}">게시글 제목</h3>
+					<p th:text="'작성자: ' + ${WalkTrail.nickName}">작성자</p>
+				</div>
+			</a>
+						
+			<a th:href="@{/KnowHowDetail/{id}(id=${Knowhow.boardNum})}">
+				<div>
+					<img th:src="${Knowhow.Image_paths}" alt="썸네일"  />
+					<h3 th:text="${Knowhow.title}">게시글 제목</h3>
+					<p th:text="'작성자: ' + ${Knowhow.nickName}">작성자</p>
+				</div>
+			</a>
+		
+			<a th:href="@{/UsedGoodsDetail/{id}(id=${UsedGoods.boardNum})}">
+				<div>
+					<img th:src="${UsedGoods.Image_paths}" alt="썸네일"  />
+					<h3 th:text="${UsedGoods.title}">게시글 제목</h3>
+					<p th:text="'작성자: ' + ${UsedGoods.nickName}">작성자</p>
+				</div>
+			</a>
+		
+			
+		</section>
 </body>
 
 

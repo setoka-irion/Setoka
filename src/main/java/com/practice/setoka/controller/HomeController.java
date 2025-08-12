@@ -12,6 +12,8 @@ import com.practice.setoka.Redirect;
 import com.practice.setoka.Upload;
 import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.dao.Users;
+import com.practice.setoka.dto.BoardWithUserDto;
+import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
@@ -24,12 +26,38 @@ public class HomeController {
 	UserService userService;
 	@Autowired
 	Upload upload;
+	@Autowired
+	BoardService boardService;
+	
 	// 홈화면
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model) {
-		//"/imagesDefault/mainlogo.png"
-//		System.out.println(upload.defaultPath);
-//	    model.addAttribute("defaultPath", upload.defaultPath + "/mainlogo.png");
+
+		List<BoardWithUserDto> list = boardService.popularPosts(1);
+		if (!list.isEmpty()) {
+		    model.addAttribute("Adopt", list.get(0));
+		}
+		
+		list = boardService.popularPosts(2);
+		if (!list.isEmpty()) {
+		    model.addAttribute("AnimalPride", list.get(0));
+		}
+		
+		list = boardService.popularPosts(3);
+		if (!list.isEmpty()) {
+		    model.addAttribute("WalkTrail", list.get(0));
+		}
+		
+		list = boardService.popularPosts(4);
+		if (!list.isEmpty()) {
+		    model.addAttribute("UsedGoods", list.get(0));
+		}
+		
+		list = boardService.popularPosts(5);
+		if (!list.isEmpty()) {
+		    model.addAttribute("Knowhow", list.get(0));
+		}
+		
 		return "home";
 	}
 
