@@ -7,62 +7,76 @@
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<link rel="stylesheet" th:href="@{/CSS/AllUsers.css}">
 	<style>
-		table,
-		th,
-		td {
-			border: 1px solid black;
-			border-collapse: collapse;
-			padding: 8px;
-		}
-	</style>
+			.container {
+			  width: 100%;
+			  text-align: center;  /* 자식 요소 가운데 정렬 */
+			}
+
+			table {
+			  margin: 0 auto;      /* 테이블 자체 가운데 */
+			  border-collapse: collapse;
+			  border: 1px solid black;
+			}
+
+			th, td {
+			  border: 1px solid black;
+			  padding: 8px;
+			  text-align: center;
+			}
+
+		</style>
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
-	<h1>모든 사용자 목록</h1>
-	<table id="usersTable">
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>비밀번호</th>
-				<th>닉네임</th>
-				<th>이름</th>
-				<th>전화번호</th>
-				<th>상태</th>
-				<th></th>
-				<th>포인트</th>
-				<th>등급</th>
-				<th>등록일자</th>
 
-			</tr>
-		</thead>
-		<tbody>
-			<!-- 사용자 데이터가 여기에 추가됩니다 -->
-			<tr th:each="users : ${allUsers}">
+	<div class="container">
+		<h1>모든 사용자 목록</h1>
+			<table id="usersTable">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>비밀번호</th>
+						<th>닉네임</th>
+						<th>이름</th>
+						<th>전화번호</th>
+						<th>상태</th>
+						<th></th>
+						<th>포인트</th>
+						<th>등급</th>
+						<th>등록일자</th>
 
-				<td th:text="${users.id}"></td>
-				<td th:text="${users.password}"></td>
-				<td th:text="${users.nickName}"></td>
-				<td th:text="${users.realName}"></td>
-				<td th:text="${users.phoneNumber}"></td>
-				<td th:text="${users.status}" th:style="${users.status.name() == '정상'} ? 'color:green;' : 'color:red;'"></td>
-				<td>
-					<form th:action="@{/admin/updateStatus}" method="post" class="AllUsers">
-						<input type="hidden" name="userId" th:value="${users.id}" />
-						<select name="status" th:class="${users.status.name() == '정상'} ? 'status-green' : 'status-red'">
-							<option value="정상" th:selected="${users.status.name() == '정상'}">정상</option>
-							<option value="삭제" th:selected="${users.status.name() == '삭제'}">삭제</option>
-						</select>
-						<button type="submit">변경</button>
-					</form>
-				</td>
-				<td th:text="${users.point}"></td>
-				<td th:text="${users.grade}"></td>
-				<td th:text="${users.registerDate}"></td>
-			</tr>
-		</tbody>
-	</table>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- 사용자 데이터가 여기에 추가됩니다 -->
+					<tr th:each="users : ${allUsers}">
+
+						<td th:text="${users.id}"></td>
+						<td th:text="${users.password}"></td>
+						<td th:text="${users.nickName}"></td>
+						<td th:text="${users.realName}"></td>
+						<td th:text="${users.phoneNumber}"></td>
+						<td th:text="${users.status}" th:style="${users.status.name() == '정상'} ? 'color:green;' : 'color:red;'"></td>
+						<td>
+							<form th:action="@{/admin/updateStatus}" method="post" class="AllUsers">
+								<input type="hidden" name="userId" th:value="${users.id}" />
+								<select name="status" th:class="${users.status.name() == '정상'} ? 'status-green' : 'status-red'">
+									<option value="정상" th:selected="${users.status.name() == '정상'}">정상</option>
+									<option value="삭제" th:selected="${users.status.name() == '삭제'}">삭제</option>
+								</select>
+								<button type="submit">변경</button>
+							</form>
+						</td>
+						<td th:text="${users.point}"></td>
+						<td th:text="${users.grade}"></td>
+						<td th:text="${users.registerDate}"></td>
+					</tr>
+				</tbody>
+			</table>
+	</div>
+	
 </body>
 
 </html>

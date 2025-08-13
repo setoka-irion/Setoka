@@ -5,48 +5,71 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<link rel="stylesheet" th:href="@{/CSS/AllUsers.css}">
+	<style>
+		.container {
+		  width: 100%;
+		  text-align: center;  /* 자식 요소 가운데 정렬 */
+		}
+
+		table {
+		  margin: 0 auto;      /* 테이블 자체 가운데 */
+		  border-collapse: collapse;
+		  border: 1px solid black;
+		}
+
+		th, td {
+		  border: 1px solid black;
+		  padding: 8px;
+		  text-align: center;
+		}
+
+	</style>
+
 </head>
 <body>
 <div th:replace="~{header :: siteHeader}"></div>
 
-<h1>캐러셀 이미지 등록</h1>
-<form th:action="@{/admin/carouselInsert}" method="post" enctype="multipart/form-data">
-	<table>
-		<tr>
-			<td>이미지</td>
-			<td><input type="file" name="profile" class="file-input" required /></td>
-		</tr>
-		<tr>
-			<td>링크</td>
-			<td><input type="text" name="linkUrl" placeholder="/Adopt" required /></td>
-		</tr>
-	</table>
-	<button type="submit" class="sub-buttons">등록</button>
-</form>
+<div class="container">
+	<h1>캐러셀 이미지 등록</h1>
+	<form th:action="@{/admin/carouselInsert}" method="post" enctype="multipart/form-data">
+		<table>
+			<tr>
+				<td>이미지</td>
+				<td><input type="file" name="profile" class="file-input" required /></td>
+			</tr>
+			<tr>
+				<td>링크</td>
+				<td><input type="text" name="linkUrl" placeholder="/Adopt" required /></td>
+			</tr>
+		</table>
+		<button type="submit" class="sub-buttons">등록</button>
+	</form>
 
-<h2>등록된 캐러셀 항목</h2>
-<table>
-    <tr>
-        <th>이미지</th>
-        <th>링크</th>
-        <th>삭제</th>
-    </tr>
-	<tr th:each="item : ${list}">
-	    <td>
-	        <!-- 수정된 부분 -->
-	        <img th:src="${item.img}" width="200"/>
-	        <!-- 또는 경로 일부만 있을 경우 -->
-	        <!-- <img th:src="@{/images/Carousel/{image}(image=${item.img})}" width="200"/> -->
-	    </td>
-	    <td th:text="${item.link}">/링크</td>
-	    <td>
-	        <form th:action="@{/admin/carousel/delete}" method="post">
-				<input type="hidden" name="img" th:value="${item.img}"/>
-	            <input type="hidden" name="id" th:value="${item.num}" />
-	            <button type="submit">삭제</button>
-	        </form>
-	    </td>
-	</tr>
-</table>
+	<h2>등록된 캐러셀 항목</h2>
+	<table>
+	    <tr>
+	        <th>이미지</th>
+	        <th>링크</th>
+	        <th>삭제</th>
+	    </tr>
+		<tr th:each="item : ${list}">
+		    <td>
+		        <!-- 수정된 부분 -->
+		        <img th:src="${item.img}" width="200"/>
+		        <!-- 또는 경로 일부만 있을 경우 -->
+		        <!-- <img th:src="@{/images/Carousel/{image}(image=${item.img})}" width="200"/> -->
+		    </td>
+		    <td th:text="${item.link}">/링크</td>
+		    <td>
+		        <form th:action="@{/admin/carousel/delete}" method="post">
+					<input type="hidden" name="img" th:value="${item.img}"/>
+		            <input type="hidden" name="id" th:value="${item.num}" />
+		            <button type="submit">삭제</button>
+		        </form>
+		    </td>
+		</tr>
+	</table>	
+</div>
+
 </body>
 </html>

@@ -191,6 +191,8 @@ public class MyPageController {
 	public String changePasswordsubmit(@RequestParam("password") String password,
 			@RequestParam("passwordCon") String passwordCon, HttpSession session,
 			@AuthenticationPrincipal CustomUserDetails authUser) {
+
+		Users user = (Users) authUser.getUser();
 		
 		if(!password.equals(passwordCon))
 		{
@@ -198,13 +200,12 @@ public class MyPageController {
 			return Redirect.changePassword;
 		}
 			
-		if(!userService.passwordInvalid(password))
+		if(!userService.passwordInvalid(password) && !user.isAdmin())
 		{
 			session.setAttribute("errorMessage", "대소문자 특수문자 포함 8자 이상");
 			return Redirect.changePassword;
 		}
 		
-		Users user = (Users) authUser.getUser();
 		String encordPassowrd = Encryption.Encoder(password);
 		
 		//	비밀번호와 확인이 같은면서 이전 비밀번호와 다른경우
