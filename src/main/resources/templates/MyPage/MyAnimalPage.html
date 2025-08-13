@@ -82,19 +82,19 @@
 	<div id="addModal" class="modal">
 		<h2>동물 추가</h2>
 		<form id="addForm" th:action="@{/myanimal/add}" method="post" enctype="multipart/form-data">
-			<label>프로필 사진: <input type="file" name="profileImage" accept="image/*" /></label><br /><br />
-			<label>이름: <input type="text" name="animalName" required /></label><br /><br />
-			<label>종: <input type="text" name="species" required /></label><br /><br />
-			<label>나이: <input type="number" name="age" min="0" required /></label><br /><br />
+			<label>프로필 사진: <input type="file" name="profileImage" accept="image/*" /></label>
+			<label>이름: <input type="text" name="animalName" required /></label>
+			<label>종: <input type="text" name="species" required /></label>
+			<label>나이: <input type="number" name="age" min="0" required /></label>
 			<label>성별:</label><br />
 			<label>
 				<input type="radio" name="gender" value="수컷" /> 수컷
 			</label>
 			<label>
 				<input type="radio" name="gender" value="암컷" /> 암컷
-			</label><br /><br />
+			</label>
 			<input type="hidden" name="status" value="정상" />
-			<label>입양일: <input type="date" name="togetherDateStr" required /></label><br /><br />
+			<label>입양일: <input type="date" name="togetherDateStr" required /></label>
 			<button type="submit">추가하기</button>
 			<button type="button" onclick="closeModal()">취소</button>
 		</form>
