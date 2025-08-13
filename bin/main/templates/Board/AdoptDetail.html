@@ -21,6 +21,7 @@
 		}
 
 		.container {
+			position: relative;
 			max-width: 1200px;
 			margin: 0 auto;
 			background-color: #fff;
@@ -49,8 +50,20 @@
 			background-color: #d4edda;
 			border: 1px solid #c3e6cb;
 		}
-		
-		.back-button a{
+
+		.back-button a {
+			display: flex;
+			justify-content: flex-end;
+			/* 오른쪽 끝으로 정렬 */
+			position: absolute;
+			/* 이 속성으로 위치를 자유롭게 조정할 수 있게 됩니다 */
+			right: 0;
+			/* 부모 요소의 오른쪽 끝에 붙입니다 */
+			top: 5%;
+			/* (선택 사항) 세로 방향으로 중앙에 위치시킵니다 */
+			transform: translateY(-50%);
+			/* (선택 사항) 세로 중앙 정렬을 완성합니다 */
+			margin-right: 45px;
 			display: inline-block;
 			padding: 10px 20px;
 			background-color: #8b5e3c;
@@ -143,10 +156,32 @@
 			text-align: left;
 			font-size: 1.1rem;
 			color: #555;
+			white-space: nowrap;
+			/* 텍스트를 한 줄에 표시 */
+			overflow: hidden;
+			/* 넘치는 부분을 숨김 */
+			text-overflow: ellipsis;
+			/* 숨겨진 부분에 ... 표시 */
 		}
 
 		.header-table th {
 			background-color: #f7f9fb;
+		}
+		/*=== 작성자 정보 ===*/
+		.author-info {
+		    /* 이미지와 닉네임을 가로로 정렬 */
+		    display: flex;
+		    align-items: center; /* 세로 중앙 정렬 */
+		    gap: 8px; /* 이미지와 닉네임 사이 간격 */
+		    justify-content: center; /* 가로 중앙 정렬 */
+		}
+
+		.profile-image {
+		    width: 50px;  /* 이미지 크기 */
+		    height: 50px; /* 이미지 크기 */
+		    border-radius: 50%; /* 이미지를 동그랗게 만듭니다 */
+		    border: 1px solid #ddd;
+		    object-fit: cover; /* 이미지가 잘리지 않고 채워지도록 합니다 */
 		}
 
 		/* 액션 버튼들 (수정/삭제/신고) */
@@ -189,6 +224,9 @@
 
 		/* 좋아요 */
 		.like-section {
+			display: flex;
+			justify-content: center;
+			/* 가로 방향으로 중앙 정렬 */
 			margin: 20px 0 40px;
 			font-size: 1.2rem;
 			font-weight: 600;
@@ -235,7 +273,7 @@
 		.comments-table th,
 		.comments-table td {
 			border: 1px solid #ddd;
-			padding: 10px 12px;
+			padding: 5px 12px;
 			font-size: 0.9rem;
 			vertical-align: middle;
 			text-align: center;
@@ -399,6 +437,7 @@
 	<div th:replace="~{header :: siteHeader}"></div>
 	<br>
 	<div class="container">
+		<h1>입양 게시판</h1>
 		<div class="back-button">
 			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
 		</div>
@@ -408,44 +447,59 @@
 		<div th:if="${deleteSuccess}" class="message success" th:text="${deleteSuccess}"></div>
 
 		<!-- 상단 정보 -->
-		<table class="header-table">
+		<table class="header-table" style="width: 100%; table-layout: fixed;">
+			<colgroup>
+				<col style="width:55%;" />
+				<col style="width:10%;" />
+				<col style="width:10%;" />
+				<col style="width:10%;" />
+				<col style="width:15%;" />
+			</colgroup>
 			<thead>
 				<tr>
 					<th>제목</th>
 					<th>작성자</th>
+					<th>좋아요</th>
+					<th>조회수</th>
 					<th>작성일</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td th:text="${detail.title}">제목</td>
-					<td th:text="${detail.nickName}">작성자</td>
-					<td th:text="${detail.formattedRegistDate}">2025-07-24</td>
-
-					<!-- 수정/삭제/신고 -->
-					<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
-						<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
-							<button type="submit" class="btn btn-success">수정</button>
-						</form>
-						<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
-							onsubmit="return confirm('정말 삭제하시겠습니까?');">
-							<button type="submit" class="btn btn-danger">삭제</button>
-						</form>
-						<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}"
-							method="post">
-							<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
-							<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
-						</form>
-					</div>
-
+					<td>
+						<div class="author-info">
+							<img th:src="@{${authorProfilePath}}" alt="프로필 이미지" class="profile-image">
+							<span th:text="${detail.nickName}">작성자</span>
+						</div>
+					</td>
+					<td th:text="${detail.likes}">좋아요</td>
+					<td th:text="${detail.views}">조회수</td>
+					<td>
+						<span th:text="${detail.formattedRegistDate}">2025-07-24</span>
+					</td>
 				</tr>
 			</tbody>
 		</table>
 
+		<!-- 수정/삭제/신고 -->
+		<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+			<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
+				<button type="submit" class="btn btn-success">수정</button>
+			</form>
+			<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
+				onsubmit="return confirm('정말 삭제하시겠습니까?');">
+				<button type="submit" class="btn btn-danger">삭제</button>
+			</form>
+			<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
+				<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
+				<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
+			</form>
+		</div>
+
 		<!-- 썸네일 -->
 		<div class="form-group" style="text-align: center;">
-			<img th:src="@{${detail.Image_paths}}"
-				alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
+			<img th:src="@{${detail.Image_paths}}" alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
 		</div>
 
 		<!-- 본문 -->
@@ -476,18 +530,18 @@
 		</div>
 
 		<!-- 댓글 -->
-		<h4>댓글</h4>
+		<h4>댓글 <span th:text="${detail.commentCount}">0</span>개</h4>
 		<table class="comments-table">
 			<colgroup>
+				<col style="width:5%;" />
+				<col style="width:8%;" />
+				<col style="width:45%;" />
+				<col style="width:6%;" />
 				<col style="width:6%;" />
 				<col style="width:10%;" />
-				<col style="width:42%;" />
-				<col style="width:10%;" />
+				<col style="width:6%;" />
+				<col style="width:6%;" />
 				<col style="width:8%;" />
-				<col style="width:14%;" />
-				<col style="width:10%;" />
-				<col style="width:10%;" />
-				<col style="width:10%;" />
 			</colgroup>
 			<thead>
 				<tr>
@@ -505,7 +559,13 @@
 			<tbody>
 				<tr th:each="comment, iterStat : ${comments}" th:attr="id='comment-' + ${comment.num}">
 					<td th:text="${iterStat.index + 1}">1</td>
-					<td th:text="${comment.nickname}">작성자</td>
+					
+					<td>
+											<div class="author-info">
+												<img th:src="@{${authorProfilePath}}" alt="프로필 이미지" class="profile-image">
+												<span th:text="${detail.nickName}">작성자</span>
+											</div>
+										</td>
 					<td class="content-cell">
 						<span th:text="${comment.content}" class="comment-content"
 							th:attr="id=${'content-span-' + comment.num}">댓글 내용</span>
@@ -548,7 +608,8 @@
 
 		<!-- 댓글 작성 -->
 		<h4>댓글 작성</h4>
-		<form class="comment-form" th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post">
+		<form class="comment-form" th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post"
+			style="display: flex; flex-direction: column; align-items: flex-end;">
 			<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
 			<br />
 			<button type="submit" class="btn btn-primary">댓글 등록</button>

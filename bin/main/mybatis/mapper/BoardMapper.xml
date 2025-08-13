@@ -121,7 +121,10 @@
 		SELECT 	u.id, 
     	u.num AS userNum, u.nickname, u.realname, u.grade,
    	 	b.num, b.userNum, b.title, b.content, b.type, b.likes, 
-   	 	b.views, b.price, b.area, b.registerDate, b.Image_paths
+   	 	b.views, b.price, b.area, b.registerDate, b.Image_paths,
+   	 	(
+        SELECT COUNT(*) FROM comments c WHERE c.boardNum = b.num
+    	) AS comments_Counts 
   		FROM board b
   		JOIN users u ON b.userNum = u.num
   		WHERE b.num = #{num}
