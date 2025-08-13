@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.practice.setoka.Encryption;
 import com.practice.setoka.Redirect;
@@ -26,9 +25,11 @@ import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Animal;
 import com.practice.setoka.dao.Memo;
 import com.practice.setoka.dao.Users;
+import com.practice.setoka.dto.BoardWithUserDto;
 import com.practice.setoka.dto.MemoDto;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.AnimalService;
+import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.MemoService;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
@@ -43,6 +44,8 @@ public class MyPageController {
 	private UserService userService;
 	@Autowired
 	private AnimalService animalService;
+	@Autowired
+	private BoardService boardService;
 	@Autowired
 	private MemoService memoService;
 	@Autowired
@@ -188,6 +191,8 @@ public class MyPageController {
 	public String changePasswordsubmit(@RequestParam("password") String password,
 			@RequestParam("passwordCon") String passwordCon, HttpSession session,
 			@AuthenticationPrincipal CustomUserDetails authUser) {
+
+		Users user = (Users) authUser.getUser();
 		
 		if(!password.equals(passwordCon))
 		{
@@ -195,13 +200,12 @@ public class MyPageController {
 			return Redirect.changePassword;
 		}
 			
-		if(!userService.passwordInvalid(password))
+		if(!userService.passwordInvalid(password) && !user.isAdmin())
 		{
 			session.setAttribute("errorMessage", "대소문자 특수문자 포함 8자 이상");
 			return Redirect.changePassword;
 		}
 		
-		Users user = (Users) authUser.getUser();
 		String encordPassowrd = Encryption.Encoder(password);
 		
 		//	비밀번호와 확인이 같은면서 이전 비밀번호와 다른경우
@@ -217,6 +221,15 @@ public class MyPageController {
 		return Redirect.Logout;
 	}
 
+	@GetMapping(value = "Bulletin")
+	public String bulletin(@AuthenticationPrincipal CustomUserDetails authUser, Model model)
+	{
+		Users user = authUser.getUser();
+		List<BoardWithUserDto> list = boardService.findBoardsByUserId(user.getId());
+		model.addAttribute("list", list);
+		return "MyPage/Bulletin";
+	}
+	
 	// 탈퇴
 	@GetMapping(value = "Withdrawal")
 	public String withdrawal() {
