@@ -30,10 +30,8 @@
 		SELECT
     	c.num, c.userNum, c.parentNum, c.boardNum, c.content, 
     	c.likes, c.registerDate, 
-    
-    	u.nickname, u.grade,
+    	u.nickname, u.grade, u.profilePath,
     	b.type 
-    	
 		FROM comments c
 		JOIN users u ON c.userNum = u.num
 		JOIN board b ON c.boardNum = b.num

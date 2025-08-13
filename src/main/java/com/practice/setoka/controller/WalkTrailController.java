@@ -109,7 +109,6 @@ public class WalkTrailController {
 
 		// 인기게시글
 		List<BoardWithUserDto> popularPosts = boardService.popularPosts(3);
-		System.out.println(viewType);
 		
 		// 뷰 타입 세션 저장 또는 불러오기
 		if (viewType != null && !viewType.isEmpty()) {
