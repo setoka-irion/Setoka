@@ -51,29 +51,25 @@
 			border: 1px solid #c3e6cb;
 		}
 
+		.back-button {
+		  position: fixed; /* 요소를 뷰포트에 고정 */
+		  top: 100px;       /* 화면 상단에서 20px 떨어진 위치 */
+		  right: 30px;     /* 화면 오른쪽에서 20px 떨어진 위치 */
+		  z-index: 1000;   /* 다른 요소들 위에 표시되도록 우선순위 설정 */
+		}
+
+		
 		.back-button a {
-			display: flex;
-			justify-content: flex-end;
-			/* 오른쪽 끝으로 정렬 */
-			position: absolute;
-			/* 이 속성으로 위치를 자유롭게 조정할 수 있게 됩니다 */
-			right: 0;
-			/* 부모 요소의 오른쪽 끝에 붙입니다 */
-			top: 5%;
-			/* (선택 사항) 세로 방향으로 중앙에 위치시킵니다 */
-			transform: translateY(-50%);
-			/* (선택 사항) 세로 중앙 정렬을 완성합니다 */
-			margin-right: 45px;
-			display: inline-block;
-			padding: 10px 20px;
-			background-color: #8b5e3c;
-			color: white;
-			text-decoration: none;
-			border-radius: 5px;
-			font-weight: bold;
-			transition: background-color 0.3s ease;
-			border: none;
-			cursor: pointer;
+		  display: inline-block;
+		  padding: 10px 20px;
+		  background-color: #8b5e3c;
+		  color: white;
+		  text-decoration: none;
+		  border-radius: 5px;
+		  font-weight: bold;
+		  transition: background-color 0.3s ease;
+		  border: none;
+		  cursor: pointer;
 		}
 
 		.back-button a:hover {
@@ -486,7 +482,7 @@
 	<div class="container">
 		<h1>입양 게시판</h1>
 		<div class="back-button">
-			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
+			<p><a th:href="@{/Adopt}">목록으로</a></p>
 		</div>
 		<!-- 메시지 -->
 		<div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
@@ -531,6 +527,7 @@
 
 		<!-- 수정/삭제/신고 -->
 		<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+			<th:block th:if="${loginUser != null and loginUser.num == detail.userNum}">
 			<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
 				<button type="submit" class="btn btn-success">수정</button>
 			</form>
@@ -538,10 +535,12 @@
 				onsubmit="return confirm('정말 삭제하시겠습니까?');">
 				<button type="submit" class="btn btn-danger">삭제</button>
 			</form>
+			</th:block>
 			<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
 				<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
 				<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
 			</form>
+		
 		</div>
 
 		<!-- 썸네일 -->
