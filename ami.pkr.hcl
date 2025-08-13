@@ -38,7 +38,7 @@ source "amazon-ebs" "irion_ami" {
     source_ami = var.source_ami
     instance_type = var.instance_type
     ssh_username = "ubuntu"
-    ami_name = "irion-app-{{timestamp}}"
+    ami_name = "irion-ami-{{timestamp}}"
     associate_public_ip_address = true
     iam_instance_profile = "irionRole"
 
