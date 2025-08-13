@@ -177,17 +177,34 @@
 	</select>
 
 
-<insert id="insertTempImage" parameterType="com.practice.setoka.dto.TempImageDto">
-	INSERT INTO tempimage (userNum, imageName) values (#{userNum}, #{imageName})
-</insert>
+	<insert id="insertTempImage"
+		parameterType="com.practice.setoka.dto.TempImageDto">
+		INSERT INTO tempimage (userNum, imageName) values (#{userNum},
+		#{imageName})
+	</insert>
 
-<select id="selectTempImageAllToUsersNum" resultType="com.practice.setoka.dao.TempImage">
-	SELECT * FROM tempimage WHERE userNum = #{userNum}
-</select>
+	<select id="selectTempImageAllToUsersNum"
+		resultType="com.practice.setoka.dao.TempImage">
+		SELECT * FROM tempimage WHERE userNum = #{userNum}
+	</select>
 
-<delete id="deleteTempImage">
-	DELETE FROM tempimage WHERE userNum = #{userNum}
-</delete>
+	<delete id="deleteTempImage">
+		DELETE FROM tempimage WHERE userNum = #{userNum}
+	</delete>
+
+	<select id="reportBoardSelect" resultMap="boardWithUserMap">
+		SELECT b.*, u.nickName, u.id
+		FROM board b
+		JOIN users u ON b.userNum = u.num
+		WHERE b.num IN (
+		SELECT boardNum
+		FROM boardreport
+		GROUP BY boardNum
+		HAVING COUNT(*) >= #{count}
+		)
+		AND b.type != 0
+		ORDER BY b.registerDate ASC;
+	</select>
 
 	<!--	 위에 세 쿼리 결과 매핑 -->
 	<resultMap id="boardWithUserMap" type="com.practice.setoka.dto.BoardWithUserDto">

@@ -66,4 +66,6 @@ public interface BoardMapper {
 	List<TempImage> selectTempImageAllToUsersNum(@Param("userNum") int userNum);
 	
 	void deleteTempImage(@Param("userNum") int userNum);
+	
+	List<BoardWithUserDto> reportBoardSelect(int count);
 }
