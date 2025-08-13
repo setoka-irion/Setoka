@@ -1,0 +1,124 @@
+name: AMI 기반 롤링 업데이트
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-roll-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Build Spring Boot JAR
+        run: ./gradlew clean bootJar -x test
+
+      - name: 확인
+        run: ls -al build/libs
+
+      - name: Upload Artifact to S3
+        run: |
+          aws s3 cp build/libs/Setoka-0.0.1-SNAPSHOT.jar s3://$S3_BUCKET_NAME/IRI-ON.jar
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+
+      - name: Build New AMI with Packer
+        run: |
+          packer init ami.pkr.hcl
+          packer build \
+            -var "s3_bucket=${{ secrets.S3_BUCKET_NAME }}" \
+            -var "db_url=${{ secrets.DB_URL }}" \
+            -var "db_username=${{ secrets.DB_USERNAME }}" \
+            -var "db_password=${{ secrets.DB_PASSWORD }}" \
+            -var "upload_path=${{ secrets.UPLOAD_PATH }}" \
+            ami.pkr.hcl
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Get Latest AMI ID
+        id: ami
+        run: |
+          AMI_ID=$(aws ec2 describe-images --owners self --filters "Name=name,Values=irion-ami-*" --query "Images | sort_by(@, &CreationDate)[-1].ImageId" --output text)
+          echo "AMI_ID=$AMI_ID" >> $GITHUB_ENV
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Create New Launch Template Version
+        run: |
+          LATEST_VERSION=$(aws ec2 describe-launch-template-versions \
+            --launch-template-id lt-0fb1cf4f2d4fbf0dd \
+            --query 'sort_by(LaunchTemplateVersions, &VersionNumber)[-1].VersionNumber' --output text)
+
+          echo "현재 최신 버전: $LATEST_VERSION"
+
+          aws ec2 create-launch-template-version \
+            --launch-template-id lt-0fb1cf4f2d4fbf0dd \
+            --source-version $LATEST_VERSION \
+            --launch-template-data "{
+              \"ImageId\": \"${{ env.AMI_ID }}\",
+              \"TagSpecifications\": [
+                {
+                  \"ResourceType\": \"instance\",
+                  \"Tags\": [
+                    { \"Key\": \"Name\", \"Value\": \"irionEC2-private\" }
+                  ]
+                }
+              ]
+            }"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Wait for AWS to Reflect New Version
+        run: sleep 5
+
+      - name: Get and Update Latest Launch Template Version
+        run: |
+          LATEST_VERSION=$(aws ec2 describe-launch-template-versions \
+            --launch-template-id lt-0fb1cf4f2d4fbf0dd \
+            --query 'sort_by(LaunchTemplateVersions, &VersionNumber)[-1].VersionNumber' --output text)
+
+          echo "신규 버전: $LATEST_VERSION"
+
+          aws ec2 modify-launch-template \
+            --launch-template-id lt-0fb1cf4f2d4fbf0dd \
+            --default-version $LATEST_VERSION
+
+          echo "변경된 디폴트 버전: $LATEST_VERSION"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Check Existing Instance Refresh
+        run: |
+          STATUS=$(aws autoscaling describe-instance-refreshes \
+            --auto-scaling-group-name irion-asg \
+            --query 'InstanceRefreshes[0].Status' --output text)
+          if [ "$STATUS" = "InProgress" ]; then
+            echo "기존 롤링 업데이트 진행 중, 스킵"
+            exit 0
+          fi
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Trigger ASG Rolling Update
+        run: |
+          aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name irion-asg \
+            --strategy Rolling
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
