@@ -11,6 +11,9 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v3
 
+      - name: Set execute permission for gradlew
+        run: chmod +x ./gradlew
+
       - name: Build Spring Boot JAR
         run: ./gradlew clean bootJar -x test
 
