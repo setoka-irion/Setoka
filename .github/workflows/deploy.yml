@@ -47,7 +47,7 @@ jobs:
       - name: Get Latest AMI ID
         id: ami
         run: |
-          AMI_ID=$(aws ec2 describe-images --owners self --filters "Name=name,Values=irion-ami*" --query "Images | sort_by(@, &CreationDate)[-1].ImageId" --output text)
+          AMI_ID=$(aws ec2 describe-images --owners self --filters "Name=name,Values=irion-ami-*" --query "Images | sort_by(@, &CreationDate)[-1].ImageId" --output text)
           echo "AMI_ID=$AMI_ID" >> $GITHUB_ENV
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
