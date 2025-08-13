@@ -1,5 +1,6 @@
 package com.practice.setoka.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import com.practice.setoka.Upload;
 import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.BoardWithUserDto;
+import com.practice.setoka.dto.CarouselItem;
 import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
@@ -57,6 +59,11 @@ public class HomeController {
 		if (!list.isEmpty()) {
 		    model.addAttribute("Knowhow", list.subList(0, Math.min(list.size(), 3)));
 		}
+		
+		List<CarouselItem> carouselList = new ArrayList<CarouselItem>();
+		carouselList.add(new CarouselItem("/images/Carousel/Carousel1.png", "/Adopt"));
+		carouselList.add(new CarouselItem("/images/Carousel/Carousel2.png", ""));
+		model.addAttribute("carousel", carouselList);
 		
 		return "home";
 	}
