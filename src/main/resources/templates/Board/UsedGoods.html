@@ -590,7 +590,7 @@
 					</a>
 					<a th:href="@{'/UsedGoodsDetail/{num}'(num=${post.boardNum})}">
 						<img class="thumb-image"
-							th:src="@{${post.Image_paths != null} ? '/images/' + ${post.Image_paths} : '/imagesDefault/defaultBoard.png'}">
+							th:src="@{${post.Image_paths != null} ? ${post.Image_paths} : '/imagesDefault/defaultBoard.png'}">
 					</a>
 					<span th:text="'작성자: ' + ${post.nickName}">작성자</span>
 					<span th:text="'조회수: ' + ${post.views}">조회수</span>

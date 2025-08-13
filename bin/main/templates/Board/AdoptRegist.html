@@ -26,9 +26,12 @@
 			margin: 0;
 			padding: 0;
 		}
+		.all-wrapper{
+			width:100%;
+		}
 
 		.main-title {
-			width: 80%;
+			max-width: 60%;
 			margin: 40px auto 20px;
 			padding: 0 20px;
 			box-sizing: border-box;
@@ -135,6 +138,7 @@
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
+	<div class="all-wrapper">
 	<div class="main-title">
 		<h1>입양 글 등록</h1>
 	</div>
@@ -172,6 +176,7 @@
 		<div class="back-button">
 			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
 		</div>
+	</div>
 	</div>
 </body>
 <script>

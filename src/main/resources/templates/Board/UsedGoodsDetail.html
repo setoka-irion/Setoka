@@ -49,8 +49,8 @@
 			background-color: #d4edda;
 			border: 1px solid #c3e6cb;
 		}
-		
-		.back-button a{
+
+		.back-button a {
 			display: inline-block;
 			padding: 10px 20px;
 			background-color: #8b5e3c;
@@ -400,7 +400,7 @@
 	<br>
 	<div class="container">
 		<div class="back-button">
-			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
+			<p><a th:href="@{/UsedGoods}">목록으로 돌아가기</a></p>
 		</div>
 		<!-- 메시지 -->
 		<div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
@@ -444,8 +444,7 @@
 
 		<!-- 썸네일 -->
 		<div class="form-group" style="text-align: center;">
-			<img th:src="@{${detail.Image_paths}}"
-				alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
+			<img th:src="@{${detail.Image_paths}}" alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
 		</div>
 
 		<!-- 본문 -->

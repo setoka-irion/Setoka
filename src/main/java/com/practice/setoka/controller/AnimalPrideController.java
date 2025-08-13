@@ -152,7 +152,7 @@ public class AnimalPrideController {
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
 		String content = upload.fileLoad(detail.getContent());
 		detail.setContent(content);
-
+		System.out.println(detail.getImage_paths());
 		model.addAttribute("detail", detail);
 
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
