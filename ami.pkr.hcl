@@ -12,7 +12,7 @@ variable "aws_region" {
 }
 variable "source_ami" {
     type = string
-    default = "ami-059fffe0a503646a6"
+    default = "ami-0582bbdf707b6e4b3"
 }
 variable "instance_type" {
     type = string
@@ -38,7 +38,7 @@ source "amazon-ebs" "irion_ami" {
     source_ami = var.source_ami
     instance_type = var.instance_type
     ssh_username = "ubuntu"
-    ami_name = "irion-app-{{timestamp}}"
+    ami_name = "irion-ami-{{timestamp}}"
     associate_public_ip_address = true
     iam_instance_profile = "irionRole"
 
@@ -52,9 +52,6 @@ build {
         inline = [
             "sudo apt update",
             "sudo apt install -y openjdk-17-jdk unzip curl net-tools",
-            "curl 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o '/tmp/awscliv2.zip'",
-            "unzip /tmp/awscliv2.zip -d /tmp",
-            "sudo /tmp/aws/install",
             "sudo mkdir -p /home/ubuntu/irion",
             "sudo chown -R ubuntu:ubuntu /home/ubuntu/irion",
             "sudo aws s3 cp s3://${var.s3_bucket}/IRI-ON.jar /home/ubuntu/irion/IRI-ON.jar",
