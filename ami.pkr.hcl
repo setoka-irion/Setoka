@@ -57,7 +57,7 @@ build {
             "sudo apt install -y openjdk-17-jdk unzip curl net-tools nfs-common",
             "sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${var.efs_id}:/ /mnt/efs/uploads/",
             "sudo chmod 777 /mnt/efs/uploads",
-            ""sudo chown ubuntu:ubuntu /mnt/efs/uploads",
+            "sudo chown ubuntu:ubuntu /mnt/efs/uploads",
             "sudo mkdir -p /home/ubuntu/irion",
             "sudo chown -R ubuntu:ubuntu /home/ubuntu/irion",
             "sudo aws s3 cp s3://${var.s3_bucket}/IRI-ON.jar /home/ubuntu/irion/IRI-ON.jar",
