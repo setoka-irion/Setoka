@@ -19,9 +19,18 @@ public class CommentInfoDto {
 	//users
 		String nickname;
 		String userGrade;
-		
+		String profilePath;
 	//board
 		int type;
+
+		
+		public String getProfilePath() {
+			return profilePath;
+		}
+
+		public void setProfilePath(String profilePath) {
+			this.profilePath = profilePath;
+		}
 
 		public int getNum() {
 			return num;

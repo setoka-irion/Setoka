@@ -27,10 +27,12 @@ import com.practice.setoka.dto.BoardWithUserDto;
 import com.practice.setoka.dto.CommentInfoDto;
 import com.practice.setoka.dto.CommentLikeDto;
 import com.practice.setoka.dto.LikeDto;
+import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.CommentLikeService;
 import com.practice.setoka.service.CommentsService;
 import com.practice.setoka.service.LikeService;
+import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
 import jakarta.servlet.http.HttpSession;
@@ -46,6 +48,9 @@ public class BoardActionController {
 
 	@Autowired
 	public BoardService boardService;
+	
+	@Autowired
+	public UserService userService;
 
 	@Autowired
 	public CommentsService commentsService;
@@ -143,17 +148,24 @@ public class BoardActionController {
 	
 	// 상세 페이지 (조회수증가)
 	@GetMapping(value = "/AdoptDetail/{num}")
-	public String adoptDetail(@PathVariable("num") int num,
+	public String adoptDetail(
+			@PathVariable("num") int num,
 			@RequestParam(value = "editCommentNum", required = false) Integer editCommentNum,
-			@AuthenticationPrincipal CustomUserDetails authUser, HttpSession session, Model model) {
+			@AuthenticationPrincipal CustomUserDetails authUser, 
+			HttpSession session, Model model) {
 
 		// 상세 내용 보여줌
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
 		String content = upload.fileLoad(detail.getContent());
 		detail.setContent(content);
-
 		model.addAttribute("detail", detail);
-
+		
+		//프로필 가져오기
+		if (detail != null && detail.getUserId() != null) {
+	        String authorProfilePath = userService.selectProfilePath(detail.getUserId());
+	        model.addAttribute("authorProfilePath", authorProfilePath);
+	    }
+				
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
 		@SuppressWarnings("unchecked")
 		List<Integer> viewedBoards = (List<Integer>) session.getAttribute("VIEWED_BOARDS");
@@ -164,6 +176,7 @@ public class BoardActionController {
 		// 유저에 한해 조회수 증가
 		if (authUser != null) { // 원래 authUser는 비어있기 때문에 아래의 코드가 있으면 무조건 로그인 시킴.
 			Users user = (Users) authUser.getUser();
+			 // 유저 프로필 가져오기
 			if (user != null) {
 				// 이 게시글 번호가 세션에 없으면 조회수 증가 및 세션에 저장
 				if (!viewedBoards.contains(num)) {
@@ -187,7 +200,9 @@ public class BoardActionController {
 
 	// 게시글 등록
 	@GetMapping(value = "/AdoptRegist")
-	public String adoptRegistForm(@AuthenticationPrincipal CustomUserDetails authUser, Model model) {
+	public String adoptRegistForm(
+			@AuthenticationPrincipal CustomUserDetails authUser, 
+			Model model) {
 		// 로그인 검증
 		Users user = (Users) authUser.getUser();
 		// 세션의 닉네임 저장
@@ -210,7 +225,8 @@ public class BoardActionController {
 	public String adoptRegistSubmit(
 			// 오류 검증
 			@Valid BoardDto boardDto,
-			@RequestParam("images") List<MultipartFile> images, BindingResult bindingResult,
+			@RequestParam("images") List<MultipartFile> images, 
+			BindingResult bindingResult,
 			Model model) {
 
 		if (bindingResult.hasErrors()) {
@@ -261,8 +277,12 @@ public class BoardActionController {
 
 	// 게시글 수정
 	@GetMapping(value = "/AdoptUpdate/{num}")
-	public String adoptUpdateForm(@PathVariable("num") int num, Model model,
-			@AuthenticationPrincipal CustomUserDetails authUser, RedirectAttributes redirectAttributes) {
+	public String adoptUpdateForm(
+			@PathVariable("num") int num, 
+			Model model,
+			@AuthenticationPrincipal CustomUserDetails authUser, 
+			RedirectAttributes redirectAttributes) {
+		
 		// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용)
 		BoardWithUserDto board = boardService.findBoardByNum(num);
 
@@ -289,8 +309,12 @@ public class BoardActionController {
 
 	// 게시글 수정
 	@PostMapping(value = "/AdoptUpdate/{num}")
-	public String adoptUpdateSubmit(@Valid BoardDto boardDto, BindingResult bindingResult, @PathVariable("num") int num,
-			Model model, @AuthenticationPrincipal CustomUserDetails authUser,
+	public String adoptUpdateSubmit(
+			@Valid BoardDto boardDto, 
+			BindingResult bindingResult, 
+			@PathVariable("num") int num,
+			Model model, 
+			@AuthenticationPrincipal CustomUserDetails authUser,
 			@RequestParam("images") List<MultipartFile> images,
 			@RequestParam(value = "deleteThumbnail", required = false) String deleteThumbnail,
 			RedirectAttributes redirectAttributes) {
@@ -378,7 +402,7 @@ public class BoardActionController {
 //	    boardDto.setImage_paths(thumbnail);
 		boardService.updateBoard(boardDto, num);
 		// 예비 db 비우기
-		boardService.DeleteTempImage(user.getNum());
+		boardService.DeleteTempImage(user.getNum());                            
 		return "redirect:/AdoptDetail/" + num;
 	}
 	//원래 있던 수정 코드
@@ -398,7 +422,9 @@ public class BoardActionController {
 
 	// 삭제
 	@PostMapping("/AdoptDelete/{num}")
-	public String adoptDelete(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser,
+	public String adoptDelete(
+			@PathVariable("num") int num, 
+			@AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes) {
 
 		// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용)
@@ -443,7 +469,9 @@ public class BoardActionController {
 
 	// 댓글 신고
 	@PostMapping("/AdoptDetail/{num}/report/comment")
-	public String reportComment(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser) {
+	public String reportComment(
+			@PathVariable("num") int num, 
+			@AuthenticationPrincipal CustomUserDetails authUser) {
 
 		Users user = authUser.getUser();
 		if (user != null) {
@@ -467,7 +495,8 @@ public class BoardActionController {
 
 	// 댓글 등록
 	@PostMapping(value = "AdoptDetail/{num}/comment")
-	public String addComment(@PathVariable("num") int boardNum, // 게시글 넘버
+	public String addComment(
+			@PathVariable("num") int boardNum, // 게시글 넘버
 			@RequestParam("content") String content, // 댓글내용
 			@RequestParam(value = "parentNum", defaultValue = "0") int parentNum, // 대댓글 기능 없어도 됌
 			@AuthenticationPrincipal CustomUserDetails authUser, // 로그인 검증용
@@ -494,8 +523,11 @@ public class BoardActionController {
 
 	// 댓글 수정
 	@PostMapping("/AdoptDetail/{num}/comment/update")
-	public String editComment(@PathVariable("num") int boardNum, @RequestParam("commentNum") int commentNum,
-			@RequestParam("content") String content, @AuthenticationPrincipal CustomUserDetails authUser,
+	public String editComment(
+			@PathVariable("num") int boardNum, 
+			@RequestParam("commentNum") int commentNum,
+			@RequestParam("content") String content, 
+			@AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes) {
 
 		// 로그인 확인
@@ -527,8 +559,11 @@ public class BoardActionController {
 
 	// 댓글 삭제
 	@PostMapping("/AdoptDetail/{num}/comment/delete")
-	public String deleteComment(@AuthenticationPrincipal CustomUserDetails authUser, @PathVariable("num") int boardNum,
-			@RequestParam("commentNum") int commentNum, RedirectAttributes redirectAttributes) {
+	public String deleteComment(
+			@AuthenticationPrincipal CustomUserDetails authUser, 
+			@PathVariable("num") int boardNum,
+			@RequestParam("commentNum") int commentNum, 
+			RedirectAttributes redirectAttributes) {
 
 		// 현재 로그인한 유저 정보
 		Users loginUser = authUser.getUser();
