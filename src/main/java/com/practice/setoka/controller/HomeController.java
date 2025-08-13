@@ -70,7 +70,15 @@ public class HomeController {
 		    model.addAttribute("Knowhow", list.subList(0, Math.min(list.size(), 3)));
 		}
 		
+<<<<<<< HEAD
 		List<Carousel> carouselList = carouselService.selectAllCarousel();
+=======
+		List<CarouselItem> carouselList = new ArrayList<CarouselItem>();
+		carouselList.add(new CarouselItem("/images/Carousel/Carousel1.png", "/Adopt"));
+		carouselList.add(new CarouselItem("/images/Carousel/Carousel2.png", ""));
+		carouselList.add(new CarouselItem("/images/Carousel/Carousel3.png", ""));
+		carouselList.add(new CarouselItem("/images/Carousel/Carousel4.png", ""));
+>>>>>>> a8b021f671f5dd995f4d5f868635eb0f317193e3
 		model.addAttribute("carousel", carouselList);
 		
 		return "home";
