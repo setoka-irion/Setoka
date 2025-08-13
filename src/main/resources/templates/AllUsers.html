@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<title>모든 사용자 출력</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/AllUsers.css}">
 	<style>
 		table,
 		th,
@@ -29,6 +30,7 @@
 				<th>이름</th>
 				<th>전화번호</th>
 				<th>상태</th>
+				<th></th>
 				<th>포인트</th>
 				<th>등급</th>
 				<th>등록일자</th>
@@ -44,18 +46,23 @@
 				<td th:text="${users.nickName}"></td>
 				<td th:text="${users.realName}"></td>
 				<td th:text="${users.phoneNumber}"></td>
-				<td th:text="${users.status}"></td>
+				<td th:text="${users.status}" th:style="${users.status.name() == '정상'} ? 'color:green;' : 'color:red;'"></td>
+				<td>
+					<form th:action="@{/admin/updateStatus}" method="post" class="AllUsers">
+						<input type="hidden" name="userId" th:value="${users.id}" />
+						<select name="status" th:class="${users.status.name() == '정상'} ? 'status-green' : 'status-red'">
+							<option value="정상" th:selected="${users.status.name() == '정상'}">정상</option>
+							<option value="삭제" th:selected="${users.status.name() == '삭제'}">삭제</option>
+						</select>
+						<button type="submit">변경</button>
+					</form>
+				</td>
 				<td th:text="${users.point}"></td>
 				<td th:text="${users.grade}"></td>
 				<td th:text="${users.registerDate}"></td>
-
 			</tr>
 		</tbody>
 	</table>
-
-	<script>
-
-	</script>
 </body>
 
 </html>

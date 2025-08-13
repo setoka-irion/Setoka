@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>신고 게시글 출력</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<style>
+		table,
+		th,
+		td {
+			border: 1px solid black;
+			border-collapse: collapse;
+			padding: 8px;
+		}
+	</style>
+</head>
+
+<body>
+	<div th:replace="~{header :: siteHeader}"></div>
+<h1>신고 게시글 목록</h1>
+<table>
+	<thead>
+		<tr>
+			<th>Num</th>
+			<th>ID</th>
+			<th>닉네임</th>
+			<th>title</th>
+			<th>likes</th>
+			<th>views</th>
+			<th>price</th>
+			<th>type</th>
+			<th>registerDate</th>
+
+		</tr>
+	</thead>
+	<tbody>
+		<!-- 사용자 데이터가 여기에 추가됩니다 -->
+		<tr th:each="board : ${list}">
+			<td th:text="${board.boardNum}"></td>
+			<td th:text="${board.userId}"></td>
+			<td th:text="${board.nickName}"></td>
+			<td>
+				<a th:href="@{${board.detailUrl}}" th:text="${board.title}"></a>
+			</td>
+			<td th:text="${board.likes}"></td>
+			<td th:text="${board.views}"></td>
+			<td th:text="${board.price}"></td>
+			<td th:text="${board.type}"></td>
+			<td th:text="${board.registerDate}"></td>
+		</tr>
+	</tbody>
+</table>
+</body>
+
+</html>

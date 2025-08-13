@@ -11,18 +11,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class Upload {
-	//public final String savePath = "/var/www/uploads/";	//실전
 
     @Value("${upload.path}")
     private String baseUploadPath;
     public final String imagePath = "/images/";
     public final String boardPath = "/board/";
     public final String tempPath = "/images/temp/";
+    public final String carousel = "/images/Carousel/";
     
     public String BaseUploadPath() { return baseUploadPath; }
 	public String SavePath() { return baseUploadPath + imagePath; }	
 	public String TxtSavePath() { return baseUploadPath + boardPath; }
 	public String TempImagePath() { return baseUploadPath + tempPath; }
+	public String CarouselImagePath() { return baseUploadPath + carousel; }
 	
 	//사진 서버 디렉토리에 저장, 저장된 파일명 반환
 	public String imageFileUpload(MultipartFile file)
@@ -55,6 +56,105 @@ public class Upload {
 	public boolean imageFileDelete(String fileName)
 	{
 		File file = new File(SavePath() + fileName);
+		if(!file.exists())
+			return false;
+		
+		return file.delete();
+	}
+	
+	public void SetDefaultBoard(MultipartFile file)
+	{
+		if (!file.isEmpty()) {
+			File uploadDir = new File(SavePath());
+
+			if (!uploadDir.exists()) {
+				uploadDir.mkdirs(); // 폴더가 없으면 자동 생성
+			}
+
+			File dest = new File(SavePath() + "defaultBoard.png");
+
+			try {
+				file.transferTo((dest));
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void SetDefaultProfile(MultipartFile file)
+	{
+		if (!file.isEmpty()) {
+			File uploadDir = new File(SavePath());
+
+			if (!uploadDir.exists()) {
+				uploadDir.mkdirs(); // 폴더가 없으면 자동 생성
+			}
+
+			File dest = new File(SavePath() + "defaultProfile.png");
+
+			try {
+				file.transferTo((dest));
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void SetDefaultAnimal(MultipartFile file)
+	{
+		if (!file.isEmpty()) {
+			File uploadDir = new File(SavePath());
+
+			if (!uploadDir.exists()) {
+				uploadDir.mkdirs(); // 폴더가 없으면 자동 생성
+			}
+
+			File dest = new File(SavePath() + "defaultAnimal.png");
+
+			try {
+				file.transferTo((dest));
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public String CarouselFileUpload(MultipartFile file)
+	{
+		String path = null;
+		if (!file.isEmpty()) {
+			String originalFilename = file.getOriginalFilename();
+			String uuid = UUID.randomUUID().toString();
+			String savedFilename = uuid + "_" + originalFilename;
+			File uploadDir = new File(CarouselImagePath());
+
+			path = savedFilename;
+			if (!uploadDir.exists()) {
+				uploadDir.mkdirs(); // 폴더가 없으면 자동 생성
+			}
+
+			File dest = new File(CarouselImagePath() + savedFilename);
+
+			try {
+				file.transferTo((dest));
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return carousel + path;
+	}
+	
+	public boolean deleteCarousel(String fileName)
+	{
+		File file = new File(baseUploadPath + fileName);
 		if(!file.exists())
 			return false;
 		
@@ -137,4 +237,5 @@ public class Upload {
 		
 		return file.delete();
 	}
+	
 }

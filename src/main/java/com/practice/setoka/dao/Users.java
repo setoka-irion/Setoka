@@ -115,6 +115,6 @@ public class Users {
 	}
 	public boolean isAdmin()
 	{
-		return status.equals("admin");
+		return privileges.equals(Privileges.관리자);
 	}
 }

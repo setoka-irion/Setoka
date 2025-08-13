@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>디폴트 이미지 관리</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/AllUsers.css}">
+</head>
+<body>
+<div th:replace="~{header :: siteHeader}"></div>
+	
+	
+<h1>보드 디폴트 이미지 등록</h1>
+<form th:action="@{/admin/default/board}" method="post" enctype="multipart/form-data">
+	<table>
+		<tr>
+			<td>이미지</td>
+			<td><input type="file" name="profile" class="file-input" required /></td>
+		</tr>
+	</table>
+	<button type="submit" class="sub-buttons">등록</button>
+</form>
+
+<h1>애니멀 디폴트 이미지 등록</h1>
+<form th:action="@{/admin/default/animal}" method="post" enctype="multipart/form-data">
+	<table>
+		<tr>
+			<td>이미지</td>
+			<td><input type="file" name="profile" class="file-input" required /></td>
+		</tr>
+	</table>
+	<button type="submit" class="sub-buttons">등록</button>
+</form>
+
+<h1>프로필 디폴트 이미지 등록</h1>
+<form th:action="@{/admin/default/profile}" method="post" enctype="multipart/form-data">
+	<table>
+		<tr>
+			<td>이미지</td>
+			<td><input type="file" name="profile" class="file-input" required /></td>
+		</tr>
+	</table>
+	<button type="submit" class="sub-buttons">등록</button>
+</form>
+
+
+</body>
+</html>

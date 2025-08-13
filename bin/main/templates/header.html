@@ -38,9 +38,19 @@
 							<li><a href="/MessageList">쪽지</a></li>
 							<li><a href="/ModifyUser">개인정보수정</a></li>
 							<li><a href="/myanimal">동물프로필</a></li>
+							<li><a href="/Bulletin">내가 쓴 게시글</a></li>
 							<li><a href="/attendcheck">출석체크</a></li>
 							<li><a href="/Withdrawal">탈퇴</a></li>
 						</ul>
+					</li>
+					<li class="menu-item" th:if="${loginUser != null and loginUser.privileges.name() == '관리자'}">
+					    <a href="/admin/dashboard">관리자 메뉴</a>
+					    <ul class="submenu">
+					        <li><a href="/admin/carousel">공지 관리</a></li>
+					        <li><a href="/admin/userlist">회원 관리</a></li>
+					        <li><a href="/admin/default">디폴트 이미지</a></li>
+							<li><a href="/admin/reportBoardList">신고 게시판</a></li>
+					    </ul>
 					</li>
 				</ul>
 			</nav>
