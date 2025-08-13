@@ -146,7 +146,7 @@ public class HomeController {
 	    	carouselService.insertCarousel(file, linkUrl);
 	    }
 
-	    return "redirect:/Carousel"; // 다시 관리 페이지로 이동
+	    return "redirect:/admin/carousel"; // 다시 관리 페이지로 이동
 	}
 	
 	@PostMapping(value = "/admin/carousel/delete")
@@ -158,7 +158,7 @@ public class HomeController {
 			return Redirect.home;
 		
 		carouselService.deleteCarousel(id, img);
-		return "redirect:/Carousel";
+		return "redirect:/admin/carousel";
 	}
 	
 	
