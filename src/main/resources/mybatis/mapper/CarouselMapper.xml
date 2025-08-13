@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.setoka.mapper.CarouselMapper">
+
+  	<insert id="insertCarousel" parameterType="com.practice.setoka.dto.CarouselItem">
+  		INSERT INTO carousel (img, link) VALUES(#{img}, #{link})
+  	</insert>
+	
+	<select id="selectAllCarousel" resultType="com.practice.setoka.dao.Carousel">
+		SELECT * FROM carousel 
+	</select>
+	
+	<delete id="deleteCarousel">
+		DELETE FROM carousel WHERE num = #{num}
+	</delete>
+</mapper>

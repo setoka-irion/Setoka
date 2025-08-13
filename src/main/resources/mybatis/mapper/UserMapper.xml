@@ -44,7 +44,7 @@
   	</update>
   	
   	<select id="selectProfilephotoPath">
-  		SELECT Profilephoto FROM users WHERE id = #{id}
+  		SELECT Profilepath FROM users WHERE id = #{id}
   	</select>
   	
   	<update id="userPointUpdate">

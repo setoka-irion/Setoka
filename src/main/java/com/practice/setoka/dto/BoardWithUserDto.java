@@ -145,4 +145,15 @@ public class BoardWithUserDto {
 		return registerDate.format(formatter);
 	}
 
+	public String getDetailUrl() {
+	    String path = switch (this.type) {
+	        case 1 -> "/AdoptDetail/";
+	        case 2 -> "/AnimalPrideDetail/";
+	        case 3 -> "/WalkTrailDetail/";
+	        case 4 -> "/UsedGoodsDetail/";
+	        case 5 -> "/KnowhowDetail/";
+	        default -> "/Unknown/";
+	    };
+	    return path + this.boardNum;
+	}
 }
