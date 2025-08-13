@@ -38,6 +38,7 @@ jobs:
             -var "db_username=${{ secrets.DB_USERNAME }}" \
             -var "db_password=${{ secrets.DB_PASSWORD }}" \
             -var "upload_path=${{ secrets.UPLOAD_PATH }}" \
+            -var "efs_id=${{ secrets.EFS_ID }}" \
             ami.pkr.hcl
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
