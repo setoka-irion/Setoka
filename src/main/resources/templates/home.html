@@ -10,17 +10,39 @@
 </head>
 <style>
 	.carousel-item img {
-	  height: 400px;
-	  width: 100%;
-	  object-fit: contain;
-	  background-color: #000; /* 필요 시 배경색 */
-	}
+	    height: 350px;
+	    width: 800%;
+	    object-fit: cover;
+	    background-color: rgb(0, 0, 0);
+	  }
+
+	  .carousel-control-prev,
+	  .carousel-control-next {
+	    width: 50px;
+	    height: 50px;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    background-color: rgba(0, 0, 0, 0.3);
+	    border-radius: 50%;
+	  }
+
+	  .carousel-control-prev-icon,
+	  .carousel-control-next-icon {
+	    filter: invert(1);
+	    width: 25px;
+	    height: 25px;
+	  }
+
+	  #carouselExample {
+	    max-width: 1100px;
+	    margin: 0 auto; /* 가운데 정렬 */
+	  }
   </style>
 <body>
   <!-- 헤더 -->
   <div th:replace="~{header :: siteHeader}"></div>
 
-  <div class="container mt-5">
+  <div class="container">
       <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
 		<div class="carousel-inner">
 		  <th:block th:each="item, iterStat : ${carousel}">
@@ -47,7 +69,7 @@
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
           </button>
       </div>
-  </div>
+  </divclass="container">
   
   
   

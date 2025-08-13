@@ -63,6 +63,8 @@ public class HomeController {
 		List<CarouselItem> carouselList = new ArrayList<CarouselItem>();
 		carouselList.add(new CarouselItem("/images/Carousel/Carousel1.png", "/Adopt"));
 		carouselList.add(new CarouselItem("/images/Carousel/Carousel2.png", ""));
+		carouselList.add(new CarouselItem("/images/Carousel/Carousel3.png", ""));
+		carouselList.add(new CarouselItem("/images/Carousel/Carousel4.png", ""));
 		model.addAttribute("carousel", carouselList);
 		
 		return "home";
