@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>입양 게시판</title>
+	<title>분양 게시판</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<style>
 		.container-all {
@@ -54,6 +54,8 @@
 		/*=== 윗단의 한줄 정렬용 wrapper ===*/
 		.action-row {
 			display: flex;
+			flex-wrap: wrap; 
+			justify-content: center; 
 			grid-template-columns: 1fr auto;
 			/* 왼쪽(검색창) / 오른쪽(버튼들) */
 			align-items: center;
@@ -71,10 +73,11 @@
 		.center-section {
 			flex: 1;
 			display: flex;
+			flex-wrap: wrap; /* 버튼들이 다음 줄로 내려가게 함 */
 			justify-content: center;
 			/* 가운데 정렬 */
 			align-items: center;
-			margin-left: 320px;
+			
 			width: 100%;
 			min-width: 100px;
 			/* 최소 너비 지정, 필요시 조절 */
@@ -526,7 +529,7 @@
 	<div class="container-all">
 		<!-- 윗단 아이콘 -->
 		<div class="board-header">
-			<h1>분양 게시판</h1>
+			<h1>입양 게시판</h1>
 			<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
 		</div>
 
@@ -559,9 +562,9 @@
 					<label for="viewList">리스트형</label>
 				</div>
 				<!-- 글 등록 버튼 -->
-				<p class="regist-button">
+				<div class="regist-button">
 					<a th:href="@{/AdoptRegist}" class="btn-primary">새 글 등록하기</a>
-				</p>
+				</div>
 			</div>
 		</div>
 

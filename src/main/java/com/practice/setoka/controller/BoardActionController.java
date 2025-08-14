@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,6 @@ import com.practice.setoka.dto.BoardWithUserDto;
 import com.practice.setoka.dto.CommentInfoDto;
 import com.practice.setoka.dto.CommentLikeDto;
 import com.practice.setoka.dto.LikeDto;
-import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.CommentLikeService;
 import com.practice.setoka.service.CommentsService;
@@ -159,7 +159,7 @@ public class BoardActionController {
 		String content = upload.fileLoad(detail.getContent());
 		detail.setContent(content);
 		model.addAttribute("detail", detail);
-		
+	
 		//프로필 가져오기
 		if (detail != null && detail.getUserId() != null) {
 	        String authorProfilePath = userService.selectProfilePath(detail.getUserId());

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+</html>
+
 <head>
 	<meta charset="UTF-8" />
 	<title>입양 상세 페이지</title>
@@ -51,19 +53,20 @@
 			border: 1px solid #c3e6cb;
 		}
 
+		.back-button {
+			position: fixed;
+			top: calc(17%);
+			/* 요소를 뷰포트에 고정 */
+			/* 화면 상단에서 20px 떨어진 위치 */
+			right: calc(5%);
+			
+			/* 화면 오른쪽에서 20px 떨어진 위치 */
+			z-index: 1000;
+			/* 다른 요소들 위에 표시되도록 우선순위 설정 */
+		}
+
+
 		.back-button a {
-			display: flex;
-			justify-content: flex-end;
-			/* 오른쪽 끝으로 정렬 */
-			position: absolute;
-			/* 이 속성으로 위치를 자유롭게 조정할 수 있게 됩니다 */
-			right: 0;
-			/* 부모 요소의 오른쪽 끝에 붙입니다 */
-			top: 5%;
-			/* (선택 사항) 세로 방향으로 중앙에 위치시킵니다 */
-			transform: translateY(-50%);
-			/* (선택 사항) 세로 중앙 정렬을 완성합니다 */
-			margin-right: 45px;
 			display: inline-block;
 			padding: 10px 20px;
 			background-color: #8b5e3c;
@@ -230,7 +233,7 @@
 			white-space: pre-wrap;
 		}
 
-		/* 좋아요 */
+		/* === 좋아요 ===*/
 		.like-section {
 			display: flex;
 			justify-content: center;
@@ -248,7 +251,7 @@
 			user-select: none;
 		}
 
-		.like-section form button {
+		.like-section form button.btn-danger {
 			background-color: #e74c3c;
 			border: none;
 			padding: 8px 16px;
@@ -259,131 +262,213 @@
 			transition: background-color .3s ease;
 		}
 
-		.like-section form button:hover {
+		.like-section form button.btn-danger:hover {
 			background-color: #b62d20;
+		}
+		
+		/*=== 게시글 작성자 쪽지 ===*/
+		.like-section form button.message-button {
+		    background-color: white;
+		    color: #333;
+		    border: 1px solid #ddd;
+		    /* 기존 스타일과 맞추기 위해 패딩과 폰트 굵기 등을 추가합니다. */
+		    padding: 8px 16px;
+		    border-radius: 6px;
+		    font-weight: 600;
+		    cursor: pointer;
+		    transition: background-color .3s ease;
+		}
+
+		.like-section form button.message-button:hover {
+		    background-color: #f0f0f0;
+		    color: #000;
+		    border-color: #bbb;
+		}
+		
+		/*=== 쪽지 버튼 ===*/
+		.message-button {
+			background-color: white;
+			/* 흰색 배경 */
+			color: #333;
+			/* 어두운 글씨색 */
+			border: 1px solid #ddd;
+			/* 살짝 옅은 테두리 */
+		}
+
+		/* 마우스 오버 효과 */
+		.message-button:hover {
+			background-color: #f0f0f0;
+			/* 마우스 오버 시 연한 회색 */
+			color: #000;
+			/* 글씨색은 더 진하게 */
+			border-color: #bbb;
+			/* 테두리색도 진하게 */
+		}
+
+		/* 쪽지 버튼 내 아이콘 스타일 */
+		.message-button::before {
+			content: "✉️";
+			/* 이모지 아이콘 추가 (쪽지 모양) */
+			font-size: 1.2em;
+			/* 아이콘 크기 조절 */
 		}
 
 		/* === 댓글 ===  */
+		.comment-title {
+			margin: 0 auto 40px auto;
+			width: 72%;
+
+		}
+
 		/* 댓글 목록 컨테이너 (PC 화면에 최적화) */
 		.comment-list-container {
-		    display: flex;
-		    flex-direction: column;
-		    gap: 20px;
-		    margin-bottom: 40px;
-		    max-width: 800px; /* PC 화면에서 최대 너비 */
-		    margin: 0 auto; /* 중앙 정렬 */
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			margin-bottom: 40px;
+			max-width: 800px;
+			/* PC 화면에서 최대 너비 */
+			margin: 0 auto;
+			/* 중앙 정렬 */
 		}
 
 		/* 각 댓글 카드 스타일 */
 		.comment-card {
-		    background-color: #ffffff;
-		    border: 1px solid #e0e0e0;
-		    border-radius: 10px;
-		    padding: 20px;
-		    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+			background-color: #ffffff;
+			border: 1px solid #e0e0e0;
+			border-radius: 10px;
+			padding: 20px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 		}
 
 		/* 댓글 헤더 (작성자 정보 + 좋아요/날짜) */
 		.comment-header {
-		    display: flex;
-		    justify-content: space-between;
-		    align-items: center;
-		    margin-bottom: 15px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
 		}
 
 		/* 작성자 정보 */
 		.comment-author-info {
-		    display: flex;
-		    align-items: center;
-		    gap: 10px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
 		}
 
 		.comment-author-info .profile-image {
-		    width: 40px;
-		    height: 40px;
-		    border-radius: 50%;
-		    object-fit: cover;
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			object-fit: cover;
 		}
 
 		.comment-author-info .nick-name {
-		    font-weight: bold;
-		    color: #333;
+			font-weight: bold;
+			color: #333;
 		}
 
 		.comment-author-info .user-grade {
-		    font-size: 0.85rem;
-		    color: #888;
+			font-size: 0.85rem;
+			color: #888;
 		}
 
 		/* 좋아요, 작성일 */
 		.comment-meta {
-		    font-size: 0.9rem;
-		    color: #888;
-		    display: flex;
-		    gap: 15px;
+			font-size: 0.9rem;
+			color: #888;
+			display: flex;
+			gap: 15px;
 		}
 
 		/* 댓글 내용 */
 		.comment-content-text {
-		    margin: 0 0 15px 0;
-		    line-height: 1.6;
-		    color: #555;
-		    white-space: pre-wrap; /* 줄바꿈 유지 */
+			margin: 0 0 15px 0;
+			line-height: 1.6;
+			color: #555;
+			white-space: pre-wrap;
+			/* 줄바꿈 유지 */
 		}
 
 		/* 버튼 */
 		.comment-actions {
-		    display: flex;
-		    gap: 10px;
-		    margin-top: 10px;
+			display: flex;
+			gap: 10px;
+			margin-top: 10px;
 		}
 
 		.comment-actions .btn {
-		    padding: 5px 10px;
-		    font-size: 0.8rem;
-		    border-radius: 5px;
+			padding: 5px 10px;
+			font-size: 0.8rem;
+			border-radius: 5px;
 		}
-		.comment-actions .btn-edit { background-color: #8b5e3c; color: white; border: none; }
-		.comment-actions .btn-delete { background-color: #e74c3c; color: white; border: none; }
-		.comment-actions .btn-report { background-color: #f39c12; color: white; border: none; }
+
+		.comment-actions .btn-edit {
+			background-color: #8b5e3c;
+			color: white;
+			border: none;
+		}
+
+		.comment-actions .btn-delete {
+			background-color: #e74c3c;
+			color: white;
+			border: none;
+		}
+
+		.comment-actions .btn-report {
+			background-color: #f39c12;
+			color: white;
+			border: none;
+		}
 
 
 		/* 댓글 수정 폼 */
 		.edit-form textarea {
-		    width: 100%;
-		    min-height: 80px;
-		    padding: 10px;
-		    border-radius: 5px;
-		    border: 1px solid #ccc;
-		    resize: vertical;
+			width: 100%;
+			min-height: 80px;
+			padding: 10px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			resize: vertical;
 		}
 
 		.edit-form-buttons {
-		    display: flex;
-		    justify-content: flex-end;
-		    gap: 8px;
-		    margin-top: 8px;
+			display: flex;
+			justify-content: flex-end;
+			gap: 8px;
+			margin-top: 8px;
 		}
 
 		.edit-form-buttons .btn {
-		    padding: 8px 15px;
-		    border: none;
-		    border-radius: 5px;
+			padding: 8px 15px;
+			border: none;
+			border-radius: 5px;
 		}
-		.edit-form-buttons .btn-success { background-color: #4caf50; color: white; }
+
+		.edit-form-buttons .btn-success {
+			background-color: #4caf50;
+			color: white;
+		}
 
 		/* 모바일 환경에서는 너비를 100% 사용하도록 */
 		@media (max-width: 800px) {
-		    .comment-list-container {
-		        max-width: 100%;
-		        padding: 0 15px;
-		    }
+			.comment-list-container {
+				max-width: 100%;
+				padding: 0 15px;
+			}
+		}
+
+		.comment-write {
+			max-width: 800px;
+			margin-bottom: 40px;
+			margin: 0 auto 0 auto;
 		}
 
 		/* 댓글 작성 폼 */
 		.comment-form {
-			width: 100%;
+			max-width: 800px;
 			margin-bottom: 40px;
+			margin: 0 auto 40px auto;
 			text-align: left;
 		}
 
@@ -464,7 +549,7 @@
 	<div class="container">
 		<h1>입양 게시판</h1>
 		<div class="back-button">
-			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
+			<p><a th:href="@{/Adopt}">목록으로</a></p>
 		</div>
 		<!-- 메시지 -->
 		<div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
@@ -509,17 +594,19 @@
 
 		<!-- 수정/삭제/신고 -->
 		<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
-			<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
-				<button type="submit" class="btn btn-success">수정</button>
-			</form>
-			<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
-				onsubmit="return confirm('정말 삭제하시겠습니까?');">
-				<button type="submit" class="btn btn-danger">삭제</button>
-			</form>
+			<th:block th:if="${loginUser != null and loginUser.num == detail.userNum}">
+				<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
+					<button type="submit" class="btn btn-success">수정</button>
+				</form>
+				<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
+					onsubmit="return confirm('정말 삭제하시겠습니까?');">
+					<button type="submit" class="btn btn-danger">삭제</button>
+				</form>
+			</th:block>
 			<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
-				<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
 				<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
 			</form>
+
 		</div>
 
 		<!-- 썸네일 -->
@@ -531,7 +618,7 @@
 		<table class="content-table">
 			<thead>
 				<tr>
-					<th>분양가</th>
+					<th>책임비</th>
 					<th>지역</th>
 				</tr>
 			</thead>
@@ -552,58 +639,88 @@
 			<form th:action="@{/AdoptDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
 				<button type="submit" class="btn btn-danger">좋아요</button>
 			</form>
+			<th:block th:if="${loginUser != null}">
+			    <form th:action="@{/CreateLetter}" method="post">
+			        <input type="hidden" name="receiver" th:value="${detail.userNum}" />
+			        <button type="submit" class="message-button">쪽지</button>
+			    </form>
+			</th:block>
 		</div>
 
 		<!-- 댓글 -->
-		<h4>댓글 <span th:text="${detail.commentCount}">0</span>개</h4>
+		<div class="comment-title">
+			<h4>댓글 <span th:text="${detail.commentCount}">0</span>개</h4>
+		</div>
 		<div class="comment-list-container">
-		    <div th:each="comment, iterStat : ${comments}" class="comment-card">
-		        <div class="comment-header">
-		            <div class="comment-author-info">
-		                <img th:src="@{${comment.profilePath}}" alt="프로필 이미지" class="profile-image">
-		                <span class="nick-name" th:text="${comment.nickname}">작성자</span>
-		                <span class="user-grade" th:text="${comment.userGrade}">등급</span>
-		            </div>
-		            <div class="comment-meta">
-		                <span class="comment-likes">👍 <span th:text="${comment.likes}">0</span></span>
-		                <span class="comment-date" th:text="${comment.formattedRegistDate}">2025-07-24</span>
-		            </div>
-		        </div>
+			<div th:each="comment, iterStat : ${comments}" class="comment-card">
 
-		        <p th:text="${comment.content}" class="comment-content-text" th:attr="id=${'content-span-' + comment.num}">댓글 내용</p>
+				<div class="comment-header">
+					<div class="comment-author-info">
+						<img th:src="@{${comment.profilePath}}" alt="프로필 이미지" class="profile-image">
+						<span class="nick-name" th:text="${comment.nickname}">작성자</span>
+						<span class="user-grade" th:text="${comment.userGrade}">등급</span>
+					</div>
+					<div class="comment-meta">
+						<span class="comment-likes">👍 <span th:text="${comment.likes}">0</span></span>
+						<span class="comment-date" th:text="${comment.formattedRegistDate}">2025-07-24</span>
+					</div>
+				</div>
 
-		        <div class="comment-actions">
-					<th:block th:if="${#authentication != null and #authentication.principal != 'anonymousUser' and #authentication.name == comment.userId}">
-					    </th:block><!-- 로그인 사용자만 볼수있는 아이콘 -->
-		                <button type="button" class="btn btn-edit" th:onclick="|showEditForm(${comment.num})|">수정</button>
-		                <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
-		                    onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');" style="display:inline-block;">
-		                    <input type="hidden" name="commentNum" th:value="${comment.num}" />
-		                    <button type="submit" class="btn btn-delete">삭제</button>
-		                </form>
-		            </th:block>
-		            <form th:action="@{/AdoptDetail/{num}/report/comment(num=${detail.boardNum})}" method="post" style="display:inline-block;">
-		                <input type="hidden" name="commentNum" th:value="${comment.num}" />
-		                <button type="submit" class="btn btn-report">신고</button>
-		            </form>
-		        </div>
+				<p th:text="${comment.content}" class="comment-content-text"
+					th:attr="id=${'content-span-' + comment.num}">댓글 내용</p>
 
-		        <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
-		            class="edit-form" th:attr="id=${'edit-form-' + comment.num}" style="display:none;">
-		            <input type="hidden" name="commentNum" th:value="${comment.num}" />
-		            <textarea name="content" required th:text="${comment.content}"></textarea><br />
-		            <div class="edit-form-buttons">
-		                <button type="submit" class="btn btn-success">저장</button>
-		                <button type="button" class="btn" th:onclick="|cancelEdit(${comment.num})|">취소</button>
-		            </div>
-		        </form>
-		    </div>
+				<div class="comment-actions">
+					<div>
+						<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
+							style="display:inline;">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<button type="submit" class="btn btn-danger">좋아요</button>
+						</form>
+
+						<th:block th:if="${loginUser != null and loginUser.num == comment.userNum}">
+							<button type="button" class="btn btn-edit"
+								th:onclick="|showEditForm(${comment.num})|">수정</button>
+							<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
+								onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');" style="display:inline-block;">
+								<input type="hidden" name="commentNum" th:value="${comment.num}" />
+								<button type="submit" class="btn btn-delete">삭제</button>
+							</form>
+						</th:block>
+						<form th:action="@{/AdoptDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
+							style="display:inline-block;" onsubmit="return confirm('정말 이 댓글을 신고하시겠습니까?');">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<button type="submit" class="btn btn-report">🚨신고</button>
+						</form>
+					</div>
+					
+					<!--댓글 쪽지 -->
+					<th:block th:if="${loginUser != null}">
+					    <form th:action="@{/CreateLetter}" method="post"  style="margin-left: auto;">
+					        <input type="hidden" name="receiver" th:value="${comment.userNum}" />
+					        <button type="submit" class="message-button">쪽지</button>
+					    </form>
+					</th:block>
+				</div>
+
+				<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
+					class="edit-form" th:attr="id=${'edit-form-' + comment.num}" style="display:none;">
+					<input type="hidden" name="commentNum" th:value="${comment.num}" />
+					<textarea name="content" required th:text="${comment.content}"></textarea><br />
+					<div class="edit-form-buttons">
+						<button type="submit" class="btn btn-success">저장</button>
+						<button type="button" class="btn" th:onclick="|cancelEdit(${comment.num})|">취소</button>
+					</div>
+				</form>
+			</div>
 		</div>
 		<!-- 댓글 작성 -->
-		<h4>댓글 작성</h4>
+		<div class="comment-write">
+			<h4>댓글 작성</h4>
+		</div>
 		<form class="comment-form" th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post"
 			style="display: flex; flex-direction: column; align-items: flex-end;">
-			<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+			<textarea id="commentContent" name="content" placeholder="댓글을 입력하세요" 
+			required ></textarea>
 			<br />
 			<button type="submit" class="btn btn-primary">댓글 등록</button>
 		</form>
@@ -623,6 +740,24 @@
 			document.getElementById('content-span-' + commentNum).style.display = 'inline';
 			document.getElementById('edit-form-' + commentNum).style.display = 'none';
 		}
+		
+		// 댓글 enter 최대횟수 제한 코드
+		    const commentTextarea = document.getElementById('commentContent');
+			let enterCount = 0;
+			
+		    // 키보드 입력 이벤트를 감지
+			commentTextarea.addEventListener('keydown', function(event) {
+			    if (event.key === 'Enter') {
+			        const maxEnter = 1; // 연속된 엔터 횟수를 1회로 제한
+
+			        if (enterCount >= maxEnter) {
+			            event.preventDefault();
+			        }
+			        enterCount++;
+			    } else {
+			        enterCount = 0; 
+			    }
+			});
 	</script>
 </body>
 
