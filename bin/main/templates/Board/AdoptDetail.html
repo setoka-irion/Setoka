@@ -713,7 +713,8 @@
 		</div>
 		<form class="comment-form" th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post"
 			style="display: flex; flex-direction: column; align-items: flex-end;">
-			<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+			<textarea id="commentContent" name="content" placeholder="댓글을 입력하세요" 
+			required ></textarea>
 			<br />
 			<button type="submit" class="btn btn-primary">댓글 등록</button>
 		</form>
@@ -733,6 +734,24 @@
 			document.getElementById('content-span-' + commentNum).style.display = 'inline';
 			document.getElementById('edit-form-' + commentNum).style.display = 'none';
 		}
+		
+		// 댓글 enter 최대횟수 제한 코드
+		    const commentTextarea = document.getElementById('commentContent');
+			let enterCount = 0;
+			
+		    // 키보드 입력 이벤트를 감지
+			commentTextarea.addEventListener('keydown', function(event) {
+			    if (event.key === 'Enter') {
+			        const maxEnter = 1; // 연속된 엔터 횟수를 1회로 제한
+
+			        if (enterCount >= maxEnter) {
+			            event.preventDefault();
+			        }
+			        enterCount++;
+			    } else {
+			        enterCount = 0; 
+			    }
+			});
 	</script>
 </body>
 
