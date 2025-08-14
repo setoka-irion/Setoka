@@ -11,10 +11,9 @@
 }
 
 .user-card-container {
-  display: flex;          /* 가로 방향 flex 컨테이너로 만듦 */
-  margin-left: 21%;
+  display: flex;
   gap: 40px;
-  justify-content: left;
+  justify-content: center;
   flex-grow: 1;
 }
 
@@ -90,6 +89,9 @@
 
 
 .user-buttons {
+	position: fixed;
+	right: 100px;
+	left: auto;
 	flex-direction: column; /* 세로 정렬 */
 	display: flex;
 	flex-wrap: wrap;
