@@ -109,6 +109,7 @@ public class HomeController {
 		Privileges privileges = loginData.getPrivileges();
 
 		if (privileges.equals(Privileges.관리자)) {
+			model.addAttribute("privilegeOptions", Privileges.values()); // ⭐️ enum 전체 추가
 			model.addAttribute("allUsers", allUsers);
 			return "AllUsers";
 		} else {
@@ -128,6 +129,32 @@ public class HomeController {
 		//update할 유저
 		user = userService.selectByID(userId);
 		user.setStatus(status);
+		userService.updateUserDto(new UsersDto(user));
+		return "redirect:/admin/userlist";
+	}
+	
+	@PostMapping(value = "/admin/updatePrivileges")
+	public String updatePrivileges(@AuthenticationPrincipal CustomUserDetails authUser,
+			@RequestParam("userIdId") String userId, @RequestParam("privilege") Privileges privilege)
+	{
+		Users admin = authUser.getUser();
+		if(!admin.isAdmin())
+			return Redirect.home;
+		Users user = userService.selectByID(userId);
+		user.setPrivileges(privilege);
+		userService.updateUserDto(new UsersDto(user));
+		return "redirect:/admin/userlist";
+	}
+	
+	@PostMapping(value = "/admin/updateExp")
+	public String updateExp(@AuthenticationPrincipal CustomUserDetails authUser,
+			@RequestParam("userIdIdId") String userId, @RequestParam("exp") int exp)
+	{
+		Users admin = authUser.getUser();
+		if(!admin.isAdmin())
+			return Redirect.home;
+		Users user = userService.selectByID(userId);
+		user.setExp(exp);
 		userService.updateUserDto(new UsersDto(user));
 		return "redirect:/admin/userlist";
 	}
