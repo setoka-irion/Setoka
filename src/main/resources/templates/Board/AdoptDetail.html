@@ -55,10 +55,11 @@
 
 		.back-button {
 			position: fixed;
+			top: calc(17%);
 			/* 요소를 뷰포트에 고정 */
-			top: 100px;
 			/* 화면 상단에서 20px 떨어진 위치 */
-			right: 240px;
+			right: calc(5%);
+			
 			/* 화면 오른쪽에서 20px 떨어진 위치 */
 			z-index: 1000;
 			/* 다른 요소들 위에 표시되도록 우선순위 설정 */
@@ -458,14 +459,14 @@
 		}
 
 		.comment-write {
-			width: 72%;
+			max-width: 800px;
 			margin-bottom: 40px;
 			margin: 0 auto 0 auto;
 		}
 
 		/* 댓글 작성 폼 */
 		.comment-form {
-			width: 72%;
+			max-width: 800px;
 			margin-bottom: 40px;
 			margin: 0 auto 40px auto;
 			text-align: left;
@@ -673,7 +674,7 @@
 						<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
 							style="display:inline;">
 							<input type="hidden" name="commentNum" th:value="${comment.num}" />
-							<button type="submit" class="btn btn-danger">❤️좋아요</button>
+							<button type="submit" class="btn btn-danger">좋아요</button>
 						</form>
 
 						<th:block th:if="${loginUser != null and loginUser.num == comment.userNum}">
