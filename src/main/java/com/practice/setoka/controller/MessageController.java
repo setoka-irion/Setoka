@@ -35,11 +35,11 @@ public class MessageController {
 	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes)
 	{
-		String email = (String)redirectAttributes.getAttribute("email"); 
-		if(email != null)
-		{
-			model.addAttribute("receiver", email);
-		}
+//		String email = (String)redirectAttributes.getAttribute("email"); 
+//		if(email != null)
+//		{
+//			model.addAttribute("receiver", email);
+//		}
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
 		return "Message/CreateLetter";
@@ -53,11 +53,11 @@ public class MessageController {
 		if(receiver != null)
 			model.addAttribute("receiver", receiver);
 		
-		String email = (String)redirectAttributes.getAttribute("email"); 
-		if(email != null)
-		{
-			model.addAttribute("receiver", email);
-		}
+//		String email = (String)redirectAttributes.getAttribute("email"); 
+//		if(email != null)
+//		{
+//			model.addAttribute("receiver", email);
+//		}
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
 		return "Message/CreateLetter";
@@ -91,12 +91,14 @@ public class MessageController {
 	@GetMapping(value = "MessageList")
 	public String messageList(Model model, @AuthenticationPrincipal CustomUserDetails authUser)
 	{
+		List<Message> list = null;
 		//모든 받은 메세지를 보여주기
-		List<Message> list = messageService.receiverSelect(authUser.getUser().getId());
+		if(authUser.getUser() != null)
+			list = messageService.receiverSelect(authUser.getUser().getId());
 		model.addAttribute("messageList", list);
 		model.addAttribute("messageBoxType", "RECEIVED");
 
-		return "Message/messageList";
+		return "Message/MessageList";
 	}
 	
 	@GetMapping(value = "sent")
@@ -107,7 +109,7 @@ public class MessageController {
 		model.addAttribute("messageList", list);
 		model.addAttribute("messageBoxType", "SENT");
 
-		return "Message/messageList";
+		return "Message/MessageList";
 	}
 	
 	
