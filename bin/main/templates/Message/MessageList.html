@@ -107,9 +107,10 @@
 					        받기
 					    </a>
 						<a class="btn"
-						th:href="@{/DeleteMessage(messageNum=${message.num})}"
-						th:if="${message.messageStatus.name() != 'UNREAD'}">
-							삭제
+						   th:href="@{/DeleteMessage(messageNum=${message.num})}"
+						   th:if="(${message.item_Type == 'NONE'} or ${message.item_Value == 0}) 
+						           or ${message.messageStatus.name() == 'TAKE'}">
+						   삭제
 						</a>
 					</div>
 				</div>
