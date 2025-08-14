@@ -24,6 +24,7 @@ public class Upload {
 	public String TxtSavePath() { return baseUploadPath + boardPath; }
 	public String TempImagePath() { return baseUploadPath + tempPath; }
 	public String CarouselImagePath() { return baseUploadPath + carousel; }
+	public String DefaultProfile() { return SavePath() + "defaultProfile.png"; }
 	
 	//사진 서버 디렉토리에 저장, 저장된 파일명 반환
 	public String imageFileUpload(MultipartFile file)
@@ -92,7 +93,7 @@ public class Upload {
 				uploadDir.mkdirs(); // 폴더가 없으면 자동 생성
 			}
 
-			File dest = new File(SavePath() + "defaultProfile.png");
+			File dest = new File(DefaultProfile());
 
 			try {
 				file.transferTo((dest));

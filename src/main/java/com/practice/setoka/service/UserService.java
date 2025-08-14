@@ -58,6 +58,7 @@ public class UserService
 	//유저 넣기
 	public boolean insertUserNomal(UsersDto dto)
 	{
+		dto.setProfilePath(upload.DefaultProfile());
 		if(selectByID(dto.getId()) == null)
 			return userMapper.insertUserToDto(dto);
 		else

@@ -91,12 +91,14 @@ public class MessageController {
 	@GetMapping(value = "MessageList")
 	public String messageList(Model model, @AuthenticationPrincipal CustomUserDetails authUser)
 	{
+		List<Message> list = null;
 		//모든 받은 메세지를 보여주기
-		List<Message> list = messageService.receiverSelect(authUser.getUser().getId());
+		if(authUser.getUser() != null)
+			list = messageService.receiverSelect(authUser.getUser().getId());
 		model.addAttribute("messageList", list);
 		model.addAttribute("messageBoxType", "RECEIVED");
 
-		return "Message/messageList";
+		return "Message/MessageList";
 	}
 	
 	@GetMapping(value = "sent")
@@ -104,10 +106,10 @@ public class MessageController {
 	{
 		//모든 보낸 메세지를 보여주기
 		List<Message> list = messageService.sendSelect(authUser.getUser().getId());
-		model.addAttribute("messageList", null);
+		model.addAttribute("messageList", list);
 		model.addAttribute("messageBoxType", "SENT");
 
-		return "Message/messageList";
+		return "Message/MessageList";
 	}
 	
 	
