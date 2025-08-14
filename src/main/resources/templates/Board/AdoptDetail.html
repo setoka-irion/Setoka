@@ -638,9 +638,12 @@
 			<form th:action="@{/AdoptDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
 				<button type="submit" class="btn btn-danger">좋아요</button>
 			</form>
-			<form th:action="@{/CreateLetter(receiver=${loginUser.id})}" method="post">
-				<button type="submit" class="message-button">쪽지</button>
-			</form>
+			<th:block th:if="${loginUser != null}">
+			    <form th:action="@{/CreateLetter}" method="post">
+			        <input type="hidden" name="receiver" th:value="${detail.userNum}" />
+			        <button type="submit" class="message-button">쪽지</button>
+			    </form>
+			</th:block>
 		</div>
 
 		<!-- 댓글 -->
@@ -683,16 +686,19 @@
 							</form>
 						</th:block>
 						<form th:action="@{/AdoptDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
-							style="display:inline-block;">
+							style="display:inline-block;" onsubmit="return confirm('정말 이 댓글을 신고하시겠습니까?');">
 							<input type="hidden" name="commentNum" th:value="${comment.num}" />
 							<button type="submit" class="btn btn-report">🚨신고</button>
 						</form>
 					</div>
 					
 					<!--댓글 쪽지 -->
-					<form th:action="@{/CreateLetter(receiver=${loginUser.id})}" method="post"  style="margin-left: auto;">
-						<button type="submit" class="message-button">쪽지</button>
-					</form>
+					<th:block th:if="${loginUser != null}">
+					    <form th:action="@{/CreateLetter}" method="post"  style="margin-left: auto;">
+					        <input type="hidden" name="receiver" th:value="${comment.userNum}" />
+					        <button type="submit" class="message-button">쪽지</button>
+					    </form>
+					</th:block>
 				</div>
 
 				<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
