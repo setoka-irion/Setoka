@@ -104,7 +104,7 @@ public class MessageController {
 	{
 		//모든 보낸 메세지를 보여주기
 		List<Message> list = messageService.sendSelect(authUser.getUser().getId());
-		model.addAttribute("messageList", list);
+		model.addAttribute("messageList", null);
 		model.addAttribute("messageBoxType", "SENT");
 
 		return "Message/messageList";
