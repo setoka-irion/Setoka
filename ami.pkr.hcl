@@ -66,7 +66,7 @@ build {
             "echo \"Environment=DB_USERNAME=${var.db_username}\" | sudo tee -a /etc/systemd/system/IRI-on.service",
             "echo \"Environment=DB_PASSWORD=${var.db_password}\" | sudo tee -a /etc/systemd/system/IRI-on.service",
             "echo \"Environment=UPLOAD_PATH=${var.upload_path}\" | sudo tee -a /etc/systemd/system/IRI-on.service",
-            "echo 'ExecStart=/usr/bin/java -jar /home/ubuntu/irion/IRI-ON.jar >> /home/ubuntu/irion/app.log 2>&1' | sudo tee -a /etc/systemd/system/IRI-on.service",
+            "echo 'ExecStart=/bin/bash -c \\\"/usr/bin/java -jar /home/ubuntu/irion/IRI-ON.jar >> /home/ubuntu/irion/app.log 2>&1\\\"' | sudo tee -a /etc/systemd/system/IRI-on.service",
             "echo 'Restart=always' | sudo tee -a /etc/systemd/system/IRI-on.service",
             "echo 'RestartSec=5' | sudo tee -a /etc/systemd/system/IRI-on.service",
             "echo '[Install]' | sudo tee -a /etc/systemd/system/IRI-on.service",
