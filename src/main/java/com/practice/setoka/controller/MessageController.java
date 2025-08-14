@@ -35,13 +35,10 @@ public class MessageController {
 	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes)
 	{
-//		String email = (String)redirectAttributes.getAttribute("email"); 
-//		if(email != null)
-//		{
-//			model.addAttribute("receiver", email);
-//		}
+		//model.addAttribute("sender", authUser.getUser().getId());
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
+	    model.addAttribute("isAdmin", authUser.getUser().isAdmin()); // 추가
 		return "Message/CreateLetter";
 	}
 	
@@ -53,23 +50,16 @@ public class MessageController {
 		if(receiver != null)
 			model.addAttribute("receiver", receiver);
 		
-//		String email = (String)redirectAttributes.getAttribute("email"); 
-//		if(email != null)
-//		{
-//			model.addAttribute("receiver", email);
-//		}
+		
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
+	    model.addAttribute("isAdmin", authUser.getUser().isAdmin()); // 추가
 		return "Message/CreateLetter";
 	}
 	
 	@PostMapping(value = "SendMessage")
 	public String sendMessage(MessageDto dto, @AuthenticationPrincipal CustomUserDetails authUser)
 	{
-		//포인트가 부족한 경우
-		if(authUser.getUser().getPoint() < dto.getItem_Value())
-			return "redirect:/CreateLetter";
-		
 		dto.setSender(authUser.getUser().getId());
 		
 		if(dto.getItem_Type() == Item.NONE)
@@ -79,9 +69,7 @@ public class MessageController {
 		{
 			if(dto.getItem_Type() == Item.POINT)
 			{
-				int newPoint = authUser.getUser().getPoint() - dto.getItem_Value();
-				userService.userPointUpdate(dto.getSender(), newPoint);
-				authUser.getUser().setPoint(newPoint);
+				userService.userSendPoint(authUser.getUser(), dto.getSender(), dto.getItem_Value());
 			}
 		}
 		

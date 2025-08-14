@@ -123,4 +123,11 @@ public class UserService
 	{
 		return userMapper.userPointUpdate(id, point);
 	}
+	
+	public boolean userSendPoint(Users sender, String reciver, int point)
+	{
+		if(!sender.isAdmin() && sender.getPoint() < point)
+			point = sender.getPoint();
+		return userPointUpdate(reciver, point);
+	}
 }
