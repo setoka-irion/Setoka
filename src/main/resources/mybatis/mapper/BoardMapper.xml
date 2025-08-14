@@ -164,18 +164,18 @@
 
 	<!-- 신고 -->
 	<insert id="reportBoard" parameterType="int">
-		INSERT INTO boardReport (boardNum,userNum) 
+		INSERT INTO boardreport (boardNum,userNum) 
 		VALUES(#{boardNum},	#{userNum})
 	</insert>
 
 	<select id="findReportByBoardNum" parameterType="int"
 		resultType="com.practice.setoka.dao.Report">
-		SELECT * FROM boardReport WHERE boardNum = #{boardNum}
+		SELECT * FROM boardreport WHERE boardNum = #{boardNum}
 	</select>
 	<!-- 게시판 신고 유저내용-->
 	<select id="findReportByBC" parameterType="int"
 		resultType="com.practice.setoka.dao.Report">
-		SELECT * FROM boardReport 
+		SELECT * FROM boardreport 
 		WHERE boardNum = #{boardNum} AND userNum = #{userNum}
 	</select>
 
