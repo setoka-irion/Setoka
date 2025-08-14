@@ -735,7 +735,7 @@
 			</form>
 			<th:block th:if="${loginUser != null}">
 				<form th:action="@{/CreateLetter}" method="post">
-					<input type="hidden" name="receiver" th:value="${detail.userNum}" />
+					<input type="hidden" name="receiver" th:value="${detail.userId}" />
 					<button type="submit" class="message-button">쪽지</button>
 				</form>
 			</th:block>
