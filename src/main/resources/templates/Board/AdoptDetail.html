@@ -53,18 +53,27 @@
 			border: 1px solid #c3e6cb;
 		}
 
-		.back-button {
-			position: fixed;
-			top: calc(17%);
-			/* 요소를 뷰포트에 고정 */
-			/* 화면 상단에서 20px 떨어진 위치 */
-			right: calc(5%);
-			
-			/* 화면 오른쪽에서 20px 떨어진 위치 */
-			z-index: 1000;
-			/* 다른 요소들 위에 표시되도록 우선순위 설정 */
+
+
+		/*=== 게시판 + 목록버튼 ===*/
+		.head-container {
+			display: flex;
+			/* 자식 요소들을 가로로 정렬 */
+			justify-content: space-between;
+			/* 양쪽 끝에 요소들을 배치 */
+			align-items: center;
+			/* 세로 중앙 정렬 */
+			margin-bottom: 20px;
+			/* 제목 아래 여백 */
 		}
 
+		/* 제목 스타일 */
+		.container h1 {
+			margin: 0;
+			/* h1 태그의 기본 margin을 제거 */
+			font-size: 2.2rem;
+			color: #333;
+		}
 
 		.back-button a {
 			display: inline-block;
@@ -75,13 +84,25 @@
 			border-radius: 5px;
 			font-weight: bold;
 			transition: background-color 0.3s ease;
-			border: none;
-			cursor: pointer;
 		}
 
 		.back-button a:hover {
 			background-color: #8b5e3c;
 			/* 호버 시 조금 더 진한 녹색 */
+		}
+
+		@media (max-width: 640px) {
+			.header-container {
+				flex-direction: column;
+				/* 세로로 정렬 */
+				align-items: flex-start;
+				/* 왼쪽 정렬 */
+			}
+
+			.back-button {
+				margin-top: 10px;
+				/* 버튼과 제목 사이 여백 */
+			}
 		}
 
 
@@ -150,13 +171,17 @@
 			width: 100%;
 			border-collapse: collapse;
 			margin-bottom: 25px;
+			border-radius: 12px;
+			/* 테이블 모서리를 둥글게 만듭니다 */
+			overflow: hidden;
+			/* 모서리를 둥글게 만들 때 필요 */
 		}
 
 		.header-table th,
 		.header-table td {
 			padding: 12px 15px;
 			border-bottom: 2px solid #e1e4e8;
-			text-align: left;
+			text-align: center;
 			font-size: 1.1rem;
 			color: #555;
 			white-space: nowrap;
@@ -169,6 +194,15 @@
 
 		.header-table th {
 			background-color: #f7f9fb;
+		}
+
+
+		.header-table td:nth-child(1) {
+			text-align: left;
+		}
+
+		.header-table th:nth-child(1) {
+			text-align: left;
 		}
 
 		/*=== 작성자 정보 ===*/
@@ -207,30 +241,43 @@
 			margin-left: 10px;
 		}
 
-		/* 본문 */
+		/* 본문 테이블*/
 		.content-table {
 			width: 100%;
-			border-collapse: collapse;
+			border-collapse: separate;
+			/* border-spacing 속성을 사용하기 위해 collapse 대신 separate 사용 */
+			border-spacing: 0 10px;
+			/* 행(tr) 사이에 10px 간격 추가 */
 			margin-bottom: 30px;
-		}
-
-		.content-table th,
-		.content-table td {
-			border: 1px solid #ddd;
-			padding: 14px 15px;
-			font-size: 1rem;
-			vertical-align: top;
 		}
 
 		.content-table th {
 			background-color: #f7f9fb;
 			text-align: center;
 			font-weight: 600;
+			padding: 15px;
+			/* 여백을 늘려 여유로운 느낌 주기 */
+			border-bottom: 1px solid #e0e0e0;
+			/* 옅은 테두리 사용 */
 		}
 
-		.content-table td[colspan] {
+		.content-table td {
+			border: none;
+			/* 기존 테두리 제거 */
+			background-color: #ffffff;
+			/* 배경색을 흰색으로 지정 */
+			padding: 15px;
+			/* 여백을 늘려 여유로운 느낌 주기 */
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+			/* 은은한 그림자 효과 추가 */
+			border-radius: 8px;
+			/* 둥근 모서리 추가 */
+		}
+
+		.content-table td[colspan="2"] {
+			padding-top: 30px;
+			/* 본문 내용 위쪽 여백을 더 넓게 */
 			text-align: left;
-			white-space: pre-wrap;
 		}
 
 		/* === 좋아요 ===*/
@@ -265,26 +312,26 @@
 		.like-section form button.btn-danger:hover {
 			background-color: #b62d20;
 		}
-		
+
 		/*=== 게시글 작성자 쪽지 ===*/
 		.like-section form button.message-button {
-		    background-color: white;
-		    color: #333;
-		    border: 1px solid #ddd;
-		    /* 기존 스타일과 맞추기 위해 패딩과 폰트 굵기 등을 추가합니다. */
-		    padding: 8px 16px;
-		    border-radius: 6px;
-		    font-weight: 600;
-		    cursor: pointer;
-		    transition: background-color .3s ease;
+			background-color: white;
+			color: #333;
+			border: 1px solid #ddd;
+			/* 기존 스타일과 맞추기 위해 패딩과 폰트 굵기 등을 추가합니다. */
+			padding: 8px 16px;
+			border-radius: 6px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: background-color .3s ease;
 		}
 
 		.like-section form button.message-button:hover {
-		    background-color: #f0f0f0;
-		    color: #000;
-		    border-color: #bbb;
+			background-color: #f0f0f0;
+			color: #000;
+			border-color: #bbb;
 		}
-		
+
 		/*=== 쪽지 버튼 ===*/
 		.message-button {
 			background-color: white;
@@ -315,8 +362,8 @@
 
 		/* === 댓글 ===  */
 		.comment-title {
-			margin: 0 auto 40px auto;
-			width: 72%;
+			margin: 0 auto 0px auto;
+			max-width: 1000px;
 
 		}
 
@@ -326,7 +373,7 @@
 			flex-direction: column;
 			gap: 20px;
 			margin-bottom: 40px;
-			max-width: 800px;
+			max-width: 1000px;
 			/* PC 화면에서 최대 너비 */
 			margin: 0 auto;
 			/* 중앙 정렬 */
@@ -459,14 +506,14 @@
 		}
 
 		.comment-write {
-			max-width: 800px;
+			max-width: 1000px;
 			margin-bottom: 40px;
 			margin: 0 auto 0 auto;
 		}
 
 		/* 댓글 작성 폼 */
 		.comment-form {
-			max-width: 800px;
+			max-width: 1000px;
 			margin-bottom: 40px;
 			margin: 0 auto 40px auto;
 			text-align: left;
@@ -540,6 +587,47 @@
 				padding: 8px 6px;
 			}
 		}
+
+		/*==== 맨 위로 가기 버튼 스타일 ====*/
+		.scroll-top-button {
+			display: none;
+			/* 기본적으로 숨김 */
+			position: fixed;
+			/* 화면에 고정 */
+			bottom: 20px;
+			/* 하단에서 20px 위 */
+			right: 20px;
+			/* 우측에서 20px 떨어짐 */
+			z-index: 9999;
+			/* 다른 요소 위에 표시 */
+		}
+
+		/* 버튼의 링크 스타일 */
+		.scroll-top-button a {
+			display: block;
+			background-color: #8b5e3c;
+			color: white;
+			font-size: 24px;
+			padding: 10px 15px;
+			border-radius: 50%;
+			/* 원형 버튼 */
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			text-decoration: none;
+			transition: background-color 0.3s;
+		}
+
+		.scroll-top-button a:hover {
+			background-color: #8b5e3c;
+		}
+
+		/* 모바일 화면에서 버튼 위치 조정 */
+		@media (max-width: 640px) {
+			.scroll-top-button {
+				bottom: 70px;
+				/* 하단 버튼 영역과 겹치지 않게 위치 조정 */
+				right: 15px;
+			}
+		}
 	</style>
 </head>
 
@@ -547,9 +635,11 @@
 	<div th:replace="~{header :: siteHeader}"></div>
 	<br>
 	<div class="container">
-		<h1>입양 게시판</h1>
-		<div class="back-button">
-			<p><a th:href="@{/Adopt}">목록으로</a></p>
+		<div class="head-container">
+			<h1>입양 게시판</h1>
+			<div class="back-button">
+				<a th:href="@{/Adopt}">목록으로</a>
+			</div>
 		</div>
 		<!-- 메시지 -->
 		<div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
@@ -616,6 +706,10 @@
 
 		<!-- 본문 -->
 		<table class="content-table">
+			<colgroup>
+				<col style="width: 50%;">
+				<col style="width: 50%;">
+			</colgroup>
 			<thead>
 				<tr>
 					<th>책임비</th>
@@ -640,10 +734,10 @@
 				<button type="submit" class="btn btn-danger">좋아요</button>
 			</form>
 			<th:block th:if="${loginUser != null}">
-			    <form th:action="@{/CreateLetter}" method="post">
-			        <input type="hidden" name="receiver" th:value="${detail.userNum}" />
-			        <button type="submit" class="message-button">쪽지</button>
-			    </form>
+				<form th:action="@{/CreateLetter}" method="post">
+					<input type="hidden" name="receiver" th:value="${detail.userNum}" />
+					<button type="submit" class="message-button">쪽지</button>
+				</form>
 			</th:block>
 		</div>
 
@@ -692,13 +786,13 @@
 							<button type="submit" class="btn btn-report">🚨신고</button>
 						</form>
 					</div>
-					
+
 					<!--댓글 쪽지 -->
 					<th:block th:if="${loginUser != null}">
-					    <form th:action="@{/CreateLetter}" method="post"  style="margin-left: auto;">
-					        <input type="hidden" name="receiver" th:value="${comment.userNum}" />
-					        <button type="submit" class="message-button">쪽지</button>
-					    </form>
+						<form th:action="@{/CreateLetter}" method="post" style="margin-left: auto;">
+							<input type="hidden" name="receiver" th:value="${comment.userNum}" />
+							<button type="submit" class="message-button">쪽지</button>
+						</form>
 					</th:block>
 				</div>
 
@@ -719,11 +813,25 @@
 		</div>
 		<form class="comment-form" th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post"
 			style="display: flex; flex-direction: column; align-items: flex-end;">
-			<textarea id="commentContent" name="content" placeholder="댓글을 입력하세요" 
-			required ></textarea>
+			<textarea id="commentContent" name="content" placeholder="댓글을 입력하세요" required></textarea>
 			<br />
 			<button type="submit" class="btn btn-primary">댓글 등록</button>
 		</form>
+	</div>
+
+	<!-- 위로가기 스크롤 버튼 -->
+	<div id="scrollTopButton" class="scroll-top-button">
+		<a href="#" aria-label="맨 위로">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+				stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+				class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up-lines">
+				<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+				<path
+					d="M9 12h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v3h-6v-3z" />
+				<path d="M9 21h6" />
+				<path d="M9 18h6" />
+			</svg>
+		</a>
 	</div>
 
 	<script>
@@ -740,25 +848,49 @@
 			document.getElementById('content-span-' + commentNum).style.display = 'inline';
 			document.getElementById('edit-form-' + commentNum).style.display = 'none';
 		}
-		
-		// 댓글 enter 최대횟수 제한 코드
-		    const commentTextarea = document.getElementById('commentContent');
-			let enterCount = 0;
-			
-		    // 키보드 입력 이벤트를 감지
-			commentTextarea.addEventListener('keydown', function(event) {
-			    if (event.key === 'Enter') {
-			        const maxEnter = 1; // 연속된 엔터 횟수를 1회로 제한
 
-			        if (enterCount >= maxEnter) {
-			            event.preventDefault();
-			        }
-			        enterCount++;
-			    } else {
-			        enterCount = 0; 
-			    }
+		// 댓글 enter 최대횟수 제한 코드
+		const commentTextarea = document.getElementById('commentContent');
+		let enterCount = 0;
+
+		// 키보드 입력 이벤트를 감지
+		commentTextarea.addEventListener('keydown', function (event) {
+			if (event.key === 'Enter') {
+				const maxEnter = 1; // 연속된 엔터 횟수를 1회로 제한
+
+				if (enterCount >= maxEnter) {
+					event.preventDefault();
+				}
+				enterCount++;
+			} else {
+				enterCount = 0;
+			}
+		});
+
+		// 위로가기 버튼
+		document.addEventListener('DOMContentLoaded', function () {
+			const scrollTopButton = document.getElementById('scrollTopButton');
+
+			window.addEventListener('scroll', function () {
+				// 스크롤이 200px 이상 내려갔을 때 버튼을 보이게 함
+				if (window.scrollY > 200) {
+					scrollTopButton.style.display = 'block';
+				} else {
+					scrollTopButton.style.display = 'none';
+				}
 			});
+
+			// 버튼 클릭 시 맨 위로 부드럽게 스크롤
+			scrollTopButton.addEventListener('click', function (event) {
+				event.preventDefault(); // 기본 링크 동작 방지
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth'
+				});
+			});
+		});
 	</script>
+
 </body>
 
 </html>

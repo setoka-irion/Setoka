@@ -12,7 +12,7 @@
 
 	<div class="message-box">
 	
-		<form th:action="@{/SendMessage}" method="post" enctype="multipart/form-data">
+		<form th:action="@{/SendMessage}" method="post" enctype="multipart/form-data"  onsubmit="return showSendAlert();">
 			<input type="hidden" name="id" />
 	
 			<label for="name">제목:</label>
@@ -33,12 +33,22 @@
 	
 			<!-- 수치/개수 입력 -->
 			<label for="item_Value">수량 / 포인트 수치:</label>
-			<input type="number" id="item_Value" name="item_Value" min="0" th:attr="max=${max}" value="0" /><br />
+			<input type="number" id="item_Value" name="item_Value" min="0" value="0"
+			    th:if="${isAdmin}" />
+
+			<input type="number" id="item_Value" name="item_Value" min="0" value="0"
+			    th:unless="${isAdmin}" th:attr="max=${max}" />
+			<br />
 	
 			<button type="submit">전송</button>
 		</form>
 	
 	</div>
 </body>
-
+<script type="text/javascript">
+	function showSendAlert() {
+		alert('전송이 완료되었습니다!');
+		return true; // false로 하면 전송이 안 됩니다
+	}
+</script>
 </html>

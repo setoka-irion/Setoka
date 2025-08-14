@@ -222,8 +222,10 @@ public class WalkTrailController {
 		
 		String fileName = upload.fileUpload(boardDto.getContent());
 		String thumnailName = null;
-		if(images != null && images.size() > 0)
+		if(!images.get(0).isEmpty())
+		{
 			thumnailName = upload.imageFileUpload(images.get(0));
+		}
 		boardDto.setContent(fileName);
 		boardDto.setImage_paths(thumnailName);
 		boardService.insertBoard(boardDto);

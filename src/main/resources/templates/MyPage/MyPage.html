@@ -2,7 +2,7 @@
 <html xmlns:th="http://thymeleaf.org">
 
 <head>
-	<title>MyPage</title>
+	<title>IRI-ON MyPage</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<link rel="stylesheet" th:href="@{/CSS/user.css}">
 	<link rel="stylesheet" th:href="@{/CSS/modal.css}">
@@ -73,25 +73,27 @@
 		   <button onclick="location.href='/Withdrawal'">회원탈퇴</button>
 		 </div>
 		
-		<div class="user-card-container">
-			<div class="user-card-left">
-				<a href="/EditProfilePhoto">
-					<img th:src="@{${loginUser.profilePath}}" alt="프로필 이미지" class="profile-image">
-				</a>
-			</div>
-			<div class="user-card-right">
-				<ul class="user-info-list">
-					<li><strong>닉네임</strong> <span th:text="${loginUser.nickName}">닉네임</span></li>
-					<li><strong>실명</strong> <span th:text="${loginUser.realName}">실명</span></li>
-					<li><strong>등급</strong> <span th:text="${loginUser.grade}">등급</span></li>
-					<li><strong>포인트</strong> <span th:text="${loginUser.point}">포인트</span></li>
-					<li><strong>경험치</strong> <span th:text="${loginUser.exp}">경험치</span></li>
-				</ul>
-			</div>
-		</div>
+		
 		
 	</div>
 
+	<div class="user-card-container">
+				<div class="user-card-left">
+					<a href="/EditProfilePhoto">
+						<img th:src="@{${loginUser.profilePath}}" alt="프로필 이미지" class="profile-image">
+					</a>
+				</div>
+				<div class="user-card-right">
+					<ul class="user-info-list">
+						<li><strong>닉네임</strong> <span th:text="${loginUser.nickName}">닉네임</span></li>
+						<li><strong>실명</strong> <span th:text="${loginUser.realName}">실명</span></li>
+						<li><strong>등급</strong> <span th:text="${loginUser.grade}">등급</span></li>
+						<li><strong>포인트</strong> <span th:text="${loginUser.point}">포인트</span></li>
+						<li><strong>경험치</strong> <span th:text="${loginUser.exp}">경험치</span></li>
+					</ul>
+				</div>
+			</div>
+	
 	<!--일정 달력-->
 	<div class="nav-buttons" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
 		<form th:action="@{/MyPage}" method="get" style="display:inline;">
