@@ -250,7 +250,7 @@
 			user-select: none;
 		}
 
-		.like-section form button {
+		.like-section form button.btn-danger {
 			background-color: #e74c3c;
 			border: none;
 			padding: 8px 16px;
@@ -261,12 +261,55 @@
 			transition: background-color .3s ease;
 		}
 
-		.like-section form button:hover {
+		.like-section form button.btn-danger:hover {
 			background-color: #b62d20;
 		}
 		
-		.message{
-			
+		/*=== 게시글 작성자 쪽지 ===*/
+		.like-section form button.message-button {
+		    background-color: white;
+		    color: #333;
+		    border: 1px solid #ddd;
+		    /* 기존 스타일과 맞추기 위해 패딩과 폰트 굵기 등을 추가합니다. */
+		    padding: 8px 16px;
+		    border-radius: 6px;
+		    font-weight: 600;
+		    cursor: pointer;
+		    transition: background-color .3s ease;
+		}
+
+		.like-section form button.message-button:hover {
+		    background-color: #f0f0f0;
+		    color: #000;
+		    border-color: #bbb;
+		}
+		
+		/*=== 쪽지 버튼 ===*/
+		.message-button {
+			background-color: white;
+			/* 흰색 배경 */
+			color: #333;
+			/* 어두운 글씨색 */
+			border: 1px solid #ddd;
+			/* 살짝 옅은 테두리 */
+		}
+
+		/* 마우스 오버 효과 */
+		.message-button:hover {
+			background-color: #f0f0f0;
+			/* 마우스 오버 시 연한 회색 */
+			color: #000;
+			/* 글씨색은 더 진하게 */
+			border-color: #bbb;
+			/* 테두리색도 진하게 */
+		}
+
+		/* 쪽지 버튼 내 아이콘 스타일 */
+		.message-button::before {
+			content: "✉️";
+			/* 이모지 아이콘 추가 (쪽지 모양) */
+			font-size: 1.2em;
+			/* 아이콘 크기 조절 */
 		}
 
 		/* === 댓글 ===  */
@@ -594,8 +637,13 @@
 			<span th:text="${detail.likes}">0</span> ❤️
 			<form th:action="@{/AdoptDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
 				<button type="submit" class="btn btn-danger">좋아요</button>
-				<button type="" class="message">쪽지</button>
 			</form>
+			<th:block th:if="${loginUser != null}">
+			    <form th:action="@{/CreateLetter}" method="post">
+			        <input type="hidden" name="receiver" th:value="${detail.userNum}" />
+			        <button type="submit" class="message-button">쪽지</button>
+			    </form>
+			</th:block>
 		</div>
 
 		<!-- 댓글 -->
@@ -621,26 +669,36 @@
 					th:attr="id=${'content-span-' + comment.num}">댓글 내용</p>
 
 				<div class="comment-actions">
-					<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
-						style="display:inline;">
-						<input type="hidden" name="commentNum" th:value="${comment.num}" />
-						<button type="submit" class="btn btn-danger">좋아요</button>
-					</form>
-
-					<th:block th:if="${loginUser != null and loginUser.num == comment.userNum}">
-						<button type="button" class="btn btn-edit"
-							th:onclick="|showEditForm(${comment.num})|">수정</button>
-						<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
-							onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');" style="display:inline-block;">
+					<div>
+						<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
+							style="display:inline;">
 							<input type="hidden" name="commentNum" th:value="${comment.num}" />
-							<button type="submit" class="btn btn-delete">삭제</button>
+							<button type="submit" class="btn btn-danger">❤️좋아요</button>
 						</form>
+
+						<th:block th:if="${loginUser != null and loginUser.num == comment.userNum}">
+							<button type="button" class="btn btn-edit"
+								th:onclick="|showEditForm(${comment.num})|">수정</button>
+							<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
+								onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');" style="display:inline-block;">
+								<input type="hidden" name="commentNum" th:value="${comment.num}" />
+								<button type="submit" class="btn btn-delete">삭제</button>
+							</form>
+						</th:block>
+						<form th:action="@{/AdoptDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
+							style="display:inline-block;" onsubmit="return confirm('정말 이 댓글을 신고하시겠습니까?');">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<button type="submit" class="btn btn-report">🚨신고</button>
+						</form>
+					</div>
+					
+					<!--댓글 쪽지 -->
+					<th:block th:if="${loginUser != null}">
+					    <form th:action="@{/CreateLetter}" method="post"  style="margin-left: auto;">
+					        <input type="hidden" name="receiver" th:value="${comment.userNum}" />
+					        <button type="submit" class="message-button">쪽지</button>
+					    </form>
 					</th:block>
-					<form th:action="@{/AdoptDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
-						style="display:inline-block;">
-						<input type="hidden" name="commentNum" th:value="${comment.num}" />
-						<button type="submit" class="btn btn-report">신고</button>
-					</form>
 				</div>
 
 				<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
@@ -654,14 +712,14 @@
 				</form>
 			</div>
 		</div>
-		
 		<!-- 댓글 작성 -->
 		<div class="comment-write">
 			<h4>댓글 작성</h4>
 		</div>
 		<form class="comment-form" th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post"
 			style="display: flex; flex-direction: column; align-items: flex-end;">
-			<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+			<textarea id="commentContent" name="content" placeholder="댓글을 입력하세요" 
+			required ></textarea>
 			<br />
 			<button type="submit" class="btn btn-primary">댓글 등록</button>
 		</form>
@@ -681,6 +739,24 @@
 			document.getElementById('content-span-' + commentNum).style.display = 'inline';
 			document.getElementById('edit-form-' + commentNum).style.display = 'none';
 		}
+		
+		// 댓글 enter 최대횟수 제한 코드
+		    const commentTextarea = document.getElementById('commentContent');
+			let enterCount = 0;
+			
+		    // 키보드 입력 이벤트를 감지
+			commentTextarea.addEventListener('keydown', function(event) {
+			    if (event.key === 'Enter') {
+			        const maxEnter = 1; // 연속된 엔터 횟수를 1회로 제한
+
+			        if (enterCount >= maxEnter) {
+			            event.preventDefault();
+			        }
+			        enterCount++;
+			    } else {
+			        enterCount = 0; 
+			    }
+			});
 	</script>
 </body>
 
