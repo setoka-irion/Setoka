@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"></html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+</html>
 
 <head>
 	<meta charset="UTF-8" />
@@ -52,24 +54,28 @@
 		}
 
 		.back-button {
-		  position: fixed; /* 요소를 뷰포트에 고정 */
-		  top: 100px;       /* 화면 상단에서 20px 떨어진 위치 */
-		  right: 30px;     /* 화면 오른쪽에서 20px 떨어진 위치 */
-		  z-index: 1000;   /* 다른 요소들 위에 표시되도록 우선순위 설정 */
+			position: fixed;
+			/* 요소를 뷰포트에 고정 */
+			top: 100px;
+			/* 화면 상단에서 20px 떨어진 위치 */
+			right: 240px;
+			/* 화면 오른쪽에서 20px 떨어진 위치 */
+			z-index: 1000;
+			/* 다른 요소들 위에 표시되도록 우선순위 설정 */
 		}
 
-		
+
 		.back-button a {
-		  display: inline-block;
-		  padding: 10px 20px;
-		  background-color: #8b5e3c;
-		  color: white;
-		  text-decoration: none;
-		  border-radius: 5px;
-		  font-weight: bold;
-		  transition: background-color 0.3s ease;
-		  border: none;
-		  cursor: pointer;
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #8b5e3c;
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+			font-weight: bold;
+			transition: background-color 0.3s ease;
+			border: none;
+			cursor: pointer;
 		}
 
 		.back-button a:hover {
@@ -226,7 +232,7 @@
 			white-space: pre-wrap;
 		}
 
-		/* 좋아요 */
+		/* === 좋아요 ===*/
 		.like-section {
 			display: flex;
 			justify-content: center;
@@ -258,8 +264,18 @@
 		.like-section form button:hover {
 			background-color: #b62d20;
 		}
+		
+		.message{
+			
+		}
 
 		/* === 댓글 ===  */
+		.comment-title {
+			margin: 0 auto 40px auto;
+			width: 72%;
+
+		}
+
 		/* 댓글 목록 컨테이너 (PC 화면에 최적화) */
 		.comment-list-container {
 			display: flex;
@@ -398,10 +414,17 @@
 			}
 		}
 
+		.comment-write {
+			width: 72%;
+			margin-bottom: 40px;
+			margin: 0 auto 0 auto;
+		}
+
 		/* 댓글 작성 폼 */
 		.comment-form {
-			width: 100%;
+			width: 72%;
 			margin-bottom: 40px;
+			margin: 0 auto 40px auto;
 			text-align: left;
 		}
 
@@ -528,19 +551,19 @@
 		<!-- 수정/삭제/신고 -->
 		<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
 			<th:block th:if="${loginUser != null and loginUser.num == detail.userNum}">
-			<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
-				<button type="submit" class="btn btn-success">수정</button>
-			</form>
-			<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
-				onsubmit="return confirm('정말 삭제하시겠습니까?');">
-				<button type="submit" class="btn btn-danger">삭제</button>
-			</form>
+				<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
+					<button type="submit" class="btn btn-success">수정</button>
+				</form>
+				<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
+					onsubmit="return confirm('정말 삭제하시겠습니까?');">
+					<button type="submit" class="btn btn-danger">삭제</button>
+				</form>
 			</th:block>
 			<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
 				<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
 				<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
 			</form>
-		
+
 		</div>
 
 		<!-- 썸네일 -->
@@ -552,7 +575,7 @@
 		<table class="content-table">
 			<thead>
 				<tr>
-					<th>분양가</th>
+					<th>책임비</th>
 					<th>지역</th>
 				</tr>
 			</thead>
@@ -572,18 +595,21 @@
 			<span th:text="${detail.likes}">0</span> ❤️
 			<form th:action="@{/AdoptDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
 				<button type="submit" class="btn btn-danger">좋아요</button>
+				<button type="" class="message">쪽지</button>
 			</form>
 		</div>
 
 		<!-- 댓글 -->
-		<h4>댓글 <span th:text="${detail.commentCount}">0</span>개</h4>
+		<div class="comment-title">
+			<h4>댓글 <span th:text="${detail.commentCount}">0</span>개</h4>
+		</div>
 		<div class="comment-list-container">
 			<div th:each="comment, iterStat : ${comments}" class="comment-card">
-				
+
 				<div class="comment-header">
 					<div class="comment-author-info">
 						<img th:src="@{${comment.profilePath}}" alt="프로필 이미지" class="profile-image">
-						<span class="nick-name" th:text="${comment.nickname}">작성자</span> 
+						<span class="nick-name" th:text="${comment.nickname}">작성자</span>
 						<span class="user-grade" th:text="${comment.userGrade}">등급</span>
 					</div>
 					<div class="comment-meta">
@@ -603,12 +629,13 @@
 					</form>
 
 					<th:block th:if="${loginUser != null and loginUser.num == comment.userNum}">
-					    <button type="button" class="btn btn-edit" th:onclick="|showEditForm(${comment.num})|">수정</button>
-					    <form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
-					        onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');" style="display:inline-block;">
-					        <input type="hidden" name="commentNum" th:value="${comment.num}" />
-					        <button type="submit" class="btn btn-delete">삭제</button>
-					    </form>
+						<button type="button" class="btn btn-edit"
+							th:onclick="|showEditForm(${comment.num})|">수정</button>
+						<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
+							onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');" style="display:inline-block;">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<button type="submit" class="btn btn-delete">삭제</button>
+						</form>
 					</th:block>
 					<form th:action="@{/AdoptDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
 						style="display:inline-block;">
@@ -628,8 +655,11 @@
 				</form>
 			</div>
 		</div>
+		
 		<!-- 댓글 작성 -->
-		<h4>댓글 작성</h4>
+		<div class="comment-write">
+			<h4>댓글 작성</h4>
+		</div>
 		<form class="comment-form" th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post"
 			style="display: flex; flex-direction: column; align-items: flex-end;">
 			<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
