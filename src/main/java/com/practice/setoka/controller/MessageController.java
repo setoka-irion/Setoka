@@ -35,11 +35,11 @@ public class MessageController {
 	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes)
 	{
-		String email = (String)redirectAttributes.getAttribute("email"); 
-		if(email != null)
-		{
-			model.addAttribute("receiver", email);
-		}
+//		String email = (String)redirectAttributes.getAttribute("email"); 
+//		if(email != null)
+//		{
+//			model.addAttribute("receiver", email);
+//		}
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
 		return "Message/CreateLetter";
@@ -53,11 +53,11 @@ public class MessageController {
 		if(receiver != null)
 			model.addAttribute("receiver", receiver);
 		
-		String email = (String)redirectAttributes.getAttribute("email"); 
-		if(email != null)
-		{
-			model.addAttribute("receiver", email);
-		}
+//		String email = (String)redirectAttributes.getAttribute("email"); 
+//		if(email != null)
+//		{
+//			model.addAttribute("receiver", email);
+//		}
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
 		return "Message/CreateLetter";
