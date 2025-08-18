@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.setoka.mapper.CommentLikeMapper">
+
+<!-- 댓글좋아요 중복검사용 liked-->
+	<select id="existCommentLike" parameterType="com.practice.setoka.dto.CommentLikeDto">
+		SELECT COUNT(*) from commentlike WHERE userNum = #{userNum} AND commentNum = #{commentNum}
+	</select> 
+	
+	<!-- 게시글 좋아요 증가기능 검사용 -->
+	<insert id="insertCommentLike" parameterType="com.practice.setoka.dto.CommentLikeDto">
+	INSERT INTO commentlike (userNum, commentNum) VALUES (#{userNum}, #{commentNum}) 
+	</insert>
+	
+	<!-- 게시글 좋아요 취소기능 검사용-->
+	<delete id="disLikeComment" parameterType="com.practice.setoka.dto.CommentLikeDto">
+	DELETE FROM commentlike WHERE userNum = #{userNum} AND commentNum = #{commentNum} 
+	</delete>
+	
+	<!-- 게시글	좋아용 실질적 증가 -->
+	<update id="increaseLikesComment" parameterType="com.practice.setoka.dto.CommentLikeDto">
+		UPDATE comments SET likes = likes + 1 WHERE num = #{commentNum}
+	</update>	
+	
+	<!-- 게시글 좋아용취소 실질적 감소-->
+	<update id="cancelLikesComment" parameterType="com.practice.setoka.dto.CommentLikeDto">
+		UPDATE comments SET likes = likes - 1 WHERE num = #{commentNum}
+	</update>
+</mapper>

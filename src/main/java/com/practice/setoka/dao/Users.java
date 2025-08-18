@@ -2,6 +2,12 @@ package com.practice.setoka.dao;
 
 import java.time.LocalDateTime;
 
+import com.practice.setoka.RatingRule;
+import com.practice.setoka.Enum.Grade;
+import com.practice.setoka.Enum.Privileges;
+import com.practice.setoka.Enum.Status;
+import com.practice.setoka.dto.UsersDto;
+
 public class Users {
 	private int num;
 	private String id;
@@ -9,10 +15,20 @@ public class Users {
 	private String nickName;
 	private String realName;
 	private String phoneNumber;
-	private int status;
+	private Status status;
 	private int point;
-	private String grade;
+	private Privileges privileges;
+	private long exp;
+	private String profilePath;
 	private LocalDateTime registerDate;
+	private Grade grade;
+	
+
+	public void modifyUser(UsersDto userDto) {
+		nickName = userDto.getNickName();
+		realName = userDto.getRealName();
+		phoneNumber = userDto.getPhoneNumber();
+	}
 	
 	public int getNum() {
 		return num;
@@ -50,10 +66,10 @@ public class Users {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public int getStatus() {
+	public Status getStatus() {
 		return status;
 	}
-	public void setStatus(int status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 	public int getPoint() {
@@ -62,17 +78,43 @@ public class Users {
 	public void setPoint(int point) {
 		this.point = point;
 	}
-	public String getGrade() {
-		return grade;
+	public String getProfilePath() {
+		return profilePath;
 	}
-	public void setGrade(String grade) {
-		this.grade = grade;
+	public void setProfilePath(String profilePath) {
+		this.profilePath = profilePath;
 	}
 	public LocalDateTime getRegisterDate() { return registerDate; }
 	public void setRegisterDate(LocalDateTime registerDate) { this.registerDate = registerDate; }
-	
+
+	public Privileges getPrivileges() {
+		return privileges;
+	}
+
+	public void setPrivileges(Privileges privileges) {
+		this.privileges = privileges;
+	}
+
+	public long getExp() {
+		return exp;
+	}
+
+	public void setExp(long exp) {
+		this.exp = exp;
+	}
+
+	public Grade getGrade() {
+		grade = RatingRule.ratingRule.GetGrade(exp);
+		return grade;
+	}
+
+	public void PlusPoint(int point)
+	{
+		this.point += point;
+		exp += point;
+	}
 	public boolean isAdmin()
 	{
-		return status == 1;
+		return privileges.equals(Privileges.관리자);
 	}
 }

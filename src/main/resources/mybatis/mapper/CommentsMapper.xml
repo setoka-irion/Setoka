@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.setoka.mapper.CommentsMapper">
+	
+	<!--댓글 작성-->
+	<insert id="insertComment"	parameterType="com.practice.setoka.dto.CommentInfoDto">
+		INSERT Into comments ( userNum, parentNum, boardNum, content, likes)
+		VALUES (#{userNum},#{parentNum}, #{boardNum}, #{content}, #{likes})
+	</insert>
+
+	<!-- 댓글 수정-->
+	<update id="updateComment" parameterType="com.practice.setoka.dto.CommentInfoDto">
+		UPDATE comments SET content = #{content}
+		WHERE num = #{num} AND userNum = #{userNum}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<update id="deleteComment" parameterType="com.practice.setoka.dao.Comments">
+		UPDATE comments SET status = status + 1 WHERE num = #{num}
+	</update>
+		
+	<!-- 좋아용 -->
+	<update id="increaseCommentLikes" parameterType="int">
+		UPDATE comments SET likes = likes + 1 WHERE num = #{num}
+	</update>	
+		
+	<!-- 해당 게시글의 댓글전체 불러오기 -->
+	<select id="findCommentsByBoardNum" resultMap="CommentInfoDto">
+		SELECT
+    	c.num, c.userNum, c.parentNum, c.boardNum, c.content, 
+    	c.likes, c.registerDate,
+    	u.nickname, u.grade, u.profilePath,
+    	b.type 
+		FROM comments c
+		JOIN users u ON c.userNum = u.num
+		JOIN board b ON c.boardNum = b.num
+		WHERE c.boardNum = #{boardNum} AND c.status = 0 <!--정상댓글-->
+		ORDER BY c.registerDate ASC
+	</select>
+	
+	<!--댓글 수정용 해당 댓글 하나만 불러오기-->
+	<select id="findCommentByNum" parameterType="int" resultMap="CommentInfoDto">
+    	SELECT c.num, c.userNum, c.boardNum, c.content, c.likes, c.registerDate,
+           u.nickname, u.grade, b.type
+    	FROM comments c
+    	JOIN users u ON c.userNum = u.num
+    	JOIN board b ON c.boardNum = b.num
+    	WHERE c.num = #{num} AND c.status = 0
+	</select>
+	
+	
+	
+	<!-- 댓글 신고-->
+	<insert id="reportComment" parameterType="int">
+	INSERT INTO commentReport (commentNum,userNum) VALUES(#{commentNum}, #{userNum})
+	</insert>
+
+<!--	<select id="findReportByCommentNum" parameterType="int" resultType="com.practice.setoka.dao.Report">-->
+<!--	SELECT * FROM commentReport WHERE commentNum = #{commentNum}-->
+<!--	</select>-->
+	
+	<!-- 댓글 신고 유저내용-->
+	<select id="findReportByCB" parameterType="int" resultType="com.practice.setoka.dao.Report">
+	SELECT * FROM commentReport WHERE commentNum = #{commentNum} AND userNum = #{userNum}
+	</select>
+
+
+
+	
+	<resultMap id ="CommentInfoDto" type ="com.practice.setoka.dto.CommentInfoDto">
+		<result property="num" column="num" />
+		<result property="userNum" column="userNum" />
+		<result property="parentNum" column="parentNum"/>
+		<result property="boardNum" column="boardNum" />
+		<result property="content" column="content" />
+		<result property="likes" column="likes" />
+		<result property="nickname" column="nickname" />
+		<result property="userGrade" column="grade" />
+		<result property="registerDate" column="registerDate" />
+		<result property="type" column="type" />
+	</resultMap>
+	
+</mapper>

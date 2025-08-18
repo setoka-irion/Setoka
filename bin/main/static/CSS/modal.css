@@ -1,0 +1,165 @@
+/* 모달 배경 */
+.modal-overlay {
+	display: none;
+	position: fixed;
+	z-index: 200;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+}
+
+/* 모달 박스 */
+.modal-content {
+	background: #fff;
+	margin: 10% auto;
+	padding: 24px;
+	width: 360px;
+	border-radius: 10px;
+	position: relative;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	font-family: 'Segoe UI', sans-serif;
+}
+
+.modal-title {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 24px;
+	color: #333;
+	border-bottom: 2px solid #eee;
+	padding-bottom: 10px;
+}
+
+/* 닫기 버튼 */
+.modal-close {
+	position: absolute;
+	right: 12px;
+	top: 12px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 20px;
+	color: #888;
+	transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+	color: #000;
+}
+
+.modal-buttons {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+	gap: 10px;
+}
+
+.btn {
+	flex: 1;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 8px;
+	background-color: #3498db;
+	color: white;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+	background-color: #2980b9;
+}
+
+.btn-danger {
+	background-color: #e74c3c;
+}
+
+.btn-danger:hover {
+	background-color: #c0392b;
+}
+
+/* 라벨과 값 세트 */
+.detail-row {
+	margin: 15px 0;
+	display: flex;
+	flex-direction: column;
+}
+
+/* 라벨 */
+.detail-row .label {
+	font-weight: 600;
+	color: #555;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+
+/* 값 */
+.detail-row .value {
+	font-size: 15px;
+	color: #333;
+}
+
+/* 내용 전용 박스 */
+.content-box {
+	background-color: #f7f7f7;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 12px;
+	font-size: 14px;
+	color: #444;
+	min-height: 80px;
+	white-space: pre-wrap; /* 줄바꿈 유지 */
+}
+
+/* 구분선 스타일 */
+hr {
+	border: none;
+	border-top: 1px solid #eee;
+	margin: 12px 0;
+}
+
+/* 입력 폼 그룹 정돈 */
+.form-group {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 15px;
+}
+
+.form-group label {
+	font-weight: 600;
+	color: #555;
+	margin-bottom: 6px;
+	font-size: 14px;
+}
+
+/* input/textarea 공통 스타일 */
+.form-group input[type="text"],
+.form-group input[type="hidden"],
+.form-group input[type="number"],
+.form-group textarea {
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	font-size: 14px;
+	font-family: 'Segoe UI', sans-serif;
+}
+
+/* 내용 입력창 박스 스타일 (상세보기 박스와 통일) */
+.content-box {
+	background-color: #f7f7f7;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 12px;
+	font-size: 14px;
+	color: #444;
+	resize: vertical;
+	min-height: 100px;
+}
+
+/* hr 구분선 */
+.modal-content hr {
+	border: none;
+	border-top: 1px solid #eee;
+	margin: 12px 0;
+}
+

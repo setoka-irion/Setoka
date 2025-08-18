@@ -1,0 +1,286 @@
+.message-list-container {
+	display: flex;
+	 width: 100%;
+	 max-width: 1000%;
+	 margin: 0 auto; /* 전체 컨테이너는 가운데 정렬 */
+}
+
+.messageBoxType {
+    position: relative;
+    width: 200px;
+    background-color: rgb(255, 255, 255);
+    padding: 10px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    text-align: center;
+    border-right: 1px solid rgb(255, 255, 255); /* 얇은 경계선 */
+
+}
+
+.messageBoxType::after {
+    content: "";
+    position: absolute;
+    top: 10%;
+    bottom: 10%;
+    right: 0;
+    width: 2px;
+    background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
+    pointer-events: none;
+    border-radius: 0 10px 10px 0;
+}
+
+.messageBoxType button {
+	width: 90%;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 8px;
+	background: rgb(128, 255, 255);
+	color: #333;
+	font-weight: 600;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+	transition: all 0.2s ease;
+	cursor: pointer;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.messageBoxType button:hover {
+	background: rgb(255, 128, 0);
+	color: #fff;
+	transform: translateX(2px);
+}
+
+.message-list {
+	flex-grow: 1;
+	box-sizing: border-box;
+	max-width: 800px;
+	margin: 40px auto;
+	padding: 20px;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	text-align: center;
+	margin-left: 370px;
+	margin-top: 10px;
+}
+
+.message-list h1 {
+	text-align: center;
+	color: #333;
+	margin-bottom: 30px;
+	font-weight: bold;
+}
+
+.message-card {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	margin-bottom: 20px;
+	overflow: hidden;
+	transition: box-shadow 0.3s ease;
+}
+
+.message-card:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	cursor: pointer;
+}
+
+.message-card .box-icon {
+    display: inline-block;
+    margin-left: 10px;
+    max-width: 30px; /* 고정 너비 설정으로 정렬 보정 */
+    text-align: center;
+}
+
+.message-card .box-icon.hidden {
+    visibility: hidden; /* 공간은 유지하되 보이지 않게 */
+}
+
+.message-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.message-summary > div {
+    flex: 1; /* 균등 분할 */
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message-summary .sender {
+    font-weight: 600;
+    color: #2c3e50;
+    max-width: 20%;
+}
+
+.message-summary .title {
+    font-weight: 700;
+    color: #34495e;
+    max-width: 40%;
+}
+
+.message-summary .status {
+    text-transform: uppercase;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #3498db;
+    max-width: 15%;
+}
+
+.message-summary .date {
+    font-size: 0.85em;
+    color: #7f8c8d;
+    text-align: right;
+    max-width: 25%;
+}
+
+.message-summary .button {
+	padding: 0px 16px;        /* 위아래 패딩으로 높이 조절 */
+	  line-height: 32px; /* 텍스트 수직 중앙 정렬 */
+	  border-radius: 5px;
+	  background: #8b5e3c;
+	  color: #fff;
+	  font-weight: 700;
+	  border: none;
+	  cursor: pointer;
+	  flex-shrink: 0;
+	  margin: 0;
+	  font-size: 14px;
+}
+
+.message-summary .button:hover {
+	background-color: rgb(255, 128, 0);
+}
+
+
+.message-detail {
+    /* 기존 그대로 유지 */
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    border-radius: 12px;
+    padding: 20px 25px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+    font-size: 16px;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    transition: all 0.3s ease;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    /* 추가: 내용과 아이템 묶음 간격 명확히 */
+}
+
+.message-detail > div.detail-item {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+/* 내용 박스는 flex-basis 크게 */
+.message-detail > div.detail-item.content-box {
+    flex: 1 1 100%;
+}
+
+/* 아이템 종류 + 값을 묶는 컨테이너 */
+.message-detail .item-info {
+    display: flex;
+    gap: 20px;
+    flex: 1 1 100%;
+}
+
+/* 각각 아이템 종류와 값은 flex-grow 없이 최소폭 유지 */
+.message-detail .item-info > div {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 0; /* 한 줄이니까 아래 여백 제거 */
+}
+
+/* strong과 span 스타일 기존 유지 */
+.message-detail strong {
+    color: #0056b3;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.message-detail span {
+    color: #555;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+.message-detail .btn {
+    flex-basis: 100%;
+    margin-top: 20px;
+    padding: 10px 26px;
+    background:  #8b5e3c;
+    background-image: linear-gradient(45deg, #8b5e3c 100%, #0056b3 100%);
+    border-radius: 30px;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+   
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.message-detail .btn:hover {
+    background-image: linear-gradient(45deg, rgb(255, 128, 0) 100%, #003f7f 100%);
+	transform: translateY(-1px);
+    
+    cursor: pointer;
+}
+
+
+.message-list .btn {
+	display: inline-block;
+	margin-top: 10px;
+	padding: 8px 16px;
+	background-color: #28a745;
+	color: white;
+	text-decoration: none;
+	border-radius: 5px;
+	font-weight: 600;
+	transition: background-color 0.25s ease;
+}
+
+.message-list .btn:hover {
+	background-color: #1e7e34;
+}
+
+.message-list button {
+	display: block;
+	margin: 30px auto 0;
+	padding: 12px 20px;
+	background-color:  #8b5e3c;
+	border: none;
+	color: white;
+	border-radius: 6px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.25s ease;
+}
+
+.message-list button:hover {
+	background-color: #0056b3;
+}

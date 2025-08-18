@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+</html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>입양 상세 페이지</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style>
+		/* reset & 기본 */
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #f4f7fb;
+			margin: 0;
+			color: #333;
+			text-align: center;
+		}
+
+		.container {
+			position: relative;
+			max-width: 1200px;
+			margin: 0 auto;
+			background-color: #fff;
+			padding: 30px 40px;
+			border-radius: 12px;
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+			text-align: left;
+		}
+
+		/* 메시지 */
+		.message {
+			font-weight: 600;
+			margin-bottom: 20px;
+			padding: 12px 15px;
+			border-radius: 8px;
+		}
+
+		.message.error {
+			color: #b32020;
+			background-color: #f8d7da;
+			border: 1px solid #f5c2c7;
+		}
+
+		.message.success {
+			color: #216e21;
+			background-color: #d4edda;
+			border: 1px solid #c3e6cb;
+		}
+
+
+
+		/*=== 게시판 + 목록버튼 ===*/
+		.head-container {
+			display: flex;
+			/* 자식 요소들을 가로로 정렬 */
+			justify-content: space-between;
+			/* 양쪽 끝에 요소들을 배치 */
+			align-items: center;
+			/* 세로 중앙 정렬 */
+			margin-bottom: 20px;
+			/* 제목 아래 여백 */
+		}
+
+		/* 제목 스타일 */
+		.container h1 {
+			margin: 0;
+			/* h1 태그의 기본 margin을 제거 */
+			font-size: 2.2rem;
+			color: #333;
+		}
+
+		.back-button a {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #8b5e3c;
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+			font-weight: bold;
+			transition: background-color 0.3s ease;
+		}
+
+		.back-button a:hover {
+			background-color: #8b5e3c;
+			/* 호버 시 조금 더 진한 녹색 */
+		}
+
+		@media (max-width: 640px) {
+			.header-container {
+				flex-direction: column;
+				/* 세로로 정렬 */
+				align-items: flex-start;
+				/* 왼쪽 정렬 */
+			}
+
+			.back-button {
+				margin-top: 10px;
+				/* 버튼과 제목 사이 여백 */
+			}
+		}
+
+
+		/* 버튼 공통 */
+		.btn {
+			display: inline-block;
+			padding: 10px 20px;
+			border-radius: 6px;
+			font-weight: 600;
+			cursor: pointer;
+			text-decoration: none;
+			border: none;
+			transition: background-color .3s ease, box-shadow .3s ease;
+		}
+
+		.btn-primary {
+			background-color: #8b5e3c;
+			color: #fff;
+			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
+		}
+
+		.btn-primary:hover {
+			background-color: #8b5e3c;
+			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
+		}
+
+		.btn-success {
+			background-color: #4caf50;
+			color: white;
+		}
+
+		.btn-success:hover {
+			background-color: #3a8e38;
+		}
+
+		.btn-danger {
+			background-color: #e74c3c;
+			color: white;
+		}
+
+		.btn-danger:hover {
+			background-color: #b62d20;
+		}
+
+		.btn-warning {
+			background-color: #f39c12;
+			color: white;
+		}
+
+		.btn-warning:hover {
+			background-color: #c67a0a;
+		}
+
+		/* 상단 버튼 그룹 */
+		.top-buttons {
+			margin-bottom: 30px;
+			text-align: right;
+		}
+
+		.top-buttons .btn+.btn {
+			margin-left: 12px;
+		}
+
+		/* 헤더 테이블 */
+		.header-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 25px;
+			border-radius: 12px;
+			/* 테이블 모서리를 둥글게 만듭니다 */
+			overflow: hidden;
+			/* 모서리를 둥글게 만들 때 필요 */
+		}
+
+		.header-table th,
+		.header-table td {
+			padding: 12px 15px;
+			border-bottom: 2px solid #e1e4e8;
+			text-align: center;
+			font-size: 1.1rem;
+			color: #555;
+			white-space: nowrap;
+			/* 텍스트를 한 줄에 표시 */
+			overflow: hidden;
+			/* 넘치는 부분을 숨김 */
+			text-overflow: ellipsis;
+			/* 숨겨진 부분에 ... 표시 */
+		}
+
+		.header-table th {
+			background-color: #f7f9fb;
+		}
+
+
+		.header-table td:nth-child(1) {
+			text-align: left;
+		}
+
+		.header-table th:nth-child(1) {
+			text-align: left;
+		}
+
+		/*=== 작성자 정보 ===*/
+		.author-info {
+			/* 이미지와 닉네임을 가로로 정렬 */
+			display: flex;
+			align-items: center;
+			/* 세로 중앙 정렬 */
+			gap: 8px;
+			/* 이미지와 닉네임 사이 간격 */
+			justify-content: center;
+			/* 가로 중앙 정렬 */
+		}
+
+		.profile-image {
+			width: 50px;
+			/* 이미지 크기 */
+			height: 50px;
+			/* 이미지 크기 */
+			border-radius: 50%;
+			/* 이미지를 동그랗게 만듭니다 */
+			border: 1px solid #ddd;
+			object-fit: cover;
+			/* 이미지가 잘리지 않고 채워지도록 합니다 */
+		}
+
+		/* 액션 버튼들 (수정/삭제/신고) */
+		.action-buttons {
+			float: right;
+			margin-top: -45px;
+		}
+
+		.action-buttons form,
+		.action-buttons button {
+			display: inline-block;
+			margin-left: 10px;
+		}
+
+		/* 본문 테이블*/
+		.content-table {
+			width: 100%;
+			border-collapse: separate;
+			/* border-spacing 속성을 사용하기 위해 collapse 대신 separate 사용 */
+			border-spacing: 0 10px;
+			/* 행(tr) 사이에 10px 간격 추가 */
+			margin-bottom: 30px;
+		}
+
+		.content-table th {
+			background-color: #f7f9fb;
+			text-align: center;
+			font-weight: 600;
+			padding: 15px;
+			/* 여백을 늘려 여유로운 느낌 주기 */
+			border-bottom: 1px solid #e0e0e0;
+			/* 옅은 테두리 사용 */
+		}
+
+		.content-table td {
+			border: none;
+			/* 기존 테두리 제거 */
+			background-color: #ffffff;
+			/* 배경색을 흰색으로 지정 */
+			padding: 15px;
+			/* 여백을 늘려 여유로운 느낌 주기 */
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+			/* 은은한 그림자 효과 추가 */
+			border-radius: 8px;
+			/* 둥근 모서리 추가 */
+		}
+
+		.content-table td[colspan="2"] {
+			padding-top: 30px;
+			/* 본문 내용 위쪽 여백을 더 넓게 */
+			text-align: left;
+		}
+
+		/* === 좋아요 ===*/
+		.like-section {
+			display: flex;
+			justify-content: center;
+			/* 가로 방향으로 중앙 정렬 */
+			margin: 20px 0 40px;
+			font-size: 1.2rem;
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+			gap: 15px;
+		}
+
+		.like-section span {
+			color: #e74c3c;
+			user-select: none;
+		}
+
+		.like-section form button.btn-danger {
+			background-color: #e74c3c;
+			border: none;
+			padding: 8px 16px;
+			border-radius: 6px;
+			color: white;
+			font-weight: 600;
+			cursor: pointer;
+			transition: background-color .3s ease;
+		}
+
+		.like-section form button.btn-danger:hover {
+			background-color: #b62d20;
+		}
+
+		/*=== 게시글 작성자 쪽지 ===*/
+		.like-section form button.message-button {
+			background-color: white;
+			color: #333;
+			border: 1px solid #ddd;
+			/* 기존 스타일과 맞추기 위해 패딩과 폰트 굵기 등을 추가합니다. */
+			padding: 8px 16px;
+			border-radius: 6px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: background-color .3s ease;
+		}
+
+		.like-section form button.message-button:hover {
+			background-color: #f0f0f0;
+			color: #000;
+			border-color: #bbb;
+		}
+
+		/*=== 쪽지 버튼 ===*/
+		.message-button {
+			background-color: white;
+			/* 흰색 배경 */
+			color: #333;
+			/* 어두운 글씨색 */
+			border: 1px solid #ddd;
+			/* 살짝 옅은 테두리 */
+		}
+
+		/* 마우스 오버 효과 */
+		.message-button:hover {
+			background-color: #f0f0f0;
+			/* 마우스 오버 시 연한 회색 */
+			color: #000;
+			/* 글씨색은 더 진하게 */
+			border-color: #bbb;
+			/* 테두리색도 진하게 */
+		}
+
+		/* 쪽지 버튼 내 아이콘 스타일 */
+		.message-button::before {
+			content: "✉️";
+			/* 이모지 아이콘 추가 (쪽지 모양) */
+			font-size: 1.2em;
+			/* 아이콘 크기 조절 */
+		}
+
+		/* === 댓글 ===  */
+		.comment-title {
+			margin: 0 auto 0px auto;
+			max-width: 1000px;
+
+		}
+
+		/* 댓글 목록 컨테이너 (PC 화면에 최적화) */
+		.comment-list-container {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			margin-bottom: 40px;
+			max-width: 1000px;
+			/* PC 화면에서 최대 너비 */
+			margin: 0 auto;
+			/* 중앙 정렬 */
+		}
+
+		/* 각 댓글 카드 스타일 */
+		.comment-card {
+			background-color: #ffffff;
+			border: 1px solid #e0e0e0;
+			border-radius: 10px;
+			padding: 20px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+		}
+
+		/* 댓글 헤더 (작성자 정보 + 좋아요/날짜) */
+		.comment-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
+		}
+
+		/* 작성자 정보 */
+		.comment-author-info {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.comment-author-info .profile-image {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			object-fit: cover;
+		}
+
+		.comment-author-info .nick-name {
+			font-weight: bold;
+			color: #333;
+		}
+
+		.comment-author-info .user-grade {
+			font-size: 0.85rem;
+			color: #888;
+		}
+
+		/* 좋아요, 작성일 */
+		.comment-meta {
+			font-size: 0.9rem;
+			color: #888;
+			display: flex;
+			gap: 15px;
+		}
+
+		/* 댓글 내용 */
+		.comment-content-text {
+			margin: 0 0 15px 0;
+			line-height: 1.6;
+			color: #555;
+			white-space: pre-wrap;
+			/* 줄바꿈 유지 */
+		}
+
+		/* 버튼 */
+		.comment-actions {
+			display: flex;
+			gap: 10px;
+			margin-top: 10px;
+		}
+
+		.comment-actions .btn {
+			padding: 5px 10px;
+			font-size: 0.8rem;
+			border-radius: 5px;
+		}
+
+		.comment-actions .btn-edit {
+			background-color: #8b5e3c;
+			color: white;
+			border: none;
+		}
+
+		.comment-actions .btn-delete {
+			background-color: #e74c3c;
+			color: white;
+			border: none;
+		}
+
+		.comment-actions .btn-report {
+			background-color: #f39c12;
+			color: white;
+			border: none;
+		}
+
+
+		/* 댓글 수정 폼 */
+		.edit-form textarea {
+			width: 100%;
+			min-height: 80px;
+			padding: 10px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			resize: vertical;
+		}
+
+		.edit-form-buttons {
+			display: flex;
+			justify-content: flex-end;
+			gap: 8px;
+			margin-top: 8px;
+		}
+
+		.edit-form-buttons .btn {
+			padding: 8px 15px;
+			border: none;
+			border-radius: 5px;
+		}
+
+		.edit-form-buttons .btn-success {
+			background-color: #4caf50;
+			color: white;
+		}
+
+		/* 모바일 환경에서는 너비를 100% 사용하도록 */
+		@media (max-width: 800px) {
+			.comment-list-container {
+				max-width: 100%;
+				padding: 0 15px;
+			}
+		}
+
+		.comment-write {
+			max-width: 1000px;
+			margin-bottom: 40px;
+			margin: 0 auto 0 auto;
+		}
+
+		/* 댓글 작성 폼 */
+		.comment-form {
+			max-width: 1000px;
+			margin-bottom: 40px;
+			margin: 0 auto 40px auto;
+			text-align: left;
+		}
+
+		.comment-form textarea {
+			width: 100%;
+			min-height: 100px;
+			padding: 12px 15px;
+			font-size: 1rem;
+			border-radius: 10px;
+			border: 1px solid #ccc;
+			resize: vertical;
+			font-family: inherit;
+		}
+
+		.comment-form button {
+			margin-top: 12px;
+			background-color: #8b5e3c;
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			font-weight: 700;
+			font-size: 1rem;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: background-color .3s ease;
+		}
+
+		.comment-form button:hover {
+			background-color: #8b5e3c;
+		}
+
+		/* 반응형 */
+		@media (max-width: 640px) {
+			.container {
+				padding: 20px 15px;
+			}
+
+			.header-table,
+			.content-table,
+			.comments-table {
+				font-size: 0.85rem;
+			}
+
+			.action-buttons {
+				float: none;
+				margin-top: 15px;
+				text-align: center;
+			}
+
+			.top-buttons {
+				text-align: center;
+				margin-bottom: 25px;
+			}
+
+			.top-buttons .btn {
+				margin: 6px 6px;
+				padding: 8px 16px;
+				font-size: 0.9rem;
+			}
+
+			.like-section {
+				justify-content: center;
+				font-size: 1rem;
+				gap: 10px;
+			}
+
+			.comments-table th,
+			.comments-table td {
+				padding: 8px 6px;
+			}
+		}
+
+		/*==== 맨 위로 가기 버튼 스타일 ====*/
+		.scroll-top-button {
+			display: none;
+			/* 기본적으로 숨김 */
+			position: fixed;
+			/* 화면에 고정 */
+			bottom: 20px;
+			/* 하단에서 20px 위 */
+			right: 20px;
+			/* 우측에서 20px 떨어짐 */
+			z-index: 9999;
+			/* 다른 요소 위에 표시 */
+		}
+
+		/* 버튼의 링크 스타일 */
+		.scroll-top-button a {
+			display: block;
+			background-color: #8b5e3c;
+			color: white;
+			font-size: 24px;
+			padding: 10px 15px;
+			border-radius: 50%;
+			/* 원형 버튼 */
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			text-decoration: none;
+			transition: background-color 0.3s;
+		}
+
+		.scroll-top-button a:hover {
+			background-color: #8b5e3c;
+		}
+
+		/* 모바일 화면에서 버튼 위치 조정 */
+		@media (max-width: 640px) {
+			.scroll-top-button {
+				bottom: 70px;
+				/* 하단 버튼 영역과 겹치지 않게 위치 조정 */
+				right: 15px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div th:replace="~{header :: siteHeader}"></div>
+	<br>
+	<div class="container">
+		<div class="head-container">
+			<h1>입양 게시판</h1>
+			<div class="back-button">
+				<a th:href="@{/Adopt}">목록으로</a>
+			</div>
+		</div>
+		<!-- 메시지 -->
+		<div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+		<div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
+		<div th:if="${deleteSuccess}" class="message success" th:text="${deleteSuccess}"></div>
+
+		<!-- 상단 정보 -->
+		<table class="header-table" style="width: 100%; table-layout: fixed;">
+			<colgroup>
+				<col style="width:55%;" />
+				<col style="width:10%;" />
+				<col style="width:10%;" />
+				<col style="width:10%;" />
+				<col style="width:15%;" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>제목</th>
+					<th>작성자</th>
+					<th>좋아요</th>
+					<th>조회수</th>
+					<th>작성일</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td th:text="${detail.title}">제목</td>
+					<td>
+						<div class="author-info">
+							<img th:src="@{${authorProfilePath}}" alt="프로필 이미지" class="profile-image">
+							<span th:text="${detail.nickName}">작성자</span>
+						</div>
+					</td>
+					<td th:text="${detail.likes}">좋아요</td>
+					<td th:text="${detail.views}">조회수</td>
+					<td>
+						<span th:text="${detail.formattedRegistDate}">2025-07-24</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- 수정/삭제/신고 -->
+		<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+			<th:block th:if="${loginUser != null and loginUser.num == detail.userNum}">
+				<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
+					<button type="submit" class="btn btn-success">수정</button>
+				</form>
+				<form th:action="@{'/AdoptDelete/' + ${detail.boardNum}}" method="post"
+					onsubmit="return confirm('정말 삭제하시겠습니까?');">
+					<button type="submit" class="btn btn-danger">삭제</button>
+				</form>
+			</th:block>
+			<form id="reportForm" th:action="@{/AdoptDetail/{num}/report(num=${detail.boardNum})}" method="post">
+				<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
+			</form>
+
+		</div>
+
+		<!-- 썸네일 -->
+		<div class="form-group" style="text-align: center;">
+			<img th:src="@{${detail.Image_paths}}" alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
+		</div>
+
+		<!-- 본문 -->
+		<table class="content-table">
+			<colgroup>
+				<col style="width: 50%;">
+				<col style="width: 50%;">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>책임비</th>
+					<th>지역</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td th:text="${detail.price}">₩0</td>
+					<td th:text="${detail.area}">지역명</td>
+				</tr>
+				<tr>
+					<td colspan="2" th:utext="${detail.content}"></td> <!-- 이미지 까지 포함됨.-->
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- 좋아요 -->
+		<div class="like-section">
+			<span th:text="${detail.likes}">0</span> ❤️
+			<form th:action="@{/AdoptDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
+				<button type="submit" class="btn btn-danger">좋아요</button>
+			</form>
+			<th:block th:if="${loginUser != null}">
+				<form th:action="@{/CreateLetter}" method="post">
+					<input type="hidden" name="receiver" th:value="${detail.nickName}" />
+					<button type="submit" class="message-button">쪽지</button>
+				</form>
+			</th:block>
+		</div>
+
+		<!-- 댓글 -->
+		<div class="comment-title">
+			<h4>댓글 <span th:text="${detail.commentCount}">0</span>개</h4>
+		</div>
+		<div class="comment-list-container">
+			<div th:each="comment, iterStat : ${comments}" class="comment-card">
+
+				<div class="comment-header">
+					<div class="comment-author-info">
+						<img th:src="@{${comment.profilePath}}" alt="프로필 이미지" class="profile-image">
+						<span class="nick-name" th:text="${comment.nickname}">작성자</span>
+						<span class="user-grade" th:text="${comment.userGrade}">등급</span>
+					</div>
+					<div class="comment-meta">
+						<span class="comment-likes">👍 <span th:text="${comment.likes}">0</span></span>
+						<span class="comment-date" th:text="${comment.formattedRegistDate}">2025-07-24</span>
+					</div>
+				</div>
+
+				<p th:text="${comment.content}" class="comment-content-text"
+					th:attr="id=${'content-span-' + comment.num}">댓글 내용</p>
+
+				<div class="comment-actions">
+					<div>
+						<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
+							style="display:inline;">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<button type="submit" class="btn btn-danger">좋아요</button>
+						</form>
+
+						<th:block th:if="${loginUser != null and loginUser.num == comment.userNum}">
+							<button type="button" class="btn btn-edit"
+								th:onclick="|showEditForm(${comment.num})|">수정</button>
+							<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
+								onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');" style="display:inline-block;">
+								<input type="hidden" name="commentNum" th:value="${comment.num}" />
+								<button type="submit" class="btn btn-delete">삭제</button>
+							</form>
+						</th:block>
+						<form th:action="@{/AdoptDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
+							style="display:inline-block;" onsubmit="return confirm('정말 이 댓글을 신고하시겠습니까?');">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<button type="submit" class="btn btn-report">🚨신고</button>
+						</form>
+					</div>
+
+					<!--댓글 쪽지 -->
+					<th:block th:if="${loginUser != null}">
+						<form th:action="@{/CreateLetter}" method="post" style="margin-left: auto;">
+							<input type="hidden" name="receiver" th:value="${comment.nickname}" />
+							<button type="submit" class="message-button">쪽지</button>
+						</form>
+					</th:block>
+				</div>
+
+				<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
+					class="edit-form" th:attr="id=${'edit-form-' + comment.num}" style="display:none;">
+					<input type="hidden" name="commentNum" th:value="${comment.num}" />
+					<textarea name="content" required th:text="${comment.content}"></textarea><br />
+					<div class="edit-form-buttons">
+						<button type="submit" class="btn btn-success">저장</button>
+						<button type="button" class="btn" th:onclick="|cancelEdit(${comment.num})|">취소</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- 댓글 작성 -->
+		<div class="comment-write">
+			<h4>댓글 작성</h4>
+		</div>
+		<form class="comment-form" th:action="@{/AdoptDetail/{num}/comment(num=${detail.boardNum})}" method="post"
+			style="display: flex; flex-direction: column; align-items: flex-end;">
+			<textarea id="commentContent" name="content" placeholder="댓글을 입력하세요" required></textarea>
+			<br />
+			<button type="submit" class="btn btn-primary">댓글 등록</button>
+		</form>
+	</div>
+
+	<!-- 위로가기 스크롤 버튼 -->
+	<div id="scrollTopButton" class="scroll-top-button">
+		<a href="#" aria-label="맨 위로">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+				stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+				class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up-lines">
+				<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+				<path
+					d="M9 12h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v3h-6v-3z" />
+				<path d="M9 21h6" />
+				<path d="M9 18h6" />
+			</svg>
+		</a>
+	</div>
+
+	<script>
+		function confirmReport() {
+			if (confirm("정말 이 게시글을 신고하시겠습니까?")) {
+				document.getElementById("reportForm").submit();
+			}
+		}
+		function showEditForm(commentNum) {
+			document.getElementById('content-span-' + commentNum).style.display = 'none';
+			document.getElementById('edit-form-' + commentNum).style.display = 'block';
+		}
+		function cancelEdit(commentNum) {
+			document.getElementById('content-span-' + commentNum).style.display = 'inline';
+			document.getElementById('edit-form-' + commentNum).style.display = 'none';
+		}
+
+		// 댓글 enter 최대횟수 제한 코드
+		const commentTextarea = document.getElementById('commentContent');
+		let enterCount = 0;
+
+		// 키보드 입력 이벤트를 감지
+		commentTextarea.addEventListener('keydown', function (event) {
+			if (event.key === 'Enter') {
+				const maxEnter = 1; // 연속된 엔터 횟수를 1회로 제한
+
+				if (enterCount >= maxEnter) {
+					event.preventDefault();
+				}
+				enterCount++;
+			} else {
+				enterCount = 0;
+			}
+		});
+
+		// 위로가기 버튼
+		document.addEventListener('DOMContentLoaded', function () {
+			const scrollTopButton = document.getElementById('scrollTopButton');
+
+			window.addEventListener('scroll', function () {
+				// 스크롤이 200px 이상 내려갔을 때 버튼을 보이게 함
+				if (window.scrollY > 200) {
+					scrollTopButton.style.display = 'block';
+				} else {
+					scrollTopButton.style.display = 'none';
+				}
+			});
+
+			// 버튼 클릭 시 맨 위로 부드럽게 스크롤
+			scrollTopButton.addEventListener('click', function (event) {
+				event.preventDefault(); // 기본 링크 동작 방지
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth'
+				});
+			});
+		});
+	</script>
+
+</body>
+
+</html>

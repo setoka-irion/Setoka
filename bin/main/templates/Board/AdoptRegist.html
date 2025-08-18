@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<meta charset="UTF-8">
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- Bootstrap -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Summernote -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.js"></script>
+
+	<!-- 한국어 번역 (선택) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-ko-KR.min.js"></script>
+
+	<title>입양 글 등록</title>
+	<style>
+		body {
+			background-color: #f8f8f8;
+			font-family: 'Noto Sans KR', sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		.all-wrapper{
+			width:100%;
+		}
+
+		.main-title {
+			max-width: 60%;
+			margin: 40px auto 20px;
+			padding: 0 20px;
+			box-sizing: border-box;
+			font-weight: 700;
+			font-size: 2.2rem;
+			color: #4a3723;
+		}
+
+		.container {
+			background-color: #fff;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			width: 80%;
+			margin: 0 auto 40px;
+			padding: 30px 40px;
+			box-sizing: border-box;
+			position: relative;
+			box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+		}
+
+		label {
+			display: block;
+			margin: 15px 0 8px;
+			font-weight: 600;
+			color: #5a4b32;
+			font-size: 1rem;
+		}
+
+		input[type="text"],
+		input[type="number"],
+		textarea,
+		input[type="file"] {
+			width: 100%;
+			padding: 10px 12px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-size: 1rem;
+			color: #333;
+			box-sizing: border-box;
+			transition: border-color 0.3s ease;
+		}
+
+		input[type="text"]:focus,
+		input[type="number"]:focus,
+		textarea:focus,
+		input[type="file"]:focus {
+			border-color: #8b5e3c;
+			outline: none;
+		}
+
+		textarea {
+			resize: vertical;
+			min-height: 150px;
+			font-family: inherit;
+		}
+
+		button[type="submit"] {
+			margin-top: 25px;
+			padding: 12px 28px;
+			background-color: #8b5e3c;
+			border: none;
+			border-radius: 6px;
+			color: white;
+			font-weight: 700;
+			font-size: 1.1rem;
+			cursor: pointer;
+			box-shadow: 0 3px 6px rgba(139, 94, 60, 0.4);
+			transition: background-color 0.3s ease;
+		}
+
+		button[type="submit"]:hover {
+			background-color: #6f4e2a;
+		}
+
+		.back-button {
+			position: absolute;
+			top: -45px;
+			right: 0;
+		}
+
+		.back-button a {
+			display: inline-block;
+			padding: 8px 18px;
+			background-color: #8b5e3c;
+			color: white;
+			border-radius: 6px;
+			font-weight: 600;
+			text-decoration: none;
+			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
+			transition: background-color 0.3s ease;
+		}
+
+		.back-button a:hover {
+			background-color: #6f4e2a;
+		}
+
+		.error-message p {
+			color: #d9534f;
+			font-weight: 600;
+			margin: 6px 0;
+		}
+	</style>
+</head>
+
+<body>
+	<div th:replace="~{header :: siteHeader}"></div>
+	<div class="all-wrapper">
+	<div class="main-title">
+		<h1>입양 글 등록</h1>
+	</div>
+
+	<div class="container">
+	  <form th:action="@{/AdoptRegist}" method="post" th:object="${boardDto}" enctype="multipart/form-data">
+	    <div class="error-message" th:if="${#fields.hasErrors('*')}">
+	      <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+	    </div>
+
+			<input type="hidden" th:field="*{userNum}" />
+			<input type="hidden" th:field="*{type}" value="1" />
+
+			<label for="title">제목</label>
+			<input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요" required />
+
+			<label for="content">내용</label>
+			<textarea id="content" th:field="*{content}" rows="10" placeholder="내용을 입력하세요" required></textarea>
+
+			<label>썸네일</label>
+			<input type="file" id="images" name="images" accept="image/*">
+
+			<label for="area">지역</label>
+			<input type="text" id="area" th:field="*{area}" placeholder="예: 서울, 경기 등" required />
+
+			<label for="price">비용 (무료일 경우 0)</label>
+			<input type="number" id="price" th:field="*{price}" min="0" placeholder="0" />
+
+			<!-- ✅ 이미지 파일 업로드 -->
+			<!--    <label for="images">사진 업로드 (여러 장 가능)</label>
+		    <input type="file" name="images" multiple accept="image/*" />-->
+			<button type="submit">등록</button>
+		</form>
+
+		<div class="back-button">
+			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
+		</div>
+	</div>
+	</div>
+</body>
+<script>
+	$(document).ready(function () {
+		$('#content').summernote({
+			height: 300,
+			lang: 'ko-KR',
+			placeholder: '입양글의 내용을 입력하세요',
+			callbacks: {
+				onImageUpload: function (files) {
+					for (let i = 0; i < files.length; i++) {
+						uploadImage(files[i]);
+					}
+				}
+			}
+		});
+
+		function uploadImage(file) {
+			const formData = new FormData();
+			formData.append("file", file);
+			const userNum = document.querySelector('input[name="userNum"]').value;
+			formData.append("userNum", userNum);     // 사용자 번호 추가
+
+			$.ajax({
+				url: '/upload/image', // 이미지 업로드용 컨트롤러
+				method: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function (url) {
+					$('#content').summernote('insertImage', url);
+				},
+				error: function () {
+					alert('이미지 업로드 실패');
+				}
+			});
+		}
+	});
+</script>
+
+</html>

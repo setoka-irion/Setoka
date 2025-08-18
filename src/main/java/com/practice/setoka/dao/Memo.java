@@ -3,13 +3,14 @@ package com.practice.setoka.dao;
 import java.time.LocalDateTime;
 
 public class Memo {
-	private int num;
-	private int userNum;
-	private int animalNum;
-	private String title;
-	private String content;
-	private LocalDateTime scheduleDate;
-	private LocalDateTime registerDate;
+	private int num;						//고유번호
+	private int userNum;					//유저번호
+	private String animalNum;				//동물번호
+	private String title;					//제목
+	private String content;					//내용
+	private LocalDateTime scheduleDate;		//스케줄날짜
+	private LocalDateTime registerDate;		//작성일
+	
 	public int getNum() {
 		return num;
 	}
@@ -22,10 +23,10 @@ public class Memo {
 	public void setUserNum(int userNum) {
 		this.userNum = userNum;
 	}
-	public int getAnimalNum() {
+	public String getAnimalNum() {
 		return animalNum;
 	}
-	public void setAnimalNum(int animalNum) {
+	public void setAnimalNum(String animalNum) {
 		this.animalNum = animalNum;
 	}
 	public String getTitle() {
@@ -53,5 +54,15 @@ public class Memo {
 		this.registerDate = registerDate;
 	}
 	
+	public int[] getIntAnimalNum() {
+		if(animalNum == null)
+			return null;
+		String[] animalNumStr = animalNum.split(",");
+		int[] animalNumInt = new int[animalNumStr.length];
+		for(int i=0; i<animalNumStr.length;i++) {
+			animalNumInt[i] = Integer.parseInt(animalNumStr[i].trim());
+		}
+		return animalNumInt;
+	}
 	
 }

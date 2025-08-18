@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.setoka.mapper.BoardMapper">
+	
+<!--	 총 게시글 수 -->
+	<select id="countBoards" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM board WHERE type = #{type}
+	</select>
+	
+	<!--인기 게시글-->
+	<select id="popularPosts" resultMap="boardWithUserMap">
+	SELECT b.*, u.nickname,
+       COALESCE(c.comments_counts, 0) AS comments_counts,
+       ((b.views * 0.5 + b.likes * 1.5 + COALESCE(c.comments_counts, 0) * 1.0) 
+       / POW(DATEDIFF(NOW(), b.registerDate) + 1, 1.5)) 
+       AS popularity_score
+	FROM board b
+	LEFT JOIN (
+    SELECT boardNum, COUNT(*) AS comments_counts
+    FROM comments GROUP BY boardNum
+	) c ON b.num = c.boardNum
+	JOIN users u ON b.userNum = u.num
+	WHERE b.type = #{type}
+	ORDER BY popularity_score DESC
+	LIMIT 10
+	</select>
+	
+	
+	
+<!--	 글 등록 -->
+	<insert id="insertBoard" parameterType="com.practice.setoka.dto.BoardDto">
+	INSERT INTO board (userNum, title, content, type, price, area, Image_paths)
+	VALUES (#{userNum}, #{title}, #{content}, #{type}, #{price}, #{area}, #{Image_paths})
+	</insert>
+	
+<!--	 글 수정 -->
+	<update id="updateBoard" parameterType="com.practice.setoka.dto.BoardDto">
+		UPDATE board
+		SET 
+		title = #{board.title}, content = #{board.content}, 
+		price = #{board.price}, area = #{board.area}, Image_paths = #{board.Image_paths}
+		WHERE num = #{num}
+	</update>
+	
+	
+<!--	 글 삭제 (타입을 0번으로 지정)-->
+	<update id="deleteBoard" parameterType="int">
+		UPDATE board set type='0' WHERE num = #{num}
+	</update> 
+
+
+
+
+<!--	게시글 조회수 증가 -->
+	<update id="increaseViewsBoard" parameterType="int">
+		UPDATE board SET views = views + 1 WHERE num = #{num}
+	</update>
+	
+	
+	
+	
+	
+<!--	유저 아이디로 검색 -->
+	<select id="findBoardsByUserId" parameterType="String" resultMap="boardWithUserMap">
+		SELECT b.*, 	u.nickName
+		FROM board b JOIN users u ON b.userNum = u.num 
+		WHERE u.id = #{id} AND type !=0
+		ORDER BY b.registerDate DESC
+	</select>
+
+<!--	 게시글 제목으로 검색 -->
+	<select id="findBoardsByTitle"  resultMap="boardWithUserMap">
+		SELECT 
+    	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
+    	b.type, b.likes, b.views, b.price, b.area, b.registerDate
+    	FROM board b JOIN users u 
+    	ON b.userNum = u.num 
+		WHERE b.title LIKE CONCAT('%', #{title}, '%') AND type !=0
+		ORDER BY b.registerDate DESC
+	</select>
+
+<!--	 게시글 내용으로 검색 -->
+	<select id="findBoardsByContent" resultMap="boardWithUserMap">
+		SELECT 
+    	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
+    	b.type, b.likes, b.views, b.price, b.area, b.registerDate
+    	FROM board b JOIN users u 
+    	ON b.userNum = u.num 
+		WHERE b.content LIKE CONCAT('%', #{content}, '%') AND type !=0
+		ORDER BY b.registerDate DESC
+	</select>
+	
+<!--	 통합 검색 -->
+	<select id="searchAll" parameterType="String" resultMap="boardWithUserMap">
+		SELECT 
+		u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content, 
+		b.type, b.likes, b.views, b.price, b.area, b.registerDate
+		FROM board b JOIN users u 
+		ON b.userNum = u.num
+		<where>
+			b.type != 0
+			
+				AND( 
+				b.title LIKE CONCAT('%', #{keyword}, '%')
+			
+				OR b.content LIKE CONCAT('%', #{keyword}, '%')
+			
+				OR u.id LIKE CONCAT('%', #{keyword}, '%')
+			)
+		</where>
+		ORDER BY registerDate DESC
+	</select>
+	
+	
+	
+	
+	
+<!--	 게시글 넘버로 불러오기(상세페이지)-->
+	<select id="findBoardByNum" resultMap="boardWithUserMap" parameterType="int">
+		SELECT 	u.id, 
+    	u.num AS userNum, u.nickname, u.realname, u.grade,
+   	 	b.num, b.userNum, b.title, b.content, b.type, b.likes, 
+   	 	b.views, b.price, b.area, b.registerDate, b.Image_paths,
+   	 	(
+        SELECT COUNT(*) FROM comments c WHERE c.boardNum = b.num
+    	) AS comments_Counts 
+  		FROM board b
+  		JOIN users u ON b.userNum = u.num
+  		WHERE b.num = #{num}
+	</select>
+		
+<!--	 특정 게시판 전체리스트 -->
+	<select id="findBoardsByType" resultMap="boardWithUserMap" parameterType="map">
+		SELECT
+		u.id, u.num AS userNum, u.nickname,
+		b.num, b.userNum, b.title, b.content,
+		b.type, b.likes, b.views, b.price, b.area, b.registerDate, b.Image_paths,
+		IFNULL(c.comments_counts, 0) AS comments_counts 	<!--댓글 수 IFNULL(c.comments_counts, 0) 로 없으면 0으로 처리해줌 -->
+		FROM board b
+		JOIN users u ON b.userNum = u.num
+		LEFT JOIN ( <!--댓글 수를 가져오기 위한 서브쿼리를 왼쪽 외부조인-->
+		SELECT boardNum, COUNT(*) AS comments_counts <!--comments 테이블에서 boardNum 별로 댓글 수(count) 세어줌-->
+		FROM comments
+		WHERE status = 0 <!-- 정상 댓글만 가져오게-->
+		GROUP BY boardNum
+		) c ON b.num = c.boardNum
+		WHERE b.type = #{type}
+		ORDER BY b.registerDate DESC
+		LIMIT #{offset}, #{limit} 
+	</select>
+
+	<!-- 	 유저 고유번호 이용 특정 유저의 게시글 목록 조회 -->
+	<select id="findBoardsByUser" resultMap="boardWithUserMap">
+		SELECT u.num AS userNum, u.id, u.nickname, u.realname, u.grade, 
+		b.num, b.title,	b.content, b.type, b.likes, b.views, 
+		b.price, b.area, b.registerDate
+		FROM users u JOIN board b 
+		ON u.num = b.userNum
+	</select>
+
+	
+
+
+	<!-- 신고 -->
+	<insert id="reportBoard" parameterType="int">
+		INSERT INTO boardreport (boardNum,userNum) 
+		VALUES(#{boardNum},	#{userNum})
+	</insert>
+
+	<select id="findReportByBoardNum" parameterType="int"
+		resultType="com.practice.setoka.dao.Report">
+		SELECT * FROM boardreport WHERE boardNum = #{boardNum}
+	</select>
+	<!-- 게시판 신고 유저내용-->
+	<select id="findReportByBC" parameterType="int"
+		resultType="com.practice.setoka.dao.Report">
+		SELECT * FROM boardreport 
+		WHERE boardNum = #{boardNum} AND userNum = #{userNum}
+	</select>
+
+
+	<insert id="insertTempImage"
+		parameterType="com.practice.setoka.dto.TempImageDto">
+		INSERT INTO tempimage (userNum, imageName) values (#{userNum},
+		#{imageName})
+	</insert>
+
+	<select id="selectTempImageAllToUsersNum"
+		resultType="com.practice.setoka.dao.TempImage">
+		SELECT * FROM tempimage WHERE userNum = #{userNum}
+	</select>
+
+	<delete id="deleteTempImage">
+		DELETE FROM tempimage WHERE userNum = #{userNum}
+	</delete>
+
+	<select id="reportBoardSelect" resultMap="boardWithUserMap">
+		SELECT b.*, u.nickName, u.id
+		FROM board b
+		JOIN users u ON b.userNum = u.num
+		WHERE b.num IN (
+		SELECT boardNum
+		FROM boardreport
+		GROUP BY boardNum
+		HAVING COUNT(*) >= #{count}
+		)
+		AND b.type != 0
+		ORDER BY b.registerDate ASC;
+	</select>
+
+	<!--	 위에 세 쿼리 결과 매핑 -->
+	<resultMap id="boardWithUserMap" type="com.practice.setoka.dto.BoardWithUserDto">
+		<id property="boardNum" column="num" />
+		<!--		user-->
+		<result property="userNum" column="userNum" />
+		<result property="userId" column="id" />
+		<result property="nickName" column="nickname"/>
+		<result property="realName" column="realname"/>
+		<result property="grade" column="grade"/>
+		<!--		board-->
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="type" column="type"/>
+		<result property="likes" column="likes"/>
+		<result property="views" column="views"/>
+		<result property="price" column="price"/>
+		<result property="commentCount" column="comments_Counts"/>
+		<result property="area" column="area"/>
+		<result property="registerDate" column="registerDate" jdbcType="TIMESTAMP" />
+		<result property="Image_paths" column="Image_paths"/>
+	</resultMap>
+	
+</mapper>

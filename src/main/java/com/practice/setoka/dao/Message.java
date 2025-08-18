@@ -2,12 +2,18 @@ package com.practice.setoka.dao;
 
 import java.time.LocalDateTime;
 
+import com.practice.setoka.Enum.Item;
+import com.practice.setoka.Enum.MessageStatus;
+
 public class Message {
 	private int num;
-	private int sender;
-	private int receiver;
+	private String sender;
+	private String receiver;
 	private String title;
 	private String content;
+	private Item item_Type;
+	private int item_Value;
+	private MessageStatus messageStatus;
 	private LocalDateTime sendTime;
 	
 	public int getNum() {
@@ -16,16 +22,16 @@ public class Message {
 	public void setNum(int num) {
 		this.num = num;
 	}
-	public int getSender() {
+	public String getSender() {
 		return sender;
 	}
-	public void setSender(int sender) {
+	public void setSender(String sender) {
 		this.sender = sender;
 	}
-	public int getReceiver() {
+	public String getReceiver() {
 		return receiver;
 	}
-	public void setReceiver(int receiver) {
+	public void setReceiver(String receiver) {
 		this.receiver = receiver;
 	}
 	public String getTitle() {
@@ -39,6 +45,24 @@ public class Message {
 	}
 	public void setContent(String content) {
 		this.content = content;
+	}
+	public Item getItem_Type() {
+		return item_Type;
+	}
+	public void setItem_Type(Item item_Type) {
+		this.item_Type = item_Type;
+	}
+	public int getItem_Value() {
+		return item_Value;
+	}
+	public void setItem_Value(int item_Value) {
+		this.item_Value = item_Value;
+	}
+	public MessageStatus getMessageStatus() {
+		return messageStatus;
+	}
+	public void setMessageStatus(MessageStatus messageStatus) {
+		this.messageStatus = messageStatus;
 	}
 	public LocalDateTime getSendTime() {
 		return sendTime;

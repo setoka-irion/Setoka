@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+
+<head>
+	<title>탈퇴</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/withdrawal.css}">
+</head>
+
+<body>
+	<div th:replace="~{header :: siteHeader}"></div>
+	<div class="withdrawal-container">
+		<h1>회원탈퇴</h1>
+		<form th:action="@{/Withdrawal}" class="withdrawal-form" method="post">
+			<input type="password" name="password" placeholder="비밀번호" /><br>
+			<button type="submit" class="sub-buttons">확인</button>
+		</form>
+	</div>
+</body>
+
+</html>

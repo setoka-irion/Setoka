@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>IRI-ON</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/CSS/header.css}">
+  <link rel="stylesheet" th:href="@{/CSS/home-popular-post.css}">
+
+</head>
+<style>
+	.carousel-item img {
+	    height: 350px;
+	    width: 800%;
+	    object-fit: cover;
+	    background-color: rgb(255, 255, 255);
+	  }
+
+	  .carousel-control-prev,
+	  .carousel-control-next {
+	    width: 50px;
+	    height: 50px;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    background-color: rgba(0, 0, 0, 0.3);
+	    border-radius: 50%;
+	  }
+
+	  .carousel-control-prev-icon,
+	  .carousel-control-next-icon {
+	    filter: invert(1);
+	    width: 25px;
+	    height: 25px;
+	  }
+
+	  #carouselExample {
+	    max-width: 1100px;
+	    margin: 0 auto; /* 가운데 정렬 */
+	  }
+  </style>
+<body>
+  <!-- 헤더 -->
+  <div th:replace="~{header :: siteHeader}"></div>
+
+  <div class="container">
+      <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+		<div class="carousel-inner">
+		  <th:block th:each="item, iterStat : ${carousel}">
+		    <div class="carousel-item" th:classappend="${iterStat.index == 0} ? ' active'">
+		      
+		      <!-- 링크가 있는 경우 -->
+		      <a th:if="${item.link} != null and ${item.link} != ''" th:href="@{${item.link}}">
+		        <img th:src="@{${item.img}}" class="d-block w-100" th:alt="'배너' + ${iterStat.index + 1}" />
+		      </a>
+
+		      <!-- 링크가 없는 경우 -->
+		      <img th:if="${item.link} == null or ${item.link} == ''"
+		           th:src="@{${item.img}}"
+		           class="d-block w-100"
+		           th:alt="'배너' + ${iterStat.index + 1}" />
+
+		    </div>
+		  </th:block>
+		</div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </button>
+      </div>
+  </divclass="container">
+  
+  
+  
+  <!-- 인기글 섹션 -->
+  <section class="home-popular-post">
+    <h2>추천 게시판</h2>
+
+    <!-- 입양 게시판 -->
+    <h3 class="board-title">입양 게시판</h3>
+    <div class="card-grid">
+      <a th:each="post : ${Adopt}" th:href="@{/AdoptDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+        </div>
+      </a>
+    </div>
+
+    <!-- 자랑 게시판 -->
+    <h3 class="board-title">동물 자랑</h3>
+    <div class="card-grid">
+      <a th:each="post : ${AnimalPride}" th:href="@{/AnimalPrideDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+        </div>
+      </a>
+    </div>
+
+    <!-- 산책 게시판 -->
+    <h3 class="board-title">산책로 추천</h3>
+    <div class="card-grid">
+      <a th:each="post : ${WalkTrail}" th:href="@{/WalkTrailDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+        </div>
+      </a>
+    </div>
+
+    <!-- 중고거래 -->
+    <h3 class="board-title">중고 용품</h3>
+    <div class="card-grid">
+      <a th:each="post : ${UsedGoods}" th:href="@{/UsedGoodsDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+        </div>
+      </a>
+    </div>
+
+    <!-- 꿀팁 게시판 -->
+    <h3 class="board-title">반려 꿀팁</h3>
+    <div class="card-grid">
+      <a th:each="post : ${Knowhow}" th:href="@{/KnowHowDetail/{id}(id=${post.boardNum})}">
+        <div>
+          <img th:src="${post.Image_paths}" alt="썸네일" />
+          <h3 th:text="${post.title}">게시글 제목</h3>
+        </div>
+      </a>
+    </div>
+
+  </section>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</html>

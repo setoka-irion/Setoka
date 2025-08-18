@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+
+<head>
+	<title>편지 확인 폼</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/message-list.css}">
+</head>
+
+
+<body>
+	<div th:replace="~{header :: siteHeader}"></div>
+	
+	<div class="message-list-container">
+		<!-- 안읽음을 읽음으로 변화시키는 조건 (내가 받은 메세지를 볼때) -->
+			<input type="hidden" id="messageBoxType" th:value="${messageBoxType}" />
+
+			<!-- 왼쪽 메뉴 -->
+			<div class="messageBoxType">
+			  <h3>메뉴</h3>
+			  <ul style="list-style-type: none; padding-left: 0;">
+			    <li>
+			      <form action="/MessageList" method="get">
+			        <button type="submit" class="menu-link">받은 쪽지함</button>
+			      </form>
+			    </li>
+			    <li>
+			      <form action="/sent" method="get">
+			        <button type="submit" class="menu-link">보낸 쪽지함</button>
+			      </form>
+			    </li>
+			    <li>
+			      <form action="/CreateLetter" method="post">
+			        <button type="submit" class="menu-link">쪽지 보내기</button>
+			      </form>
+			    </li>
+			  </ul>
+			</div>
+			
+			<div class="message-list">
+				<h1>쪽지함</h1>
+
+				<div class="message-card"
+				     th:each="message : ${messageList}"
+				     th:if="${message.messageStatus.name() != 'DELETE'}"
+					 th:attr="data-message-num=${message.num}">
+					
+					 <div class="message-summary" onclick="toggleDetail(this)">
+					     <!-- 보낸사람 / 받은사람 조건 분기 -->
+					     <div class="sender" 
+					          th:if="${messageBoxType == 'RECEIVED'}" 
+					          th:text="'보낸사람: ' + ${message.sender}">보낸사람</div>
+
+					     <div class="sender" 
+					          th:if="${messageBoxType == 'SENT'}" 
+					          th:text="'받은사람: ' + ${message.receiver}">받은사람</div>
+
+					     <div class="title" th:text="'제목: ' + ${message.title}">제목</div>
+
+					     <!-- 상태 출력: TAKE이면 '읽음'으로 표시 -->
+					     <div class="status" 
+					          th:text="${message.messageStatus.name() == 'TAKE'} ? '읽음' : ${message.messageStatus.displayName}">
+					         상태
+					     </div>
+
+					     <!-- 상자 아이콘: TAKE가 아니면 표시 -->
+						 <div class="box-icon"
+						      th:classappend="${message.messageStatus.name() == 'TAKE' or message.item_Type.name() == 'NONE'} ? ' hidden' : ''"
+						      title="받을 아이템 있음">
+						     📦
+						 </div>
+
+					     <div class="date" 
+					          th:text="${#temporals.format(message.sendTime, 'yyyy-MM-dd HH:mm')}">보낸 시간</div>
+
+					     <form th:action="@{/CreateLetter}" 
+					           method="post" 
+					           th:object="${message}" 
+					           onsubmit="event.stopPropagation();">
+					         <input type="hidden" name="receiver" th:value="${message.sender}" />
+					         <button type="submit" class="button">답장</button>
+					     </form>
+					 </div>
+
+					<div class="message-detail" style="display: none;">
+					    <div class="detail-item content-box">
+					        <strong>내용</strong>
+					        <span th:text="${message.content}">내용</span>
+					    </div>
+
+					    <div class="item-info">
+					        <div class="detail-item">
+					            <strong>아이템 종류</strong>
+					            <span th:text="${message.item_Type}">아이템종류</span>
+					        </div>
+					        <div class="detail-item">
+					            <strong>아이템 값</strong>
+					            <span th:text="${message.item_Value}">값</span>
+					        </div>
+					    </div>
+
+					    <a class="btn"
+					       th:href="@{/GettingGift(messageNum=${message.num})}"
+					       th:if="${message.messageStatus.name() != 'TAKE' 
+					               and message.item_Type != 'NONE'
+					               and message.item_Value != 0}">
+					        받기
+					    </a>
+						<a class="btn"
+						   th:href="@{/DeleteMessage(messageNum=${message.num})}"
+						   th:if="(${message.item_Type == 'NONE'} or ${message.item_Value == 0}) 
+						           or ${message.messageStatus.name() == 'TAKE'}">
+						   삭제
+						</a>
+					</div>
+				</div>
+			</div>
+	</div>
+	
+
+
+</body>
+
+</html>
+
+<script>
+	function toggleDetail(element) {
+	    const detail = element.nextElementSibling;
+		const boxType = document.getElementById('messageBoxType')?.value;
+		
+	    if (detail.style.display === "none") {
+	        detail.style.display = "block";
+
+	        // 상태 영역 찾기 (예: 바로 위 형제에서 .status)
+	        const card = element.parentElement;
+	        const statusEl = element.querySelector('.status');
+			
+	        if (boxType === 'RECEIVED' && statusEl && statusEl.textContent.trim() === '안읽음') {
+	           const messageNum = card.getAttribute('data-message-num');
+	            // AJAX 요청으로 상태 변경 요청
+	            fetch(`/message/read/${messageNum}`, {
+	                method: 'POST',
+	                headers: {
+	                    'Content-Type': 'application/json',
+	                    'X-Requested-With': 'XMLHttpRequest'
+	                }
+	            })
+	            .then(response => {
+	                if (response.ok) {
+	                    // 상태 텍스트를 READ로 변경
+	                    statusEl.textContent = '읽음';
+	                } else {
+	                    console.error('상태 변경 실패');
+	                }
+	            })
+	            .catch(console.error);
+	        }
+	    } else {
+	        detail.style.display = "none";
+	    }
+	}
+
+</script>

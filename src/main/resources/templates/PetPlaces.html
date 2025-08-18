@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<title>반려동물 동반 시설 검색</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<style>
+		body {
+			font-family: 'Segoe UI', sans-serif;
+			background-color: white;
+			margin: 0;
+			padding: 0px;
+		}
+
+		#searchArea {
+			display: flex;
+			justify-content: center;
+			margin: 20px 0;
+		}
+
+		#searchInput {
+			width: 300px;
+			padding: 10px;
+			font-size: 16px;
+			border: 2px solid #ccc;
+			border-radius: 6px 0 0 6px;
+			outline: none;
+		}
+
+		#searchButton {
+			padding: 10px 20px;
+			font-size: 16px;
+			background-color: #8b5e3c;
+			color: white;
+			border: none;
+			border-radius: 0 6px 6px 0;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		#searchButton:hover {
+			background-color: #8b5e3c;
+		}
+
+		#map {
+			width: 100%;
+			max-width: 800px;
+			height: 400px;
+			margin: 0 auto 20px;
+			border-radius: 10px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		#place_list {
+			list-style: none;
+			padding: 0;
+			max-width: 800px;
+			margin: 0 auto;
+		}
+
+		#place_list li {
+			background: white;
+			margin-bottom: 8px;
+			padding: 12px;
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+			cursor: pointer;
+			transition: background-color 0.3s, transform 0.2s;
+		}
+
+		#place_list li:hover {
+			background-color: #f9f9f9;
+			transform: scale(1.01);
+		}
+
+		.buttons-container {
+			text-align: center;
+			margin-top: 30px;
+		}
+
+		.buttons-container button {
+			padding: 10px 20px;
+			font-size: 16px;
+			border-radius: 6px;
+			border: none;
+			background-color: #8b5e3c;
+			color: white;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		.buttons-container button:hover {
+			background-color: #8b5e3c;
+		}
+
+		@media (max-width: 600px) {
+			#searchArea {
+				flex-direction: column;
+				align-items: center;
+			}
+
+			#searchInput {
+				width: 80%;
+				border-radius: 6px;
+				margin-bottom: 10px;
+			}
+
+			#searchButton {
+				width: 80%;
+				border-radius: 6px;
+			}
+		}
+		
+		#pagination {
+			text-align: center;
+			margin: 20px auto 40px; /* 아래 여백을 40px 정도로 추가 */
+		}
+		
+	</style>
+</head>
+
+<body>
+	<div th:replace="~{header :: siteHeader}"></div>
+
+	<h1 style="text-align:center;">반려동물 동반 시설 검색</h1>
+
+	<div id="searchArea">
+		<input type="text" id="searchInput" placeholder="시설명 또는 도로명 주소를 입력하세요" />
+		<button id="searchButton">검색</button>
+	</div>
+
+	<div id="map"></div>
+
+	<ul id="place_list"></ul>
+	<div id="pagination" style="text-align: center; margin-top: 20px;"></div>
+
+
+	<script type="text/javascript"
+		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=83249b3339021bb624206a6f86f3a59e&libraries=services"></script>
+	<script>
+		const API_KEY = "XHC41TNS500y6frF0TuMqYySvFKQL6hse4IAH4hvUiCQKZwN3CAtfQcSzmNIOOcPpDJRG%2B6egChnmBDuJt1mIw%3D%3D";
+		const BASE_API_URL = `https://api.odcloud.kr/api/15111389/v1/uddi:41944402-8249-4e45-9e9d-a52d0a7db1cc`;
+		const totalPages = 5;
+
+		let allItems = [];
+		let markers = [];
+		let map, geocoder;
+
+		function makeMap() {
+			const mapContainer = document.getElementById('map');
+			const mapOption = {
+				center: new kakao.maps.LatLng(37.5665, 126.9780), // 기본: 서울 시청
+				level: 3
+			};
+
+			map = new kakao.maps.Map(mapContainer, mapOption);
+			geocoder = new kakao.maps.services.Geocoder();
+
+			// 위치 권한 요청
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function (position) {
+					const lat = position.coords.latitude;
+					const lon = position.coords.longitude;
+
+					const userPosition = new kakao.maps.LatLng(lat, lon);
+
+					// ✅ 화면만 현재 위치로 이동 (핀은 안 찍음)
+					map.setCenter(userPosition);
+					
+				}, function () {
+					console.warn("📡 위치 정보를 사용할 수 없습니다.");
+					// 실패 시 기본 위치로 유지
+				});
+			} else {
+				console.warn("🚫 이 브라우저는 위치 정보를 지원하지 않습니다.");
+			}
+		}
+
+		function displayMarker(address, callback) {
+			geocoder.addressSearch(address, function (result, status) {
+				if (status === kakao.maps.services.Status.OK) {
+					const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+					const marker = new kakao.maps.Marker({map: map, position: coords});
+					markers.push(marker);
+
+					const infowindow = new kakao.maps.InfoWindow({
+						content: `<div style="width:150px;text-align:center;padding:6px 0;">${address}</div>`
+					});
+					infowindow.open(map, marker);
+
+					if (callback) {
+						callback(coords);
+					}
+				}
+			});
+		}
+
+		async function filter(keyword) {
+			const place_list = document.getElementById("place_list");
+			const pagination = document.getElementById("pagination");
+
+			place_list.innerHTML = "";
+			pagination.innerHTML = "";
+			clearMarker();
+
+			const filtered = allItems.filter(item => {
+				const address = item['도로명주소'] + item['시설명'];
+				return address && address.includes(keyword);
+			});
+
+			if (filtered.length === 0) {
+				place_list.textContent = "검색 결과가 없습니다.";
+				return;
+			}
+			if (keyword.length === 0) {
+				place_list.textContent = "검색어를 입력하세요.";
+				return;
+			}
+			const itemsPerPage = 20;
+			const totalPages = Math.ceil(filtered.length / itemsPerPage);
+
+			function renderPage(pageNum) {
+				place_list.innerHTML = "";
+				clearMarker();
+
+				const start = (pageNum - 1) * itemsPerPage;
+				const end = start + itemsPerPage;
+				const pageItems = filtered.slice(start, end);
+
+				pageItems.forEach(item => {
+					const li = document.createElement("li");
+					const address = item['도로명주소'];
+					li.textContent = `${item['시설명']} - ${address}`;
+					place_list.appendChild(li);
+
+					li.addEventListener('click', () => {
+						displayMarker(address, coords => map.setCenter(coords));
+					});
+				});
+
+				// 마커 찍기
+				pageItems.forEach(item => {
+					const address = item['도로명주소'] + item['시설명'];
+					displayMarker(address);
+				});
+			}
+
+			function renderPagination() {
+				for (let i = 1; i <= totalPages; i++) {
+					const btn = document.createElement("button");
+					btn.textContent = i;
+					btn.style.margin = "0 5px";
+					btn.style.padding = "5px 10px";
+					btn.style.border = "1px solid #ccc";
+					btn.style.backgroundColor = "#fff";
+					btn.style.cursor = "pointer";
+
+					btn.addEventListener("click", () => renderPage(i));
+					pagination.appendChild(btn);
+				}
+			}
+
+			renderPage(1);       // 첫 페이지 기본 출력
+			renderPagination();  // 페이지 버튼 출력
+		}
+
+
+		function clearMarker() {
+			markers.forEach(marker => marker.setMap(null));
+			markers = [];
+		}
+
+		async function fetchAll() {
+			for (let page = 1; page <= totalPages; page++) {
+				const url = `${BASE_API_URL}?page=${page}&perPage=300&serviceKey=${API_KEY}`;
+				try {
+					const response = await fetch(url);
+					const data = await response.json();
+					allItems.push(...(data.data || []));
+				} catch (err) {
+					console.error(`페이지 ${page} 에서 오류 발생:`, err);
+				}
+			}
+		}
+
+		window.onload = function () {
+			makeMap();
+			fetchAll();
+
+			document.getElementById("searchButton").addEventListener("click", () => {
+				const keyword = document.getElementById("searchInput").value.trim();
+				filter(keyword);
+			});
+
+			//enter로 검색
+			document.getElementById("searchInput").addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					document.getElementById("searchButton").click();
+				}
+			});
+
+		};
+	</script>
+</body>
+
+</html>

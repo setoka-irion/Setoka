@@ -3,16 +3,21 @@ package com.practice.setoka.dao;
 import java.time.LocalDateTime;
 
 public class Board {
+	
 	private int num;
 	private int userNum;
 	private String title;
+//	@Convert(converter = JsonConverter.class)
+//	private Map<String, Object> content;
 	private String content;
 	private int type;
-	private int like;
+	private int likes;
 	private int views;
 	private int price;
 	private String area;
 	private LocalDateTime registerDate;
+	
+	
 	
 	public int getNum() {
 		return num;
@@ -44,11 +49,11 @@ public class Board {
 	public void setType(int type) {
 		this.type = type;
 	}
-	public int getLike() {
-		return like;
+	public int getLikes() {
+		return likes;
 	}
-	public void setLike(int like) {
-		this.like = like;
+	public void setLikes(int likes) {
+		this.likes = likes;
 	}
 	public int getViews() {
 		return views;

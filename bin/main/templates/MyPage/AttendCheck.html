@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>출석 달력</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<style>
+		body {
+			font-family: 'Segoe UI', sans-serif;
+			background-color: rgb(255, 255, 255);
+			margin: 0;
+			color: #333;
+		}
+
+		h2 {
+			text-align: center;
+			color: #2c3e50;
+			margin-top: 10px;
+		}
+
+		.calendar-header {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.calendar-header button {
+			background-color:  #8b5e3c;
+			color: white;
+			border: none;
+			padding: 8px 16px;
+			margin: 0 10px;
+			border-radius: 6px;
+			cursor: pointer;
+			font-size: 16px;
+			transition: background-color 0.3s;
+		}
+
+		.calendar-header button:hover {
+			background-color: rgb(255, 128, 0);
+		}
+
+		table {
+			margin: 0 auto;
+			border-collapse: collapse;
+			background-color: #fff;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+		}
+
+		th,
+		td {
+			border: 1px solid #ccc;
+			text-align: center;
+			height: 80px;
+			width: 80px;
+			font-size: 18px;
+			position: relative;
+		}
+
+		th {
+			background-color: #ecf0f1;
+			font-weight: 600;
+		}
+
+		.today {
+			background-color: #d9fdd3;
+			border: 2px solid #4caf50;
+			font-weight: bold;
+			color: #2e7d32;
+		}
+
+		.checked {
+			background-color: #e0f7fa;
+			color: #0277bd;
+			font-weight: bold;
+			cursor: default;
+		}
+
+		@media (max-width: 600px) {
+
+			th,
+			td {
+				height: 60px;
+				width: 60px;
+				font-size: 14px;
+			}
+
+			.calendar-header button {
+				padding: 6px 12px;
+				font-size: 14px;
+			}
+
+			.buttons-container button {
+				width: 80%;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div th:replace="~{header :: siteHeader}"></div>
+
+	<form id="hiddenForm" method="post" action="/point" style="display:none;">
+		<input type="hidden" name="date" id="selectedDateInput" />
+	</form>
+
+	<div class="calendar-header">
+		<button onclick="prevMonth()">&lt;</button>
+		<h2 id="month-year"></h2>
+		<button onclick="nextMonth()">&gt;</button>
+	</div>
+
+	<table id="calendar">
+		<thead>
+			<tr>
+				<th>일</th>
+				<th>월</th>
+				<th>화</th>
+				<th>수</th>
+				<th>목</th>
+				<th>금</th>
+				<th>토</th>
+			</tr>
+		</thead>
+		<tbody id="calendar-body">
+			<!-- 날짜 들어가는 곳 -->
+		</tbody>
+	</table>
+
+	<script>
+		let currentDate = new Date();
+		let currentYear = currentDate.getFullYear();
+		let currentMonth = currentDate.getMonth();
+		let attendanceDates = [];
+
+		const monthNames = [
+			"1월", "2월", "3월", "4월", "5월", "6월",
+			"7월", "8월", "9월", "10월", "11월", "12월"
+		];
+
+		async function loadAttendanceDates() {
+			try {
+				const response = await fetch('/getDate');
+				attendanceDates = await response.json();
+				generateCalendar(currentYear, currentMonth);
+			} catch (e) {
+				console.error("출석 날짜 불러오기 실패", e);
+				generateCalendar(currentYear, currentMonth);
+			}
+		}
+
+		function generateCalendar(year, month) {
+			const today = new Date();
+			const todayDate = today.getDate();
+			const todayMonth = today.getMonth();
+			const todayYear = today.getFullYear();
+
+			const monthYear = document.getElementById("month-year");
+			const calendarBody = document.getElementById("calendar-body");
+			const firstDay = new Date(year, month, 1).getDay();
+			const lastDate = new Date(year, month + 1, 0).getDate();
+
+			monthYear.textContent = `${year}년 ${monthNames[month]}`;
+			calendarBody.innerHTML = "";
+			let row = document.createElement("tr");
+
+			for (let i = 0; i < firstDay; i++) {
+				row.appendChild(document.createElement("td"));
+			}
+
+			for (let day = 1; day <= lastDate; day++) {
+				const cell = document.createElement("td");
+				cell.textContent = day;
+
+				const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+				if (attendanceDates.includes(formattedDate)) {
+					cell.classList.add("checked");
+					cell.innerHTML = day + "<br>✓";
+				}
+
+				if (year == todayYear && month == todayMonth && day == todayDate) {
+					cell.classList.add("today");
+				}
+
+				cell.addEventListener("click", function () {
+					if (attendanceDates.includes(formattedDate)) {
+						alert("출석체크가 이미 완료되었습니다.");
+						return;
+					}
+
+					cell.classList.add("checked");
+					cell.innerHTML = day + "<br>✓";
+					document.getElementById("selectedDateInput").value = formattedDate;
+					document.getElementById("hiddenForm").submit();
+				});
+
+				row.appendChild(cell);
+
+				if ((firstDay + day) % 7 === 0 || day === lastDate) {
+					calendarBody.appendChild(row);
+					row = document.createElement("tr");
+				}
+			}
+		}
+
+		function prevMonth() {
+			currentMonth--;
+			if (currentMonth < 0) {
+				currentMonth = 11;
+				currentYear--;
+			}
+			generateCalendar(currentYear, currentMonth);
+		}
+
+		function nextMonth() {
+			currentMonth++;
+			if (currentMonth > 11) {
+				currentMonth = 0;
+				currentYear++;
+			}
+			generateCalendar(currentYear, currentMonth);
+		}
+
+		window.onload = function () {
+			loadAttendanceDates();
+		};
+	</script>
+
+	<script th:if="${message != null}" th:inline="javascript">
+		let msg = /*[[${message}]]*/ "";
+		alert(msg);
+	</script>
+
+	<script th:if="${newAttendance != null}" th:inline="javascript">
+		const newDate = /*[[${newAttendance}]]*/ "";
+		if (newDate) {
+			attendanceDates.push(newDate);
+			generateCalendar(currentYear, currentMonth);
+		}
+	</script>
+</body>
+
+</html>

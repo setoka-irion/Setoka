@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.setoka.mapper.UserMapper">
+
+	<select id="selectUserByNum" resultType="com.practice.setoka.dao.Users" parameterType="int">
+    	SELECT * FROM users WHERE num = #{num}
+  	</select>
+  	
+	<select id="selectUserByID" resultType="com.practice.setoka.dao.Users" parameterType="String">
+    	SELECT * FROM users WHERE id = #{id}
+  	</select>
+  	
+	<select id="selectUserByIDPassword" resultType="com.practice.setoka.dao.Users" parameterType="String">
+    	SELECT * FROM users WHERE id = #{num} AND password = #{password}
+  	</select>
+	
+	<select id="selectAllUsers" resultType="com.practice.setoka.dao.Users">
+    	SELECT * FROM users
+  	</select>
+  	
+  	<insert id="insertUserToDto" parameterType="com.practice.setoka.dto.UsersDto">
+  		INSERT INTO users (id, password, nickname, realname, phoneNumber, privileges) VALUES(#{id}, #{password}, #{nickName}, #{realName}, #{phoneNumber}, #{privileges})
+  	</insert>
+  	
+  	<update id="updateUser" parameterType="com.practice.setoka.dto.UsersDto">
+  		UPDATE users SET 
+  		password = #{password}, 
+  		nickname = #{nickName}, 
+  		realname = #{realName}, 
+  		phoneNumber = #{phoneNumber}, 
+  		status = #{status},
+  		point = #{point},
+  		privileges = #{privileges},
+  		exp = #{exp},
+  		grade = #{grade}
+  		WHERE id = #{id}
+  	</update>
+  	
+  	<update id="updateProfilephotoPath">
+  		UPDATE users SET Profilepath = #{path} WHERE id = #{id}
+  	</update>
+  	
+  	<select id="selectProfilephotoPath">
+  		SELECT Profilepath FROM users WHERE id = #{id}
+  	</select>
+  	
+  	<update id="userPointUpdate">
+  		UPDATE users SET point = #{point} WHERE id = #{id}
+  	</update>
+	
+</mapper>

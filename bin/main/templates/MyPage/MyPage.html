@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+
+<head>
+	<title>IRI-ON MyPage</title>
+	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/user.css}">
+	<link rel="stylesheet" th:href="@{/CSS/modal.css}">
+	<link rel="stylesheet" th:href="@{/CSS/calendar.css}">
+	<link rel="stylesheet" th:href="@{/CSS/nav-buttons.css}">
+	<link rel="stylesheet" th:href="@{/CSS/memo-list.css}">
+
+	<style>
+		#memoModal {
+			display: none;
+			position: fixed;
+			z-index: 100;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.4);
+		}
+
+		#memoModalContent {
+			background: white;
+			margin: 10% auto;
+			padding: 20px;
+			width: 350px;
+			border-radius: 5px;
+			position: relative;
+		}
+
+		#memoModalContent label {
+			display: block;
+			margin-top: 10px;
+		}
+
+		#memoModalContent input[type="text"],
+		#memoModalContent textarea,
+		#memoModalContent select {
+			width: 100%;
+			padding: 5px;
+			margin-top: 5px;
+		}
+
+		#memoModalClose {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			cursor: pointer;
+			font-weight: bold;
+			font-size: 18px;
+		}
+
+		.blank {
+			background: #f9f9f9;
+			cursor: default;
+		}
+	</style>
+</head>
+
+<body>
+	<div th:replace="~{header :: siteHeader}"></div>
+
+	<div class="user-card">
+		<div class="user-buttons">
+		   <button onclick="location.href='/MessageList'">쪽지</button>
+		   <button onclick="location.href='/ModifyUser'">개인정보 수정</button>
+		   <button onclick="location.href='/myanimal'">동물 프로필</button>
+		   <button onclick="location.href='/Bulletin'">내가 쓴 게시글</button>
+		   <button onclick="location.href='/ChangePassword'">비밀번호 변경</button>
+		   <button onclick="location.href='/Withdrawal'">회원탈퇴</button>
+		 </div>
+		
+		
+		
+	</div>
+
+	<div class="user-card-container">
+				<div class="user-card-left">
+					<a href="/EditProfilePhoto">
+						<img th:src="@{${loginUser.profilePath}}" alt="프로필 이미지" class="profile-image">
+					</a>
+				</div>
+				<div class="user-card-right">
+					<ul class="user-info-list">
+						<li><strong>닉네임</strong> <span th:text="${loginUser.nickName}">닉네임</span></li>
+						<li><strong>실명</strong> <span th:text="${loginUser.realName}">실명</span></li>
+						<li><strong>등급</strong> <span th:text="${loginUser.grade}">등급</span></li>
+						<li><strong>포인트</strong> <span th:text="${loginUser.point}">포인트</span></li>
+						<li><strong>경험치</strong> <span th:text="${loginUser.exp}">경험치</span></li>
+					</ul>
+				</div>
+			</div>
+	
+	<!--일정 달력-->
+	<div class="nav-buttons" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+		<form th:action="@{/MyPage}" method="get" style="display:inline;">
+			<input type="hidden" name="year" th:value="${month == 1} ? ${year - 1} : ${year}" />
+			<input type="hidden" name="month" th:value="${month == 1} ? 12 : ${month - 1}" />
+			<button type="submit">◀</button>
+		</form>
+
+		<span id="yearMonth" th:attr="data-year=${year}, data-month=${month}"
+			th:text="${year} + '년 ' + ${month} + '월'"></span>
+
+		<form th:action="@{/MyPage}" method="get" style="display:inline;">
+			<input type="hidden" name="year" th:value="${month == 12} ? ${year + 1} : ${year}" />
+			<input type="hidden" name="month" th:value="${month == 12} ? 1 : ${month + 1}" />
+			<button type="submit">▶</button>
+		</form>
+	</div>
+
+	<table id="calendar">
+		<thead>
+			<tr>
+				<th>일</th>
+				<th>월</th>
+				<th>화</th>
+				<th>수</th>
+				<th>목</th>
+				<th>금</th>
+				<th>토</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr th:each="weekRow : ${#numbers.sequence(0, weekCount - 1)}">
+				<td th:each="dayIdx : ${#numbers.sequence(0,6)}" th:classappend="${((weekRow * 7) + dayIdx + 1 - startBlank <= 0 
+	                           or (weekRow * 7) + dayIdx + 1 - startBlank > lengthOfMonth) ? 'blank' : ''}"
+					th:attr="data-date=${(weekRow * 7) + dayIdx + 1 - startBlank > 0 and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth} ?
+	                       ${year + '-' + (month < 10 ? '0' + month : month) + '-' + (((weekRow * 7) + dayIdx + 1 - startBlank) < 10 ? '0' + ((weekRow * 7) + dayIdx + 1 - startBlank) : ((weekRow * 7) + dayIdx + 1 - startBlank))} : ''">
+
+					<span th:if="${(weekRow * 7) + dayIdx + 1 - startBlank > 0 
+	                     and (weekRow * 7) + dayIdx + 1 - startBlank <= lengthOfMonth}"
+						th:text="${(weekRow * 7) + dayIdx + 1 - startBlank}"></span>
+
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- 메모 모달 (수정 모달) -->
+	<div id="memoModal" class="modal-overlay">
+		<div class="modal-content">
+
+			<span id="memoModalClose" class="modal-close">&times;</span>
+			<h2 id="modalTitle" class="modal-title">메모 작성</h2>
+
+			<form id="memoForm" method="post" th:action="@{/memo/add}">
+
+				<input type="hidden" name="userNum" th:value="${userNum}" />
+				<!-- 기존 animalNum 히든 필드 제거 -->
+				<input type="hidden" id="memoNum" name="num" value="" />
+
+				<div class="form-group">
+					<label for="scheduleDate">작성일</label>
+					<input type="text" id="scheduleDate" name="scheduleDateStr" readonly />
+				</div>
+				<hr />
+
+				<div class="form-group">
+					<label for="animalSelect">애견 선택</label>
+					<div id="animalCheckboxContainer"></div>
+					<input type="hidden" id="animalNumStr" name="animalNumStr" />
+				</div>
+				<hr />
+
+				<div class="form-group">
+					<label for="title">제목</label>
+					<input type="text" id="title" name="title" required />
+				</div>
+				<hr />
+
+				<div class="form-group">
+					<label for="content">내용</label>
+					<textarea id="content" name="content" rows="5" required></textarea>
+				</div>
+				<hr />
+
+				<div class="modal-buttons">
+					<button type="submit" id="saveBtn" class="btn">저장</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- 리스트 모달 -->
+	<div id="memoListModal" class="modal-overlay">
+		<div class="modal-content">
+			<span id="memoListClose" class="modal-close">&times;</span>
+			<h2 class="modal-title">메모 리스트</h2>
+			<ul id="memoListContainer" style="list-style:none; padding:0; margin:0;"></ul>
+
+			<div class="modal-buttons">
+				<button id="memoListAddBtn" class="btn">메모 추가</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- 상세보기 모달 -->
+	<div id="memoDetailModal" class="modal-overlay">
+		<div class="modal-content">
+			<span id="memoDetailClose" class="modal-close">&times;</span>
+			<h2 class="modal-title">메모 상세보기</h2>
+
+			<div class="detail-row">
+				<span class="label">날짜</span>
+				<span id="detailDate" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">애견 이름</span>
+				<span id="detailAnimalName" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">제목</span>
+				<span id="detailTitleText" class="value"></span>
+			</div>
+			<hr />
+
+			<div class="detail-row">
+				<span class="label">내용</span>
+				<div id="detailContent" class="content-box"></div>
+			</div>
+
+			<div class="modal-buttons">
+				<button id="detailAddBtn" class="btn">추가</button>
+				<button id="detailBackToListBtn" class="btn" style="display: none;">목록</button>
+				<button id="detailEditBtn" class="btn">수정</button>
+				<button id="detailDeleteBtn" class="btn btn-danger">삭제</button>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		// 1. 유저의 애니멀 리스트를 받아 animalNum → animalName 매핑 생성
+		let animalMap = new Map();
+		let currentDetailMemoNum;
+
+		let selectedDateStr = null;
+		let lastMemoList = [];
+
+		document.addEventListener('DOMContentLoaded', () => {
+			const modal = document.getElementById('memoModal');
+			const modalClose = document.getElementById('memoModalClose');
+			const scheduleDateInput = document.getElementById('scheduleDate');
+			const titleInput = document.getElementById('title');
+			const contentInput = document.getElementById('content');
+			const memoNumInput = document.getElementById('memoNum');
+			const memoForm = document.getElementById('memoForm');
+			const modalTitle = document.getElementById('modalTitle');
+			const saveBtn = document.getElementById('saveBtn');
+			const animalCheckboxContainer = document.getElementById('animalCheckboxContainer');
+
+			const detailModal = document.getElementById('memoDetailModal');
+			const detailClose = document.getElementById('memoDetailClose');
+			const detailDate = document.getElementById('detailDate');
+			const detailTitleText = document.getElementById('detailTitleText');
+			const detailContent = document.getElementById('detailContent');
+			const detailEditBtn = document.getElementById('detailEditBtn');
+			const detailDeleteBtn = document.getElementById('detailDeleteBtn');
+			const detailAddBtn = document.getElementById('detailAddBtn');
+			const detailAnimalName = document.getElementById('detailAnimalName');
+
+			const yearMonthSpan = document.getElementById('yearMonth');
+			const year = yearMonthSpan.dataset.year;
+			const month = yearMonthSpan.dataset.month;
+
+			const userNum = document.querySelector('input[name="userNum"]').value;
+
+
+			fetch(`/animals`)
+				.then(res => res.json())
+				.then(animals => {
+					animals.forEach(animal => {
+						animalMap.set(animal.num, animal.animalName);
+
+						// 체크박스 생성
+						const label = document.createElement('label');
+						label.style.display = 'block';  // 줄바꿈 효과
+
+						const checkbox = document.createElement('input');
+						checkbox.type = 'checkbox';
+						checkbox.name = 'animalNum'; // 배열형태로 서버에서 받으려면 'animalNum' or 'animalNum[]' 둘 다 가능
+						checkbox.value = animal.num;
+
+						label.appendChild(checkbox);
+						label.appendChild(document.createTextNode(animal.animalName));
+
+						animalCheckboxContainer.appendChild(label);
+					});
+					// 2) 메모 리스트 불러오기
+					return fetch(`/memos?year=${year}&month=${month < 10 ? '0' + month : month}`);
+				})
+				.then(res => res.json())
+				.then(memos => {
+					const memoMap = {};
+
+					memos.forEach(memo => {
+						const dateOnly = memo.scheduleDate.split('T')[0];
+						if (!memoMap[dateOnly]) memoMap[dateOnly] = [];
+
+						// animalNum 으로 animalName 매핑해서 추가
+						if (Array.isArray(memo.intAnimalNum)) {
+							const names = memo.intAnimalNum.map(num => animalMap.get(num) || '애견없음');
+							memo.animalName = names.join(', ');
+						} else if (memo.intAnimalNum) {
+							memo.animalName = animalMap.get(memo.intAnimalNum) || '애견없음';
+						} else {
+							memo.animalName = '애견없음';
+						}
+
+
+						memoMap[dateOnly].push(memo);
+					});
+
+					Object.keys(memoMap).forEach(date => {
+						const td = document.querySelector(`td[data-date='${date}']`);
+						if (td) {
+							td.querySelectorAll('.memo-title').forEach(el => el.remove());
+
+							memoMap[date].forEach(m => {
+								const span = document.createElement('span');
+								span.className = 'memo-title';
+								span.textContent = m.title;
+								td.appendChild(span);
+							});
+
+							td.dataset.memoList = JSON.stringify(memoMap[date]);
+						}
+					});
+
+					// 3) 날짜 클릭 이벤트
+					document.querySelectorAll('#calendar td').forEach(td => {
+						td.addEventListener('click', () => {
+							const dateStr = td.getAttribute('data-date');
+							selectedDateStr = dateStr;
+							if (!dateStr) return;
+
+							const memoListStr = td.dataset.memoList;
+							let memoList = [];
+
+							if (memoListStr) {
+								try {
+									memoList = JSON.parse(memoListStr);
+								} catch (e) {
+									console.error('메모 리스트 JSON 파싱 실패', e);
+								}
+							}
+
+							if (memoList.length === 0) {
+								// 메모 없음 -> 작성 모달
+								detailModal.style.display = 'none';
+								modalTitle.textContent = "메모 작성";
+								saveBtn.textContent = "저장";
+
+								memoNumInput.value = '';
+								scheduleDateInput.value = dateStr;
+								titleInput.value = '';
+								contentInput.value = '';
+
+								modal.style.display = "block";
+
+							} else if (memoList.length === 1) {
+								// 메모 1개 -> 상세보기 모달 + 버튼 핸들러 세팅
+								showDetailModal(memoList[0], dateStr);
+
+							} else {
+								// 메모 2개 이상 -> 리스트 모달
+								const memoListModal = document.getElementById('memoListModal');
+								const memoListContainer = document.getElementById('memoListContainer');
+
+								memoListContainer.innerHTML = '';
+
+								memoList.forEach(memo => {
+									const li = document.createElement('li');
+									li.style.cursor = 'pointer';
+									li.style.padding = '5px 0';
+									li.style.borderBottom = '1px solid #ddd';
+
+									li.innerHTML = `
+										<div class="memo-list-item">
+											<div class="memo-title">${memo.title}</div>
+											<div class="memo-animal">🐾 ${memo.animalName || '애견없음'}</div>
+										</div>
+									`;
+
+									li.addEventListener('click', () => {
+										memoListModal.style.display = 'none';
+
+										lastMemoList = memoList;
+
+										showDetailModal(memo, dateStr);
+									});
+
+									memoListContainer.appendChild(li);
+								});
+
+								// 리스트 모달 닫기 버튼
+								document.getElementById('memoListClose').onclick = () => {
+									memoListModal.style.display = 'none';
+								};
+
+								// 리스트 모달 내 메모 추가 버튼
+								document.getElementById('memoListAddBtn').onclick = () => {
+									memoListModal.style.display = 'none';
+
+									modalTitle.textContent = "메모 작성";
+									saveBtn.textContent = "저장";
+
+									memoNumInput.value = '';
+									scheduleDateInput.value = dateStr;
+									titleInput.value = '';
+									contentInput.value = '';
+
+									modal.style.display = "block";
+								};
+
+								memoListModal.style.display = 'block';
+							}
+						});
+					});
+				});
+
+			// 상세보기 모달 열기 및 버튼 핸들러 세팅 함수
+			function showDetailModal(memo, dateStr) {
+				currentDetailMemoNum = memo.num || memo.memoNum;
+
+				detailDate.textContent = dateStr;
+				detailTitleText.textContent = memo.title;
+				detailContent.textContent = memo.content;
+				detailAnimalName.textContent = memo.animalName || '알 수 없음';
+
+				const backToListBtn = document.getElementById('detailBackToListBtn');
+				if (lastMemoList.length > 1) {
+					backToListBtn.style.display = 'inline-block';  // 보여줌
+				} else {
+					backToListBtn.style.display = 'none';  // 숨김
+				}
+
+				backToListBtn.onclick = () => {
+					detailModal.style.display = 'none';
+					document.getElementById('memoListModal').style.display = 'block';
+				};
+
+				detailEditBtn.onclick = () => {
+					detailModal.style.display = 'none';
+					modalTitle.textContent = "메모 수정";
+					saveBtn.textContent = "수정";
+
+					memoNumInput.value = currentDetailMemoNum;
+					scheduleDateInput.value = dateStr;
+					titleInput.value = memo.title;
+					contentInput.value = memo.content;
+
+					const checkboxes = document.querySelectorAll('#animalCheckboxContainer input[type="checkbox"]');
+					checkboxes.forEach(cb => cb.checked = false);
+
+					if (memo.intAnimalNum && Array.isArray(memo.intAnimalNum)) {
+						memo.intAnimalNum.forEach(num => {
+							const cb = document.querySelector(`#animalCheckboxContainer input[type="checkbox"][value="${num}"]`);
+							if (cb) cb.checked = true;
+						});
+					} else if (memo.intAnimalNum) {
+						const cb = document.querySelector(`#animalCheckboxContainer input[type="checkbox"][value="${memo.intAnimalNum}"]`);
+						if (cb) cb.checked = true;
+					}
+
+					modal.style.display = "block";
+				};
+
+				detailDeleteBtn.onclick = () => {
+					if (confirm("정말 삭제하시겠습니까?")) {
+						const formData = new URLSearchParams();
+						formData.append('num', currentDetailMemoNum);
+						formData.append('year', year);
+						formData.append('month', month);
+
+						fetch('/memo/delete', {
+							method: 'POST',
+							headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+							body: formData.toString()
+						}).then(() => {
+							detailModal.style.display = 'none';
+							location.href = `/MyPage?year=${year}&month=${month}`;
+						});
+					}
+				};
+
+				detailAddBtn.onclick = () => {
+					detailModal.style.display = 'none';
+					modalTitle.textContent = "메모 작성";
+					saveBtn.textContent = "저장";
+
+					memoNumInput.value = '';
+					scheduleDateInput.value = selectedDateStr;
+					titleInput.value = '';
+					contentInput.value = '';
+					modal.style.display = "block";
+				};
+
+				detailModal.style.display = 'block';
+			}
+
+			modalClose.onclick = () => modal.style.display = "none";
+			detailClose.onclick = () => detailModal.style.display = "none";
+
+			window.onclick = e => {
+				if (e.target === modal) modal.style.display = "none";
+				if (e.target === detailModal) detailModal.style.display = "none";
+			};
+			memoForm.onsubmit = () => {
+				const selected = Array.from(document.querySelectorAll('#animalCheckboxContainer input[type="checkbox"]:checked'))
+					.map(cb => cb.value);
+				const joined = selected.join(',');
+				document.getElementById('animalNumStr').value = joined;
+
+				memoForm.action = memoNumInput.value ? '/memo/update' : '/memo/add';
+			};
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,153 @@
+.user-card {
+	display: flex;
+	justify-content: flex-start; /* 내부 요소들은 왼쪽부터 배치 */
+	 width: 100%;
+	 max-width: 100%;
+	 margin: 40px auto;
+	 padding: 32px;
+	 background-color: #fff;
+	 border-radius: 12px;
+	 gap: 40px;
+}
+
+.user-card-container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+
+/* 왼쪽 프로필 사진 영역 */
+.user-card-left {
+	width: 300px;
+	  height: 290px;
+	  text-align: center;
+	  padding: 24px;
+	  border: 1px solid #e0e0e0;
+	  border-radius: 12px;
+	  background-color: #fff;
+	  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* 프로필 이미지 */
+.profile-image {
+	width: 280px;
+	height: 280px;
+	border-radius: 50%;
+	object-fit: cover;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	margin-bottom: 16px;
+	margin-top: 7px;
+}
+
+.user-card-right {
+	width: 300px;
+	height: 290px;
+	padding: 24px;
+	border: 1px solid #e0e0e0;
+	border-radius: 12px;
+	background-color: #fff;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+
+
+.user-info-list {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 16px 0;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+
+.user-info-list li {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 0;
+	border-bottom: 1px solid #eee;
+	font-size: 18px;
+	color: #333;
+}
+
+.user-info-list li:last-child {
+	border-bottom: none;
+}
+
+.user-info-list strong {
+	color: #555;
+	width: 100px;
+	text-align: left;
+}
+
+.user-info-list span {
+	flex: 1;
+	text-align: right;
+	color: #000;
+}
+
+
+
+.user-buttons {
+	position: fixed;
+	right: 100px;
+	left: auto;
+	flex-direction: column; /* 세로 정렬 */
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 10px;
+	flex-shrink: 0;
+	background-color: #8b5e3c;
+}
+
+.user-buttons button {
+	background-color: #8b5e3c;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+}
+
+.user-buttons button:hover {
+	background-color: rgb(255, 128, 0);
+}
+
+.animal-card {
+	display: flex;
+	justify-content: center;
+	 width: 100%;
+	 max-width: 100%;
+	 margin: 40px auto;
+	 margin-left: -30px;
+	 padding: 32px;
+	 background-color: #fff;
+	 border-radius: 12px;
+	 gap: 40px;
+}
+
+.animal-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 10px;
+	justify-content: right;
+}
+
+.animal-buttons button {
+	background-color: #8b5e3c;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+}
+
+.animal-buttons button:hover {
+	background-color: rgb(255, 128, 0);
+}
