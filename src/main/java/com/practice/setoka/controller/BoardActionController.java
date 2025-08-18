@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +34,7 @@ import com.practice.setoka.service.LikeService;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -77,11 +77,11 @@ public class BoardActionController {
 	// 메인페이지
 	@GetMapping(value = "/Adopt")
 	public String adoptMain(
-			@RequestParam(value = "keyword", required = false) String keyword,
-			@RequestParam(value = "field", required = false) String field, 
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,// 검색어
+			@RequestParam(value = "field", required = false, defaultValue = "") String field, //제목,내용,작성자선택
 			@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "viewType", required = false) String viewType,
-			Model model, HttpSession session){
+			@RequestParam(value = "viewType", required = false, defaultValue = "card") String viewType,//보기방식 선택
+			HttpServletRequest request, Model model, HttpSession session){
 		
 		// 페이지 네이션 기능
 		int limit = 16; //한페이지당 게시글수
@@ -95,18 +95,19 @@ public class BoardActionController {
 		    searchResult = boardService.findBoardsByType(1, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
 		    totalCount = boardService.countBoards(1);
 		} else {
+			String trimmedKeyword = keyword.trim();// 검색시 공백까지 검색하는것 제거
 		    switch (field) {
 		    case "title":
-		        searchResult = boardService.findBoardsByTitle(keyword.trim());
+		        searchResult = boardService.findBoardsByTitle(trimmedKeyword);
 		        break;
 		    case "content":
-		        searchResult = boardService.findBoardsByContent(keyword.trim());
+		        searchResult = boardService.findBoardsByContent(trimmedKeyword);
 		        break;
 		    case "nickname":
-		        searchResult = boardService.findBoardsByUserId(keyword.trim());
+		        searchResult = boardService.findBoardsByUserId(trimmedKeyword);
 		        break;
 		    default:
-		        searchResult = boardService.searchAll(keyword.trim());
+		        searchResult = boardService.searchAll(trimmedKeyword);
 		    }
 		    totalCount = searchResult.size(); //검색결과 갯수
 		    searchResult = boardService.cutPage(offset, limit, searchResult);
@@ -115,7 +116,7 @@ public class BoardActionController {
 		// 인기게시글
 		List<BoardWithUserDto> popularPosts = boardService.popularPosts(1);
 		
-		// 뷰 타입 세션 저장 또는 불러오기
+		//카드,리스트 뷰 타입 세션 저장 또는 불러오기
 		if (viewType != null && !viewType.isEmpty()) {
 			session.setAttribute("viewType", viewType); // URL로 선택했으면 저장
 		} else if (session.getAttribute("viewType") != null) {
@@ -137,6 +138,7 @@ public class BoardActionController {
 		model.addAttribute("limit", limit);
 		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("currentPage", page);
+		model.addAttribute("request", request);
 		
 		// 검색값 유지 (검색창 value 유지용)
 		model.addAttribute("keyword", keyword);

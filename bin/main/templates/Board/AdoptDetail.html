@@ -638,7 +638,7 @@
 		<div class="head-container">
 			<h1>입양 게시판</h1>
 			<div class="back-button">
-				<a th:href="@{/Adopt}">목록으로</a>
+				<a href="#" id="back-button">목록으로</a> 
 			</div>
 		</div>
 		<!-- 메시지 -->
@@ -835,6 +835,23 @@
 	</div>
 
 	<script>
+		//목록으로 갈때 보고있던 페이지에서 가게
+				document.addEventListener('DOMContentLoaded', () => {
+				    const backButton = document.getElementById('back-button'); // '목록으로' 버튼 ID
+
+				    const urlParams = new URLSearchParams(window.location.search);
+				    const fromUrl = urlParams.get('fromUrl');
+
+				    backButton.addEventListener('click', () => {
+				        if (fromUrl) {
+				            window.location.href = fromUrl;
+				        } else {
+				            // fromUrl이 없는 경우 기본 목록 페이지로 이동
+				            window.location.href = '/Adopt'; 
+				        }
+				    });
+				});
+		
 		function confirmReport() {
 			if (confirm("정말 이 게시글을 신고하시겠습니까?")) {
 				document.getElementById("reportForm").submit();

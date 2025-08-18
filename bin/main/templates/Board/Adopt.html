@@ -54,8 +54,8 @@
 		/*=== 윗단의 한줄 정렬용 wrapper ===*/
 		.action-row {
 			display: flex;
-			flex-wrap: wrap; 
-			justify-content: center; 
+			flex-wrap: wrap;
+			justify-content: center;
 			grid-template-columns: 1fr auto;
 			/* 왼쪽(검색창) / 오른쪽(버튼들) */
 			align-items: center;
@@ -73,11 +73,12 @@
 		.center-section {
 			flex: 1;
 			display: flex;
-			flex-wrap: wrap; /* 버튼들이 다음 줄로 내려가게 함 */
+			flex-wrap: wrap;
+			/* 버튼들이 다음 줄로 내려가게 함 */
 			justify-content: center;
 			/* 가운데 정렬 */
 			align-items: center;
-			
+
 			width: 100%;
 			min-width: 100px;
 			/* 최소 너비 지정, 필요시 조절 */
@@ -588,10 +589,14 @@
 			<div id="popularContent" class="here"
 				style="visibility: visible; height: auto; overflow: hidden; transition: all 0.3s;">
 				<div th:each="post, iterStat : ${popularPosts}" th:if="${iterStat.index < 8}" class="card-popular">
-					<a th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum})}" class="link-title">
+					<a th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum}, fromUrl=${request.requestURI} 
+					+ '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
+						class="link-title">
 						<strong th:text="|${post.title} 💬(${post.commentCount})|">제목</strong>
 					</a>
-					<a th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum})}">
+					<a
+						th:href="@{'/AdoptDetail/{num}'(num=${post.boardNum}, fromUrl=${request.requestURI} 
+						+ '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}">
 						<img class="thumb-image"
 							th:src="@{${post.Image_paths != null} ? ${post.Image_paths} : '/imagesDefault/defaultBoard.png'}">
 					</a>
@@ -615,7 +620,8 @@
 			<!-- 카드형 (mainList 반복) -->
 			<div class="card-list-view">
 				<div class="card-popular" th:each="board, iterStat : ${mainList}">
-					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title">
+					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum}, fromUrl=${request.requestURI} + '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
+						class="link-title">
 						<strong th:text="${board.title + ' 💬(' + board.commentCount + ')'}">제목</strong>
 					</a>
 					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}">
@@ -666,8 +672,8 @@
 
 						<td th:text="${board.nickName}"></td>
 						<td>
-							<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}" class="link-title"
-								th:text="${board.title + '🗨️(' + board.commentCount + ')'}">제목</a>
+							<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum}, fromUrl=${request.requestURI} + '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
+								class="link-title" th:text="${board.title + '🗨️(' + board.commentCount + ')'}">제목</a>
 						</td>
 						<td th:text="${board.price}"></td>
 						<td th:text="${board.area}"></td>
