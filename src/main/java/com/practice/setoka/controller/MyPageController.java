@@ -149,6 +149,13 @@ public class MyPageController {
 		session.removeAttribute("PasswordConfirmed");
 
 		UsersDto dto = new UsersDto(user);
+		String phone = dto.getPhoneNumber();
+		if (phone.length() == 11) {
+			dto.setPhoneNumber(phone.replaceFirst("(\\d{3})(\\d{4})(\\d{4})", "$1-$2-$3"));
+		} else if (phone.length() == 10) {
+			dto.setPhoneNumber(phone.replaceFirst("(\\d{3})(\\d{3})(\\d{4})", "$1-$2-$3"));
+		}
+		
 		// html을 꾸며줄 클래스 넣기
 		model.addAttribute("UsersDto", dto);
 		// 수정 페이지로 이동
@@ -158,6 +165,8 @@ public class MyPageController {
 	@PostMapping(value = "ModifyUser")
 	public String modifyUserPost(UsersDto userDto, @AuthenticationPrincipal CustomUserDetails authUser) {
 		Users user = (Users) authUser.getUser();
+
+		userDto.setPhoneNumber(userDto.getPhoneNumber().replaceAll("-", "")); 
 		
 		// 정보 수정
 		user.modifyUser(userDto);

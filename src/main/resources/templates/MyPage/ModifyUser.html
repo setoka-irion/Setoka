@@ -32,7 +32,10 @@
 			
 			<div class="modify-form">
 			<label for="phoneNumber">전화번호</label>
-			<input type="text" th:field="*{phoneNumber}" required /><br />
+			<input type="tel" th:field="*{phoneNumber}" required
+			 			pattern="^\d{3}-\d{3,4}-\d{4}$" 
+						maxlength="13"
+						inputmode="numeric/"><br />
 			</div>
 			
 			<div class="sub-buttons">
@@ -43,4 +46,27 @@
 	</div>
 </body>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const phoneInput = document.querySelector('[name="phoneNumber"]');
+
+    phoneInput.addEventListener("input", function (e) {
+      let value = e.target.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+
+      if (value.length <= 3) {
+        // 010
+        e.target.value = value;
+      } else if (value.length <= 7) {
+        // 010-1234
+        e.target.value = value.slice(0, 3) + '-' + value.slice(3);
+      } else if (value.length <= 11) {
+        // 010-1234-5678
+        e.target.value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7);
+      } else {
+        // 최대 11자리까지만
+        e.target.value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+      }
+    });
+  });
+</script>
 </html>

@@ -6,11 +6,17 @@ import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
 
+import jakarta.validation.constraints.Pattern;
+
 public class UsersDto {
 	private String id;
 	private String password;
 	private String nickName;
 	private String realName;
+	@Pattern(
+			  regexp = "^\\d{3}-\\d{3,4}-\\d{4}$",
+			  message = "전화번호 형식은 010-1234-5678 또는 010-123-4567 입니다."
+			)
 	private String phoneNumber;
 	private Status status;
 	private int point;
