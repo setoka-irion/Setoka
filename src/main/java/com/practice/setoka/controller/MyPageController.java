@@ -161,7 +161,10 @@ public class MyPageController {
 		
 		// 정보 수정
 		user.modifyUser(userDto);
-		userService.updateUserDto(userDto);		
+		if(userService.updateUserDto(userDto))
+		{
+			System.out.println("수정 완료");
+		}
 		return Redirect.MyPage;
 	}
 

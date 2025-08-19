@@ -17,6 +17,8 @@ public interface UserMapper
 	Users selectUserByID(@Param("id") String id);
 	//id password 로 유저 찾기
 	Users selectUserByIDPassword(@Param("id") String id, @Param("password") String password);
+	//nickname으로 유저 찾기
+	Users selectByNickName(@Param("nickName") String nickName);
 	//모든 유저를 리턴
 	List<Users> selectAllUsers();
 	//유저 넣기
