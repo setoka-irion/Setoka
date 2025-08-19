@@ -19,11 +19,11 @@
   	</select>
   	
 	<select id="selectSenderMessage" resultType="com.practice.setoka.dao.Message" parameterType="String">
-    	SELECT * FROM message WHERE sender = #{id}
+    	SELECT * FROM message WHERE sender = #{id} ORDER BY sendTime DESC
   	</select>
   	
 	<select id="selectReceiverMessage" resultType="com.practice.setoka.dao.Message" parameterType="String">
-    	SELECT * FROM message WHERE receiver = #{id}
+    	SELECT * FROM message WHERE receiver = #{id} ORDER BY sendTime DESC
   	</select>
 	
 	<update id="updateMessageStatus">

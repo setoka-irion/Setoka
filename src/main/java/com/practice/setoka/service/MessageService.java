@@ -20,10 +20,11 @@ public class MessageService {
 	
 	public boolean sendMessage(MessageDto dto)
 	{
-		if(userService.selectByID(dto.getReceiver()) == null)
+		if(userService.selectByNickName(dto.getReceiver()) == null)
 			return false;
-		if(userService.selectByID(dto.getSender()) == null)
+		if(userService.selectByNickName(dto.getSender()) == null)
 			return false;
+		
 		return messageMapper.insertMessage(dto);
 	}
 	

@@ -17,6 +17,10 @@
     	SELECT * FROM users WHERE id = #{num} AND password = #{password}
   	</select>
 	
+	<select id="selectByNickName">
+		SELECT * FROM users WHERE nickname = #{nickName}
+	</select>
+	
 	<select id="selectAllUsers" resultType="com.practice.setoka.dao.Users">
     	SELECT * FROM users
   	</select>

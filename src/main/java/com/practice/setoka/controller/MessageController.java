@@ -35,7 +35,6 @@ public class MessageController {
 	public String CreateLetter(Model model, @AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes)
 	{
-		//model.addAttribute("sender", authUser.getUser().getId());
 		model.addAttribute("itemTypes", Item.values());
 		model.addAttribute("max", authUser.getUser().getPoint());
 	    model.addAttribute("isAdmin", authUser.getUser().isAdmin()); // 추가
@@ -60,7 +59,7 @@ public class MessageController {
 	@PostMapping(value = "SendMessage")
 	public String sendMessage(MessageDto dto, @AuthenticationPrincipal CustomUserDetails authUser)
 	{
-		dto.setSender(authUser.getUser().getId());
+		dto.setSender(authUser.getUser().getNickName());
 		
 		if(dto.getItem_Type() == Item.NONE)
 			dto.setItem_Value(0);
@@ -73,7 +72,7 @@ public class MessageController {
 			}
 		}
 		
-		return "redirect:/CreateLetter";
+		return "redirect:/sent";
 	}
 	
 	@GetMapping(value = "MessageList")
@@ -82,7 +81,7 @@ public class MessageController {
 		List<Message> list = null;
 		//모든 받은 메세지를 보여주기
 		if(authUser.getUser() != null)
-			list = messageService.receiverSelect(authUser.getUser().getId());
+			list = messageService.receiverSelect(authUser.getUser().getNickName());
 		model.addAttribute("messageList", list);
 		model.addAttribute("messageBoxType", "RECEIVED");
 
@@ -93,7 +92,7 @@ public class MessageController {
 	public String messageReceived(Model model, @AuthenticationPrincipal CustomUserDetails authUser)
 	{
 		//모든 보낸 메세지를 보여주기
-		List<Message> list = messageService.sendSelect(authUser.getUser().getId());
+		List<Message> list = messageService.sendSelect(authUser.getUser().getNickName());
 		model.addAttribute("messageList", list);
 		model.addAttribute("messageBoxType", "SENT");
 
