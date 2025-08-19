@@ -7,7 +7,7 @@
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<link rel="stylesheet" th:href="@{/CSS/board.css}">
 	<style>
-		
+
 	</style>
 </head>
 
@@ -19,7 +19,7 @@
 	<div class="container-all">
 		<!-- 윗단 아이콘 -->
 		<div class="board-header">
-			<h1>노하우 게시판</h1>
+			<h1><a th:href="@{/KnowHow}" class="header-link">노하우 게시판</a></h1>
 			<p>총 게시글 수: <span th:text="${totalCount}">0</span></p>
 		</div>
 
@@ -83,8 +83,7 @@
 						class="link-title">
 						<strong th:text="|${post.title} 💬(${post.commentCount})|">제목</strong>
 					</a>
-					<a
-						th:href="@{'/KnowHowDetail/{num}'(num=${post.boardNum}, fromUrl=${request.requestURI} 
+					<a th:href="@{'/KnowHowDetail/{num}'(num=${post.boardNum}, fromUrl=${request.requestURI} 
 						+ '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}">
 						<img class="thumb-image"
 							th:src="@{${post.Image_paths != null} ? ${post.Image_paths} : '/imagesDefault/defaultBoard.png'}">
@@ -196,7 +195,21 @@
 	</div>
 
 	</div>
-
+	</div>
+	<!-- 위로가기 스크롤 버튼 -->
+	<div id="scrollTopButton" class="scroll-top-button">
+		<a href="#" aria-label="맨 위로">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+				stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+				class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up-lines">
+				<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+				<path
+					d="M9 12h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v3h-6v-3z" />
+				<path d="M9 21h6" />
+				<path d="M9 18h6" />
+			</svg>
+		</a>
+	</div>
 	<script>
 		function togglePopular() {
 			const section = document.getElementById('popularContent');
@@ -278,6 +291,29 @@
 					params.set('viewType', e.target.value);
 					// 다른 검색 파라미터 유지한 채로 새로고침
 					window.location.search = params.toString();
+				});
+			});
+		});
+
+		// 위로가기 버튼
+		document.addEventListener('DOMContentLoaded', function () {
+			const scrollTopButton = document.getElementById('scrollTopButton');
+
+			window.addEventListener('scroll', function () {
+				// 스크롤이 200px 이상 내려갔을 때 버튼을 보이게 함
+				if (window.scrollY > 200) {
+					scrollTopButton.style.display = 'block';
+				} else {
+					scrollTopButton.style.display = 'none';
+				}
+			});
+
+			// 버튼 클릭 시 맨 위로 부드럽게 스크롤
+			scrollTopButton.addEventListener('click', function (event) {
+				event.preventDefault(); // 기본 링크 동작 방지
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth'
 				});
 			});
 		});
