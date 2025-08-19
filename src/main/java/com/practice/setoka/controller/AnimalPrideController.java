@@ -31,8 +31,10 @@ import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.CommentLikeService;
 import com.practice.setoka.service.CommentsService;
 import com.practice.setoka.service.LikeService;
+import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -46,6 +48,9 @@ public class AnimalPrideController {
 
 	@Autowired
 	public BoardService boardService;
+	
+	@Autowired
+	public UserService userService;
 
 	@Autowired
 	public CommentsService commentsService;
@@ -72,44 +77,45 @@ public class AnimalPrideController {
 	// 메인페이지
 	@GetMapping(value = "/AnimalPride")
 	public String animalPrideMain(
-			@RequestParam(value = "keyword", required = false) String keyword,
-			@RequestParam(value = "field", required = false) String field, 
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "field", required = false, defaultValue = "") String field,
 			@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "viewType", required = false) String viewType,
-			Model model, HttpSession session){
-		
+			@RequestParam(value = "viewType", required = false, defaultValue = "card") String viewType, 
+			HttpServletRequest request, Model model, HttpSession session) {
+
 		// 페이지 네이션 기능
-		int limit = 16; //한페이지당 게시글수
-		int offset = (page - 1) * limit; 
+		int limit = 16; // 한페이지당 게시글수
+		int offset = (page - 1) * limit;
 		int totalCount;
-		
+
 		// 게시판 내부 검색
 		List<BoardWithUserDto> searchResult;
 		if (keyword == null || keyword.isEmpty()) {
-		    // 검색 값 안넣었을 경우 전체 게시판 리스트 출력
-		    searchResult = boardService.findBoardsByType(2, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
-		    totalCount = boardService.countBoards(2);
+			// 검색 값 안넣었을 경우 전체 게시판 리스트 출력
+			searchResult = boardService.findBoardsByType(2, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
+			totalCount = boardService.countBoards(2);
 		} else {
-		    switch (field) {
-		    case "title":
-		        searchResult = boardService.findBoardsByTitle(keyword.trim());
-		        break;
-		    case "content":
-		        searchResult = boardService.findBoardsByContent(keyword.trim());
-		        break;
-		    case "nickname":
-		        searchResult = boardService.findBoardsByUserId(keyword.trim());
-		        break;
-		    default:
-		        searchResult = boardService.searchAll(keyword.trim());
-		    }
-		    totalCount = searchResult.size(); //검색결과 갯수
-		    searchResult = boardService.cutPage(offset, limit, searchResult);
+			String trimmedKeyword = keyword.trim();// 검색시 공백까지 검색하는것 제거
+			switch (field) {
+			case "title":
+				searchResult = boardService.findBoardsByTitle(trimmedKeyword);
+				break;
+			case "content":
+				searchResult = boardService.findBoardsByContent(trimmedKeyword);
+				break;
+			case "nickname":
+				searchResult = boardService.findBoardsByUserId(trimmedKeyword);
+				break;
+			default:
+				searchResult = boardService.searchAll(trimmedKeyword);
+			}
+			totalCount = searchResult.size(); // 검색결과 갯수
+			searchResult = boardService.cutPage(offset, limit, searchResult);
 		}
 
 		// 인기게시글
 		List<BoardWithUserDto> popularPosts = boardService.popularPosts(2);
-		
+
 		// 뷰 타입 세션 저장 또는 불러오기
 		if (viewType != null && !viewType.isEmpty()) {
 			session.setAttribute("viewType", viewType); // URL로 선택했으면 저장
@@ -120,27 +126,26 @@ public class AnimalPrideController {
 			session.setAttribute("viewType", viewType);
 		}
 		model.addAttribute("viewType", viewType); // 뷰로 전달
-		
+
 		// 페이지네이션 기능용
-		int totalPages = (int) Math.ceil((double) totalCount / limit);	// 총게시글수/페이지당 갯수
+		int totalPages = (int) Math.ceil((double) totalCount / limit); // 총게시글수/페이지당 갯수
 		model.addAttribute("totalPages", totalPages);
-				
-		//인기글
+
+		// 인기글
 		model.addAttribute("popularPosts", popularPosts);
 		// 메인 리스트 출력 + 페이지 네이션 기능
 		model.addAttribute("mainList", searchResult);
 		model.addAttribute("limit", limit);
 		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("currentPage", page);
-		
+		model.addAttribute("request", request);
+
 		// 검색값 유지 (검색창 value 유지용)
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("field", field);
 		return "Board/AnimalPride";
 	}
 
-	
-	
 	// 상세 페이지 (조회수증가)
 	@GetMapping(value = "/AnimalPrideDetail/{num}")
 	public String animalPrideDetail(@PathVariable("num") int num,
@@ -151,9 +156,14 @@ public class AnimalPrideController {
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
 		String content = upload.fileLoad(detail.getContent());
 		detail.setContent(content);
-		System.out.println(detail.getImage_paths());
 		model.addAttribute("detail", detail);
 
+		// 프로필 가져오기
+		if (detail != null && detail.getUserId() != null) {
+			String authorProfilePath = userService.selectProfilePath(detail.getUserId());
+			model.addAttribute("authorProfilePath", authorProfilePath);
+		}
+		
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
 		@SuppressWarnings("unchecked")
 		List<Integer> viewedBoards = (List<Integer>) session.getAttribute("VIEWED_BOARDS");
@@ -198,10 +208,10 @@ public class AnimalPrideController {
 		boardDto.setUserNum(user.getNum());
 		boardDto.setType(2);
 		model.addAttribute("boardDto", boardDto);
-		
-		//예비 db 비우기
+
+		// 예비 db 비우기
 		boardService.DeleteTempImage(user.getNum());
-		
+
 		return "Board/AnimalPrideRegist";
 	}
 
@@ -209,38 +219,36 @@ public class AnimalPrideController {
 	@PostMapping(value = "/AnimalPrideRegist")
 	public String animalPrideRegistSubmit(
 			// 오류 검증
-			@Valid BoardDto boardDto,
-			@RequestParam("images") List<MultipartFile> images, BindingResult bindingResult,
+			@Valid BoardDto boardDto, @RequestParam("images") List<MultipartFile> images, BindingResult bindingResult,
 			Model model) {
 
 		if (bindingResult.hasErrors()) {
 			return "Board/AnimalPrideRegist";
 		}
-		
+
 		String original = boardDto.getContent().replaceAll(upload.tempPath, upload.imagePath);
 		boardDto.setContent(original);
-		
+
 		String fileName = upload.fileUpload(boardDto.getContent());
 		String thumnailName = null;
-		if(!images.get(0).isEmpty())
-		{
+		if (!images.get(0).isEmpty()) {
 			thumnailName = upload.imageFileUpload(images.get(0));
 		}
 		boardDto.setContent(fileName);
 		boardDto.setImage_paths(thumnailName);
 		boardService.insertBoard(boardDto);
-		
+
 		// 예비 db에서 가져오기
 		List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
 		// 제대로 된 db로 옮기기
 		for (TempImage l : list) {
 			TempImage tempImage = l;
-			
+
 			// 원본 파일 경로
 			Path sourcePath = Paths.get(upload.BaseUploadPath() + tempImage.getImageName());
-			
+
 			String newPath = upload.BaseUploadPath() + tempImage.getImageName().replace("temp/", "");
-			
+
 			// 이동할 대상 경로
 			Path targetPath = Paths.get(newPath);
 
@@ -252,7 +260,7 @@ public class AnimalPrideController {
 				System.err.println("파일 이동 중 오류 발생: " + e.getMessage());
 			}
 		}
-		
+
 		return "redirect:/AnimalPride";
 	}
 
@@ -284,8 +292,8 @@ public class AnimalPrideController {
 
 	// 게시글 수정
 	@PostMapping(value = "/AnimalPrideUpdate/{num}")
-	public String animalPrideUpdateSubmit(@Valid BoardDto boardDto, BindingResult bindingResult, @PathVariable("num") int num,
-			Model model, @AuthenticationPrincipal CustomUserDetails authUser,
+	public String animalPrideUpdateSubmit(@Valid BoardDto boardDto, BindingResult bindingResult,
+			@PathVariable("num") int num, Model model, @AuthenticationPrincipal CustomUserDetails authUser,
 			@RequestParam("images") List<MultipartFile> images,
 			@RequestParam(value = "deleteThumbnail", required = false) String deleteThumbnail,
 			RedirectAttributes redirectAttributes) {
@@ -324,17 +332,17 @@ public class AnimalPrideController {
 
 		// 2. 썸네일 처리
 		if ("true".equals(deleteThumbnail)) {
-		    // 👉 삭제 체크된 경우: 썸네일 null로 처리
-		    boardDto.setImage_paths(null);
+			// 👉 삭제 체크된 경우: 썸네일 null로 처리
+			boardDto.setImage_paths(null);
 		} else if (images != null && images.size() > 0 && !images.get(0).isEmpty()) {
-		    // 👉 새 썸네일 업로드된 경우: 새 썸네일 등록
-		    String thumbnailName = upload.imageFileUpload(images.get(0));
-		    boardDto.setImage_paths(thumbnailName);
+			// 👉 새 썸네일 업로드된 경우: 새 썸네일 등록
+			String thumbnailName = upload.imageFileUpload(images.get(0));
+			boardDto.setImage_paths(thumbnailName);
 		} else {
-		    // 👉 삭제도 안 했고 새 업로드도 없으면: 기존 썸네일 유지
-		    boardDto.setImage_paths(boardService.findBoardByNum(boardDto.getNum()).getImage_paths());
+			// 👉 삭제도 안 했고 새 업로드도 없으면: 기존 썸네일 유지
+			boardDto.setImage_paths(boardService.findBoardByNum(boardDto.getNum()).getImage_paths());
 		}
-		
+
 		// 예비 db에서 가져오기
 		List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
 		// 제대로 된 db로 옮기기
@@ -343,12 +351,12 @@ public class AnimalPrideController {
 
 			// 원본 파일 경로
 			Path sourcePath = Paths.get(upload.BaseUploadPath() + tempImage.getImageName());
-			
+
 			String newPath = upload.BaseUploadPath() + tempImage.getImageName().replace("temp/", "");
 
 			// 이동할 대상 경로
 			Path targetPath = Paths.get(newPath);
-			
+
 			try {
 				// 파일 이동 (이미 존재하면 덮어쓰기)
 				Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
@@ -376,7 +384,7 @@ public class AnimalPrideController {
 		boardService.DeleteTempImage(user.getNum());
 		return "redirect:/AnimalPrideDetail/" + num;
 	}
-	//원래 있던 수정 코드
+	// 원래 있던 수정 코드
 //	String thumnailName = null;
 //	if(images != null && images.size() > 0)
 //		thumnailName = upload.imageFileUpload(images.get(0));
@@ -387,9 +395,6 @@ public class AnimalPrideController {
 //	
 //	boardService.updateBoard(boardDto, num);
 //	return "redirect:/AdoptDetail/" + num;
-	
-	
-	
 
 	// 삭제
 	@PostMapping("/AnimalPrideDelete/{num}")
@@ -398,7 +403,7 @@ public class AnimalPrideController {
 
 		// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용)
 		BoardWithUserDto board = boardService.findBoardByNum(num);
-			
+
 		// 유저 정보 가져오기
 		Users user = (Users) authUser.getUser();
 
@@ -411,18 +416,15 @@ public class AnimalPrideController {
 			return "redirect:/AnimalPride";
 		}
 
-		
 		boardService.deleteBoard(num);
-		redirectAttributes.addFlashAttribute("deleteSuccess","삭제 완료되었습니다");
+		redirectAttributes.addFlashAttribute("deleteSuccess", "삭제 완료되었습니다");
 
 		return "redirect:/AnimalPride";
 	}
 
 	// 신고기능
 	@PostMapping("/AnimalPrideDetail/{num}/report")
-	public String reportBoard(
-			@PathVariable("num") int num, 
-			@AuthenticationPrincipal CustomUserDetails authUser,
+	public String reportBoard(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes) {
 
 		Users user = authUser.getUser();

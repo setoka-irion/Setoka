@@ -1,397 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+</html>
+
 <head>
 	<meta charset="UTF-8" />
 	<title>산책로 추천 상세 페이지</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
+	<link rel="stylesheet" th:href="@{/CSS/boardDetail.css}">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<style>
-		/* reset & 기본 */
-		* {
-			box-sizing: border-box;
-		}
-
-		body {
-			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-			background-color: #f4f7fb;
-			margin: 0;
-			color: #333;
-			text-align: center;
-		}
-
-		.container {
-			max-width: 1200px;
-			margin: 0 auto;
-			background-color: #fff;
-			padding: 30px 40px;
-			border-radius: 12px;
-			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-			text-align: left;
-		}
-
-		/* 메시지 */
-		.message {
-			font-weight: 600;
-			margin-bottom: 20px;
-			padding: 12px 15px;
-			border-radius: 8px;
-		}
-
-		.message.error {
-			color: #b32020;
-			background-color: #f8d7da;
-			border: 1px solid #f5c2c7;
-		}
-
-		.message.success {
-			color: #216e21;
-			background-color: #d4edda;
-			border: 1px solid #c3e6cb;
-		}
 		
-		.back-button a{
-			display: inline-block;
-			padding: 10px 20px;
-			background-color: #8b5e3c;
-			color: white;
-			text-decoration: none;
-			border-radius: 5px;
-			font-weight: bold;
-			transition: background-color 0.3s ease;
-			border: none;
-			cursor: pointer;
-		}
-
-		.back-button a:hover {
-			background-color: #8b5e3c;
-			/* 호버 시 조금 더 진한 녹색 */
-		}
-
-
-		/* 버튼 공통 */
-		.btn {
-			display: inline-block;
-			padding: 10px 20px;
-			border-radius: 6px;
-			font-weight: 600;
-			cursor: pointer;
-			text-decoration: none;
-			border: none;
-			transition: background-color .3s ease, box-shadow .3s ease;
-		}
-
-		.btn-primary {
-			background-color: #8b5e3c;
-			color: #fff;
-			box-shadow: 0 2px 5px rgba(139, 94, 60, 0.4);
-		}
-
-		.btn-primary:hover {
-			background-color: #8b5e3c;
-			box-shadow: 0 4px 8px rgba(139, 94, 60, 0.6);
-		}
-
-		.btn-success {
-			background-color: #4caf50;
-			color: white;
-		}
-
-		.btn-success:hover {
-			background-color: #3a8e38;
-		}
-
-		.btn-danger {
-			background-color: #e74c3c;
-			color: white;
-		}
-
-		.btn-danger:hover {
-			background-color: #b62d20;
-		}
-
-		.btn-warning {
-			background-color: #f39c12;
-			color: white;
-		}
-
-		.btn-warning:hover {
-			background-color: #c67a0a;
-		}
-
-		/* 상단 버튼 그룹 */
-		.top-buttons {
-			margin-bottom: 30px;
-			text-align: right;
-		}
-
-		.top-buttons .btn+.btn {
-			margin-left: 12px;
-		}
-
-		/* 헤더 테이블 */
-		.header-table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-bottom: 25px;
-		}
-
-		.header-table th,
-		.header-table td {
-			padding: 12px 15px;
-			border-bottom: 2px solid #e1e4e8;
-			text-align: left;
-			font-size: 1.1rem;
-			color: #555;
-		}
-
-		.header-table th {
-			background-color: #f7f9fb;
-		}
-
-		/* 액션 버튼들 (수정/삭제/신고) */
-		.action-buttons {
-			float: right;
-			margin-top: -45px;
-		}
-
-		.action-buttons form,
-		.action-buttons button {
-			display: inline-block;
-			margin-left: 10px;
-		}
-
-		/* 본문 */
-		.content-table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-bottom: 30px;
-		}
-
-		.content-table th,
-		.content-table td {
-			border: 1px solid #ddd;
-			padding: 14px 15px;
-			font-size: 1rem;
-			vertical-align: top;
-		}
-
-		.content-table th {
-			background-color: #f7f9fb;
-			text-align: center;
-			font-weight: 600;
-		}
-
-		.content-table td[colspan] {
-			text-align: left;
-			white-space: pre-wrap;
-		}
-
-		/* 좋아요 */
-		.like-section {
-			margin: 20px 0 40px;
-			font-size: 1.2rem;
-			font-weight: 600;
-			display: flex;
-			align-items: center;
-			gap: 15px;
-		}
-
-		.like-section span {
-			color: #e74c3c;
-			user-select: none;
-		}
-
-		.like-section form button {
-			background-color: #e74c3c;
-			border: none;
-			padding: 8px 16px;
-			border-radius: 6px;
-			color: white;
-			font-weight: 600;
-			cursor: pointer;
-			transition: background-color .3s ease;
-		}
-
-		.like-section form button:hover {
-			background-color: #b62d20;
-		}
-
-		/* 댓글 */
-		h4 {
-			margin-bottom: 15px;
-			font-weight: 700;
-			color: #222;
-		}
-
-		.comments-table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-bottom: 40px;
-			table-layout: fixed;
-			word-wrap: break-word;
-		}
-
-		.comments-table th,
-		.comments-table td {
-			border: 1px solid #ddd;
-			padding: 10px 12px;
-			font-size: 0.9rem;
-			vertical-align: middle;
-			text-align: center;
-		}
-
-		.comments-table th {
-			background-color: #f7f9fb;
-			font-weight: 600;
-		}
-
-		.comments-table td.content-cell {
-			text-align: left;
-			word-break: break-word;
-		}
-
-		.comment-content {
-			display: block;
-			white-space: pre-wrap;
-			text-align: left;
-			padding-right: 5px;
-		}
-
-		form.edit-form textarea {
-			width: 100%;
-			min-height: 70px;
-			padding: 8px 10px;
-			font-size: 0.95rem;
-			border-radius: 6px;
-			border: 1px solid #ccc;
-			resize: vertical;
-			font-family: inherit;
-		}
-
-		form.edit-form button {
-			margin-top: 6px;
-			margin-right: 8px;
-			padding: 6px 14px;
-			border-radius: 6px;
-			border: none;
-			font-weight: 600;
-			cursor: pointer;
-			transition: background-color .3s ease;
-		}
-
-		form.edit-form button[type="submit"] {
-			background-color: #4caf50;
-			color: white;
-		}
-
-		form.edit-form button[type="submit"]:hover {
-			background-color: #3a8e38;
-		}
-
-		form.edit-form button[type="button"] {
-			background-color: #888;
-			color: white;
-		}
-
-		form.edit-form button[type="button"]:hover {
-			background-color: #555;
-		}
-
-		.comments-table td button {
-			padding: 6px 10px;
-			font-size: 0.85rem;
-			border-radius: 6px;
-			border: none;
-			cursor: pointer;
-			font-weight: 600;
-			transition: background-color .3s ease;
-		}
-
-		.comments-table td button:hover {
-			filter: brightness(0.9);
-		}
-
-		.comments-table td form {
-			display: inline-block;
-			margin: 0;
-		}
-
-		/* 댓글 작성 폼 */
-		.comment-form {
-			width: 100%;
-			margin-bottom: 40px;
-			text-align: left;
-		}
-
-		.comment-form textarea {
-			width: 100%;
-			min-height: 100px;
-			padding: 12px 15px;
-			font-size: 1rem;
-			border-radius: 10px;
-			border: 1px solid #ccc;
-			resize: vertical;
-			font-family: inherit;
-		}
-
-		.comment-form button {
-			margin-top: 12px;
-			background-color: #8b5e3c;
-			color: white;
-			border: none;
-			padding: 12px 24px;
-			font-weight: 700;
-			font-size: 1rem;
-			border-radius: 8px;
-			cursor: pointer;
-			transition: background-color .3s ease;
-		}
-
-		.comment-form button:hover {
-			background-color: #8b5e3c;
-		}
-
-		/* 반응형 */
-		@media (max-width: 640px) {
-			.container {
-				padding: 20px 15px;
-			}
-
-			.header-table,
-			.content-table,
-			.comments-table {
-				font-size: 0.85rem;
-			}
-
-			.action-buttons {
-				float: none;
-				margin-top: 15px;
-				text-align: center;
-			}
-
-			.top-buttons {
-				text-align: center;
-				margin-bottom: 25px;
-			}
-
-			.top-buttons .btn {
-				margin: 6px 6px;
-				padding: 8px 16px;
-				font-size: 0.9rem;
-			}
-
-			.like-section {
-				justify-content: center;
-				font-size: 1rem;
-				gap: 10px;
-			}
-
-			.comments-table th,
-			.comments-table td {
-				padding: 8px 6px;
-			}
-		}
 	</style>
 </head>
 
@@ -399,8 +18,11 @@
 	<div th:replace="~{header :: siteHeader}"></div>
 	<br>
 	<div class="container">
-		<div class="back-button">
-			<p><a th:href="@{/WalkTrail}">목록으로 돌아가기</a></p>
+		<div class="head-container">
+			<h1>산책로 추천 게시판</h1>
+			<div class="back-button">
+				<a href="#" id="back-button">목록으로</a> 
+			</div>
 		</div>
 		<!-- 메시지 -->
 		<div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
@@ -408,59 +30,80 @@
 		<div th:if="${deleteSuccess}" class="message success" th:text="${deleteSuccess}"></div>
 
 		<!-- 상단 정보 -->
-		<table class="header-table">
+		<table class="header-table" style="width: 100%; table-layout: fixed;">
+			<colgroup>
+				<col style="width:55%;" />
+				<col style="width:10%;" />
+				<col style="width:10%;" />
+				<col style="width:10%;" />
+				<col style="width:15%;" />
+			</colgroup>
 			<thead>
 				<tr>
 					<th>제목</th>
 					<th>작성자</th>
+					<th>좋아요</th>
+					<th>조회수</th>
 					<th>작성일</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td th:text="${detail.title}">제목</td>
-					<td th:text="${detail.nickName}">작성자</td>
-					<td th:text="${detail.formattedRegistDate}">2025-07-24</td>
-
-					<!-- 수정/삭제/신고 -->
-					<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
-						<form th:action="@{'/WalkTrailUpdate/' + ${detail.boardNum}}" method="get">
-							<button type="submit" class="btn btn-success">수정</button>
-						</form>
-						<form th:action="@{'/WalkTrailDelete/' + ${detail.boardNum}}" method="post"
-							onsubmit="return confirm('정말 삭제하시겠습니까?');">
-							<button type="submit" class="btn btn-danger">삭제</button>
-						</form>
-						<form id="reportForm" th:action="@{/WalkTrailDetail/{num}/report(num=${detail.boardNum})}"
-							method="post">
-							<input type="hidden" name="boardNum" th:value="${detail.boardNum}" />
-							<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
-						</form>
-					</div>
-
+					<td>
+						<div class="author-info">
+							<img th:src="@{${authorProfilePath}}" alt="프로필 이미지" class="profile-image">
+							<span th:text="${detail.nickName}">작성자</span>
+						</div>
+					</td>
+					<td th:text="${detail.likes}">좋아요</td>
+					<td th:text="${detail.views}">조회수</td>
+					<td>
+						<span th:text="${detail.formattedRegistDate}">2025-07-24</span>
+					</td>
 				</tr>
 			</tbody>
 		</table>
 
+		<!-- 수정/삭제/신고 -->
+		<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+			<th:block th:if="${loginUser != null and (loginUser.num == detail.userNum or longinUser.privileges.name == '관리자')}">
+				<form th:action="@{'/WalkTrailUpdate/' + ${detail.boardNum}}" method="get">
+					<button type="submit" class="btn btn-success">수정</button>
+				</form>
+				<form th:action="@{'/WalkTrailDelete/' + ${detail.boardNum}}" method="post"
+					onsubmit="return confirm('정말 삭제하시겠습니까?');">
+					<button type="submit" class="btn btn-danger">삭제</button>
+				</form>
+			</th:block>
+			<form id="reportForm" th:action="@{/WalkTrailDetail/{num}/report(num=${detail.boardNum})}" method="post">
+				<button type="button" class="btn btn-warning" onclick="confirmReport()">🚨 신고</button>
+			</form>
+
+		</div>
+
 		<!-- 썸네일 -->
 		<div class="form-group" style="text-align: center;">
-			<img th:src="@{${detail.Image_paths}}"
-				alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
+			<img th:src="@{${detail.Image_paths}}" alt="썸네일" style="max-width: 400px; margin-bottom: 10px;" />
 		</div>
 
 		<!-- 본문 -->
 		<table class="content-table">
+			<colgroup>
+				<col style="width: 50%;">
+				<col style="width: 50%;">
+			</colgroup>
 			<thead>
 				<tr>
-					<th>지역</th>
+					<th></th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td th:text="${detail.area}" style="text-align: center;">지역명</td>
 				</tr>
 				<tr>
-					<td colspan="2" th:utext="${detail.content}"></td>
+					<td colspan="2" th:utext="${detail.content}"></td> <!-- 이미지 까지 포함됨.-->
 				</tr>
 			</tbody>
 		</table>
@@ -471,89 +114,126 @@
 			<form th:action="@{/WalkTrailDetail/{num}/like(num=${detail.boardNum})}" method="post" style="margin:0;">
 				<button type="submit" class="btn btn-danger">좋아요</button>
 			</form>
+			<th:block th:if="${loginUser != null}">
+				<form th:action="@{/CreateLetter}" method="post">
+					<input type="hidden" name="receiver" th:value="${detail.nickName}" />
+					<button type="submit" class="message-button">쪽지</button>
+				</form>
+			</th:block>
 		</div>
 
 		<!-- 댓글 -->
-		<h4>댓글</h4>
-		<table class="comments-table">
-			<colgroup>
-				<col style="width:6%;" />
-				<col style="width:10%;" />
-				<col style="width:42%;" />
-				<col style="width:10%;" />
-				<col style="width:8%;" />
-				<col style="width:14%;" />
-				<col style="width:10%;" />
-				<col style="width:10%;" />
-				<col style="width:10%;" />
-			</colgroup>
-			<thead>
-				<tr>
-					<th>번호</th>
-					<th>작성자</th>
-					<th>내용</th>
-					<th>등급</th>
-					<th>좋아요</th>
-					<th>작성일</th>
-					<th>수정</th>
-					<th>삭제</th>
-					<th>좋아요/신고</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="comment, iterStat : ${comments}" th:attr="id='comment-' + ${comment.num}">
-					<td th:text="${iterStat.index + 1}">1</td>
-					<td th:text="${comment.nickname}">작성자</td>
-					<td class="content-cell">
-						<span th:text="${comment.content}" class="comment-content"
-							th:attr="id=${'content-span-' + comment.num}">댓글 내용</span>
-						<form th:action="@{'/WalkTrailDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
-							class="edit-form" th:attr="id=${'edit-form-' + comment.num}"
-							style="display:none; margin-top:5px;">
-							<input type="hidden" name="commentNum" th:value="${comment.num}" />
-							<textarea name="content" required th:text="${comment.content}"></textarea><br />
-							<button type="submit" class="btn btn-success">저장</button>
-							<button type="button" class="btn" th:onclick="|cancelEdit(${comment.num})|">취소</button>
-						</form>
-					</td>
-					<td th:text="${comment.userGrade}">등급</td>
-					<td th:text="${comment.likes}">0</td>
-					<td th:text="${comment.formattedRegistDate}">2025-07-24</td>
-					<td>
-						<button type="button" class="btn" th:onclick="|showEditForm(${comment.num})|">수정</button>
-					</td>
-					<td>
-						<form th:action="@{'/WalkTrailDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
-							onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');">
-							<input type="hidden" name="commentNum" th:value="${comment.num}" />
-							<button type="submit" class="btn btn-danger">삭제</button>
-						</form>
-					</td>
-					<td>
+		<div class="comment-title">
+			<h4>댓글 <span th:text="${detail.commentCount}">0</span>개</h4>
+		</div>
+		<div class="comment-list-container">
+			<div th:each="comment, iterStat : ${comments}" class="comment-card">
+
+				<div class="comment-header">
+					<div class="comment-author-info">
+						<img th:src="@{${comment.profilePath}}" alt="프로필 이미지" class="profile-image">
+						<span class="nick-name" th:text="${comment.nickname}">작성자</span>
+						<span class="user-grade" th:text="${comment.userGrade}">등급</span>
+					</div>
+					<div class="comment-meta">
+						<span class="comment-likes">👍 <span th:text="${comment.likes}">0</span></span>
+						<span class="comment-date" th:text="${comment.formattedRegistDate}">2025-07-24</span>
+					</div>
+				</div>
+
+				<p th:text="${comment.content}" class="comment-content-text"
+					th:attr="id=${'content-span-' + comment.num}">댓글 내용</p>
+
+				<div class="comment-actions">
+					<div>
 						<form th:action="@{'/WalkTrailDetail/' + ${detail.boardNum} + '/comment/like'}" method="post"
 							style="display:inline;">
 							<input type="hidden" name="commentNum" th:value="${comment.num}" />
 							<button type="submit" class="btn btn-danger">좋아요</button>
 						</form>
-						<form th:action="@{/WalkTrailDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
-							style="display:inline; margin-left:6px;">
-							<button type="submit" class="btn btn-warning">신고</button>
-						</form>
-					</td>
-				</tr>
-			</tbody>
-		</table>
 
+						<th:block th:if="${loginUser != null and loginUser.num == comment.userNum}">
+							<button type="button" class="btn btn-edit"
+								th:onclick="|showEditForm(${comment.num})|">수정</button>
+							<form th:action="@{'/WalkTrailDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
+								onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');" style="display:inline-block;">
+								<input type="hidden" name="commentNum" th:value="${comment.num}" />
+								<button type="submit" class="btn btn-delete">삭제</button>
+							</form>
+						</th:block>
+						<form th:action="@{/WalkTrailDetail/{num}/report/comment(num=${detail.boardNum})}" method="post"
+							style="display:inline-block;" onsubmit="return confirm('정말 이 댓글을 신고하시겠습니까?');">
+							<input type="hidden" name="commentNum" th:value="${comment.num}" />
+							<button type="submit" class="btn btn-report">🚨신고</button>
+						</form>
+					</div>
+
+					<!--댓글 쪽지 -->
+					<th:block th:if="${loginUser != null}">
+						<form th:action="@{/CreateLetter}" method="post" style="margin-left: auto;">
+							<input type="hidden" name="receiver" th:value="${comment.nickname}" />
+							<button type="submit" class="message-button">쪽지</button>
+						</form>
+					</th:block>
+				</div>
+
+				<form th:action="@{'/WalkTrailDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
+					class="edit-form" th:attr="id=${'edit-form-' + comment.num}" style="display:none;">
+					<input type="hidden" name="commentNum" th:value="${comment.num}" />
+					<textarea name="content" required th:text="${comment.content}"></textarea><br />
+					<div class="edit-form-buttons">
+						<button type="submit" class="btn btn-success">저장</button>
+						<button type="button" class="btn" th:onclick="|cancelEdit(${comment.num})|">취소</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		
 		<!-- 댓글 작성 -->
-		<h4>댓글 작성</h4>
-		<form class="comment-form" th:action="@{/WalkTrailDetail/{num}/comment(num=${detail.boardNum})}" method="post">
-			<textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+		<div class="comment-write">
+			<h4>댓글 작성</h4>
+		</div>
+		<form class="comment-form" th:action="@{/WalkTrailDetail/{num}/comment(num=${detail.boardNum})}" method="post"
+			style="display: flex; flex-direction: column; align-items: flex-end;">
+			<textarea id="commentContent" name="content" placeholder="댓글을 입력하세요" required></textarea>
 			<br />
 			<button type="submit" class="btn btn-primary">댓글 등록</button>
 		</form>
 	</div>
 
+	<!-- 위로가기 스크롤 버튼 -->
+	<div id="scrollTopButton" class="scroll-top-button">
+		<a href="#" aria-label="맨 위로">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+				stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+				class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up-lines">
+				<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+				<path
+					d="M9 12h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v3h-6v-3z" />
+				<path d="M9 21h6" />
+				<path d="M9 18h6" />
+			</svg>
+		</a>
+	</div>
+
 	<script>
+		//목록으로 갈때 보고있던 페이지에서 가게
+				document.addEventListener('DOMContentLoaded', () => {
+				    const backButton = document.getElementById('back-button'); // '목록으로' 버튼 ID
+
+				    const urlParams = new URLSearchParams(window.location.search);
+				    const fromUrl = urlParams.get('fromUrl');
+
+				    backButton.addEventListener('click', () => {
+				        if (fromUrl) {
+				            window.location.href = fromUrl;
+				        } else {
+				            // fromUrl이 없는 경우 기본 목록 페이지로 이동
+				            window.location.href = '/WalkTrail'; 
+				        }
+				    });
+				});
+		
 		function confirmReport() {
 			if (confirm("정말 이 게시글을 신고하시겠습니까?")) {
 				document.getElementById("reportForm").submit();
@@ -567,7 +247,49 @@
 			document.getElementById('content-span-' + commentNum).style.display = 'inline';
 			document.getElementById('edit-form-' + commentNum).style.display = 'none';
 		}
+
+		// 댓글 enter 최대횟수 제한 코드
+		const commentTextarea = document.getElementById('commentContent');
+		let enterCount = 0;
+
+		// 키보드 입력 이벤트를 감지
+		commentTextarea.addEventListener('keydown', function (event) {
+			if (event.key === 'Enter') {
+				const maxEnter = 1; // 연속된 엔터 횟수를 1회로 제한
+
+				if (enterCount >= maxEnter) {
+					event.preventDefault();
+				}
+				enterCount++;
+			} else {
+				enterCount = 0;
+			}
+		});
+
+		// 위로가기 버튼
+		document.addEventListener('DOMContentLoaded', function () {
+			const scrollTopButton = document.getElementById('scrollTopButton');
+
+			window.addEventListener('scroll', function () {
+				// 스크롤이 200px 이상 내려갔을 때 버튼을 보이게 함
+				if (window.scrollY > 200) {
+					scrollTopButton.style.display = 'block';
+				} else {
+					scrollTopButton.style.display = 'none';
+				}
+			});
+
+			// 버튼 클릭 시 맨 위로 부드럽게 스크롤
+			scrollTopButton.addEventListener('click', function (event) {
+				event.preventDefault(); // 기본 링크 동작 방지
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth'
+				});
+			});
+		});
 	</script>
+
 </body>
 
 </html>
