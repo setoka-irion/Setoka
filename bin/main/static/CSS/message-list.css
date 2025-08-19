@@ -1,53 +1,39 @@
+.message-buttons {
+	position: fixed;
+	top: 180px;
+	right: 100px;
+	left: auto;
+	flex-direction: column; /* 세로 정렬 */
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 10px;
+	flex-shrink: 0;
+}
+
+.message-buttons button {
+	background-color: #8b5e3c;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+	
+	width: 130px;
+	height: 40px;
+}
+
+.message-buttons button:hover {
+	background-color: rgb(255, 128, 0);
+}
+
 .message-list-container {
 	display: flex;
 	 width: 100%;
 	 max-width: 1000%;
 	 margin: 0 auto; /* 전체 컨테이너는 가운데 정렬 */
-}
-
-.messageBoxType {
-    position: relative;
-    width: 200px;
-    background-color: rgb(255, 255, 255);
-    padding: 10px;
-    box-sizing: border-box;
-    flex-shrink: 0;
-    text-align: center;
-    border-right: 1px solid rgb(255, 255, 255); /* 얇은 경계선 */
-
-}
-
-.messageBoxType::after {
-    content: "";
-    position: absolute;
-    top: 10%;
-    bottom: 10%;
-    right: 0;
-    width: 2px;
-    background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
-    pointer-events: none;
-    border-radius: 0 10px 10px 0;
-}
-
-.messageBoxType button {
-	width: 90%;
-	padding: 10px 15px;
-	border: none;
-	border-radius: 8px;
-	background: rgb(128, 255, 255);
-	color: #333;
-	font-weight: 600;
-	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
-	transition: all 0.2s ease;
-	cursor: pointer;
-	text-align: center;
-	margin-bottom: 5px;
-}
-
-.messageBoxType button:hover {
-	background: rgb(255, 128, 0);
-	color: #fff;
-	transform: translateX(2px);
 }
 
 .message-list {
@@ -58,7 +44,6 @@
 	padding: 20px;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	text-align: center;
-	margin-left: 370px;
 	margin-top: 10px;
 }
 
