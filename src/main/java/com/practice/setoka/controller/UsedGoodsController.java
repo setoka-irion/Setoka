@@ -31,8 +31,10 @@ import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.CommentLikeService;
 import com.practice.setoka.service.CommentsService;
 import com.practice.setoka.service.LikeService;
+import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -46,6 +48,9 @@ public class UsedGoodsController {
 
 	@Autowired
 	public BoardService boardService;
+
+	@Autowired
+	public UserService userService;
 
 	@Autowired
 	public CommentsService commentsService;
@@ -71,45 +76,45 @@ public class UsedGoodsController {
 
 	// 메인페이지
 	@GetMapping(value = "/UsedGoods")
-	public String usedGoodsMain(
-			@RequestParam(value = "keyword", required = false) String keyword,
-			@RequestParam(value = "field", required = false) String field, 
+	public String usedGoodsMain(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "field", required = false, defaultValue = "") String field,
 			@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "viewType", required = false) String viewType,
-			Model model, HttpSession session){
-		
+			@RequestParam(value = "viewType", required = false, defaultValue = "card") String viewType,
+			HttpServletRequest request, Model model, HttpSession session) {
+
 		// 페이지 네이션 기능
-		int limit = 16; //한페이지당 게시글수
-		int offset = (page - 1) * limit; 
+		int limit = 16; // 한페이지당 게시글수
+		int offset = (page - 1) * limit;
 		int totalCount;
-		
+
 		// 게시판 내부 검색
 		List<BoardWithUserDto> searchResult;
 		if (keyword == null || keyword.isEmpty()) {
-		    // 검색 값 안넣었을 경우 전체 게시판 리스트 출력
-		    searchResult = boardService.findBoardsByType(4, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
-		    totalCount = boardService.countBoards(4);
+			// 검색 값 안넣었을 경우 전체 게시판 리스트 출력
+			searchResult = boardService.findBoardsByType(4, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
+			totalCount = boardService.countBoards(4);
 		} else {
-		    switch (field) {
-		    case "title":
-		        searchResult = boardService.findBoardsByTitle(keyword.trim());
-		        break;
-		    case "content":
-		        searchResult = boardService.findBoardsByContent(keyword.trim());
-		        break;
-		    case "nickname":
-		        searchResult = boardService.findBoardsByUserId(keyword.trim());
-		        break;
-		    default:
-		        searchResult = boardService.searchAll(keyword.trim());
-		    }
-		    totalCount = searchResult.size(); //검색결과 갯수
-		    searchResult = boardService.cutPage(offset, limit, searchResult);
+			String trimmedKeyword = keyword.trim();// 검색시 공백까지 검색하는것 제거
+			switch (field) {
+			case "title":
+				searchResult = boardService.findBoardsByTitle(trimmedKeyword);
+				break;
+			case "content":
+				searchResult = boardService.findBoardsByContent(trimmedKeyword);
+				break;
+			case "nickname":
+				searchResult = boardService.findBoardsByUserId(trimmedKeyword);
+				break;
+			default:
+				searchResult = boardService.searchAll(trimmedKeyword);
+			}
+			totalCount = searchResult.size(); // 검색결과 갯수
+			searchResult = boardService.cutPage(offset, limit, searchResult);
 		}
 
 		// 인기게시글
 		List<BoardWithUserDto> popularPosts = boardService.popularPosts(4);
-		
+
 		// 뷰 타입 세션 저장 또는 불러오기
 		if (viewType != null && !viewType.isEmpty()) {
 			session.setAttribute("viewType", viewType); // URL로 선택했으면 저장
@@ -120,27 +125,26 @@ public class UsedGoodsController {
 			session.setAttribute("viewType", viewType);
 		}
 		model.addAttribute("viewType", viewType); // 뷰로 전달
-		
+
 		// 페이지네이션 기능용
-		int totalPages = (int) Math.ceil((double) totalCount / limit);	// 총게시글수/페이지당 갯수
+		int totalPages = (int) Math.ceil((double) totalCount / limit); // 총게시글수/페이지당 갯수
 		model.addAttribute("totalPages", totalPages);
-				
-		//인기글
+
+		// 인기글
 		model.addAttribute("popularPosts", popularPosts);
 		// 메인 리스트 출력 + 페이지 네이션 기능
 		model.addAttribute("mainList", searchResult);
 		model.addAttribute("limit", limit);
 		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("currentPage", page);
-		
+		model.addAttribute("request", request);
+
 		// 검색값 유지 (검색창 value 유지용)
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("field", field);
 		return "Board/UsedGoods";
 	}
 
-	
-	
 	// 상세 페이지 (조회수증가)
 	@GetMapping(value = "/UsedGoodsDetail/{num}")
 	public String usedGoodsDetail(@PathVariable("num") int num,
@@ -151,9 +155,13 @@ public class UsedGoodsController {
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
 		String content = upload.fileLoad(detail.getContent());
 		detail.setContent(content);
-
 		model.addAttribute("detail", detail);
 
+		// 프로필 가져오기
+		if (detail != null && detail.getUserId() != null) {
+			String authorProfilePath = userService.selectProfilePath(detail.getUserId());
+			model.addAttribute("authorProfilePath", authorProfilePath);
+		}
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
 		@SuppressWarnings("unchecked")
 		List<Integer> viewedBoards = (List<Integer>) session.getAttribute("VIEWED_BOARDS");
@@ -198,10 +206,10 @@ public class UsedGoodsController {
 		boardDto.setUserNum(user.getNum());
 		boardDto.setType(4);
 		model.addAttribute("boardDto", boardDto);
-		
-		//예비 db 비우기
+
+		// 예비 db 비우기
 		boardService.DeleteTempImage(user.getNum());
-		
+
 		return "Board/UsedGoodsRegist";
 	}
 
@@ -209,39 +217,37 @@ public class UsedGoodsController {
 	@PostMapping(value = "/UsedGoodsRegist")
 	public String usedGoodsRegistSubmit(
 			// 오류 검증
-			@Valid BoardDto boardDto,
-			@RequestParam("images") List<MultipartFile> images, BindingResult bindingResult,
+			@Valid BoardDto boardDto, @RequestParam("images") List<MultipartFile> images, BindingResult bindingResult,
 			Model model) {
 
 		if (bindingResult.hasErrors()) {
 			return "Board/UsedGoodsRegist";
 		}
-		
+
 		String original = boardDto.getContent().replaceAll(upload.tempPath, upload.imagePath);
 		boardDto.setContent(original);
-		
+
 		String fileName = upload.fileUpload(boardDto.getContent());
 		String thumnailName = null;
-		if(!images.get(0).isEmpty())
-		{
+		if (!images.get(0).isEmpty()) {
 			thumnailName = upload.imageFileUpload(images.get(0));
 		}
-		
+
 		boardDto.setContent(fileName);
 		boardDto.setImage_paths(thumnailName);
 		boardService.insertBoard(boardDto);
-		
+
 		// 예비 db에서 가져오기
 		List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
 		// 제대로 된 db로 옮기기
 		for (TempImage l : list) {
 			TempImage tempImage = l;
-			
+
 			// 원본 파일 경로
 			Path sourcePath = Paths.get(upload.BaseUploadPath() + tempImage.getImageName());
-			
+
 			String newPath = upload.BaseUploadPath() + tempImage.getImageName().replace("temp/", "");
-			
+
 			// 이동할 대상 경로
 			Path targetPath = Paths.get(newPath);
 
@@ -253,7 +259,7 @@ public class UsedGoodsController {
 				System.err.println("파일 이동 중 오류 발생: " + e.getMessage());
 			}
 		}
-		
+
 		return "redirect:/UsedGoods";
 	}
 
@@ -279,16 +285,16 @@ public class UsedGoodsController {
 		// 상세보기와 동일 코드
 		board.setContent(upload.fileLoad(board.getContent()));
 		model.addAttribute("board", board); // 수정 폼에서 기본값으로 사용
-		//예비 db 비우기
+		// 예비 db 비우기
 		boardService.DeleteTempImage(user.getNum());
-		
+
 		return "Board/UsedGoodsUpdate";
 	}
 
 	// 게시글 수정
 	@PostMapping(value = "/UsedGoodsUpdate/{num}")
-	public String usedGoodsUpdateSubmit(@Valid BoardDto boardDto, BindingResult bindingResult, @PathVariable("num") int num,
-			Model model, @AuthenticationPrincipal CustomUserDetails authUser,
+	public String usedGoodsUpdateSubmit(@Valid BoardDto boardDto, BindingResult bindingResult,
+			@PathVariable("num") int num, Model model, @AuthenticationPrincipal CustomUserDetails authUser,
 			@RequestParam("images") List<MultipartFile> images,
 			@RequestParam(value = "deleteThumbnail", required = false) String deleteThumbnail,
 			RedirectAttributes redirectAttributes) {
@@ -327,17 +333,17 @@ public class UsedGoodsController {
 
 		// 2. 썸네일 처리
 		if ("true".equals(deleteThumbnail)) {
-		    // 👉 삭제 체크된 경우: 썸네일 null로 처리
-		    boardDto.setImage_paths(null);
+			// 👉 삭제 체크된 경우: 썸네일 null로 처리
+			boardDto.setImage_paths(null);
 		} else if (!images.get(0).isEmpty()) {
-		    // 👉 새 썸네일 업로드된 경우: 새 썸네일 등록
-		    String thumbnailName = upload.imageFileUpload(images.get(0));
-		    boardDto.setImage_paths(thumbnailName);
+			// 👉 새 썸네일 업로드된 경우: 새 썸네일 등록
+			String thumbnailName = upload.imageFileUpload(images.get(0));
+			boardDto.setImage_paths(thumbnailName);
 		} else {
-		    // 👉 삭제도 안 했고 새 업로드도 없으면: 기존 썸네일 유지
-		    boardDto.setImage_paths(boardService.findBoardByNum(boardDto.getNum()).getImage_paths());
+			// 👉 삭제도 안 했고 새 업로드도 없으면: 기존 썸네일 유지
+			boardDto.setImage_paths(boardService.findBoardByNum(boardDto.getNum()).getImage_paths());
 		}
-		
+
 		// 예비 db에서 가져오기
 		List<TempImage> list = boardService.selectTempImageAllToUsersNum(boardDto.getUserNum());
 		// 제대로 된 db로 옮기기
@@ -346,12 +352,12 @@ public class UsedGoodsController {
 
 			// 원본 파일 경로
 			Path sourcePath = Paths.get(upload.BaseUploadPath() + tempImage.getImageName());
-			
+
 			String newPath = upload.BaseUploadPath() + tempImage.getImageName().replace("temp/", "");
 
 			// 이동할 대상 경로
 			Path targetPath = Paths.get(newPath);
-			
+
 			try {
 				// 파일 이동 (이미 존재하면 덮어쓰기)
 				Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
@@ -379,7 +385,7 @@ public class UsedGoodsController {
 		boardService.DeleteTempImage(user.getNum());
 		return "redirect:/UsedGoodsDetail/" + num;
 	}
-	//원래 있던 수정 코드
+	// 원래 있던 수정 코드
 //	String thumnailName = null;
 //	if(images != null && images.size() > 0)
 //		thumnailName = upload.imageFileUpload(images.get(0));
@@ -390,9 +396,6 @@ public class UsedGoodsController {
 //	
 //	boardService.updateBoard(boardDto, num);
 //	return "redirect:/AdoptDetail/" + num;
-	
-	
-	
 
 	// 삭제
 	@PostMapping("/UsedGoodsDelete/{num}")
@@ -401,7 +404,7 @@ public class UsedGoodsController {
 
 		// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용)
 		BoardWithUserDto board = boardService.findBoardByNum(num);
-			
+
 		// 유저 정보 가져오기
 		Users user = (Users) authUser.getUser();
 
@@ -414,19 +417,16 @@ public class UsedGoodsController {
 			return "redirect:/UsedGoods";
 		}
 
-		
 		boardService.deleteBoard(num);
-		redirectAttributes.addFlashAttribute("deleteSuccess","삭제 완료되었습니다");
+		redirectAttributes.addFlashAttribute("deleteSuccess", "삭제 완료되었습니다");
 
 		return "redirect:/UsedGoods";
 	}
 
 	// 신고기능
 	@PostMapping("/UsedGoodsDetail/{num}/report")
-	public String usedGoodsReportBoard(
-			@PathVariable("num") int num, 
-			@AuthenticationPrincipal CustomUserDetails authUser,
-			RedirectAttributes redirectAttributes) {
+	public String usedGoodsReportBoard(@PathVariable("num") int num,
+			@AuthenticationPrincipal CustomUserDetails authUser, RedirectAttributes redirectAttributes) {
 
 		Users user = authUser.getUser();
 		if (user != null) { // 로그인유저가 신고시 내역없으면 신고가능
@@ -441,7 +441,8 @@ public class UsedGoodsController {
 
 	// 댓글 신고
 	@PostMapping("/UsedGoodsDetail/{num}/report/comment")
-	public String usedGoodsReportComment(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser) {
+	public String usedGoodsReportComment(@PathVariable("num") int num,
+			@AuthenticationPrincipal CustomUserDetails authUser) {
 
 		Users user = authUser.getUser();
 		if (user != null) {
@@ -455,7 +456,8 @@ public class UsedGoodsController {
 
 	// 게시글 좋아요
 	@PostMapping("/UsedGoodsDetail/{num}/like")
-	public String usedGoodsLikeBoard(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser) {
+	public String usedGoodsLikeBoard(@PathVariable("num") int num,
+			@AuthenticationPrincipal CustomUserDetails authUser) {
 
 		if (authUser.getUser() != null)
 			likeService.likeBoard(new LikeDto(authUser.getUser().getNum(), num));
@@ -525,8 +527,9 @@ public class UsedGoodsController {
 
 	// 댓글 삭제
 	@PostMapping("/UsedGoodsDetail/{num}/comment/delete")
-	public String usedGoodsDeleteComment(@AuthenticationPrincipal CustomUserDetails authUser, @PathVariable("num") int boardNum,
-			@RequestParam("commentNum") int commentNum, RedirectAttributes redirectAttributes) {
+	public String usedGoodsDeleteComment(@AuthenticationPrincipal CustomUserDetails authUser,
+			@PathVariable("num") int boardNum, @RequestParam("commentNum") int commentNum,
+			RedirectAttributes redirectAttributes) {
 
 		// 현재 로그인한 유저 정보
 		Users loginUser = authUser.getUser();
@@ -548,8 +551,8 @@ public class UsedGoodsController {
 
 	// 댓글 좋아요
 	@PostMapping("/UsedGoodsDetail/{num}/comment/like")
-	public String usedGoodsLikeComment(@AuthenticationPrincipal CustomUserDetails authUser, @PathVariable("num") int boardNum,
-			@RequestParam("commentNum") int commentNum) {
+	public String usedGoodsLikeComment(@AuthenticationPrincipal CustomUserDetails authUser,
+			@PathVariable("num") int boardNum, @RequestParam("commentNum") int commentNum) {
 
 		// 로그인 유저 확인
 		Users loginUser = authUser.getUser();

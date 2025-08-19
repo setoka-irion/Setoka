@@ -31,8 +31,10 @@ import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.CommentLikeService;
 import com.practice.setoka.service.CommentsService;
 import com.practice.setoka.service.LikeService;
+import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -46,6 +48,9 @@ public class WalkTrailController {
 
 	@Autowired
 	public BoardService boardService;
+	
+	@Autowired
+	public UserService userService;
 
 	@Autowired
 	public CommentsService commentsService;
@@ -72,11 +77,11 @@ public class WalkTrailController {
 	// 메인페이지
 	@GetMapping(value = "/WalkTrail")
 	public String walkTrailMain(
-			@RequestParam(value = "keyword", required = false) String keyword,
-			@RequestParam(value = "field", required = false) String field, 
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+			@RequestParam(value = "field", required = false, defaultValue = "") String field, 
 			@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "viewType", required = false) String viewType,
-			Model model, HttpSession session){
+			@RequestParam(value = "viewType", required = false, defaultValue = "card") String viewType,
+			HttpServletRequest request, Model model, HttpSession session){
 		
 		// 페이지 네이션 기능
 		int limit = 16; //한페이지당 게시글수
@@ -90,18 +95,19 @@ public class WalkTrailController {
 		    searchResult = boardService.findBoardsByType(3, offset, limit); // findBoardsByType 댓글수 때문에 바꿈
 		    totalCount = boardService.countBoards(3);
 		} else {
+			String trimmedKeyword = keyword.trim();// 검색시 공백까지 검색하는것 제거
 		    switch (field) {
 		    case "title":
-		        searchResult = boardService.findBoardsByTitle(keyword.trim());
+		        searchResult = boardService.findBoardsByTitle(trimmedKeyword);
 		        break;
 		    case "content":
-		        searchResult = boardService.findBoardsByContent(keyword.trim());
+		        searchResult = boardService.findBoardsByContent(trimmedKeyword);
 		        break;
 		    case "nickname":
-		        searchResult = boardService.findBoardsByUserId(keyword.trim());
+		        searchResult = boardService.findBoardsByUserId(trimmedKeyword);
 		        break;
 		    default:
-		        searchResult = boardService.searchAll(keyword.trim());
+		        searchResult = boardService.searchAll(trimmedKeyword);
 		    }
 		    totalCount = searchResult.size(); //검색결과 갯수
 		    searchResult = boardService.cutPage(offset, limit, searchResult);
@@ -132,6 +138,7 @@ public class WalkTrailController {
 		model.addAttribute("limit", limit);
 		model.addAttribute("totalCount", totalCount);
 		model.addAttribute("currentPage", page);
+		model.addAttribute("request", request);
 		
 		// 검색값 유지 (검색창 value 유지용)
 		model.addAttribute("keyword", keyword);
@@ -151,9 +158,14 @@ public class WalkTrailController {
 		BoardWithUserDto detail = boardService.findBoardByNum(num);
 		String content = upload.fileLoad(detail.getContent());
 		detail.setContent(content);
-
 		model.addAttribute("detail", detail);
 
+		//프로필 가져오기
+		if (detail != null && detail.getUserId() != null) {
+	        String authorProfilePath = userService.selectProfilePath(detail.getUserId());
+	        model.addAttribute("authorProfilePath", authorProfilePath);
+	    }
+		
 		// 세션에서 조회한 게시글 번호 리스트 받아오기, 없으면 만듦(조회수증가기능)
 		@SuppressWarnings("unchecked")
 		List<Integer> viewedBoards = (List<Integer>) session.getAttribute("VIEWED_BOARDS");
