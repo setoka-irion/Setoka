@@ -1,3 +1,18 @@
+.header-link {
+    /* 기본 하이퍼링크 스타일 제거 */
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit; /* 부모 요소의 글자색(검은색) 상속 */
+    
+    /* 추가적인 스타일로 시각적 효과 주기 */
+    font-weight: bold; /* 굵게 */
+}
+
+/* 마우스를 올렸을 때 효과 */
+.header-link:hover {
+    color: #007bff; /* 마우스 오버 시 파란색으로 변경 */
+    cursor: pointer; /* 마우스 커서를 손가락 모양으로 변경 */
+}
+
 .container-all {
 			width: 78%;
 			margin: 40px auto;
