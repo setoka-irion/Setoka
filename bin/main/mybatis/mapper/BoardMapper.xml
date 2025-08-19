@@ -10,7 +10,7 @@
 	
 	<!--인기 게시글-->
 	<select id="popularPosts" resultMap="boardWithUserMap">
-	SELECT b.*, u.nickname,
+	SELECT b.*, u.nickname, 
        COALESCE(c.comments_counts, 0) AS comments_counts,
        ((b.views * 0.5 + b.likes * 1.5 + COALESCE(c.comments_counts, 0) * 1.0) 
        / POW(DATEDIFF(NOW(), b.registerDate) + 1, 1.5)) 
