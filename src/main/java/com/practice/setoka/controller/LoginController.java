@@ -47,6 +47,9 @@ public class LoginController {
 	// 회원가입 완료
 	@PostMapping(value = "SignUp")
 	public String SingupSubmit(Model model, UsersDto dto, @RequestParam("passwordCom") String passwordCom) {
+		
+		dto.setPhoneNumber(dto.getPhoneNumber().replaceAll("-", "")); 
+		
 		//비밀번호 검증
 		if(!userService.passwordInvalid(dto.getPassword()))
 		{
