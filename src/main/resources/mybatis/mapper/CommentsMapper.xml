@@ -29,7 +29,7 @@
 	<select id="findCommentsByBoardNum" resultMap="CommentInfoDto">
 		SELECT
     	c.num, c.userNum, c.parentNum, c.boardNum, c.content, 
-    	c.likes, c.registerDate, 
+    	c.likes, c.registerDate,
     	u.nickname, u.grade, u.profilePath,
     	b.type 
 		FROM comments c

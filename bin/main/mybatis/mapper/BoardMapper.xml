@@ -10,7 +10,7 @@
 	
 	<!--인기 게시글-->
 	<select id="popularPosts" resultMap="boardWithUserMap">
-	SELECT b.*, u.nickname,
+	SELECT b.*, u.nickname, 
        COALESCE(c.comments_counts, 0) AS comments_counts,
        ((b.views * 0.5 + b.likes * 1.5 + COALESCE(c.comments_counts, 0) * 1.0) 
        / POW(DATEDIFF(NOW(), b.registerDate) + 1, 1.5)) 
@@ -164,18 +164,18 @@
 
 	<!-- 신고 -->
 	<insert id="reportBoard" parameterType="int">
-		INSERT INTO boardReport (boardNum,userNum) 
+		INSERT INTO boardreport (boardNum,userNum) 
 		VALUES(#{boardNum},	#{userNum})
 	</insert>
 
 	<select id="findReportByBoardNum" parameterType="int"
 		resultType="com.practice.setoka.dao.Report">
-		SELECT * FROM boardReport WHERE boardNum = #{boardNum}
+		SELECT * FROM boardreport WHERE boardNum = #{boardNum}
 	</select>
 	<!-- 게시판 신고 유저내용-->
 	<select id="findReportByBC" parameterType="int"
 		resultType="com.practice.setoka.dao.Report">
-		SELECT * FROM boardReport 
+		SELECT * FROM boardreport 
 		WHERE boardNum = #{boardNum} AND userNum = #{userNum}
 	</select>
 
