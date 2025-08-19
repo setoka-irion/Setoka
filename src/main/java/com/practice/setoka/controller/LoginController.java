@@ -74,6 +74,15 @@ public class LoginController {
 			return Redirect.SignUp;
 		}
 		
+		// 닉네임 중복 검사 (삭제된 경우는 없는걸로 침) user가 없거나 있어도 삭제면 false가 리턴된다는 뜻
+		if (userService.selectByNickName(dto.getNickName()) != null) {
+			// 회원가입 실패
+			// 입력값 다시 채워줘야 함
+			model.addAttribute("errorMessage", "중복 닉네임");
+			model.addAttribute("Users", dto);
+			return Redirect.SignUp;
+		}
+
 		// 암호화
 		dto.setPassword(Encryption.Encoder(dto.getPassword()));
 		dto.setStatus(Status.정상);

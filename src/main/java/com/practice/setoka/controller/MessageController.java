@@ -64,6 +64,9 @@ public class MessageController {
 		if(dto.getItem_Type() == Item.NONE)
 			dto.setItem_Value(0);
 		
+		if(dto.getItem_Value() == 0)
+			dto.setItem_Type(Item.NONE);
+		
 		if(messageService.sendMessage(dto))
 		{
 			if(dto.getItem_Type() == Item.POINT)
