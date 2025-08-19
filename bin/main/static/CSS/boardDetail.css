@@ -268,6 +268,13 @@ body {
 	/* 본문 내용 위쪽 여백을 더 넓게 */
 	text-align: left;
 }
+/* content-table 내부의 이미지 스타일 */
+.content-table img {
+    max-width: 100% !important;/* 부모 요소(<td>) 너비의 100%까지만 허용 */
+    height: auto !important;/* 가로 세로 비율 유지 */
+    display: block;  /* 불필요한 공백 제거 */
+    margin: 0 auto;  /* 가운데 정렬 (선택 사항) */
+}
 
 /* === 좋아요 ===*/
 .like-section {

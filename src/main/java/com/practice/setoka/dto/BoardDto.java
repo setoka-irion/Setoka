@@ -1,9 +1,8 @@
 package com.practice.setoka.dto;
 
-import java.util.Map;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class BoardDto {
 	
@@ -11,6 +10,7 @@ public class BoardDto {
     @NotNull(message = "작성자 정보가 누락되었습니다.")
 	private int userNum;
 	@NotBlank(message = "제목은 필수입니다.")
+	@Size(max = 30, message = "제목은 최대 30자까지 입력 가능합니다.")
 	private String title;
 	@NotBlank(message = "내용은 필수입니다.")
 	private String  content;

@@ -144,7 +144,7 @@
 	<div th:replace="~{header :: siteHeader}"></div>
 	<div class="all-wrapper">
 	<div class="main-title">
-		<h1>집사 노하우 글 등록</h1>
+		<h1>노하우 글 등록</h1>
 	</div>
 
 	<div class="container">
@@ -156,9 +156,9 @@
 			<input type="hidden" th:field="*{userNum}" />
 			<input type="hidden" th:field="*{type}" value="1" />
 
-			<label for="title">제목</label>
-			<input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요" required />
 
+			<label for="title">제목</label>
+			<input type="text" id="title" th:field="*{title}" maxlength="30" placeholder="제목을 입력하세요 (최대 30자)" required />
 			<label for="content">내용</label>
 			<textarea id="content" th:field="*{content}" rows="10" placeholder="내용을 입력하세요" required></textarea>
 
@@ -186,7 +186,7 @@
 <script>
 	$(document).ready(function () {
 		$('#content').summernote({
-			height: 300,
+			height: 630,
 			lang: 'ko-KR',
 			placeholder: '입양글의 내용을 입력하세요',
 			callbacks: {
