@@ -67,7 +67,7 @@
 
 		<!-- 수정/삭제/신고 -->
 		<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
-			<th:block th:if="${loginUser != null and (loginUser.num == detail.userNum or longinUser.privileges.name == '관리자')}">
+			<th:block th:if="${loginUser != null and (loginUser.num == detail.userNum or loginUser.privileges.name == '관리자')}">
 				<form th:action="@{'/AdoptUpdate/' + ${detail.boardNum}}" method="get">
 					<button type="submit" class="btn btn-success">수정</button>
 				</form>

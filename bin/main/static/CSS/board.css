@@ -1,3 +1,18 @@
+.header-link {
+    /* 기본 하이퍼링크 스타일 제거 */
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit; /* 부모 요소의 글자색(검은색) 상속 */
+    
+    /* 추가적인 스타일로 시각적 효과 주기 */
+    font-weight: bold; /* 굵게 */
+}
+
+/* 마우스를 올렸을 때 효과 */
+.header-link:hover {
+    color: #007bff; /* 마우스 오버 시 파란색으로 변경 */
+    cursor: pointer; /* 마우스 커서를 손가락 모양으로 변경 */
+}
+
 .container-all {
 			width: 78%;
 			margin: 40px auto;
@@ -510,4 +525,45 @@
 		/* 숨김 클래스 */
 		.hidden {
 			display: none !important;
+		}
+
+		/*==== 맨 위로 가기 버튼 스타일 ====*/
+		.scroll-top-button {
+			display: none;
+			/* 기본적으로 숨김 */
+			position: fixed;
+			/* 화면에 고정 */
+			bottom: 20px;
+			/* 하단에서 20px 위 */
+			right: 20px;
+			/* 우측에서 20px 떨어짐 */
+			z-index: 9999;
+			/* 다른 요소 위에 표시 */
+		}
+
+		/* 버튼의 링크 스타일 */
+		.scroll-top-button a {
+			display: block;
+			background-color: #8b5e3c;
+			color: white;
+			font-size: 24px;
+			padding: 10px 15px;
+			border-radius: 50%;
+			/* 원형 버튼 */
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			text-decoration: none;
+			transition: background-color 0.3s;
+		}
+
+		.scroll-top-button a:hover {
+			background-color: #8b5e3c;
+		}
+
+		/* 모바일 화면에서 버튼 위치 조정 */
+		@media (max-width: 640px) {
+			.scroll-top-button {
+				bottom: 70px;
+				/* 하단 버튼 영역과 겹치지 않게 위치 조정 */
+				right: 15px;
+			}
 		}
