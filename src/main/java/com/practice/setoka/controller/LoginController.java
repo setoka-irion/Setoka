@@ -18,6 +18,9 @@ import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.EmailService;
 import com.practice.setoka.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+
 @Controller
 public class LoginController {
 	@Autowired
@@ -46,9 +49,14 @@ public class LoginController {
 
 	// 회원가입 완료
 	@PostMapping(value = "SignUp")
-	public String SingupSubmit(Model model, UsersDto dto, @RequestParam("passwordCom") String passwordCom) {
+	public String SingupSubmit(Model model,@Valid UsersDto dto, @RequestParam("passwordCom") String passwordCom, HttpSession session) {
 		
-		dto.setPhoneNumber(dto.getPhoneNumber().replaceAll("-", "")); 
+		if(session.getAttribute("emailVerifyCode") == null)
+		{
+			model.addAttribute("errorMessage", "이메일 인증 실패");
+			model.addAttribute("Users", dto);
+			return Redirect.SignUp;
+		}
 		
 		//비밀번호 검증
 		if(!userService.passwordInvalid(dto.getPassword()))
@@ -77,6 +85,31 @@ public class LoginController {
 			return Redirect.SignUp;
 		}
 		
+		//닉네임 체크
+		if(dto.getNickName().isEmpty())
+		{
+			//회원가입 실패
+			model.addAttribute("errorMessage", "닉네임이 비어있음");
+			model.addAttribute("Users", dto);
+			return Redirect.SignUp;
+		}
+		
+		if(dto.getRealName().isEmpty())
+		{
+			//회원가입 실패
+			model.addAttribute("errorMessage", "이름이 비어있음");
+			model.addAttribute("Users", dto);
+			return Redirect.SignUp;
+		}
+		
+		if(dto.getPhoneNumber().isEmpty())
+		{
+			//회원가입 실패
+			model.addAttribute("errorMessage", "전화번호가 비어있음");
+			model.addAttribute("Users", dto);
+			return Redirect.SignUp;
+		}
+		
 		// 닉네임 중복 검사 (삭제된 경우는 없는걸로 침) user가 없거나 있어도 삭제면 false가 리턴된다는 뜻
 		if (userService.selectByNickName(dto.getNickName()) != null) {
 			// 회원가입 실패
@@ -85,6 +118,10 @@ public class LoginController {
 			model.addAttribute("Users", dto);
 			return Redirect.SignUp;
 		}
+
+		//전화번호 숫자만 남기기
+		dto.setPhoneNumber(dto.getPhoneNumber().replaceAll("-", "")); 
+		
 
 		// 암호화
 		dto.setPassword(Encryption.Encoder(dto.getPassword()));
@@ -98,6 +135,8 @@ public class LoginController {
 			return Redirect.SignUp;
 		}
 
+		//회원가입 성공시 인증한 이메일 세션에서 없애기
+		session.removeAttribute("emailVerifyCode");
 		// 회원가입 성공
 		return Redirect.home;
 	}
@@ -158,12 +197,13 @@ public class LoginController {
 	}
 	
 	@PostMapping("/verifySingUpCode")
-	public ResponseEntity<String> verifySingUpCode(@RequestBody Map<String, String> request)
+	public ResponseEntity<String> verifySingUpCode(@RequestBody Map<String, String> request, HttpSession session)
 	{
 		String email = request.get("email");
 		int verifyCode = Integer.parseInt(request.get("code"));
 		if(emailService.VerifyCodeEqule(email, verifyCode))
 		{
+			session.setAttribute("emailVerifyCode", email);
 			return ResponseEntity.ok("인증 성공");
 		}
 
