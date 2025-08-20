@@ -25,6 +25,8 @@ import com.practice.setoka.service.CarouselService;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -74,14 +76,16 @@ public class HomeController {
 		return "home";
 	}
 	
-//	@GetMapping("/error")
-//	public String errorPage(HttpServletRequest request) {
-//	    Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-//	    System.out.println("에러 상태: " + status);
-//	    if(status == null)
-//	    	return "redirect:/";
-//	    return "error";
-//	}
+	@GetMapping("/error")
+	public String errorPage(HttpServletRequest request, Model model) {
+	    Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+	    System.out.println("에러 상태: " + status);
+	    if(status == null)
+	    	return "redirect:/";
+
+	    model.addAttribute("status", status);
+	    return "error";
+	}
 	
 	
 	

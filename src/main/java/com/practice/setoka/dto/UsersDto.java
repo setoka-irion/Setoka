@@ -6,17 +6,25 @@ import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public class UsersDto {
+	@NotBlank
 	private String id;
+	@NotBlank
+	@Size(min = 8, max = 20, message = "비밀번호는 8~20자여야 합니다.")
 	private String password;
+	@NotBlank
 	private String nickName;
+	@NotBlank
 	private String realName;
 	@Pattern(
 			  regexp = "^\\d{3}-\\d{3,4}-\\d{4}$",
 			  message = "전화번호 형식은 010-1234-5678 또는 010-123-4567 입니다."
 			)
+	@NotBlank
 	private String phoneNumber;
 	private Status status;
 	private int point;
