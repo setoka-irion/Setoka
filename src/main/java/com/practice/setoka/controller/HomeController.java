@@ -79,7 +79,6 @@ public class HomeController {
 	@GetMapping("/error")
 	public String errorPage(HttpServletRequest request, Model model) {
 	    Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-	    System.out.println("에러 상태: " + status);
 	    if(status == null)
 	    	return "redirect:/";
 
