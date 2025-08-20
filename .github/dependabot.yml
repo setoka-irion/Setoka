@@ -1,0 +1,7 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"   # build.gradle 위치
+    schedule:
+      interval: "daily"  # 매일 검사
+    open-pull-requests-limit: 5
