@@ -42,6 +42,14 @@
 				</div>
 			</div>
 
+			<div class="sort-section">
+				<select name="sort" class="sort-select">
+				    <option value="latest">최신순</option>
+				    <option value="views">조회수순</option>
+				    <option value="likes">좋아요순</option>
+				</select>
+			</div>
+
 			<!-- 오른쪽 버튼 wrapper -->
 			<div class="right-section">
 				<!-- 보기형식 스위치 -->
@@ -219,54 +227,43 @@
 	</div>
 
 	<script>
+		// 1. 인기글 접기/펼치기 토글 함수
 		function togglePopular() {
 			const section = document.getElementById('popularContent');
 			const button = document.getElementById('togglePopularBtn');
-
-			// 현재 상태 확인
 			const isHidden = section.style.visibility === 'hidden';
 
 			if (isHidden) {
-				// 펼치기
 				section.style.visibility = 'visible';
 				section.style.height = 'auto';
 				button.innerText = '👁️ 인기글 접기';
-				sessionStorage.setItem('popularCollapsed', 'false'); // 상태 저장
+				sessionStorage.setItem('popularCollapsed', 'false');
 			} else {
-				// 접기
 				section.style.visibility = 'hidden';
 				section.style.height = '0px';
 				button.innerText = '👁️ 인기글 펼치기';
-				sessionStorage.setItem('popularCollapsed', 'true'); // 상태 저장
+				sessionStorage.setItem('popularCollapsed', 'true');
 			}
 		}
 
-		// 페이지 로드 시 상태 복원
-		window.addEventListener('DOMContentLoaded', () => {
-			const section = document.getElementById('popularContent');
-			const button = document.getElementById('togglePopularBtn');
-			const collapsed = sessionStorage.getItem('popularCollapsed');
+		// 2. localStorage에 검색 상태 저장하는 함수
+		function saveSearchState() {
+			const field = document.querySelector('select[name="field"]').value;
+			const keyword = document.querySelector('input[name="keyword"]').value;
+			const searchState = {
+				field: field,
+				keyword: keyword
+			};
+			localStorage.setItem('adoptSearchState', JSON.stringify(searchState));
+		}
 
-			if (collapsed === 'true') {
-				// 접힌 상태로 복원
-				section.style.visibility = 'hidden';
-				section.style.height = '0px';
-				button.innerText = '👁️ 인기글 펼치기';
-			} else {
-				// 펼친 상태로 복원
-				section.style.visibility = 'visible';
-				section.style.height = 'auto';
-				button.innerText = '👁️ 인기글 접기';
-			}
-		});
-
-
-		// 페이지 로드 시, URL에서 viewType 파라미터 읽어서 라디오 체크와 화면 표시 결정
+		// 3. URL 파라미터를 가져오는 함수
 		function getQueryParam(param) {
 			const urlParams = new URLSearchParams(window.location.search);
 			return urlParams.get(param);
 		}
 
+		// 4. 뷰 타입에 따라 화면을 숨기거나 보이게 하는 함수
 		function setViewType(viewType) {
 			const cardView = document.querySelector('.card-list-view');
 			const listView = document.querySelector('.table-posts');
@@ -275,54 +272,75 @@
 			if (viewType === 'list') {
 				cardView.classList.add('hidden');
 				listView.classList.remove('hidden');
-				radios.forEach(r => r.checked = (r.value === 'list'));
 			} else {
 				cardView.classList.remove('hidden');
 				listView.classList.add('hidden');
-				radios.forEach(r => r.checked = (r.value === 'card'));
 			}
+
+			// 라디오 버튼 상태도 업데이트 
+			radios.forEach(r => r.checked = (r.value === viewType));
 		}
 
+		// 5. 페이지 로드 시 실행되는 모든 로직을 통합 (웹 페이지를 이전 상태와 똑같이 복원)
 		window.addEventListener('DOMContentLoaded', () => {
+			// 인기글 상태 복원
+			const section = document.getElementById('popularContent');
+			const button = document.getElementById('togglePopularBtn');
+			const collapsed = sessionStorage.getItem('popularCollapsed');
+			if (collapsed === 'true') {
+				section.style.visibility = 'hidden';
+				section.style.height = '0px';
+				button.innerText = '👁️ 인기글 펼치기';
+			} else {
+				section.style.visibility = 'visible';
+				section.style.height = 'auto';
+				button.innerText = '👁️ 인기글 접기';
+			}
+			
+			// 정렬 드롭다운 이벤트 리스너
+			const sortSelect = document.querySelector('.sort-select');
+			if (sortSelect) {
+			    sortSelect.addEventListener('change', (e) => {
+			        const params = new URLSearchParams(window.location.search);
+			        params.set('sort', e.target.value);
+			        window.location.search = params.toString(); // URL 새로고침
+			    });
+			}
+			// localStorage에서 검색 상태 불러와 폼에 적용
+			const savedState = localStorage.getItem('adoptSearchState');
+			if (savedState) {
+				const searchState = JSON.parse(savedState);
+				const fieldSelect = document.querySelector('select[name="field"]');
+				const keywordInput = document.querySelector('input[name="keyword"]');
+				if (fieldSelect) fieldSelect.value = searchState.field;
+				if (keywordInput) keywordInput.value = searchState.keyword;
+			}
+
+			// 뷰 타입 상태 복원 및 라디오 버튼 이벤트 리스너 추가
 			const serverViewType = document.querySelector('input[name="viewType"]:checked')?.value;
-			console.log("서버에서 체크된 라디오 값:", serverViewType);
-
 			let viewType = serverViewType || getQueryParam('viewType') || 'card';
-			console.log("최종 선택된 viewType:", viewType);
-
 			setViewType(viewType);
 
-			// 라디오 변경 시, 페이지 새로고침하면서 viewType 파라미터 유지
 			document.querySelectorAll('input[name="viewType"]').forEach(radio => {
 				radio.addEventListener('change', (e) => {
 					const params = new URLSearchParams(window.location.search);
 					params.set('viewType', e.target.value);
-					// 다른 검색 파라미터 유지한 채로 새로고침
 					window.location.search = params.toString();
 				});
 			});
-		});
 
-		// 위로가기 버튼
-		document.addEventListener('DOMContentLoaded', function () {
+			// 위로가기 버튼
 			const scrollTopButton = document.getElementById('scrollTopButton');
-
-			window.addEventListener('scroll', function () {
-				// 스크롤이 200px 이상 내려갔을 때 버튼을 보이게 함
+			window.addEventListener('scroll', () => {
 				if (window.scrollY > 200) {
 					scrollTopButton.style.display = 'block';
 				} else {
 					scrollTopButton.style.display = 'none';
 				}
 			});
-
-			// 버튼 클릭 시 맨 위로 부드럽게 스크롤
-			scrollTopButton.addEventListener('click', function (event) {
-				event.preventDefault(); // 기본 링크 동작 방지
-				window.scrollTo({
-					top: 0,
-					behavior: 'smooth'
-				});
+			scrollTopButton.addEventListener('click', (event) => {
+				event.preventDefault();
+				window.scrollTo({top: 0, behavior: 'smooth'});
 			});
 		});
 	</script>

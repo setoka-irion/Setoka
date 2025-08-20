@@ -91,6 +91,39 @@
 			/* 최소 너비 지정, 필요시 조절 */
 			order: 1
 		}
+		
+		/* ==== 정렬 드롭다운 메뉴 스타일 ====*/
+		.sort-select {
+		    padding: 8px 10px;
+		    font-size: 14px;
+		    border: 1px solid #ccc;
+		    border-radius: 4px;
+		    transition: border-color 0.3s ease;
+		    min-width: 120px; /* 너무 작아지는 것 방지 */
+		    box-sizing: border-box;
+		    cursor: pointer;
+		}
+
+		.sort-select:focus {
+		    outline: none;
+		    border-color: #8b5e3c;
+		}
+
+		/* 정렬 섹션 컨테이너 스타일 */
+		.sort-section {
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    margin: 20px auto 0px; /* 검색창과의 간격 조절 */
+		    width: 90%;
+		}
+
+		/* 반응형 디자인을 위한 미디어 쿼리 */
+		@media (max-width: 900px) {
+		    .sort-section {
+		        margin-top: 10px; /* 모바일에서 위쪽 간격 조절 */
+		    }
+		}
 
 		/*====  오른쪽 섹션 ====*/
 		.right-section {
