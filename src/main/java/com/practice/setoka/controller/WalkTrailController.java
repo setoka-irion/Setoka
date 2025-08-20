@@ -414,7 +414,7 @@ public class WalkTrailController {
 
 		// 작성자, 관리자 삭제권한 부여
 		boolean isAuthur = user.getNum() == board.getUserNum();
-		boolean isAdmin = "관리자".equals(user.getGrade());
+		boolean isAdmin = user.isAdmin();
 
 		if (!isAuthur && !isAdmin) {
 			redirectAttributes.addFlashAttribute("errorMessage", "작성자만 삭제가능!");
