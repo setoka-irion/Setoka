@@ -458,6 +458,7 @@
 
 		/* 카드 제목, 강조 텍스트 링크 */
 		.link-title {
+			
 			font-weight: bold;
 			font-size: 18px;
 			color: #8b5e3c;
