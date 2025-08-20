@@ -12,7 +12,7 @@ variable "aws_region" {
 }
 variable "source_ami" {
     type = string
-    default = "ami-0582bbdf707b6e4b3"
+    default = "ami-085064879f39c6aa4"
 }
 variable "instance_type" {
     type = string
