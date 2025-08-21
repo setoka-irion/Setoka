@@ -18,66 +18,65 @@
 	<!-- 한국어 번역 (선택) -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-ko-KR.min.js"></script>
 	<style>
-		
 		/* 전체 컨테이너 */
 		.container {
-		  border: 1px solid #ddd;
-		  border-radius: 8px;
-		  position: relative;
-		  width: 80%;
-		  margin: 20px auto 60px;
-		  padding: 30px 40px 40px;
-		  box-sizing: border-box;
-		  background-color: #fff;
-		  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-		  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-		  color: #333;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			position: relative;
+			width: 80%;
+			margin: 20px auto 60px;
+			padding: 30px 40px 40px;
+			box-sizing: border-box;
+			background-color: #fff;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			color: #333;
 		}
 
 		/* 타이틀 */
 		.main-title {
-		  width: 80%;
-		  margin: 40px auto 10px;
-		  padding: 0 20px;
-		  box-sizing: border-box;
-		  font-weight: 700;
-		  font-size: 2.2rem;
-		  color: #8b5e3c;
-		  text-align: center;
-		  text-shadow: 1px 1px 1px #f0e8db;
+			width: 80%;
+			margin: 40px auto 10px;
+			padding: 0 20px;
+			box-sizing: border-box;
+			font-weight: 700;
+			font-size: 2.2rem;
+			color: #8b5e3c;
+			text-align: center;
+			text-shadow: 1px 1px 1px #f0e8db;
 		}
 
 		/* 목록으로 돌아가기 버튼 */
 		.back-button {
-		  position: absolute;
-		  top: 20px;
-		  right: 40px;
+			position: absolute;
+			top: 20px;
+			right: 40px;
 		}
 
 		.back-button a {
-		  display: inline-block;
-		  padding: 8px 16px;
-		  background-color: #8b5e3c;
-		  color: white;
-		  border-radius: 6px;
-		  text-decoration: none;
-		  font-weight: 600;
-		  box-shadow: 0 3px 8px rgba(139, 94, 60, 0.5);
-		  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+			display: inline-block;
+			padding: 8px 16px;
+			background-color: #8b5e3c;
+			color: white;
+			border-radius: 6px;
+			text-decoration: none;
+			font-weight: 600;
+			box-shadow: 0 3px 8px rgba(139, 94, 60, 0.5);
+			transition: background-color 0.3s ease, box-shadow 0.3s ease;
 		}
 
 		.back-button a:hover {
-		  background-color: #6f4e2a;
-		  box-shadow: 0 5px 12px rgba(111, 78, 42, 0.7);
+			background-color: #6f4e2a;
+			box-shadow: 0 5px 12px rgba(111, 78, 42, 0.7);
 		}
 
 		/* 폼 라벨 */
 		label {
-		  display: block;
-		  font-weight: 600;
-		  margin: 15px 0 6px;
-		  font-size: 1rem;
-		  color: #5a3e1b;
+			display: block;
+			font-weight: 600;
+			margin: 15px 0 6px;
+			font-size: 1rem;
+			color: #5a3e1b;
 		}
 
 		/* input, textarea 공통 */
@@ -85,94 +84,95 @@
 		input[type="number"],
 		textarea,
 		input[type="file"] {
-		  width: 100%;
-		  padding: 10px 14px;
-		  font-size: 1rem;
-		  border: 1.8px solid #ccc;
-		  border-radius: 6px;
-		  box-sizing: border-box;
-		  transition: border-color 0.3s ease;
-		  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-		  color: #444;
-		  resize: vertical;
+			width: 100%;
+			padding: 10px 14px;
+			font-size: 1rem;
+			border: 1.8px solid #ccc;
+			border-radius: 6px;
+			box-sizing: border-box;
+			transition: border-color 0.3s ease;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			color: #444;
+			resize: vertical;
 		}
 
 		input[type="text"]:focus,
 		input[type="number"]:focus,
 		textarea:focus,
 		input[type="file"]:focus {
-		  border-color: #8b5e3c;
-		  outline: none;
-		  box-shadow: 0 0 8px rgba(139, 94, 60, 0.4);
+			border-color: #8b5e3c;
+			outline: none;
+			box-shadow: 0 0 8px rgba(139, 94, 60, 0.4);
 		}
 
 		/* textarea 크기 조절 최소화 */
 		textarea {
-		  min-height: 180px;
-		  max-height: 400px;
-		  line-height: 1.5;
+			min-height: 180px;
+			max-height: 400px;
+			line-height: 1.5;
 		}
 
 		/* 썸네일 이미지 */
 		.form-group img {
-		  max-width: 200px;
-		  border-radius: 10px;
-		  margin-top: 6px;
-		  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+			max-width: 200px;
+			border-radius: 10px;
+			margin-top: 6px;
+			box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 		}
 
 		/* 체크박스 스타일 */
 		.form-check {
-		  margin-top: 8px;
+			margin-top: 8px;
 		}
 
 		.form-check-label {
-		  color: #5a3e1b;
-		  font-weight: 500;
+			color: #5a3e1b;
+			font-weight: 500;
 		}
 
 		/* 제출 버튼 */
 		button[type="submit"] {
-		  margin-top: 25px;
-		  padding: 12px 26px;
-		  background-color: #8b5e3c;
-		  border: none;
-		  border-radius: 8px;
-		  color: white;
-		  font-weight: 700;
-		  font-size: 1.1rem;
-		  cursor: pointer;
-		  box-shadow: 0 4px 10px rgba(139, 94, 60, 0.6);
-		  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+			margin-top: 25px;
+			padding: 12px 26px;
+			background-color: #8b5e3c;
+			border: none;
+			border-radius: 8px;
+			color: white;
+			font-weight: 700;
+			font-size: 1.1rem;
+			cursor: pointer;
+			box-shadow: 0 4px 10px rgba(139, 94, 60, 0.6);
+			transition: background-color 0.3s ease, box-shadow 0.3s ease;
 		}
 
 		button[type="submit"]:hover {
-		  background-color: #6f4e2a;
-		  box-shadow: 0 6px 14px rgba(111, 78, 42, 0.8);
+			background-color: #6f4e2a;
+			box-shadow: 0 6px 14px rgba(111, 78, 42, 0.8);
 		}
 
 		/* 반응형 */
 		@media screen and (max-width: 768px) {
-		  .container {
-		    width: 95%;
-		    padding: 20px;
-		  }
-		  .main-title {
-		    font-size: 1.8rem;
-		  }
-		  .back-button {
-		    right: 20px;
-		    top: 10px;
-		  }
-		}
+			.container {
+				width: 95%;
+				padding: 20px;
+			}
 
+			.main-title {
+				font-size: 1.8rem;
+			}
+
+			.back-button {
+				right: 20px;
+				top: 10px;
+			}
+		}
 	</style>
 </head>
 
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 	<div class="main-title">
-	<h1>중고거래 게시글 수정</h1>
+		<h1>중고거래 게시글 수정</h1>
 	</div>
 	<div class="container">
 		<form th:action="@{/UsedGoodsUpdate/{num}(num=${board.boardNum})}" method="post" th:object="${board}"
@@ -220,8 +220,8 @@
 			<input type="text" id="area" th:field="*{area}" placeholder="예: 서울, 경기 등" required /><br /><br />
 
 			<label for="price">비용 (무료일 경우 0)</label><br />
-			<input type="number" id="price" th:field="*{price}" min="0" placeholder="0" /><br /><br />
-
+			<input type="text" id="price" th:field="*{price}" min="0" placeholder="0" /><br /><br />
+			
 			<button type="submit">수정</button>
 		</form>
 
@@ -232,44 +232,79 @@
 </body>
 
 <script>
-	$(document).ready(function () {
-		$('#content').summernote({
-			height: 300,
-			lang: 'ko-KR',
-			placeholder: '입양글의 내용을 입력하세요',
-			callbacks: {
-				onImageUpload: function (files) {
-					for (let i = 0; i < files.length; i++) {
-						uploadImage(files[i]);
-					}
-				}
-			}
-		});
+	// 모든 스크립트를 하나의 ready 함수 안에 넣습니다.
+		   $(document).ready(function () {
+		       // Summernote 코드
+		       $('#content').summernote({
+		           height: 300,
+		           lang: 'ko-KR',
+		           placeholder: '입양글의 내용을 입력하세요',
+		           callbacks: {
+		               onImageUpload: function (files) {
+		                   for (let i = 0; i < files.length; i++) {
+		                       uploadImage(files[i]);
+		                   }
+		               }
+		           }
+		       });
 
-		let content = $('#content').val();
-		$('#content').summernote('code', content);
+		       let content = $('#content').val();
+		       $('#content').summernote('code', content);
 
-		function uploadImage(file) {
-			const formData = new FormData();
-			formData.append("file", file);
-			const userNum = document.querySelector('input[name="userNum"]').value;
-			formData.append("userNum", userNum);     // 사용자 번호 추가
+		       function uploadImage(file) {
+		           const formData = new FormData();
+		           formData.append("file", file);
+		           const userNum = document.querySelector('input[name="userNum"]').value;
+		           formData.append("userNum", userNum);     // 사용자 번호 추가
 
-			$.ajax({
-				url: '/upload/image', // 이미지 업로드용 컨트롤러
-				method: 'POST',
-				data: formData,
-				processData: false,
-				contentType: false,
-				success: function (url) {
-					$('#content').summernote('insertImage', url);
-				},
-				error: function () {
-					alert('이미지 업로드 실패');
-				}
-			});
-		}
-	});
+		           $.ajax({
+		               url: '/upload/image', // 이미지 업로드용 컨트롤러
+		               method: 'POST',
+		               data: formData,
+		               processData: false,
+		               contentType: false,
+		               success: function (url) {
+		                   $('#content').summernote('insertImage', url);
+		               },
+		               error: function () {
+		                   alert('이미지 업로드 실패');
+		               }
+		           });
+		       }
+
+		       // --- 가격 입력 필드 관련 코드 시작 ---
+		       
+		       // 'price' 입력 필드에 키 입력이 있을 때마다 실행
+		       $('#price').on('keyup', function () {
+		           // 입력값에서 쉼표와 공백 제거
+		           var value = $(this).val().replace(/,/g, '').trim();
+		           
+		           // 숫자가 아니면 초기화
+		           if (isNaN(value) || value === '') {
+		               $(this).val('');
+		               return;
+		           }
+
+		           // 숫자형식으로 변환 후 쉼표 추가
+		           var formattedValue = Number(value).toLocaleString('ko-KR');
+
+		           // 변환된 값으로 입력 필드 업데이트
+		           $(this).val(formattedValue);
+		       });
+
+		       // 폼 제출 시 쉼표 제거
+		       $('form').on('submit', function () {
+		           var priceInput = $('#price');
+		           var cleanValue = priceInput.val().replace(/,/g, '').trim();
+		           priceInput.val(cleanValue);
+		       });
+
+		       // 페이지 로드 시 기존 값에도 쉼표 적용
+		       var initialPrice = $('#price').val();
+		       if (initialPrice && !isNaN(initialPrice.replace(/,/g, ''))) {
+		           $('#price').val(Number(initialPrice.replace(/,/g, '')).toLocaleString('ko-KR'));
+		       }
+		   });
 </script>
 
 </html>

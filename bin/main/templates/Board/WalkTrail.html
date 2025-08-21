@@ -81,7 +81,7 @@
 					<a th:href="@{'/WalkTrailDetail/{num}'(num=${post.boardNum}, fromUrl=${request.requestURI} 
 					+ '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
 						class="link-title">
-						<strong th:text="|${post.title} 💬(${post.commentCount})|">제목</strong>
+						<strong th:text="|[${post.area}] ${post.title} 💬(${post.commentCount})|">제목</strong>
 					</a>
 					<a th:href="@{'/WalkTrailDetail/{num}'(num=${post.boardNum}, fromUrl=${request.requestURI} 
 						+ '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}">
@@ -110,7 +110,7 @@
 				<div class="card-popular" th:each="board, iterStat : ${mainList}">
 					<a th:href="@{'/WalkTrailDetail/{num}'(num=${board.boardNum}, fromUrl=${request.requestURI} + '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
 						class="link-title">
-						<strong th:text="${board.title + ' 💬(' + board.commentCount + ')'}">제목</strong>
+						<strong th:text="|[${board.area}] ${board.title} 💬(${board.commentCount})|">제목</strong>
 					</a>
 					<a th:href="@{'/WalkTrailDetail/{num}'(num=${board.boardNum})}">
 						<img class="thumb-image" th:src="${board.Image_paths}" alt="썸네일" />
@@ -130,8 +130,8 @@
 			<table class="table-posts">
 				<colgroup>
 					<col style="width: 5%;" />
-					<col style="width: 10%;" />
-					<col style="width: 53%;" />
+					<col style="width: 8%;" />
+					<col style="width: 55%;" />
 					<col style="width: 10%;" />
 					<col style="width: 6%;" />
 					<col style="width: 6%;" />
@@ -158,9 +158,8 @@
 						<td th:text="${board.nickName}"></td>
 						<td>
 							<a th:href="@{'/WalkTrailDetail/{num}'(num=${board.boardNum}, fromUrl=${request.requestURI} + '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
-								class="link-title" th:text="${board.title + '🗨️(' + board.commentCount + ')'}">제목</a>
+								class="link-title" th:text="| [${board.area}] ${board.title} 🗨️(${board.commentCount})|">제목</a>
 						</td>
-						<td th:text="${board.price}"></td>
 						<td th:text="${board.area}"></td>
 						<td th:text="${board.views}"></td>
 						<td th:text="${board.likes}"></td>
