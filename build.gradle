@@ -27,8 +27,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'	//valid 추가
 	implementation 'org.springframework.boot:spring-boot-starter-security'		//로그인 검증
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'		//CSRF 토큰
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'	//redis
-	implementation 'org.springframework.session:spring-session-data-redis'		//redis
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'	//redis
+//	implementation 'org.springframework.session:spring-session-data-redis'		//redis
 	
 
 	
