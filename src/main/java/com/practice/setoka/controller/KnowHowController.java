@@ -528,12 +528,13 @@ public class KnowHowController {
 
 		// 현재 로그인한 유저 정보
 		Users loginUser = authUser.getUser();
-
+		boolean isAdmin = loginUser.isAdmin();
+		
 		// 댓글 정보 조회 (작성자 확인용)
 		CommentInfoDto comment = commentsService.findCommentByNum(commentNum);
 
 		// 작성자 본인인지 확인
-		if (comment.getUserNum() != loginUser.getNum()) {
+		if (comment.getUserNum() != loginUser.getNum() && loginUser.isAdmin() ) {
 			// 본인이 아니라면 삭제하지 않고 되돌림 (또는 에러 페이지로)
 			redirectAttributes.addFlashAttribute("errorMessage", "작성자만 삭제 할 수 있다는 거임!");
 			return "redirect:/KnowHowDetail/" + boardNum;

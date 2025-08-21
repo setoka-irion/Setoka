@@ -123,7 +123,7 @@
    	 	b.num, b.userNum, b.title, b.content, b.type, b.likes, 
    	 	b.views, b.price, b.area, b.registerDate, b.Image_paths,
    	 	(
-        SELECT COUNT(*) FROM comments c WHERE c.boardNum = b.num
+       SELECT COUNT(*) FROM comments c WHERE c.boardNum = b.num AND c.status = 0
     	) AS comments_Counts 
   		FROM board b
   		JOIN users u ON b.userNum = u.num
