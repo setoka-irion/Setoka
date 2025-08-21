@@ -123,7 +123,7 @@
 						</a>
 						<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
 						<span
-							th:text="'책임비: ' + (${board.price != null} ? ${#numbers.formatInteger(board.price, 0, 'COMMA')} : '책임비 정보 없음')">책임비</span>
+							th:text="'책임비: ' + (${board.price != null} ? ${#numbers.formatInteger(board.price, 0, 'COMMA')} : '책임정보 없음')">책임비</span>
 						<span th:text="'지역: ' + ${board.area}">지역</span>
 						<span th:text="'조회수: ' + ${board.views}">조회수</span>
 						<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
