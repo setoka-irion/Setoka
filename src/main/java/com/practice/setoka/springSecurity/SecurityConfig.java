@@ -47,7 +47,8 @@ public class SecurityConfig {
 					    		"/imagesDefault/**",
 					    		"/passwordFind",
 					    		"/health",
-					    		"/sendPasswordFind"
+					    		"/sendPasswordFind",
+					    		"/verifySingUpCode"
 					    		).permitAll()
 			    //hasRole 관리자 권한을 가진 계정만 접근 가능
 			    //.requestMatchers("/AllUsers").hasRole("관리자")

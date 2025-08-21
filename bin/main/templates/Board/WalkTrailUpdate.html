@@ -17,6 +17,10 @@
 
 	<!-- 한국어 번역 (선택) -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-ko-KR.min.js"></script>
+	
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+	
 	<style>
 		
 		/* 전체 컨테이너 */
@@ -175,7 +179,7 @@
 	<h1>산책로 추천 게시글 수정</h1>
 	</div>
 	<div class="container">
-		<form th:action="@{/AdoptUpdate/{num}(num=${board.boardNum})}" method="post" th:object="${board}"
+		<form th:action="@{/WalkTrailUpdate/{num}(num=${board.boardNum})}" method="post" th:object="${board}"
 			enctype="multipart/form-data">
 			<input type="hidden" name="userNum" th:value="${board.userNum}">
 			<input type="hidden" name="type" th:value="${board.type}" /> <!-- 어떤게시판인지 알려줘야함-->
@@ -242,7 +246,7 @@
 		</form>
 
 		<div class="back-button">
-			<p><a th:href="@{/Adopt}">목록으로 돌아가기</a></p>
+			<p><a th:href="@{/WalkTrail}">목록으로 돌아가기</a></p>
 		</div>
 	</div>
 </body>
@@ -270,6 +274,9 @@
 			formData.append("file", file);
 			const userNum = document.querySelector('input[name="userNum"]').value;
 			formData.append("userNum", userNum);     // 사용자 번호 추가
+			
+			const token = $('meta[name="_csrf"]').attr('content');
+			const header = $('meta[name="_csrf_header"]').attr('content');
 
 			$.ajax({
 				url: '/upload/image', // 이미지 업로드용 컨트롤러
@@ -277,6 +284,9 @@
 				data: formData,
 				processData: false,
 				contentType: false,
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
 				success: function (url) {
 					$('#content').summernote('insertImage', url);
 				},
