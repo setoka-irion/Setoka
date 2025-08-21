@@ -83,7 +83,8 @@
 					</a>
 					<span th:text="'작성자: ' + ${post.nickName}">작성자</span>
 					<span
-						th:text="'비용: ' + (${post.price != null} ? ${#numbers.formatInteger(post.price, 0, 'COMMA')} : '비용 정보 없음')">비용</span>
+						th:text="'책임비: ' + (${post.price != null} ? ${#numbers.formatInteger(post.price, 0, 'COMMA')} : '책임비 정보 없음')">책임비</span>
+					<span th:text="'지역: ' + ${post.area}">지역</span>
 					<span th:text="'좋아요: ' + ${post.likes}">좋아요</span>
 					<span th:text="'작성일: ' + ${post.formattedRegistDate}">작성일</span>
 					<hr>
@@ -122,7 +123,7 @@
 						</a>
 						<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
 						<span
-							th:text="'비용: ' + (${board.price != null} ? ${#numbers.formatInteger(board.price, 0, 'COMMA')} : '비용 정보 없음')">비용</span>
+							th:text="'책임비: ' + (${board.price != null} ? ${#numbers.formatInteger(board.price, 0, 'COMMA')} : '책임비 정보 없음')">책임비</span>
 						<span th:text="'지역: ' + ${board.area}">지역</span>
 						<span th:text="'조회수: ' + ${board.views}">조회수</span>
 						<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
@@ -139,10 +140,10 @@
 					<colgroup>
 						<col style="width: 5%;" />
 						<col style="width: 8%;" />
-						<col style="width: 57%;" />
+						<col style="width: 56%;" />
 						<col style="width: 5%;" />
 						<col style="width: 5%;" />
-						<col style="width: 5%;" />
+						<col style="width: 6%;" />
 						<col style="width: 5%;" />
 						<col style="width: 10%;" />
 					</colgroup>
@@ -151,7 +152,7 @@
 							<th>번호</th>
 							<th>작성자</th>
 							<th>제목</th>
-							<th>비용</th>
+							<th>책임비</th>
 							<th>지역</th>
 							<th>조회수</th>
 							<th>좋아요</th>
