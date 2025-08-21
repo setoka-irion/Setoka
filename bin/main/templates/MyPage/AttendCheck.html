@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>출석 달력</title>
+	<title>IRI-ON : 출석체크</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<style>
 		body {
@@ -102,7 +102,7 @@
 <body>
 	<div th:replace="~{header :: siteHeader}"></div>
 
-	<form id="hiddenForm" method="post" action="/point" style="display:none;">
+	<form id="hiddenForm" method="post" th:action="@{/point}" style="display:none;">
 		<input type="hidden" name="date" id="selectedDateInput" />
 	</form>
 
