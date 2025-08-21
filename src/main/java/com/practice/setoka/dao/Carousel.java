@@ -1,8 +1,10 @@
 package com.practice.setoka.dao;
 
+import java.io.Serializable;
+
 import com.practice.setoka.dto.CarouselItem;
 
-public class Carousel {
+public class Carousel implements Serializable{
 	private int num;
 	private String img;
 	private String link;

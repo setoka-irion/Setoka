@@ -1,5 +1,6 @@
 package com.practice.setoka.dao;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.practice.setoka.RatingRule;
@@ -8,7 +9,7 @@ import com.practice.setoka.Enum.Privileges;
 import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dto.UsersDto;
 
-public class Users {
+public class Users implements Serializable{
 	private int num;
 	private String id;
 	private String password;

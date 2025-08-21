@@ -1,11 +1,12 @@
 package com.practice.setoka.dao;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.practice.setoka.Enum.Item;
 import com.practice.setoka.Enum.MessageStatus;
 
-public class Message {
+public class Message implements Serializable{
 	private int num;
 	private String sender;
 	private String receiver;

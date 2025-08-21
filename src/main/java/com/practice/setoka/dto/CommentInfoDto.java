@@ -1,10 +1,11 @@
 package com.practice.setoka.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class CommentInfoDto {
+public class CommentInfoDto implements Serializable{
 		
 	//comment
 		int num;

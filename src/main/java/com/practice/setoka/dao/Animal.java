@@ -1,11 +1,12 @@
 package com.practice.setoka.dao;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import com.practice.setoka.Enum.AnimalStatus;
 
-public class Animal {
+public class Animal implements Serializable{
 	private int num;						//고유번호
 	private int userNum;					//유저번호
 	private String animalName;				//동물번호

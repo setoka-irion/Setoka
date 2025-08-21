@@ -1,8 +1,9 @@
 package com.practice.setoka.dao;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Memo {
+public class Memo implements Serializable{
 	private int num;						//고유번호
 	private int userNum;					//유저번호
 	private String animalNum;				//동물번호

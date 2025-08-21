@@ -62,7 +62,9 @@
 					<a href="/MyPage"><strong th:text="${loginUser.nickName}"></strong></a>
 				</span>
 				<button th:if="${loginUser == null}" onclick="location.href='/Login'">로그인</button>
-				<button th:if="${loginUser != null}" onclick="location.href='/Logout'">로그아웃</button>
+				<form th:action="@{/Logout}" th:if="${loginUser != null}" method="post">
+					<button type="submit">로그아웃</button>
+				</form>
 			</nav>
 		</header>
 	</div>
