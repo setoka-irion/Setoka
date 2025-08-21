@@ -1,10 +1,11 @@
 package com.practice.setoka.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class BoardWithUserDto {
+public class BoardWithUserDto implements Serializable{
 	
 	//게시글 
 	private int boardNum;

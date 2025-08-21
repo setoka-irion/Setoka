@@ -1,5 +1,7 @@
 package com.practice.setoka.dto;
 
+import java.io.Serializable;
+
 import com.practice.setoka.RatingRule;
 import com.practice.setoka.Enum.Grade;
 import com.practice.setoka.Enum.Privileges;
@@ -10,7 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class UsersDto {
+public class UsersDto implements Serializable{
 	@NotBlank
 	private String id;
 	@NotBlank

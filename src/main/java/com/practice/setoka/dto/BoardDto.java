@@ -1,10 +1,12 @@
 package com.practice.setoka.dto;
 
+import java.io.Serializable;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class BoardDto {
+public class BoardDto implements Serializable{
 	
 	private int num;
     @NotNull(message = "작성자 정보가 누락되었습니다.")
