@@ -220,7 +220,7 @@
 			<input type="text" id="area" th:field="*{area}" placeholder="예: 서울, 경기 등" required /><br /><br />
 
 			<label for="price">비용 (무료일 경우 0)</label><br />
-			<input type="number" id="price" th:field="*{price}" min="0" placeholder="0" /><br /><br />
+			<input type="text" id="price" th:field="*{price}" min="0" placeholder="0" /><br /><br />
 
 			<button type="submit">수정</button>
 		</form>
@@ -232,44 +232,79 @@
 </body>
 
 <script>
-	$(document).ready(function () {
-		$('#content').summernote({
-			height: 300,
-			lang: 'ko-KR',
-			placeholder: '입양글의 내용을 입력하세요',
-			callbacks: {
-				onImageUpload: function (files) {
-					for (let i = 0; i < files.length; i++) {
-						uploadImage(files[i]);
-					}
-				}
-			}
-		});
+	// 모든 스크립트를 하나의 ready 함수 안에 넣습니다.
+	   $(document).ready(function () {
+	       // Summernote 코드
+	       $('#content').summernote({
+	           height: 300,
+	           lang: 'ko-KR',
+	           placeholder: '입양글의 내용을 입력하세요',
+	           callbacks: {
+	               onImageUpload: function (files) {
+	                   for (let i = 0; i < files.length; i++) {
+	                       uploadImage(files[i]);
+	                   }
+	               }
+	           }
+	       });
 
-		let content = $('#content').val();
-		$('#content').summernote('code', content);
+	       let content = $('#content').val();
+	       $('#content').summernote('code', content);
 
-		function uploadImage(file) {
-			const formData = new FormData();
-			formData.append("file", file);
-			const userNum = document.querySelector('input[name="userNum"]').value;
-			formData.append("userNum", userNum);     // 사용자 번호 추가
+	       function uploadImage(file) {
+	           const formData = new FormData();
+	           formData.append("file", file);
+	           const userNum = document.querySelector('input[name="userNum"]').value;
+	           formData.append("userNum", userNum);     // 사용자 번호 추가
 
-			$.ajax({
-				url: '/upload/image', // 이미지 업로드용 컨트롤러
-				method: 'POST',
-				data: formData,
-				processData: false,
-				contentType: false,
-				success: function (url) {
-					$('#content').summernote('insertImage', url);
-				},
-				error: function () {
-					alert('이미지 업로드 실패');
-				}
-			});
-		}
-	});
+	           $.ajax({
+	               url: '/upload/image', // 이미지 업로드용 컨트롤러
+	               method: 'POST',
+	               data: formData,
+	               processData: false,
+	               contentType: false,
+	               success: function (url) {
+	                   $('#content').summernote('insertImage', url);
+	               },
+	               error: function () {
+	                   alert('이미지 업로드 실패');
+	               }
+	           });
+	       }
+
+	       // --- 가격 입력 필드 관련 코드 시작 ---
+	       
+	       // 'price' 입력 필드에 키 입력이 있을 때마다 실행
+	       $('#price').on('keyup', function () {
+	           // 입력값에서 쉼표와 공백 제거
+	           var value = $(this).val().replace(/,/g, '').trim();
+	           
+	           // 숫자가 아니면 초기화
+	           if (isNaN(value) || value === '') {
+	               $(this).val('');
+	               return;
+	           }
+
+	           // 숫자형식으로 변환 후 쉼표 추가
+	           var formattedValue = Number(value).toLocaleString('ko-KR');
+
+	           // 변환된 값으로 입력 필드 업데이트
+	           $(this).val(formattedValue);
+	       });
+
+	       // 폼 제출 시 쉼표 제거
+	       $('form').on('submit', function () {
+	           var priceInput = $('#price');
+	           var cleanValue = priceInput.val().replace(/,/g, '').trim();
+	           priceInput.val(cleanValue);
+	       });
+
+	       // 페이지 로드 시 기존 값에도 쉼표 적용
+	       var initialPrice = $('#price').val();
+	       if (initialPrice && !isNaN(initialPrice.replace(/,/g, ''))) {
+	           $('#price').val(Number(initialPrice.replace(/,/g, '')).toLocaleString('ko-KR'));
+	       }
+	   });
 </script>
 
 </html>

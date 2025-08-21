@@ -155,8 +155,6 @@
 							<a th:href="@{'/KnowHowDetail/{num}'(num=${board.boardNum}, fromUrl=${request.requestURI} + '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
 								class="link-title" th:text="${board.title + '🗨️(' + board.commentCount + ')'}">제목</a>
 						</td>
-						<td th:text="${board.price}"></td>
-						<td th:text="${board.area}"></td>
 						<td th:text="${board.views}"></td>
 						<td th:text="${board.likes}"></td>
 						<td th:text="${board.formattedRegistDate}"></td>
