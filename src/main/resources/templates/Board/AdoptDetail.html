@@ -19,7 +19,7 @@
 	<br>
 	<div class="container">
 		<div class="head-container">
-			<h1>입양 게시판</h1>
+			<h1><a th:href="@{/Adopt}" class="header-link">입양 게시판</a></h1>
 			<div class="back-button">
 				<a href="#" id="back-button">목록으로</a> 
 			</div>
@@ -154,7 +154,7 @@
 							<button type="submit" class="btn btn-danger">좋아요</button>
 						</form>
 
-						<th:block th:if="${loginUser != null and loginUser.num == comment.userNum}">
+						<th:block th:if="${loginUser != null and (loginUser.num == comment.userNum or loginUser.privileges.name == '관리자')}">
 							<button type="button" class="btn btn-edit"
 								th:onclick="|showEditForm(${comment.num})|">수정</button>
 							<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/delete'}" method="post"
@@ -178,7 +178,7 @@
 						</form>
 					</th:block>
 				</div>
-
+				
 				<form th:action="@{'/AdoptDetail/' + ${detail.boardNum} + '/comment/update'}" method="post"
 					class="edit-form" th:attr="id=${'edit-form-' + comment.num}" style="display:none;">
 					<input type="hidden" name="commentNum" th:value="${comment.num}" />

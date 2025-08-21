@@ -234,6 +234,7 @@ public class AnimalPrideController {
 		if (!images.get(0).isEmpty()) {
 			thumnailName = upload.imageFileUpload(images.get(0));
 		}
+		
 		boardDto.setContent(fileName);
 		boardDto.setImage_paths(thumnailName);
 		boardService.insertBoard(boardDto);
@@ -397,7 +398,9 @@ public class AnimalPrideController {
 
 	// 삭제
 	@PostMapping("/AnimalPrideDelete/{num}")
-	public String animalPrideDelete(@PathVariable("num") int num, @AuthenticationPrincipal CustomUserDetails authUser,
+	public String animalPrideDelete(
+			@PathVariable("num") int num, 
+			@AuthenticationPrincipal CustomUserDetails authUser,
 			RedirectAttributes redirectAttributes) {
 
 		// 작성자 정보 가져오기(작성자, 관라자 삭제 권한 확인용)
@@ -523,17 +526,20 @@ public class AnimalPrideController {
 
 	// 댓글 삭제
 	@PostMapping("/AnimalPrideDetail/{num}/comment/delete")
-	public String deleteComment(@AuthenticationPrincipal CustomUserDetails authUser, @PathVariable("num") int boardNum,
+	public String deleteComment(
+			@AuthenticationPrincipal CustomUserDetails authUser,
+			@PathVariable("num") int boardNum,
 			@RequestParam("commentNum") int commentNum, RedirectAttributes redirectAttributes) {
 
 		// 현재 로그인한 유저 정보
 		Users loginUser = authUser.getUser();
-
+		boolean isAdmin = loginUser.isAdmin();
+		
 		// 댓글 정보 조회 (작성자 확인용)
 		CommentInfoDto comment = commentsService.findCommentByNum(commentNum);
 
 		// 작성자 본인인지 확인
-		if (comment.getUserNum() != loginUser.getNum()) {
+		if (comment.getUserNum() != loginUser.getNum() && loginUser.isAdmin() ) {
 			// 본인이 아니라면 삭제하지 않고 되돌림 (또는 에러 페이지로)
 			redirectAttributes.addFlashAttribute("errorMessage", "작성자만 삭제 할 수 있다는 거임!");
 			return "redirect:/AnimalPrideDetail/" + boardNum;
