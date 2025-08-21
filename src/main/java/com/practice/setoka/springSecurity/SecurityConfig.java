@@ -23,7 +23,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf(csrf -> csrf.disable())
+			.csrf(csrf -> csrf.ignoringRequestMatchers("/getDate","/message/read/*","/myanimal/edit","/memos","/animals","/health"))
 			.authorizeHttpRequests(auth -> auth
 				//로그인 하지않아도 접근 가능
 			    .requestMatchers("/CSS/**",
