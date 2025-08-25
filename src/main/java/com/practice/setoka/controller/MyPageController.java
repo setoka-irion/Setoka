@@ -116,7 +116,7 @@ public class MyPageController {
 
 	@PostMapping(value = "/EditProfilePhoto")
 	public String EditProfilePhotoSubmit(@RequestParam("profile") MultipartFile[] files,
-			@AuthenticationPrincipal CustomUserDetails authUser) {
+			@AuthenticationPrincipal CustomUserDetails authUser, HttpSession session) {
 		Users user = (Users) authUser.getUser();
 
 		if (files == null || files.length == 0 || files[0].isEmpty()) 
@@ -128,11 +128,9 @@ public class MyPageController {
 			userService.insertProfilephoto(files[0], new UsersDto(user));
 		}
 		
-		UserDetails updatedUser = userDetailsService.loadUserByUsername(user.getId());
-		UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedUser,
-				updatedUser.getPassword(), updatedUser.getAuthorities());
-		SecurityContextHolder.getContext().setAuthentication(newAuth);
-
+		user.setProfilePath(userService.selectProfilePath(user.getId()));
+		session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+		
 		return Redirect.MyPage;
 	}
 
@@ -159,20 +157,20 @@ public class MyPageController {
 		// html을 꾸며줄 클래스 넣기
 		model.addAttribute("UsersDto", dto);
 		// 수정 페이지로 이동
-		return "Mypage/ModifyUser";
+		return "MyPage/ModifyUser";
 	}
 
 	@PostMapping(value = "ModifyUser")
-	public String modifyUserPost(UsersDto userDto, @AuthenticationPrincipal CustomUserDetails authUser) {
+	public String modifyUserPost(UsersDto userDto, @AuthenticationPrincipal CustomUserDetails authUser, HttpSession session) {
 		Users user = (Users) authUser.getUser();
 
 		userDto.setPhoneNumber(userDto.getPhoneNumber().replaceAll("-", "")); 
-		
+
 		// 정보 수정
 		user.modifyUser(userDto);
 		if(userService.updateUserDto(userDto))
 		{
-			System.out.println("수정 완료");
+			session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 		}
 		return Redirect.MyPage;
 	}
