@@ -1,7 +1,10 @@
 package com.practice.setoka.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +16,17 @@ import com.practice.setoka.Enum.GameResult;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.service.RPSService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
+import com.practice.setoka.springSecurity.CustomUserDetailsService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class RPSController {
 
 	@Autowired
 	private RPSService rpsService;
+	@Autowired
+	private CustomUserDetailsService userDetailsService;
 	
 	@GetMapping(value = "RPS")
 	public String RPSForm(Model model)
@@ -28,11 +36,19 @@ public class RPSController {
 	
 	@PostMapping(value ="playRps")
 	public String ResultRPS(@RequestParam("choice") String choice, @RequestParam("point") int point,
-			@AuthenticationPrincipal CustomUserDetails authUser, RedirectAttributes redirectAttributes)
+			@AuthenticationPrincipal CustomUserDetails authUser, RedirectAttributes redirectAttributes, HttpSession session)
 	{
 		Users user = authUser.getUser();
 		
 		GameResult result = rpsService.Play(choice, point, user);
+
+		UserDetails updatedUser = userDetailsService.loadUserByUsername(user.getId());
+		UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedUser,
+				updatedUser.getPassword(), updatedUser.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(newAuth);
+		
+		session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+		
 		redirectAttributes.addFlashAttribute("result", result.getDisplayName());
 		return "redirect:/RPS";
 	}
