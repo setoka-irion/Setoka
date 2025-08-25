@@ -293,7 +293,7 @@ public class MyPageController {
 			@RequestParam(name = "month") int month) {
 		memoService.deleteMemo(num);
 		
-		return "redirect:/ModifyUser";
+		return "redirect:/MyPage?year=" + year + "&month=" + month;
 	}
 
 	@GetMapping("/memos")
