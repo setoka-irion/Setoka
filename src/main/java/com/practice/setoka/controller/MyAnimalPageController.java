@@ -157,7 +157,7 @@ public class MyAnimalPageController {
         List<Memo> memos = memoService.memoSelectByAnimalNum(animalNum);
         model.addAttribute("memos", memos);
         
-        return "MyPage/AnimalDetails";
+        return "redirect:/MyPage?year=" + year + "&month=" + month;
     }
 
 
