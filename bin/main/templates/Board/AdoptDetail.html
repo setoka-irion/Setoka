@@ -49,7 +49,7 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td th:text="${detail.title}">제목</td>
+					<td th:text="| [${detail.area}] ${detail.title} |">제목</td>
 					<td>
 						<div class="author-info">
 							<img th:src="@{${authorProfilePath}}" alt="프로필 이미지" class="profile-image">
@@ -101,7 +101,7 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td th:text="${detail.price}">₩0</td>
+					<td th:text="${detail.price != null} ? ${#numbers.formatInteger(detail.price, 0, 'COMMA')} : '비용 정보 없음'">₩0</td>
 					<td th:text="${detail.area}">지역명</td>
 				</tr>
 				<tr>

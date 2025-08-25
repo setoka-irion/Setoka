@@ -17,6 +17,10 @@
 
 	<!-- 한국어 번역 (선택) -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-ko-KR.min.js"></script>
+	
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+	
 	<style>
 		
 		/* 전체 컨테이너 */
@@ -216,12 +220,6 @@
 			<!--		    </label>-->
 			<!--		</div>-->
 
-			<label for="area">지역</label><br />
-			<input type="text" id="area" th:field="*{area}" placeholder="예: 서울, 경기 등" required /><br /><br />
-
-			<label for="price">비용 (무료일 경우 0)</label><br />
-			<input type="number" id="price" th:field="*{price}" min="0" placeholder="0" /><br /><br />
-
 			<button type="submit">수정</button>
 		</form>
 
@@ -254,6 +252,9 @@
 			formData.append("file", file);
 			const userNum = document.querySelector('input[name="userNum"]').value;
 			formData.append("userNum", userNum);     // 사용자 번호 추가
+			
+			const token = $('meta[name="_csrf"]').attr('content');
+			const header = $('meta[name="_csrf_header"]').attr('content');
 
 			$.ajax({
 				url: '/upload/image', // 이미지 업로드용 컨트롤러
@@ -261,6 +262,9 @@
 				data: formData,
 				processData: false,
 				contentType: false,
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
 				success: function (url) {
 					$('#content').summernote('insertImage', url);
 				},

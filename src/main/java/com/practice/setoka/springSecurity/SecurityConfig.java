@@ -24,6 +24,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(csrf -> csrf.ignoringRequestMatchers("/getDate","/message/read/*","/myanimal/edit","/memos","/animals","/health"))
+			//.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(auth -> auth
 				//로그인 하지않아도 접근 가능
 			    .requestMatchers("/CSS/**",
@@ -46,7 +47,8 @@ public class SecurityConfig {
 					    		"/imagesDefault/**",
 					    		"/passwordFind",
 					    		"/health",
-					    		"/sendPasswordFind"
+					    		"/sendPasswordFind",
+					    		"/verifySingUpCode"
 					    		).permitAll()
 			    //hasRole 관리자 권한을 가진 계정만 접근 가능
 			    //.requestMatchers("/AllUsers").hasRole("관리자")

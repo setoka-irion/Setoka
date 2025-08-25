@@ -17,6 +17,9 @@
 
 	<!-- 한국어 번역 (선택) -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-ko-KR.min.js"></script>
+	
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
 	<title>IRI-ON : 입양 글 등록</title>
 	<style>
@@ -160,12 +163,31 @@
 
 			<label>썸네일</label>
 			<input type="file" id="images" name="images" accept="image/*">
-
+			
 			<label for="area">지역</label>
-			<input type="text" id="area" th:field="*{area}" placeholder="예: 서울, 경기 등" required />
+			<select id="area" th:field="*{area}" required>
+			    <option value="">지역을 선택하세요</option>
+			    <option value="서울">서울</option>
+			    <option value="경기">경기</option>
+			    <option value="인천">인천</option>
+			    <option value="부산">부산</option>
+			    <option value="대구">대구</option>
+			    <option value="광주">광주</option>
+			    <option value="대전">대전</option>
+			    <option value="울산">울산</option>
+			    <option value="세종">세종</option>
+			    <option value="강원">강원</option>
+			    <option value="충북">충북</option>
+			    <option value="충남">충남</option>
+			    <option value="전북">전북</option>
+			    <option value="전남">전남</option>
+			    <option value="경북">경북</option>
+			    <option value="경남">경남</option>
+			    <option value="제주">제주</option>
+			</select>
 
 			<label for="price">비용 (무료일 경우 0)</label>
-			<input type="number" id="price" th:field="*{price}" min="0" placeholder="0" />
+			<input type="text" id="price" th:field="*{price}" min="0" placeholder="0" />
 
 			<!-- ✅ 이미지 파일 업로드 -->
 			<!--    <label for="images">사진 업로드 (여러 장 가능)</label>
@@ -199,6 +221,9 @@
 			formData.append("file", file);
 			const userNum = document.querySelector('input[name="userNum"]').value;
 			formData.append("userNum", userNum);     // 사용자 번호 추가
+			
+			const token = $('meta[name="_csrf"]').attr('content');
+			const header = $('meta[name="_csrf_header"]').attr('content');
 
 			$.ajax({
 				url: '/upload/image', // 이미지 업로드용 컨트롤러
@@ -206,6 +231,9 @@
 				data: formData,
 				processData: false,
 				contentType: false,
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
 				success: function (url) {
 					$('#content').summernote('insertImage', url);
 				},
@@ -214,6 +242,29 @@
 				}
 			});
 		}
+	});
+	
+	// 페이지 로드 시 실행
+	$(document).ready(function () {
+	    // 'price' 입력 필드에 키 입력이 있을 때마다 함수 실행
+	    $('#price').on('keyup', function () {
+	        var value = $(this).val().replace(/,/g, '').trim();
+
+	        if (isNaN(value) || value === '') {
+	            $(this).val('');
+	            return;
+	        }
+
+	        var formattedValue = Number(value).toLocaleString('ko-KR');
+	        $(this).val(formattedValue);
+	    });
+
+	    // 폼 제출 시점에 쉼표 제거
+	    $('form').on('submit', function () {
+	        var priceInput = $('#price');
+	        var cleanValue = priceInput.val().replace(/,/g, '').trim();
+	        priceInput.val(cleanValue); // 쉼표가 제거된 값으로 변경
+	    });
 	});
 </script>
 
