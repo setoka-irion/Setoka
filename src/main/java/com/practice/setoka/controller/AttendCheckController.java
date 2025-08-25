@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,8 @@ import com.practice.setoka.service.AttendCheckService;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 import com.practice.setoka.springSecurity.CustomUserDetailsService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AttendCheckController {
@@ -79,7 +82,7 @@ public class AttendCheckController {
 
 	@PostMapping("/point")
 	public String attendPoint(@RequestParam(name = "date", required = false) String date,
-			RedirectAttributes redirectAttributes, @AuthenticationPrincipal CustomUserDetails authUser) {
+			RedirectAttributes redirectAttributes, @AuthenticationPrincipal CustomUserDetails authUser, HttpSession session) {
 		
 		var users = (Users) authUser.getUser();
 		int userNum = users.getNum();
@@ -92,9 +95,9 @@ public class AttendCheckController {
 		} else {
 			users.PlusPoint(100);
 			userSerivce.updateUserDto(new UsersDto(users));
-			userSerivce.userUpdate(users);
 			attendCheckService.insertAttendance(userNum, date);
 			
+			session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 			redirectAttributes.addFlashAttribute("newAttendance", date);
 			redirectAttributes.addFlashAttribute("message", "출석체크가 완료되었습니다.");
 		}

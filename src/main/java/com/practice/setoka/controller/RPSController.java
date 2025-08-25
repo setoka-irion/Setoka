@@ -41,11 +41,6 @@ public class RPSController {
 		Users user = authUser.getUser();
 		
 		GameResult result = rpsService.Play(choice, point, user);
-
-		UserDetails updatedUser = userDetailsService.loadUserByUsername(user.getId());
-		UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedUser,
-				updatedUser.getPassword(), updatedUser.getAuthorities());
-		SecurityContextHolder.getContext().setAuthentication(newAuth);
 		
 		session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 		
