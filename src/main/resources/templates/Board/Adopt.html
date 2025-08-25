@@ -44,13 +44,6 @@
 
 			<!-- 오른쪽 버튼 wrapper -->
 			<div class="right-section">
-				<!-- 보기형식 스위치 -->
-				<div class="toggle-switch">
-					<input type="radio" id="viewCard" name="viewType" value="card" th:checked="${viewType == 'card'}" />
-					<label for="viewCard">카드형</label>
-					<input type="radio" id="viewList" name="viewType" value="list" th:checked="${viewType == 'list'}" />
-					<label for="viewList">리스트형</label>
-				</div>
 				<!-- 글 등록 버튼 -->
 				<div class="regist-button">
 					<a th:href="@{/AdoptRegist}" class="btn-primary">새 글 등록하기</a>
@@ -90,7 +83,8 @@
 					</a>
 					<span th:text="'작성자: ' + ${post.nickName}">작성자</span>
 					<span
-						th:text="'비용: ' + (${post.price != null} ? ${#numbers.formatInteger(post.price, 0, 'COMMA')} : '비용 정보 없음')">비용</span>
+						th:text="'책임비: ' + (${post.price != null} ? ${#numbers.formatInteger(post.price, 0, 'COMMA')} : '책임비 정보 없음')">책임비</span>
+					<span th:text="'지역: ' + ${post.area}">지역</span>
 					<span th:text="'좋아요: ' + ${post.likes}">좋아요</span>
 					<span th:text="'작성일: ' + ${post.formattedRegistDate}">작성일</span>
 					<hr>
@@ -99,86 +93,101 @@
 		</div>
 
 		<!--------------------------------------------------------------------------------------------------------------------------->
-
 		<div class="main-container">
-			<!-- 전체 글-->
-			<div class="main-title">
-				<h3>📋전체 글</h3>
-			</div>
-			<!-- 카드형 (mainList 반복) -->
-			<div class="card-list-view">
-				<div class="card-popular" th:each="board, iterStat : ${mainList}">
-					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum}, fromUrl=${request.requestURI} + '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
-						class="link-title">
-						<strong th:text="|[${board.area}] ${board.title} 💬(${board.commentCount})|">제목</strong>
-					</a>
-					<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}">
-						<img class="thumb-image" th:src="${board.Image_paths}" alt="썸네일" />
-					</a>
-					<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
-					<span
-						th:text="'비용: ' + (${board.price != null} ? ${#numbers.formatInteger(board.price, 0, 'COMMA')} : '비용 정보 없음')">비용</span>
-					<span th:text="'지역: ' + ${board.area}">지역</span>
-					<span th:text="'조회수: ' + ${board.views}">조회수</span>
-					<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
-					<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
-					<hr />
+			
+			<div class="rightsection">
+				<div class="main-title">
+					<h3>📋전체 글</h3>
 				</div>
-				<div th:if="${#lists.isEmpty(mainList)}">등록된 게시글이 없습니다.</div>
+				<!-- 보기형식 스위치 -->
+				<div class="toggle-switch">
+					<input type="radio" id="viewCard" name="viewType" value="card" th:checked="${viewType == 'card'}" />
+					<label for="viewCard">카드형</label>
+					<input type="radio" id="viewList" name="viewType" value="list" th:checked="${viewType == 'list'}" />
+					<label for="viewList">리스트형</label>
+				</div>
+			</div>
+			
+			<div class="card-container">
+				<!-- 전체 글-->
+
+				<!-- 카드형 (mainList 반복) -->
+				<div class="card-list-view">
+					<div class="card-popular" th:each="board, iterStat : ${mainList}">
+						<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum}, fromUrl=${request.requestURI} + '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
+							class="link-title">
+							<strong th:text="|[${board.area}] ${board.title} 💬(${board.commentCount})|">제목</strong>
+						</a>
+						<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum})}">
+							<img class="thumb-image" th:src="${board.Image_paths}" alt="썸네일" />
+						</a>
+						<span th:text="'작성자: ' + ${board.nickName}">작성자</span>
+						<span
+							th:text="'책임비: ' + (${board.price != null} ? ${#numbers.formatInteger(board.price, 0, 'COMMA')} : '책임정보 없음')">책임비</span>
+						<span th:text="'지역: ' + ${board.area}">지역</span>
+						<span th:text="'조회수: ' + ${board.views}">조회수</span>
+						<span th:text="'좋아요: ' + ${board.likes}">좋아요</span>
+						<span th:text="'작성일: ' + ${board.formattedRegistDate}">작성일</span>
+						<hr />
+					</div>
+					<div th:if="${#lists.isEmpty(mainList)}">등록된 게시글이 없습니다.</div>
+				</div>
 			</div>
 
+			<div class="list-container">
+				<!-- 리스트형 (기존 테이블) -->
+				<table class="table-posts">
+					<colgroup>
+						<col style="width: 5%;" />
+						<col style="width: 8%;" />
+						<col style="width: 56%;" />
+						<col style="width: 5%;" />
+						<col style="width: 5%;" />
+						<col style="width: 6%;" />
+						<col style="width: 5%;" />
+						<col style="width: 10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>번호</th>
+							<th>작성자</th>
+							<th>제목</th>
+							<th>책임비</th>
+							<th>지역</th>
+							<th>조회수</th>
+							<th>좋아요</th>
+							<th>작성일</th>
+						</tr>
+					</thead>
 
-			<!-- 리스트형 (기존 테이블) -->
-			<table class="table-posts">
-				<colgroup>
-					<col style="width: 5%;" />
-					<col style="width: 8%;" />
-					<col style="width: 57%;" />
-					<col style="width: 5%;" />
-					<col style="width: 5%;" />
-					<col style="width: 5%;" />
-					<col style="width: 5%;" />
-					<col style="width: 10%;" />
-				</colgroup>
-				<thead>
-					<tr>
-						<th>번호</th>
-						<th>작성자</th>
-						<th>제목</th>
-						<th>비용</th>
-						<th>지역</th>
-						<th>조회수</th>
-						<th>좋아요</th>
-						<th>작성일</th>
-					</tr>
-				</thead>
+					<!-- 본문 코드 -->
+					<tbody>
+						<tr th:each="board, iterStat : ${mainList}">
+							<td th:text="${board.boardNum}">1</td>
+							<!-- 썸넬 보이게-->
 
-				<!-- 본문 코드 -->
-				<tbody>
-					<tr th:each="board, iterStat : ${mainList}">
-						<td th:text="${board.boardNum}">1</td>
-						<!-- 썸넬 보이게-->
-
-						<td th:text="${board.nickName}"></td>
-						<td>
-							<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum}, fromUrl=${request.requestURI} + '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
-								class="link-title"
-								th:text="| [${board.area}] ${board.title} 🗨️(${board.commentCount})|">제목</a>
-						</td>
-						<td th:text="${board.price != null} ? ${#numbers.formatInteger(board.price, 0, 'COMMA')} : '비용 정보 없음'"></td>
-						<td th:text="${board.area}"></td>
-						<td th:text="${board.views}"></td>
-						<td th:text="${board.likes}"></td>
-						<td th:text="${board.formattedRegistDate}"></td>
-					</tr>
-					<tr th:if="${#lists.isEmpty(mainList)}">
-						<td colspan="9">등록된 게시글이 없습니다.</td>
-					</tr>
-				</tbody>
-			</table>
+							<td th:text="${board.nickName}"></td>
+							<td>
+								<a th:href="@{'/AdoptDetail/{num}'(num=${board.boardNum}, fromUrl=${request.requestURI} + '?page=' + ${currentPage} + '&field=' + ${field} + '&keyword=' + ${keyword} + '&viewType=' + ${viewType})}"
+									class="link-title"
+									th:text="| [${board.area}] ${board.title} 🗨️(${board.commentCount})|">제목</a>
+							</td>
+							<td
+								th:text="${board.price != null} ? ${#numbers.formatInteger(board.price, 0, 'COMMA')} : '비용 정보 없음'">
+							</td>
+							<td th:text="${board.area}"></td>
+							<td th:text="${board.views}"></td>
+							<td th:text="${board.likes}"></td>
+							<td th:text="${board.formattedRegistDate}"></td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(mainList)}">
+							<td colspan="9">등록된 게시글이 없습니다.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-
 	<!--------------------------------------------------------------------------------------------------------------------------->
 
 	<!-- 페이지 네이션-->
@@ -304,6 +313,24 @@
 				});
 			});
 		});
+
+		function setViewType(viewType) {
+			const cardContainer = document.querySelector('.card-container');
+			const listContainer = document.querySelector('.list-container');
+			const mainContainer = document.querySelector('.main-container'); // 새로운 컨테이너 선택
+
+			if (viewType === 'list') {
+				cardContainer.style.display = 'none';
+				listContainer.style.display = 'block';
+				mainContainer.classList.add('list-view-mode');
+				mainContainer.classList.remove('card-view-mode');
+			} else {
+				cardContainer.style.display = 'block';
+				listContainer.style.display = 'none';
+				mainContainer.classList.add('card-view-mode');
+				mainContainer.classList.remove('list-view-mode');
+			}
+		}
 
 		// 위로가기 버튼
 		document.addEventListener('DOMContentLoaded', function () {

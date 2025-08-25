@@ -8,6 +8,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -47,7 +49,8 @@ public class SecurityConfig {
 					    		"/imagesDefault/**",
 					    		"/passwordFind",
 					    		"/health",
-					    		"/sendPasswordFind"
+					    		"/sendPasswordFind",
+					    		"/verifySingUpCode"
 					    		).permitAll()
 			    //hasRole 관리자 권한을 가진 계정만 접근 가능
 			    //.requestMatchers("/AllUsers").hasRole("관리자")
@@ -77,6 +80,7 @@ public class SecurityConfig {
                 .maxSessionsPreventsLogin(false)
                 // 세션 만료 시 이동할 URL
                 .expiredUrl("/Login?expired")
+                .sessionRegistry(sessionRegistry())
             );
 		return http.build();
 	}
@@ -98,5 +102,10 @@ public class SecurityConfig {
 	@Bean
 	public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
 	    return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
+	}
+	
+	@Bean
+	public SessionRegistry sessionRegistry() {
+	    return new SessionRegistryImpl();
 	}
 }

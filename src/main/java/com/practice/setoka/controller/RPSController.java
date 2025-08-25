@@ -29,10 +29,8 @@ public class RPSController {
 	private CustomUserDetailsService userDetailsService;
 	
 	@GetMapping(value = "RPS")
-	public String RPSForm(Model model, @AuthenticationPrincipal CustomUserDetails authUser)
+	public String RPSForm(Model model)
 	{
-		Users user = authUser.getUser();
-		model.addAttribute("user", user);
 		return "RPS";
 	}
 	

@@ -156,7 +156,7 @@ public class MyPageController {
 		// html을 꾸며줄 클래스 넣기
 		model.addAttribute("UsersDto", dto);
 		// 수정 페이지로 이동
-		return "Mypage/ModifyUser";
+		return "MyPage/ModifyUser";
 	}
 
 	@PostMapping(value = "ModifyUser")
@@ -164,13 +164,11 @@ public class MyPageController {
 		Users user = (Users) authUser.getUser();
 
 		userDto.setPhoneNumber(userDto.getPhoneNumber().replaceAll("-", "")); 
-		System.out.println(userDto.getPoint());
+
 		// 정보 수정
 		user.modifyUser(userDto);
 		if(userService.updateUserDto(userDto))
 		{
-			System.out.println("수정 완료");
-
 			session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 		}
 		return Redirect.MyPage;
