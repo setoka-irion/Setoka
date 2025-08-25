@@ -128,6 +128,7 @@ public class MyPageController {
 			userService.insertProfilephoto(files[0], new UsersDto(user));
 		}
 		
+		user.setProfilePath(userService.selectProfilePath(user.getId()));
 		session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 		
 		return Redirect.MyPage;
