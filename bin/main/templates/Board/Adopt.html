@@ -293,7 +293,8 @@
 				radios.forEach(r => r.checked = (r.value === 'card'));
 			}
 		}
-
+		
+		// 보던 페이지네이션으로 돌아가는 기능
 		window.addEventListener('DOMContentLoaded', () => {
 			const serverViewType = document.querySelector('input[name="viewType"]:checked')?.value;
 			console.log("서버에서 체크된 라디오 값:", serverViewType);
