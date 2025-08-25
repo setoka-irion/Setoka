@@ -116,7 +116,7 @@ public class MyPageController {
 
 	@PostMapping(value = "/EditProfilePhoto")
 	public String EditProfilePhotoSubmit(@RequestParam("profile") MultipartFile[] files,
-			@AuthenticationPrincipal CustomUserDetails authUser) {
+			@AuthenticationPrincipal CustomUserDetails authUser, HttpSession session) {
 		Users user = (Users) authUser.getUser();
 
 		if (files == null || files.length == 0 || files[0].isEmpty()) 
@@ -132,7 +132,9 @@ public class MyPageController {
 		UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedUser,
 				updatedUser.getPassword(), updatedUser.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(newAuth);
-
+		
+		session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+		
 		return Redirect.MyPage;
 	}
 
@@ -167,7 +169,7 @@ public class MyPageController {
 		Users user = (Users) authUser.getUser();
 
 		userDto.setPhoneNumber(userDto.getPhoneNumber().replaceAll("-", "")); 
-		
+		System.out.println(userDto.getPoint());
 		// 정보 수정
 		user.modifyUser(userDto);
 		if(userService.updateUserDto(userDto))
