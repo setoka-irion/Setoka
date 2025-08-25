@@ -92,6 +92,7 @@ public class AttendCheckController {
 		} else {
 			users.PlusPoint(100);
 			userSerivce.updateUserDto(new UsersDto(users));
+			userSerivce.userUpdate(users);
 			attendCheckService.insertAttendance(userNum, date);
 			
 			redirectAttributes.addFlashAttribute("newAttendance", date);

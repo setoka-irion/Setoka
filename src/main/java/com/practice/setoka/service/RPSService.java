@@ -61,6 +61,7 @@ public class RPSService {
 
 		user.getGrade();
 		userService.userPointUpdate(user.getId(), user.getPoint());
+		userService.userUpdate(user);
 		return re;
 	}
 }
