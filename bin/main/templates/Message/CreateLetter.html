@@ -39,7 +39,10 @@
 			</select><br />
 
 			<!-- 수치/개수 입력 -->
-			<label for="item_Value">수량 / 포인트 수치:</label>
+			<label for="item_Value">
+				수량 / 포인트 수치
+				<span th:if="${not isAdmin}">(최대: <span th:text="${max}">0</span>)</span>
+			</label>
 			<input type="number" id="item_Value" name="item_Value" min="0" value="0" th:if="${isAdmin}" />
 
 			<input type="number" id="item_Value" name="item_Value" min="0" value="0" th:unless="${isAdmin}"
