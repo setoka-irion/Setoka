@@ -105,7 +105,7 @@ public class MyAnimalPageController {
     	        animalDto.setProfilePath(upload.imageFileUpload(file));
     	    } else {
     	        // 이미지 미변경 시 기존 경로 유지
-    	        animalDto.setProfilePath(existingProfilePath);
+    	        animalDto.setProfilePath(null);
     	    }
 
     	    LocalDateTime dateTime = LocalDate.parse(togetherDateStr).atStartOfDay();
