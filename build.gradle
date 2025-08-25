@@ -19,10 +19,10 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'  // MyBatis starter 추가
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'  // MyBatis starter 추가
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.5'					// MariaDB JDBC 드라이버
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.security:spring-security-crypto:6.3.0'	//암호화
+    implementation 'org.springframework.security:spring-security-crypto:6.5.3'	//암호화
     implementation 'org.springframework.boot:spring-boot-starter-mail'			//로그인 메일
 	implementation 'org.springframework.boot:spring-boot-starter-validation'	//valid 추가
 	implementation 'org.springframework.boot:spring-boot-starter-security'		//로그인 검증
