@@ -1,12 +1,11 @@
 package com.practice.setoka.service;
 
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +16,6 @@ import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.Users;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.mapper.UserMapper;
-import com.practice.setoka.springSecurity.CustomUserDetails;
 
 @Service
 public class UserService {
@@ -139,4 +137,42 @@ public class UserService {
 
 		return userPointUpdate(sender.getId(), sender.getPoint());
 	}
+	
+	
+	public String generateSecurePassword(int length) {
+        if (length < 8) {
+            length = 8;
+        }
+
+        String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lower = "abcdefghijklmnopqrstuvwxyz";
+        String digits = "0123456789";
+        String special = "@$!%*?&";
+        String all = upper + lower + digits + special;
+
+        SecureRandom random = new SecureRandom();
+        List<Character> passwordChars = new ArrayList<>();
+
+        // 필수 문자 1개씩 넣기
+        passwordChars.add(upper.charAt(random.nextInt(upper.length())));
+        passwordChars.add(lower.charAt(random.nextInt(lower.length())));
+        passwordChars.add(digits.charAt(random.nextInt(digits.length())));
+        passwordChars.add(special.charAt(random.nextInt(special.length())));
+
+        // 나머지 문자 랜덤하게 채우기
+        for (int i = 4; i < length; i++) {
+            passwordChars.add(all.charAt(random.nextInt(all.length())));
+        }
+
+        // 순서를 섞어 예측 불가하게 만들기
+        Collections.shuffle(passwordChars);
+
+        // 리스트를 문자열로 변환
+        StringBuilder password = new StringBuilder();
+        for (char c : passwordChars) {
+            password.append(c);
+        }
+
+        return password.toString();
+    }
 }

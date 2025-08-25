@@ -57,7 +57,6 @@ public class MyPageController {
 			@RequestParam(name = "month", required = false) Integer month,
 			@AuthenticationPrincipal CustomUserDetails authUser) {
 
-    	System.out.println("MyPage");
 		Users user = (Users) authUser.getUser();
 		// 달력
 		int userNum = user.getNum();
@@ -295,7 +294,6 @@ public class MyPageController {
 	public void deletMemo(@RequestParam(name = "num") int num, @RequestParam(name = "year") int year,
 			@RequestParam(name = "month") int month) {
 		memoService.deleteMemo(num);
-		System.out.println("delete memo" + "year: " + year + " month: " + month); 
 	}
 
 	@GetMapping("/memos")
