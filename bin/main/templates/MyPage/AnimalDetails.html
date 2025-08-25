@@ -10,6 +10,9 @@
 	<link rel="stylesheet" th:href="@{/CSS/calendar.css}">
 	<link rel="stylesheet" th:href="@{/CSS/nav-buttons.css}">
 	<link rel="stylesheet" th:href="@{/CSS/memo-list.css}">
+	
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
 	<style>
 		.memo-title {
@@ -299,6 +302,9 @@
 			const yearMonthSpan = document.getElementById('yearMonth');
 			const year = parseInt(yearMonthSpan.dataset.year);
 			const month = parseInt(yearMonthSpan.dataset.month);
+			
+			const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+			const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
 			let animalMap = new Map();
 			let currentDetailMemoNum = null;
@@ -470,10 +476,14 @@
 						formData.append('num', currentDetailMemoNum);
 						formData.append('year', year);
 						formData.append('month', month);
+						
+						const headers = new Headers();
+						headers.append('Content-Type', 'application/x-www-form-urlencoded');
+						headers.append(csrfHeader, csrfToken);
 
 						fetch('/memo/delete', {
 							method: 'POST',
-							headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+							headers: headers,
 							body: formData.toString()
 						}).then(() => {
 							detailModal.style.display = 'none';

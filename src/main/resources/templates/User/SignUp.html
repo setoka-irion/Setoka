@@ -5,6 +5,10 @@
 	<title>IRI-ON : 회원가입</title>
 	<link rel="stylesheet" th:href="@{/CSS/header.css}">
 	<link rel="stylesheet" th:href="@{/CSS/signUp.css}">
+	
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+	
 </head>
 
 <body>
@@ -64,6 +68,11 @@
 
 <script>
 	
+	const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+	const headers = new Headers();
+			headers.append('Content-Type', 'application/json');
+			headers.append(csrfHeader, csrfToken);
 
 	function sendCode() {
 		const email = document.getElementById('email').value;
@@ -72,9 +81,10 @@
 			return;
 		}
 
+		
 		fetch('/sendSingUpCode', {
 			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
+			headers: headers,
 			body: JSON.stringify({email: email})
 		})
 			.then(response => response.text().then(text => {
@@ -94,10 +104,19 @@
 			return;
 		}
 		const code = document.getElementById('code').value;
+		if (!code) {
+		    alert('인증번호를 입력하세요.');
+		    return;
+		}
+		
+		if (!/^\d+$/.test(code)) {
+		       alert('인증번호는 숫자만 입력해야 합니다.');
+		       return;
+		}
 
 		fetch('/verifySingUpCode', {
 			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
+			headers: headers,
 			body: JSON.stringify({email: email, code: code})
 		})
 			.then(response => {
