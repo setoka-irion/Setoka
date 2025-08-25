@@ -159,7 +159,7 @@ public class MyPageController {
 		// html을 꾸며줄 클래스 넣기
 		model.addAttribute("UsersDto", dto);
 		// 수정 페이지로 이동
-		return "Mypage/ModifyUser";
+		return "MyPage/ModifyUser";
 	}
 
 	@PostMapping(value = "ModifyUser")
@@ -172,7 +172,7 @@ public class MyPageController {
 		user.modifyUser(userDto);
 		if(userService.updateUserDto(userDto))
 		{
-			System.out.println("수정 완료");
+			userService.userUpdate(user);
 		}
 		return Redirect.MyPage;
 	}
