@@ -71,9 +71,8 @@
 
 <!--	 게시글 제목으로 검색 -->
 	<select id="findBoardsByTitle"  resultMap="boardWithUserMap">
-		SELECT 
-    	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
-    	b.type, b.likes, b.views, b.price, b.area, b.registerDate
+		SELECT b.*,
+    	u.id, u.num AS userNum, u.nickname
     	FROM board b JOIN users u 
     	ON b.userNum = u.num 
 		WHERE b.title LIKE CONCAT('%', #{title}, '%') AND type !=0
@@ -82,9 +81,8 @@
 
 <!--	 게시글 내용으로 검색 -->
 	<select id="findBoardsByContent" resultMap="boardWithUserMap">
-		SELECT 
-    	u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content,
-    	b.type, b.likes, b.views, b.price, b.area, b.registerDate
+		SELECT b.*,
+    	u.id, u.num AS userNum, u.nickname
     	FROM board b JOIN users u 
     	ON b.userNum = u.num 
 		WHERE b.content LIKE CONCAT('%', #{content}, '%') AND type !=0
@@ -93,9 +91,8 @@
 	
 <!--	 통합 검색 -->
 	<select id="searchAll" parameterType="String" resultMap="boardWithUserMap">
-		SELECT 
-		u.id, u.num AS userNum, u.nickname, b.num, b.userNum, b.title, b.content, 
-		b.type, b.likes, b.views, b.price, b.area, b.registerDate
+		SELECT b.*,
+		u.id, u.num AS userNum, u.nickname
 		FROM board b JOIN users u 
 		ON b.userNum = u.num
 		<where>

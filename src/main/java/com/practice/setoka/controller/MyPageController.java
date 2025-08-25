@@ -292,8 +292,8 @@ public class MyPageController {
 	public String deletMemo(@RequestParam(name = "num") int num, @RequestParam(name = "year") int year,
 			@RequestParam(name = "month") int month) {
 		memoService.deleteMemo(num);
-
-		return "redirect:/MyPage?year=" + year + "&month=" + month;
+		
+		return "redirect:/MyPage";
 	}
 
 	@GetMapping("/memos")
