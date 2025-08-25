@@ -128,11 +128,6 @@ public class MyPageController {
 			userService.insertProfilephoto(files[0], new UsersDto(user));
 		}
 		
-		UserDetails updatedUser = userDetailsService.loadUserByUsername(user.getId());
-		UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(updatedUser,
-				updatedUser.getPassword(), updatedUser.getAuthorities());
-		SecurityContextHolder.getContext().setAuthentication(newAuth);
-		
 		session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 		
 		return Redirect.MyPage;
@@ -165,7 +160,7 @@ public class MyPageController {
 	}
 
 	@PostMapping(value = "ModifyUser")
-	public String modifyUserPost(UsersDto userDto, @AuthenticationPrincipal CustomUserDetails authUser) {
+	public String modifyUserPost(UsersDto userDto, @AuthenticationPrincipal CustomUserDetails authUser, HttpSession session) {
 		Users user = (Users) authUser.getUser();
 
 		userDto.setPhoneNumber(userDto.getPhoneNumber().replaceAll("-", "")); 
@@ -175,6 +170,8 @@ public class MyPageController {
 		if(userService.updateUserDto(userDto))
 		{
 			System.out.println("수정 완료");
+
+			session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 		}
 		return Redirect.MyPage;
 	}
