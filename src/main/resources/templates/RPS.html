@@ -17,8 +17,8 @@
 	
 			<form th:action="@{/playRps}" method="post">
 				<!-- 포인트 입력 -->
-				<label for="point">배팅할 포인트 (최대 [[${user.point}]])</label><br>
-				<input type="number" id="point" name="point" min="10" th:attr="max=${user.point}" required /><br><br>
+				<label for="point">배팅할 포인트 (최대 [[${loginUser.point}]])</label><br>
+				<input type="number" id="point" name="point" min="10" th:attr="max=${loginUser.point}" required /><br><br>
 	
 				<!-- 선택지 -->
 				<label>가위바위보 선택:</label>
