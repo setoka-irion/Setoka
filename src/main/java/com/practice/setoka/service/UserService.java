@@ -139,14 +139,4 @@ public class UserService {
 
 		return userPointUpdate(sender.getId(), sender.getPoint());
 	}
-	
-	public void userUpdate(Users updatedUser) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Authentication newAuth = new UsernamePasswordAuthenticationToken(
-		        new CustomUserDetails(updatedUser), // 업데이트된 사용자 객체
-		        auth.getCredentials(),
-		        auth.getAuthorities()
-		);
-		SecurityContextHolder.getContext().setAuthentication(newAuth);
-	}
 }
