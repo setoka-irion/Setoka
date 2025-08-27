@@ -47,7 +47,6 @@ public class MyAnimalPageController {
     
     // 애견 추가
     @PostMapping("/myanimal/add")
-	@ResponseBody
     public String addAnimal(
 				        AnimalDto animalDto, @RequestParam("profileImage") MultipartFile file,
 				        @RequestParam("togetherDateStr") String togetherDateStr,
@@ -70,7 +69,6 @@ public class MyAnimalPageController {
 
     // 애견 삭제
     @PostMapping("/myanimal/delete")
-	@ResponseBody
     public String deleteAnimal(@RequestParam("animalNum") int animalNum) {
         animalService.updateDeleteAnimal(animalNum);
         return "redirect:/myanimal";
