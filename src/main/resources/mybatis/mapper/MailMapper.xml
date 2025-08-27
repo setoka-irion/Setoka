@@ -6,7 +6,7 @@
 <mapper namespace="com.practice.setoka.mapper.MailMapper">
 
 	<select id="selectVerifyCode" resultType="com.practice.setoka.dao.VerifyCode" parameterType="int">
-    	SELECT * FROM VerifyCode WHERE num = #{num}
+    	SELECT * FROM Verifycode WHERE num = #{num}
   	</select>
   	
   	<select id="selectVerifyCodeByID" resultType="com.practice.setoka.dao.VerifyCode" parameterType="String">
@@ -29,7 +29,7 @@
   	</insert>
   	
   	<update id="updateVerifyCode">
-  		UPDATE verifyCode SET verifycode = #{code}, registDate = NOW() WHERE email = #{email}
+  		UPDATE verifycode SET verifyCode = #{code}, registDate = NOW() WHERE email = #{email}
   	</update>
   	
   	
