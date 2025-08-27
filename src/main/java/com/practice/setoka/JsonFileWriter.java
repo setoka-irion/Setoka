@@ -29,7 +29,6 @@ public class JsonFileWriter
             // JSON 문자열 파일에 쓰기
             Files.write(path, prettyJson.getBytes(StandardCharsets.UTF_8));	
 
-            System.out.println("✅ JSON 파일 저장 완료: " + path);
             return fileName;
         } 
         catch (IOException e) 
