@@ -15,8 +15,6 @@ import jakarta.validation.constraints.Size;
 public class UsersDto implements Serializable{
 	@NotBlank
 	private String id;
-	@NotBlank
-	@Size(min = 8, max = 20, message = "비밀번호는 8~20자여야 합니다.")
 	private String password;
 	@NotBlank
 	private String nickName;
