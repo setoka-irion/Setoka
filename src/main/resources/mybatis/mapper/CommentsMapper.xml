@@ -53,7 +53,7 @@
 	
 	<!-- 댓글 신고-->
 	<insert id="reportComment" parameterType="int">
-	INSERT INTO commentReport (commentNum,userNum) VALUES(#{commentNum}, #{userNum})
+	INSERT INTO commentreport (commentNum,userNum) VALUES(#{commentNum}, #{userNum})
 	</insert>
 
 <!--	<select id="findReportByCommentNum" parameterType="int" resultType="com.practice.setoka.dao.Report">-->
@@ -62,7 +62,7 @@
 	
 	<!-- 댓글 신고 유저내용-->
 	<select id="findReportByCB" parameterType="int" resultType="com.practice.setoka.dao.Report">
-	SELECT * FROM commentReport WHERE commentNum = #{commentNum} AND userNum = #{userNum}
+	SELECT * FROM commentreport WHERE commentNum = #{commentNum} AND userNum = #{userNum}
 	</select>
 
 
