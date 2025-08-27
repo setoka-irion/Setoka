@@ -69,7 +69,6 @@ public class MyAnimalPageController {
 
     // 애견 삭제
     @PostMapping("/myanimal/delete")
-	@ResponseBody
     public String deleteAnimal(@RequestParam("animalNum") int animalNum) {
         animalService.updateDeleteAnimal(animalNum);
         return "redirect:/myanimal";
@@ -123,6 +122,8 @@ public class MyAnimalPageController {
             @RequestParam(name = "month", required = false) Integer month,
             @AuthenticationPrincipal CustomUserDetails authUser) {
 
+    	System.out.println("animal detail");
+        System.out.println("year: " + year +  " month: " + month);
         Users user = (Users) authUser.getUser();
 
         int userNum = user.getNum();
@@ -158,6 +159,7 @@ public class MyAnimalPageController {
         List<Memo> memos = memoService.memoSelectByAnimalNum(animalNum);
         model.addAttribute("memos", memos);
         
+        System.out.println("year: " + year +  " month: " + month);
         return "MyPage/AnimalDetails";
     }
 

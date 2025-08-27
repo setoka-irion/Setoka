@@ -529,31 +529,16 @@
 				if (e.target === memoListModal) memoListModal.style.display = "none";
 			};
 
-			memoForm.onsubmit = (e) => {
-				// 체크된 체크박스만 골라서
+			memoForm.onsubmit = () => {
 				const checkedBoxes = animalCheckboxContainer.querySelectorAll('input[type="checkbox"]:checked');
 				const selected = Array.from(checkedBoxes).map(cb => cb.value);
 				const joined = selected.join(',');
 				document.getElementById('animalNumStr').value = joined;
 
+				// 서버가 어떤 URL로 받을지 결정
 				memoForm.action = memoNumInput.value ? '/memo/update' : '/memo/add';
-				e.preventDefault();
-
-				const url = memoNumInput.value ? '/memo/update' : '/memo/add';
-				const formData = new FormData(memoForm);
-
-				fetch(url, {
-					method: 'POST',
-					body: new URLSearchParams(formData)
-				})
-					.then(res => {
-						if (res.ok) {
-							location.href = `/animal/detail?animalNum=${animalNum}&year=${year}&month=${month}`;
-						} else {
-							alert('저장 실패');
-						}
-					});
 			};
+
 
 		});
 	</script>
