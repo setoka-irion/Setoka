@@ -201,12 +201,13 @@ public class LoginController {
 	{
 		String email = request.get("email");
 		int verifyCode = Integer.parseInt(request.get("code"));
+
 		if(emailService.VerifyCodeEqule(email, verifyCode))
 		{
 			session.setAttribute("emailVerifyCode", email);
 			return ResponseEntity.ok("인증 성공");
 		}
-
+		
 		return ResponseEntity.badRequest().body("인증 실패");
 	}
 	

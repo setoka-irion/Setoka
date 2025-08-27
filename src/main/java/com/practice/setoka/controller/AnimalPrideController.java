@@ -256,7 +256,6 @@ public class AnimalPrideController {
 			try {
 				// 파일 이동 (이미 존재하면 덮어쓰기)
 				Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-				System.out.println("파일이 성공적으로 이동되었습니다!");
 			} catch (Exception e) {
 				System.err.println("파일 이동 중 오류 발생: " + e.getMessage());
 			}
@@ -566,7 +565,7 @@ public class AnimalPrideController {
 		if (comment == null) {
 			return "redirect:/AnimalPrideDetail/" + boardNum;
 		}
-		System.out.println("댓글 좋아");
+
 		if (authUser.getUser() != null)
 			commentLikeService.likeComment(new CommentLikeDto(loginUser.getNum(), commentNum));
 

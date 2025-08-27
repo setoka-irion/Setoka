@@ -570,7 +570,7 @@ public class WalkTrailController {
 		if (comment == null) {
 			return "redirect:/WalkTrailDetail/" + boardNum;
 		}
-		System.out.println("댓글 좋아");
+
 		if (authUser.getUser() != null)
 			commentLikeService.likeComment(new CommentLikeDto(loginUser.getNum(), commentNum));
 
