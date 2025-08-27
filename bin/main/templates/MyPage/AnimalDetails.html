@@ -176,6 +176,7 @@
 				<input type="hidden" name="userNum" th:value="${userNum}" />
 				<!-- 기존 animalNum 히든 필드 제거 -->
 				<input type="hidden" id="memoNum" name="num" value="" />
+				<input type="hidden" name="animalNum" th:value="${animalNum}" />
 
 				<div class="form-group">
 					<label for="scheduleDate">작성일</label>
@@ -529,31 +530,16 @@
 				if (e.target === memoListModal) memoListModal.style.display = "none";
 			};
 
-			memoForm.onsubmit = (e) => {
-				// 체크된 체크박스만 골라서
+			memoForm.onsubmit = () => {
 				const checkedBoxes = animalCheckboxContainer.querySelectorAll('input[type="checkbox"]:checked');
 				const selected = Array.from(checkedBoxes).map(cb => cb.value);
 				const joined = selected.join(',');
 				document.getElementById('animalNumStr').value = joined;
 
-				memoForm.action = memoNumInput.value ? '/memo/update' : '/memo/add';
-				e.preventDefault();
-
-				const url = memoNumInput.value ? '/memo/update' : '/memo/add';
-				const formData = new FormData(memoForm);
-
-				fetch(url, {
-					method: 'POST',
-					body: new URLSearchParams(formData)
-				})
-					.then(res => {
-						if (res.ok) {
-							location.href = `/animal/detail?animalNum=${animalNum}&year=${year}&month=${month}`;
-						} else {
-							alert('저장 실패');
-						}
-					});
+				// 서버가 어떤 URL로 받을지 결정
+				memoForm.action = memoNumInput.value ? '/memo/detailupdate' : '/memo/detailadd';
 			};
+
 
 		});
 	</script>

@@ -561,7 +561,7 @@ public class KnowHowController {
 		if (comment == null) {
 			return "redirect:/KnowHowDetail/" + boardNum;
 		}
-		System.out.println("댓글 좋아");
+
 		if (authUser.getUser() != null)
 			commentLikeService.likeComment(new CommentLikeDto(loginUser.getNum(), commentNum));
 

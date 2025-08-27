@@ -51,7 +51,6 @@ public class BoardService {
 	
 	// 등록
 	public void insertBoard(BoardDto boardDto) {
-		System.out.println(boardDto.getImage_paths());
 		if(boardDto.getImage_paths() == null || boardDto.getImage_paths().length() == 0)
 		{
 			boardDto.setImage_paths(upload.imagePath + "defaultBoard.png");
