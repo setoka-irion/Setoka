@@ -600,7 +600,7 @@ public class BoardActionController {
 		if (comment == null) {
 			return "redirect:/AdoptDetail/" + boardNum;
 		}
-		System.out.println("댓글 좋아");
+
 		if (authUser.getUser() != null)
 			commentLikeService.likeComment(new CommentLikeDto(loginUser.getNum(), commentNum));
 

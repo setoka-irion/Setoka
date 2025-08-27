@@ -26,8 +26,6 @@ public class UploadController {
 		String imageUrl = fileName;
 		//db에 저장
 		boardService.insertTempImage(new TempImageDto(userNum, fileName));
-		System.out.println(userNum);
-		System.out.println("이미지 업로드 실행 url:"+ imageUrl);
 		
 		return ResponseEntity.ok(imageUrl);
 	}
