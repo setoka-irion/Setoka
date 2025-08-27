@@ -47,7 +47,6 @@ public class MyAnimalPageController {
     
     // 애견 추가
     @PostMapping("/myanimal/add")
-	@ResponseBody
     public String addAnimal(
 				        AnimalDto animalDto, @RequestParam("profileImage") MultipartFile file,
 				        @RequestParam("togetherDateStr") String togetherDateStr,
