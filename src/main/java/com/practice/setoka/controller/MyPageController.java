@@ -292,7 +292,8 @@ public class MyPageController {
 	// 달력 스크립트 이용 기능들
 	@PostMapping("/memo/detailadd")
 	public String addDetailMemo(MemoDto memoDto, @RequestParam("animalNumStr") String animalNumStr,
-			@RequestParam("scheduleDateStr") String scheduleDateStr) {
+			@RequestParam("scheduleDateStr") String scheduleDateStr,
+			@RequestParam("animalNum") int animalNum) {
 		LocalDateTime dt = LocalDate.parse(scheduleDateStr).atStartOfDay();
 		memoDto.setScheduleDate(dt);
 		if (animalNumStr.length() == 0)
@@ -301,13 +302,14 @@ public class MyPageController {
 			memoDto.setAnimalNum(animalNumStr);
 		memoService.insertMemo(memoDto);
 		LocalDate date = dt.toLocalDate();
-		return "redirect:/animal/detail?animalNum=" + memoDto.getAnimalNum() + "&year=" + date.getYear() + "&month=" + date.getMonthValue();
+		return "redirect:/animal/detail?animalNum=" + animalNum + "&year=" + date.getYear() + "&month=" + date.getMonthValue();
 	}
 
 	@PostMapping("/memo/detailupdate")
 	public String updateDetailMemo(@RequestParam(name = "num") int num, MemoDto memoDto,
 			@RequestParam("animalNumStr") String animalNumStr,
-			@RequestParam("scheduleDateStr") String scheduleDateStr) {
+			@RequestParam("scheduleDateStr") String scheduleDateStr,
+			@RequestParam("animalNum") int animalNum) {
 		LocalDateTime dt = LocalDate.parse(scheduleDateStr).atStartOfDay();
 		memoDto.setScheduleDate(dt);
 		if (animalNumStr.length() == 0)
@@ -316,8 +318,8 @@ public class MyPageController {
 			memoDto.setAnimalNum(animalNumStr);
 		memoService.updateMemo(num, memoDto);
 		LocalDate date = dt.toLocalDate();
-
-		return "redirect:/animal/detail?animalNum=" + memoDto.getAnimalNum() + "&year=" + date.getYear() + "&month=" + date.getMonthValue();
+		
+		return "redirect:/animal/detail?animalNum=" + animalNum + "&year=" + date.getYear() + "&month=" + date.getMonthValue();
 	}
 
 	@PostMapping("/memo/delete")
