@@ -160,7 +160,7 @@ public class MyAnimalPageController {
         model.addAttribute("memos", memos);
         
         System.out.println("year: " + year +  " month: " + month);
-        return "redirect:/MyPage?year=" + year + "&month=" + month;
+        return "MyPage/AnimalDetails";
     }
 
 
