@@ -105,7 +105,7 @@ public class MyAnimalPageController {
     	        animalDto.setProfilePath(upload.imageFileUpload(file));
     	    } else {
     	        // 이미지 미변경 시 기존 경로 유지
-    	        animalDto.setProfilePath(existingProfilePath);
+    	        animalDto.setProfilePath(null);
     	    }
 
     	    LocalDateTime dateTime = LocalDate.parse(togetherDateStr).atStartOfDay();
@@ -122,6 +122,8 @@ public class MyAnimalPageController {
             @RequestParam(name = "month", required = false) Integer month,
             @AuthenticationPrincipal CustomUserDetails authUser) {
 
+    	System.out.println("animal detail");
+        System.out.println("year: " + year +  " month: " + month);
         Users user = (Users) authUser.getUser();
 
         int userNum = user.getNum();
@@ -157,7 +159,8 @@ public class MyAnimalPageController {
         List<Memo> memos = memoService.memoSelectByAnimalNum(animalNum);
         model.addAttribute("memos", memos);
         
-        return "MyPage/AnimalDetails";
+        System.out.println("year: " + year +  " month: " + month);
+        return "redirect:/MyPage?year=" + year + "&month=" + month;
     }
 
 

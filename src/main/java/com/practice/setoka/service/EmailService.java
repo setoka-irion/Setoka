@@ -1,6 +1,7 @@
 package com.practice.setoka.service;
 
 import java.util.Random;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -8,8 +9,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.practice.setoka.Encryption;
+import com.practice.setoka.Enum.Status;
 import com.practice.setoka.dao.PasswordReset;
 import com.practice.setoka.dao.VerifyCode;
+import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.mapper.MailMapper;
 
 @Service
@@ -17,6 +21,8 @@ public class EmailService
 {
 	@Autowired
 	private MailMapper mailMapper;
+	@Autowired
+	private UserService userService;
 	
 	private final JavaMailSender mailSender;
 	
@@ -114,6 +120,10 @@ public class EmailService
 	//비밀번호 재설정을 db에 저장하고 메일을 보내줌
 	public boolean SendPasswordResetMessage(String email)
 	{
+		UsersDto dto = new UsersDto(userService.selectByID(email));
+		if(dto.getStatus() == Status.삭제)
+			return false;
+		
 		//db에 저장을 하고
 		PasswordReset reset = mailMapper.selectPasswordReset(email);
 		//email이 없었다면
@@ -127,8 +137,11 @@ public class EmailService
 			if(!mailMapper.updatePasswordReset(email))
 				return false;
 				
+		String ex = userService.generateSecurePassword(8);
+		dto.setPassword(Encryption.Encoder(ex));
 		// 메일을 보내고
-		SendSimpleMessage(email, "비밀번호 재설정", "주소");
+		SendSimpleMessage(email, "비밀번호 재설정", "임시 비밀번호 : " + ex);
+		userService.updateUserDto(dto);
 		
 		return true;
 	}
