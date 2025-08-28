@@ -63,4 +63,8 @@ public class CommentsService {
 		return commentsMapper.findReportByCB(commentNum, userNum);
 	}
 
+	public List<CommentInfoDto> selectAllComments()
+	{
+		return commentsMapper.selectAllComment();
+	}
 }

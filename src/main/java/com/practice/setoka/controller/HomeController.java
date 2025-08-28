@@ -22,6 +22,7 @@ import com.practice.setoka.dto.BoardWithUserDto;
 import com.practice.setoka.dto.UsersDto;
 import com.practice.setoka.service.BoardService;
 import com.practice.setoka.service.CarouselService;
+import com.practice.setoka.service.CommentsService;
 import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 
@@ -40,6 +41,8 @@ public class HomeController {
 	BoardService boardService;
 	@Autowired
 	CarouselService carouselService;
+	@Autowired
+	CommentsService commentsService;
 	
 	// 홈화면
 	@GetMapping(value = "/")
@@ -263,5 +266,17 @@ public class HomeController {
 		
 		
 		return "reportBoardList";
+	}
+	
+	@GetMapping(value = "/admin/reportCommentList")
+	public String reportCommentList(@AuthenticationPrincipal CustomUserDetails authUser, Model model)
+	{
+		Users user = authUser.getUser();
+		if(!user.isAdmin())
+			return Redirect.home;
+		
+		model.addAttribute("list", commentsService.selectAllComments());
+		
+		return "reportCommentList";
 	}
 }
