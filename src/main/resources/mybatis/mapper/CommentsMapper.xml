@@ -66,6 +66,15 @@
 	</select>
 
 
+	<!-- 해당 게시글의 댓글전체 불러오기 -->
+	<select id="selectAllComment" resultMap="CommentInfoDto"> 
+	SELECT
+		c.num, c.userNum, c.parentNum, c.boardNum, c.content, c.likes,
+		c.registerDate, u.nickname, u.grade, u.profilePath, b.type FROM comments
+		c JOIN users u ON c.userNum = u.num JOIN board b ON c.boardNum = b.num
+		ORDER BY c.registerDate
+		ASC 
+	</select>
 
 	
 	<resultMap id ="CommentInfoDto" type ="com.practice.setoka.dto.CommentInfoDto">
