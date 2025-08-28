@@ -152,7 +152,7 @@ public class BoardWithUserDto implements Serializable{
 	        case 2 -> "/AnimalPrideDetail/";
 	        case 3 -> "/WalkTrailDetail/";
 	        case 4 -> "/UsedGoodsDetail/";
-	        case 5 -> "/KnowhowDetail/";
+	        case 5 -> "/KnowHowDetail/";
 	        default -> "/Unknown/";
 	    };
 	    return path + this.boardNum;
