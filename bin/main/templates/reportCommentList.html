@@ -36,29 +36,23 @@
 			<thead>
 				<tr>
 					<th>Num</th>
-					<th>ID</th>
+					<th>userNum</th>
 					<th>닉네임</th>
-					<th>title</th>
-					<th>likes</th>
-					<th>views</th>
-					<th>price</th>
-					<th>type</th>
+					<th>boardNum</th>
+					<th>status</th>
 					<th>registerDate</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- 사용자 데이터가 여기에 추가됩니다 -->
 				<tr th:each="board : ${list}">
-					<td th:text="${board.boardNum}"></td>
-					<td th:text="${board.userId}"></td>
-					<td th:text="${board.nickName}"></td>
+					<td th:text="${board.num}"></td>
+					<td th:text="${board.userNum}"></td>
+					<td th:text="${board.nickname}"></td>
 					<td>
-						<a th:href="@{${board.detailUrl}}" th:text="${board.title}"></a>
+						<a th:href="@{${board.detailUrl}}" th:text="${board.boardNum}"></a>
 					</td>
-					<td th:text="${board.likes}"></td>
-					<td th:text="${board.views}"></td>
-					<td th:text="${board.price}"></td>
-					<td th:text="${board.type}"></td>
+					<td th:text="${board.status}"></td>
 					<td th:text="${board.registerDate}"></td>
 				</tr>
 			</tbody>

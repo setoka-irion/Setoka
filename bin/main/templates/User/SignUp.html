@@ -16,7 +16,7 @@
 
 	<div class="signUp-container">
 		<h1>회원가입</h1>
-		<form th:action="@{/SignUp}" th:object="${Users}" method="post" class="signUp-form">
+		<form id="signUpForm" th:action="@{/SignUp}" th:object="${Users}" method="post" class="signUp-form">
 			<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
 			<input type="email" id="email" th:field="*{id}" placeholder="이메일 아이디" required />
 			<button type="button" onclick="sendCode()" class="sub-buttons">인증번호 보내기</button>
@@ -35,7 +35,7 @@
 			maxlength="13"
 			inputmode="numeric"/><br />
 
-			<button id="sub" class="sub-buttons hidden" type="submit">회원가입</button>
+			<button id="sub" class="sub-buttons hidden" type="button" onclick="submitSignUp()">회원가입</button>
 		</form>
 	</div>
 	
@@ -128,6 +128,50 @@
 					alert('인증번호 틀림');
 				}
 			})
+	}
+
+</script>
+
+<script>
+	function submitSignUp() {
+		const form = document.getElementById('signUpForm');
+		const formData = new FormData(form);
+
+		// FormData를 JSON으로 변환 (passwordCom 제외)
+		const jsonObject = {};
+		let passwordComValue = null;
+
+		formData.forEach((value, key) => {
+			if (key === 'passwordCom') {
+				passwordComValue = value; // passwordCom은 따로 뺌
+			} else {
+				jsonObject[key] = value;
+			}
+		});
+
+		// URL에 passwordCom 쿼리 파라미터 추가 (인코딩 주의)
+		const url = '/SignUp?passwordCom=' + encodeURIComponent(passwordComValue);
+
+		fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				[csrfHeader]: csrfToken
+			},
+			body: JSON.stringify(jsonObject)
+		})
+		.then(res => {
+			if (res.ok) {
+				alert("🎉 회원가입이 완료되었습니다!");
+				window.location.href = "/";  // 홈페이지로 이동
+			} else {
+				return res.text().then(text => alert(text));
+			}
+		})
+		.catch(error => {
+			console.error(error);
+			alert("오류가 발생했습니다.");
+		});
 	}
 
 </script>

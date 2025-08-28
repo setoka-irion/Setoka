@@ -39,4 +39,5 @@ public interface CommentsMapper {
 	// 댓글 신고 유저내용
 	Report findReportByCB(@Param("commentNum") int boardNum, @Param("userNum") int userNum);
 
+	List<CommentInfoDto> selectAllComment();
 }
