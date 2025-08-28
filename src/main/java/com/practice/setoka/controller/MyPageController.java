@@ -7,10 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +33,8 @@ import com.practice.setoka.service.UserService;
 import com.practice.setoka.springSecurity.CustomUserDetails;
 import com.practice.setoka.springSecurity.CustomUserDetailsService;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -201,7 +201,8 @@ public class MyPageController {
 	@PostMapping(value = "ChangePassword")
 	public String changePasswordsubmit(@RequestParam("password") String password,
 			@RequestParam("passwordCon") String passwordCon, HttpSession session,
-			@AuthenticationPrincipal CustomUserDetails authUser) {
+			@AuthenticationPrincipal CustomUserDetails authUser,
+			HttpServletRequest request) {
 
 		Users user = (Users) authUser.getUser();
 		
@@ -229,7 +230,12 @@ public class MyPageController {
 		UsersDto dto = new UsersDto(user);
 		dto.setPassword(encordPassowrd);
 		userService.updateUserDto(dto);
-		return Redirect.Logout;
+		try {
+	        request.logout();  // Spring Security가 현재 사용자 로그아웃 처리
+	    } catch (ServletException e) {
+	        e.printStackTrace();
+	    }
+		return Redirect.home;
 	}
 
 	@GetMapping(value = "Bulletin")
